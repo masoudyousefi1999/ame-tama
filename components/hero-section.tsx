@@ -8,14 +8,6 @@ import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 export default function HeroSection() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) return null;
-
   const scrollToProducts = () => {
     const section = document.getElementById("featured-products");
     if (section) {
@@ -34,6 +26,8 @@ export default function HeroSection() {
           priority
           sizes="100vw"
           className="object-cover object-center"
+          placeholder="blur"
+          blurDataURL="/placeholder.svg?height=400&width=500" // optional
         />
       </div>
 
