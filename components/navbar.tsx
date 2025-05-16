@@ -53,13 +53,13 @@ export default function Navbar() {
         <Link href="/" className="flex-shrink-0">
           <span
             className="text-xl md:text-2xl font-bold whitespace-nowrap flex-shrink-0
-+              text-indigo-600 dark:text-indigo-300 drop-shadow-lg"
+              text-indigo-600 dark:text-indigo-300 drop-shadow-lg"
           >
             AME-TAMA
           </span>
         </Link>
 
-        {/* Desktop Nav – now only shows at ≥1024px */}
+        {/* Desktop Nav – shows at ≥1024px */}
         <nav className="hidden lg:flex items-center space-x-6">
           <Link href="/" className="whitespace-nowrap p-2">
             خانه
@@ -118,23 +118,15 @@ export default function Navbar() {
 
         {/* Actions & Hamburger */}
         <div className="flex items-center space-x-2">
-          {/* Desktop Search – ≥1024px */}
-          <div className="hidden lg:block w-64">
+          {/* Mobile Search – shows below 1024px */}
+          <div className="lg:hidden flex-1 max-w-[200px]">
             <SearchBar />
           </div>
 
-          {/* Theme Toggle */}
-          {mounted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="تغییر تم"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2"
-            >
-              {theme === "dark" ? <Sun /> : <Moon />}
-            </Button>
-          )}
+          {/* Desktop Search – shows at ≥1024px */}
+          <div className="hidden lg:block w-64">
+            <SearchBar />
+          </div>
 
           {/* User & Cart */}
           <UserMenu />
@@ -164,8 +156,6 @@ export default function Navbar() {
             className="overflow-hidden lg:hidden bg-white dark:bg-gray-900"
           >
             <div className="space-y-2 px-4 py-3">
-              <SearchBar />
-
               <Link href="/" className="block p-2">
                 خانه
               </Link>
@@ -216,6 +206,29 @@ export default function Navbar() {
               <Link href="/contact" className="block p-2">
                 تماس با ما
               </Link>
+
+              {/* Theme Toggle in Mobile Menu */}
+              {mounted && (
+                <div className="p-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    aria-label="تغییر تم"
+                    onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                    className="w-full justify-start"
+                  >
+                    {theme === "dark" ? (
+                      <>
+                        <Sun className="mr-2 h-4 w-4" /> تم روشن
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="mr-2 h-4 w-4" /> تم تیره
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
