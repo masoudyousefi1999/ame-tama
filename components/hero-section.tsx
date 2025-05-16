@@ -24,7 +24,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-screen min-h-[100svh] flex items-center overflow-hidden">
+    <section className="relative h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -33,16 +33,15 @@ export default function HeroSection() {
           fill
           priority
           sizes="100vw"
-          // className="object-cover object-[center_top] "
-          className="object-cover md:object-center"
+          className="object-cover object-center"
         />
       </div>
 
-      {/* Dark Overlay – increased opacity for better text contrast */}
+      {/* Dark Overlay */}
       <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
 
       {/* Text Content */}
-      <div className="container mx-auto px-4 md:px-6 relative z-20">
+      <div className="container mx-auto px-4 md:px-6 relative z-20 flex items-center justify-center h-full">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -51,11 +50,9 @@ export default function HeroSection() {
           >
             <h1
               className={`
-                text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6
-                bg-clip-text text-transparent bg-gradient-to-r
-                from-purple-500 to-indigo-500
-                drop-shadow-lg
-                font-vazirmatn
+                text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6
+                bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500
+                drop-shadow-lg font-vazirmatn
               `}
             >
               مجسمه‌های لوکس انیمه برای کلکسیونرهای مشتاق
@@ -67,7 +64,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-lg md:text-xl mb-8 text-white drop-shadow font-vazirmatn">
+            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white drop-shadow font-vazirmatn">
               مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر
               و اشتیاق در هر جزئیات ظریف به هم می‌رسند.
             </p>

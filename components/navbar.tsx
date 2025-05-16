@@ -51,10 +51,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0">
-          <span
-            className="text-xl md:text-2xl font-bold whitespace-nowrap flex-shrink-0
-              text-indigo-600 dark:text-indigo-300 drop-shadow-lg"
-          >
+          <span className="text-xl md:text-2xl font-bold whitespace-nowrap flex-shrink-0 text-indigo-600 dark:text-indigo-300 drop-shadow-lg">
             AME-TAMA
           </span>
         </Link>
@@ -120,13 +117,30 @@ export default function Navbar() {
         <div className="flex items-center space-x-2">
           {/* Mobile Search – shows below 1024px */}
           <div className="lg:hidden flex-1 max-w-[200px]">
-            <SearchBar />
+            <SearchBar isScrolled={isScrolled} />
           </div>
 
           {/* Desktop Search – shows at ≥1024px */}
           <div className="hidden lg:block w-64">
-            <SearchBar />
+            <SearchBar isScrolled={isScrolled} />
           </div>
+
+          {/* Desktop Theme Toggle – shows at ≥1024px */}
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="تغییر تم"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="hidden lg:flex p-2"
+            >
+              {theme === "dark" ? (
+                <Sun className="h-5 w-5" />
+              ) : (
+                <Moon className="h-5 w-5" />
+              )}
+            </Button>
+          )}
 
           {/* User & Cart */}
           <UserMenu />
@@ -215,15 +229,17 @@ export default function Navbar() {
                     size="sm"
                     aria-label="تغییر تم"
                     onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                    className="w-full justify-start"
+                    className="w-full justify-start text-right"
                   >
                     {theme === "dark" ? (
                       <>
-                        <Sun className="mr-2 h-4 w-4" /> تم روشن
+                        <Sun className="ml-2 h-4 w-4" />
+                        تم روشن
                       </>
                     ) : (
                       <>
-                        <Moon className="mr-2 h-4 w-4" /> تم تیره
+                        <Moon className="ml-2 h-4 w-4" />
+                        تم تیره
                       </>
                     )}
                   </Button>
