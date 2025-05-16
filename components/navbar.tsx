@@ -1,188 +1,225 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useRef } from "react"
-import Link from "next/link"
-import { useTheme } from "next-themes"
-import { Menu, X, Moon, Sun, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import CartDropdown from "@/components/cart/cart-dropdown"
-import UserMenu from "@/components/auth/user-menu"
-import SearchBar from "@/components/search/search-bar"
-import { getAllCategories } from "@/lib/categories"
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { useTheme } from "next-themes";
+import { Menu, X, Moon, Sun, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import CartDropdown from "@/components/cart/cart-dropdown";
+import UserMenu from "@/components/auth/user-menu";
+import SearchBar from "@/components/search/search-bar";
+import { getAllCategories } from "@/lib/categories";
 
 export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false)
-  const { theme, setTheme } = useTheme()
-  const categoriesRef = useRef<HTMLDivElement>(null)
-  const categories = getAllCategories()
+  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const categoriesRef = useRef<HTMLDivElement>(null);
+  const categories = getAllCategories();
+  const [mounted, setMounted] = useState(false);
 
-  // ✅ Fix hydration mismatch with theme
-  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), []);
   useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10)
-    }
-
-    const handleClickOutside = (event: MouseEvent) => {
-      if (categoriesRef.current && !categoriesRef.current.contains(event.target as Node)) {
-        setIsCategoriesOpen(false)
+    const onScroll = () => setIsScrolled(window.scrollY > 10);
+    const onClick = (e: MouseEvent) => {
+      if (
+        categoriesRef.current &&
+        !categoriesRef.current.contains(e.target as Node)
+      ) {
+        setIsCategoriesOpen(false);
       }
-    }
-
-    window.addEventListener("scroll", handleScroll)
-    document.addEventListener("mousedown", handleClickOutside)
-
+    };
+    window.addEventListener("scroll", onScroll);
+    document.addEventListener("mousedown", onClick);
     return () => {
-      window.removeEventListener("scroll", handleScroll)
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
-  const toggleMenu = () => setIsOpen(!isOpen)
-  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark")
-  const toggleCategories = () => setIsCategoriesOpen(!isCategoriesOpen)
+      window.removeEventListener("scroll", onScroll);
+      document.removeEventListener("mousedown", onClick);
+    };
+  }, []);
 
   return (
     <header
+      role="navigation"
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300 backdrop-blur-md",
-        isScrolled ? "bg-white/80 dark:bg-gray-900/80 shadow-md" : "bg-transparent",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+        isScrolled ? "bg-white/90 dark:bg-gray-900/90 shadow" : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-4 md:px-6">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-600 bg-clip-text text-transparent">
-                AME-TAMA
-              </span>
-            </Link>
+      <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4">
+        {/* Logo */}
+        <Link href="/" className="flex-shrink-0">
+          <span
+            className="text-xl md:text-2xl font-bold whitespace-nowrap flex-shrink-0
++              text-indigo-600 dark:text-indigo-300 drop-shadow-lg"
+          >
+            AME-TAMA
+          </span>
+        </Link>
 
-            <nav className="hidden md:flex items-center mr-8 gap-x-8">
-              <Link
-                href="/"
-                className="text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-              >
-                خانه
-              </Link>
+        {/* Desktop Nav – now only shows at ≥1024px */}
+        <nav className="hidden lg:flex items-center space-x-6">
+          <Link href="/" className="whitespace-nowrap p-2">
+            خانه
+          </Link>
 
-              <div className="relative" ref={categoriesRef}>
-                <button
-                  className="flex items-center text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                  onClick={toggleCategories}
-                >
-                  دسته‌بندی‌ها
-                  <ChevronDown className={cn("h-4 w-4 mr-1 transition-transform", isCategoriesOpen && "rotate-180")} />
-                </button>
-
-                {isCategoriesOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-50 py-2">
-                    {categories.map((category) => (
-                      <Link
-                        key={category.slug}
-                        href={`/category/${category.slug}`}
-                        className="block px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors font-vazirmatn"
-                        onClick={() => setIsCategoriesOpen(false)}
-                      >
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
+          {/* Categories dropdown */}
+          <div ref={categoriesRef} className="relative">
+            <button
+              aria-expanded={isCategoriesOpen}
+              aria-controls="category-menu"
+              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+              className="flex items-center p-2 whitespace-nowrap"
+            >
+              دسته‌بندی‌ها
+              <ChevronDown
+                className={cn(
+                  "ml-1 h-4 w-4 transition-transform",
+                  isCategoriesOpen && "rotate-180"
                 )}
-              </div>
-
-              <Link href="/shop" className="text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn">
-                فروشگاه
-              </Link>
-              <Link href="/about" className="text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn">
-                درباره ما
-              </Link>
-              <Link href="/contact" className="text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn">
-                تماس با ما
-              </Link>
-            </nav>
+              />
+            </button>
+            <AnimatePresence>
+              {isCategoriesOpen && (
+                <motion.div
+                  id="category-menu"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute right-0 mt-1 bg-white dark:bg-gray-800 rounded shadow-lg py-2"
+                >
+                  {categories.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/category/${c.slug}`}
+                      onClick={() => setIsCategoriesOpen(false)}
+                      className="block px-4 py-2 whitespace-nowrap"
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          <div className="flex items-center gap-x-4">
-            <div className="hidden md:block w-64">
-              <SearchBar />
-            </div>
+          <Link href="/shop" className="whitespace-nowrap p-2">
+            فروشگاه
+          </Link>
+          <Link href="/about" className="whitespace-nowrap p-2">
+            درباره ما
+          </Link>
+          <Link href="/contact" className="whitespace-nowrap p-2">
+            تماس با ما
+          </Link>
+        </nav>
 
-            {/* ✅ Theme toggle rendered only after mount */}
-            {mounted && (
-              <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                <span className="sr-only">تغییر تم</span>
-              </Button>
-            )}
+        {/* Actions & Hamburger */}
+        <div className="flex items-center space-x-2">
+          {/* Desktop Search – ≥1024px */}
+          <div className="hidden lg:block w-64">
+            <SearchBar />
+          </div>
 
-            <div className="md:hidden">
-              <SearchBar />
-            </div>
-
-            <UserMenu />
-            <CartDropdown />
-
-            <Button variant="ghost" size="icon" className="md:hidden rounded-full" onClick={toggleMenu}>
-              {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              <span className="sr-only">منو</span>
+          {/* Theme Toggle */}
+          {mounted && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="تغییر تم"
+              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              className="p-2"
+            >
+              {theme === "dark" ? <Sun /> : <Moon />}
             </Button>
-          </div>
+          )}
+
+          {/* User & Cart */}
+          <UserMenu />
+          <CartDropdown />
+
+          {/* Mobile Hamburger – shows below 1024px */}
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="بازکردن منو"
+            aria-expanded={isOpen}
+            onClick={() => setIsOpen(!isOpen)}
+            className="lg:hidden p-2"
+          >
+            {isOpen ? <X /> : <Menu />}
+          </Button>
         </div>
       </div>
 
-      {isOpen && (
-        <div className="md:hidden bg-white dark:bg-gray-900 shadow-lg">
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            <Link
-              href="/"
-              className="block text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-              onClick={toggleMenu}
-            >
-              خانه
-            </Link>
+      {/* Mobile Panel – below 1024px */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="overflow-hidden lg:hidden bg-white dark:bg-gray-900"
+          >
+            <div className="space-y-2 px-4 py-3">
+              <SearchBar />
 
-            <div className="block text-sm font-medium font-vazirmatn">
-              <div className="flex items-center justify-between" onClick={toggleCategories}>
-                <span>دسته‌بندی‌ها</span>
-                <ChevronDown className={cn("h-4 w-4 transition-transform", isCategoriesOpen && "rotate-180")} />
+              <Link href="/" className="block p-2">
+                خانه
+              </Link>
+
+              <div>
+                <button
+                  aria-expanded={isCategoriesOpen}
+                  onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+                  className="flex w-full items-center justify-between p-2"
+                >
+                  <span>دسته‌بندی‌ها</span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      isCategoriesOpen && "rotate-180"
+                    )}
+                  />
+                </button>
+                <AnimatePresence>
+                  {isCategoriesOpen && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
+                      className="pl-4"
+                    >
+                      {categories.map((c) => (
+                        <Link
+                          key={c.slug}
+                          href={`/category/${c.slug}`}
+                          onClick={() => setIsOpen(false)}
+                          className="block p-2"
+                        >
+                          {c.name}
+                        </Link>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
 
-              {isCategoriesOpen && (
-                <div className="mt-2 pr-4 border-r border-gray-200 dark:border-gray-700">
-                  {categories.map((category) => (
-                    <Link
-                      key={category.slug}
-                      href={`/category/${category.slug}`}
-                      className="block py-2 text-sm hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                      onClick={toggleMenu}
-                    >
-                      {category.name}
-                    </Link>
-                  ))}
-                </div>
-              )}
+              <Link href="/shop" className="block p-2">
+                فروشگاه
+              </Link>
+              <Link href="/about" className="block p-2">
+                درباره ما
+              </Link>
+              <Link href="/contact" className="block p-2">
+                تماس با ما
+              </Link>
             </div>
-
-            <Link href="/shop" className="block text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn" onClick={toggleMenu}>
-              فروشگاه
-            </Link>
-            <Link href="/about" className="block text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn" onClick={toggleMenu}>
-              درباره ما
-            </Link>
-            <Link href="/contact" className="block text-sm font-medium hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn" onClick={toggleMenu}>
-              تماس با ما
-            </Link>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
-  )
+  );
 }

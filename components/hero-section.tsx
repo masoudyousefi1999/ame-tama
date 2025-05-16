@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
@@ -15,13 +16,32 @@ export default function HeroSection() {
 
   if (!mounted) return null;
 
+  const scrollToProducts = () => {
+    const section = document.getElementById("featured-products");
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative h-screen flex items-center overflow-hidden">
+      {/* Background Image */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/20 to-indigo-900/20 dark:from-purple-900/40 dark:to-indigo-900/40 backdrop-blur-sm z-10" />
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=1080&width=1920')] bg-cover bg-center opacity-30 dark:opacity-20" />
+        <Image
+          src="/naruto-luffy-clap.jpg"
+          alt="مجسمه‌های لوکس انیمه"
+          fill
+          priority
+          sizes="100vw"
+          // className="object-cover object-[center_top] "
+          className="object-cover md:object-center"
+        />
       </div>
 
+      {/* Dark Overlay – increased opacity for better text contrast */}
+      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
+
+      {/* Text Content */}
       <div className="container mx-auto px-4 md:px-6 relative z-20">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
@@ -29,7 +49,15 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-purple-300 to-indigo-300 dark:from-purple-200 dark:to-indigo-200 bg-clip-text text-transparent font-vazirmatn">
+            <h1
+              className={`
+                text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6
+                bg-clip-text text-transparent bg-gradient-to-r
+                from-purple-500 to-indigo-500
+                drop-shadow-lg
+                font-vazirmatn
+              `}
+            >
               مجسمه‌های لوکس انیمه برای کلکسیونرهای مشتاق
             </h1>
           </motion.div>
@@ -39,7 +67,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-lg md:text-xl mb-8 text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-vazirmatn">
+            <p className="text-lg md:text-xl mb-8 text-white drop-shadow font-vazirmatn">
               مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر
               و اشتیاق در هر جزئیات ظریف به هم می‌رسند.
             </p>
@@ -50,20 +78,46 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Link href={"/shop"}>
+            <Link href="/shop">
               <Button
                 size="lg"
                 className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn"
               >
                 مشاهده مجسمه‌های لوکس
-                <ArrowRight className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
               </Button>
             </Link>
           </motion.div>
         </div>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent z-10" />
+      {/* Bottom Gradient Fade */}
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent z-20" />
+
+      {/* Scroll Button */}
+      <motion.button
+        onClick={scrollToProducts}
+        dir="rtl"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+        className="absolute bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex items-center justify-center"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-8 h-8 animate-bounce text-white"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </motion.button>
     </section>
   );
 }
