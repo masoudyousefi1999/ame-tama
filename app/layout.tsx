@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
       <body className={vazirmatn.variable}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
           <AuthProvider>
             <CartProvider>
               <WishlistProvider>
