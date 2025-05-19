@@ -1,5 +1,5 @@
 // تعریف نوع کاربر
-import image from "@/public/photo_2025-05-14_11-44-03.jpg";
+import myImage from "@/public/photo_2025-05-14_11-44-03.jpg";
 export interface User {
   id: string;
   firstName: string;
@@ -29,7 +29,7 @@ const users: User[] = [
     email: "masoudyousefi1999@gmail.com",
     password: "MASOUDyo1378",
     phone: "09375116262",
-    avatar: image.src,
+    avatar: myImage.src,
     addresses: [
       {
         id: "addr1",

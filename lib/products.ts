@@ -123,12 +123,7 @@ const products = [
       material: "PVC با کیفیت بالا",
       height: "۲۸ سانتی‌متر",
       weight: "۷۵۰ گرم",
-      packageContents: [
-        "مجسمه ناروتو حالت سیج",
-        "پایه نمایش",
-        "جعبه کلکسیونی",
-        "گواهی اصالت",
-      ],
+      packageContents: ["مجسمه ناروتو حالت سیج", "پایه نمایش", "جعبه کلکسیونی", "گواهی اصالت"],
       careInstructions: [
         "از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید",
         "برای تمیز کردن از برس نرم استفاده کنید",
@@ -179,16 +174,8 @@ const products = [
       material: "PVC و رزین با کیفیت بالا",
       height: "۲۵ سانتی‌متر",
       weight: "۶۵۰ گرم",
-      packageContents: [
-        "مجسمه تانجیرو کامادو",
-        "پایه نمایش طراحی شده",
-        "جعبه کلکسیونی",
-        "گواهی اصالت",
-      ],
-      careInstructions: [
-        "از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید",
-        "در دمای اتاق نگهداری شود",
-      ],
+      packageContents: ["مجسمه تانجیرو کامادو", "پایه نمایش طراحی شده", "جعبه کلکسیونی", "گواهی اصالت"],
+      careInstructions: ["از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید", "در دمای اتاق نگهداری شود"],
     },
     reviews: [
       {
@@ -196,8 +183,7 @@ const products = [
         user: "سارا احمدی",
         date: "۱۴۰۲/۰۴/۲۰",
         rating: 5,
-        comment:
-          "این مجسمه فراتر از انتظارات من بود. جزئیات شمشیر و لباس تانجیرو فوق‌العاده است.",
+        comment: "این مجسمه فراتر از انتظارات من بود. جزئیات شمشیر و لباس تانجیرو فوق‌العاده است.",
       },
     ],
   },
@@ -236,12 +222,7 @@ const products = [
       material: "PVC و ABS با کیفیت بالا",
       height: "۳۲ سانتی‌متر",
       weight: "۸۵۰ گرم",
-      packageContents: [
-        "مجسمه گوجو ساتورو",
-        "پایه نمایش ویژه",
-        "جعبه کلکسیونی لوکس",
-        "گواهی اصالت",
-      ],
+      packageContents: ["مجسمه گوجو ساتورو", "پایه نمایش ویژه", "جعبه کلکسیونی لوکس", "گواهی اصالت"],
       careInstructions: [
         "از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید",
         "برای تمیز کردن از برس نرم استفاده کنید",
@@ -253,8 +234,7 @@ const products = [
         user: "محمد علیزاده",
         date: "۱۴۰۲/۰۲/۱۵",
         rating: 5,
-        comment:
-          "بهترین مجسمه گوجو که تا به حال دیده‌ام. جزئیات چشم‌بند و موهای او فوق‌العاده است.",
+        comment: "بهترین مجسمه گوجو که تا به حال دیده‌ام. جزئیات چشم‌بند و موهای او فوق‌العاده است.",
       },
     ],
   },
@@ -293,16 +273,8 @@ const products = [
       material: "PVC و رزین با کیفیت بالا",
       height: "۳۵ سانتی‌متر",
       weight: "۹۵۰ گرم",
-      packageContents: [
-        "مجسمه ارن یگر فرم تایتان",
-        "پایه نمایش طراحی شده",
-        "جعبه کلکسیونی",
-        "گواهی اصالت",
-      ],
-      careInstructions: [
-        "از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید",
-        "در دمای اتاق نگهداری شود",
-      ],
+      packageContents: ["مجسمه ارن یگر فرم تایتان", "پایه نمایش طراحی شده", "جعبه کلکسیونی", "گواهی اصالت"],
+      careInstructions: ["از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید", "در دمای اتاق نگهداری شود"],
     },
     reviews: [
       {
@@ -310,8 +282,7 @@ const products = [
         user: "نیما رضایی",
         date: "۱۴۰۱/۱۲/۰۵",
         rating: 5,
-        comment:
-          "جزئیات عضلات و چهره تایتان ارن فوق‌العاده است. اندازه مجسمه هم عالی است.",
+        comment: "جزئیات عضلات و چهره تایتان ارن فوق‌العاده است. اندازه مجسمه هم عالی است.",
       },
     ],
   },
@@ -350,12 +321,7 @@ const products = [
       material: "PVC با کیفیت بالا",
       height: "۳۳ سانتی‌متر",
       weight: "۸۲۰ گرم",
-      packageContents: [
-        "مجسمه آل مایت",
-        "پایه نمایش",
-        "جعبه کلکسیونی",
-        "گواهی اصالت",
-      ],
+      packageContents: ["مجسمه آل مایت", "پایه نمایش", "جعبه کلکسیونی", "گواهی اصالت"],
       careInstructions: [
         "از قرار دادن مجسمه در معرض نور مستقیم خورشید خودداری کنید",
         "برای تمیز کردن از برس نرم استفاده کنید",
@@ -367,36 +333,31 @@ const products = [
         user: "پریسا محمدی",
         date: "۱۴۰۲/۰۴/۰۱",
         rating: 5,
-        comment:
-          "لبخند آل مایت در این مجسمه دقیقاً مثل انیمه است! عاشق جزئیات لباس و عضلات او هستم.",
+        comment: "لبخند آل مایت در این مجسمه دقیقاً مثل انیمه است! عاشق جزئیات لباس و عضلات او هستم.",
       },
     ],
   },
-];
+]
 
 // دریافت محصول با آیدی مشخص
 export function getProductById(id: number) {
-  return products.find((product) => product.id === id);
+  return products.find((product) => product.id === id)
 }
 
 // دریافت محصولات مرتبط بر اساس دسته‌بندی
 export function getRelatedProducts(category: string, excludeId: number) {
-  return products
-    .filter(
-      (product) => product.category === category && product.id !== excludeId
-    )
-    .slice(0, 4);
+  return products.filter((product) => product.category === category && product.id !== excludeId).slice(0, 4)
 }
 
 // دریافت همه محصولات
 export function getAllProducts() {
-  return products;
+  return products
 }
 
 // دریافت محصولات بر اساس دسته‌بندی
 export function getProductsByCategory(categoryId: string) {
-  const products = getAllProducts();
-  return products.filter((product) => product.category === categoryId);
+  const products = getAllProducts()
+  return products.filter((product) => product.category === categoryId)
 }
 
 // اضافه کردن لینک به ناوبار

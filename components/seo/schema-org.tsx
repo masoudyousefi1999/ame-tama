@@ -1,24 +1,18 @@
-import type {
-  Product,
-  BreadcrumbList,
-  WebSite,
-  Organization,
-  WithContext,
-} from "schema-dts";
-import Script from "next/script";
+import type { Product, BreadcrumbList, WebSite, Organization, WithContext } from "schema-dts"
+import Script from "next/script"
 
 interface SchemaOrgProps {
-  type: "product" | "website" | "organization" | "breadcrumb";
-  data: any;
+  type: "product" | "website" | "organization" | "breadcrumb"
+  data: any
 }
 
 export default function SchemaOrg({ type, data }: SchemaOrgProps) {
   // const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ame-tama.com";
-  const baseUrl ="https://ame-tama.com";
+  const baseUrl = "https://ame-tama.com"
 
   let schema: WithContext<any> = {
     "@context": "https://schema.org",
-  };
+  }
 
   switch (type) {
     case "product":
@@ -27,9 +21,7 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
         "@type": "Product",
         name: data.name,
         description: data.description,
-        image: data.images?.map((img: any) => `${baseUrl}${img.url}`) || [
-          `${baseUrl}/placeholder.svg`,
-        ],
+        image: data.images?.map((img: any) => `${baseUrl}${img.url}`) || [`${baseUrl}/placeholder.svg`],
         sku: `AME-${data.id}`,
         mpn: `AME-${data.id}`,
         brand: {
@@ -45,8 +37,8 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
             data.availability === "in-stock"
               ? "https://schema.org/InStock"
               : data.availability === "low-stock"
-              ? "https://schema.org/LimitedAvailability"
-              : "https://schema.org/OutOfStock",
+                ? "https://schema.org/LimitedAvailability"
+                : "https://schema.org/OutOfStock",
           seller: {
             "@type": "Organization",
             name: "AME-TAMA",
@@ -75,8 +67,8 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
               reviewBody: review.comment,
             })),
           }),
-      } as WithContext<Product>;
-      break;
+      } as WithContext<Product>
+      break
 
     case "website":
       schema = {
@@ -89,8 +81,8 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
           target: `${baseUrl}/search?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
-      } as WithContext<WebSite>;
-      break;
+      } as WithContext<WebSite>
+      break
 
     case "organization":
       schema = {
@@ -99,18 +91,15 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
         name: "AME-TAMA",
         url: baseUrl,
         logo: `${baseUrl}/logo.png`,
-        sameAs: [
-          "https://www.instagram.com/ametama",
-          "https://twitter.com/ametama",
-        ],
+        sameAs: ["https://www.instagram.com/ametama", "https://twitter.com/ametama"],
         contactPoint: {
           "@type": "ContactPoint",
           telephone: "+98-21-12345678",
           contactType: "customer service",
           availableLanguage: ["Persian", "English"],
         },
-      } as WithContext<Organization>;
-      break;
+      } as WithContext<Organization>
+      break
 
     case "breadcrumb":
       schema = {
@@ -122,8 +111,8 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
           name: item.name,
           item: `${baseUrl}${item.path}`,
         })),
-      } as WithContext<BreadcrumbList>;
-      break;
+      } as WithContext<BreadcrumbList>
+      break
   }
 
   return (
@@ -132,5 +121,5 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
-  );
+  )
 }

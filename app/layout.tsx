@@ -7,6 +7,9 @@ import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import { CartProvider } from "@/context/cart-context"
 import { AuthProvider } from "@/context/auth-context"
+import { WishlistProvider } from "@/context/wishlist-context"
+import { ImageProvider } from "@/context/image-context"
+import { SkipLink } from "@/components/ui/skip-link"
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -28,18 +31,20 @@ export default function RootLayout({
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
       <body className={vazirmatn.variable}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
           <AuthProvider>
             <CartProvider>
-              <Navbar />
-              {children}
-              <Footer />
-              <Toaster />
+              <WishlistProvider>
+                <ImageProvider>
+                  <SkipLink href="#main-content" />
+                  <Navbar />
+                  <main id="main-content" className="min-h-screen">
+                    {children}
+                  </main>
+                  <Footer />
+                  <Toaster />
+                </ImageProvider>
+              </WishlistProvider>
             </CartProvider>
           </AuthProvider>
         </ThemeProvider>

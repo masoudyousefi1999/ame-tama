@@ -1,19 +1,17 @@
-"use client";
+"use client"
 
-import { motion } from "framer-motion";
-import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { Category } from "@/lib/categories";
+import { motion } from "framer-motion"
+import Link from "next/link"
+import Image from "next/image"
+import { ArrowRight } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import type { Category } from "@/lib/categories"
 
 interface CategoryShowcaseProps {
-  categories: Category[];
+  categories: Category[]
 }
 
-export default function CategoryShowcase({
-  categories,
-}: CategoryShowcaseProps) {
+export default function CategoryShowcase({ categories }: CategoryShowcaseProps) {
   return (
     <section id="categories">
       <div className="flex justify-between items-center mb-6">
@@ -28,9 +26,7 @@ export default function CategoryShowcase({
           </Link>
         </Button>
         <div>
-          <h2 className="text-2xl font-bold mb-2 font-vazirmatn text-right">
-            دسته‌بندی‌های انیمه
-          </h2>
+          <h2 className="text-2xl font-bold mb-2 font-vazirmatn text-right">دسته‌بندی‌های انیمه</h2>
           <p className="text-gray-600 dark:text-gray-400 font-vazirmatn">
             مجسمه‌های لوکس از سری‌های انیمه محبوب خود را کشف کنید
           </p>
@@ -91,5 +87,5 @@ export default function CategoryShowcase({
         </Button>
       </div>
     </section>
-  );
+  )
 }

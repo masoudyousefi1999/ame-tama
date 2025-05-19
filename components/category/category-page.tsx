@@ -1,151 +1,116 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import CategoryHeader from "@/components/category/category-header";
-import CategoryFilters from "@/components/category/category-filters";
-import CategoryProducts from "@/components/category/category-products";
-import { Button } from "@/components/ui/button";
-import { Filter } from "lucide-react";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { getProductsByCategory } from "@/lib/products";
-import type { Category } from "@/lib/categories";
+import { useState, useEffect } from "react"
+import { useRouter, usePathname } from "next/navigation"
+import CategoryHeader from "@/components/category/category-header"
+import CategoryFilters from "@/components/category/category-filters"
+import CategoryProducts from "@/components/category/category-products"
+import { Button } from "@/components/ui/button"
+import { Filter } from "lucide-react"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { getProductsByCategory } from "@/lib/products"
+import type { Category } from "@/lib/categories"
 
 interface CategoryPageProps {
-  category: Category;
-  sort: string;
-  filter?: string;
-  page: number;
+  category: Category
+  sort: string
+  filter?: string
+  page: number
 }
 
-export default function CategoryPage({
-  category,
-  sort,
-  filter,
-  page,
-}: CategoryPageProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [products, setProducts] = useState(getProductsByCategory(category.id));
-  const [filteredProducts, setFilteredProducts] = useState(products);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(
-    filter ? filter.split(",") : []
-  );
-  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+export default function CategoryPage({ category, sort, filter, page }: CategoryPageProps) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const [products, setProducts] = useState(getProductsByCategory(category.id))
+  const [filteredProducts, setFilteredProducts] = useState(products)
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500])
+  const [selectedFilters, setSelectedFilters] = useState<string[]>(filter ? filter.split(",") : [])
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
 
   // تعداد محصولات در هر صفحه
-  const PRODUCTS_PER_PAGE = 9;
+  const PRODUCTS_PER_PAGE = 9
 
   // محاسبه تعداد کل صفحات
-  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE);
+  const totalPages = Math.ceil(filteredProducts.length / PRODUCTS_PER_PAGE)
 
   // محصولات صفحه فعلی
-  const currentPageProducts = filteredProducts.slice(
-    (page - 1) * PRODUCTS_PER_PAGE,
-    page * PRODUCTS_PER_PAGE
-  );
+  const currentPageProducts = filteredProducts.slice((page - 1) * PRODUCTS_PER_PAGE, page * PRODUCTS_PER_PAGE)
 
   // اعمال فیلترها و مرتب‌سازی
   useEffect(() => {
-    let result = [...products];
+    let result = [...products]
 
     // فیلتر بر اساس قیمت
-    result = result.filter(
-      (product) =>
-        product.price >= priceRange[0] && product.price <= priceRange[1]
-    );
+    result = result.filter((product) => product.price >= priceRange[0] && product.price <= priceRange[1])
 
     // فیلترهای انتخاب شده
     if (selectedFilters.length > 0) {
       result = result.filter((product) => {
-        if (selectedFilters.includes("new") && !product.isNew) return false;
-        if (selectedFilters.includes("limited") && !product.isLimited)
-          return false;
-        if (
-          selectedFilters.includes("in-stock") &&
-          product.availability !== "in-stock"
-        )
-          return false;
-        return true;
-      });
+        if (selectedFilters.includes("new") && !product.isNew) return false
+        if (selectedFilters.includes("limited") && !product.isLimited) return false
+        if (selectedFilters.includes("in-stock") && product.availability !== "in-stock") return false
+        return true
+      })
     }
 
     // مرتب‌سازی
     switch (sort) {
       case "newest":
-        result.sort(
-          (a, b) =>
-            new Date(b.releaseDate).getTime() -
-            new Date(a.releaseDate).getTime()
-        );
-        break;
+        result.sort((a, b) => new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime())
+        break
       case "price-asc":
-        result.sort((a, b) => a.price - b.price);
-        break;
+        result.sort((a, b) => a.price - b.price)
+        break
       case "price-desc":
-        result.sort((a, b) => b.price - a.price);
-        break;
+        result.sort((a, b) => b.price - a.price)
+        break
       case "popular":
-        result.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0));
-        break;
+        result.sort((a, b) => (b.reviewCount || 0) - (a.reviewCount || 0))
+        break
     }
 
-    setFilteredProducts(result);
-  }, [products, priceRange, selectedFilters, sort]);
+    setFilteredProducts(result)
+  }, [products, priceRange, selectedFilters, sort])
 
   // تغییر URL با تغییر فیلترها
-  const updateQueryParams = (
-    newSort?: string,
-    newFilters?: string[],
-    newPage?: number
-  ) => {
-    const params = new URLSearchParams();
+  const updateQueryParams = (newSort?: string, newFilters?: string[], newPage?: number) => {
+    const params = new URLSearchParams()
 
-    if (newSort || sort) params.set("sort", newSort || sort);
+    if (newSort || sort) params.set("sort", newSort || sort)
     if (newFilters?.length || selectedFilters.length) {
-      params.set("filter", newFilters?.join(",") || selectedFilters.join(","));
+      params.set("filter", newFilters?.join(",") || selectedFilters.join(","))
     }
-    if (newPage && newPage > 1) params.set("page", newPage.toString());
+    if (newPage && newPage > 1) params.set("page", newPage.toString())
 
-    router.push(`${pathname}?${params.toString()}`);
-  };
+    router.push(`${pathname}?${params.toString()}`)
+  }
 
   // تغییر مرتب‌سازی
   const handleSortChange = (newSort: string) => {
-    updateQueryParams(newSort, selectedFilters, page);
-  };
+    updateQueryParams(newSort, selectedFilters, page)
+  }
 
   // تغییر فیلترها
   const handleFilterChange = (newFilters: string[]) => {
-    setSelectedFilters(newFilters);
-    updateQueryParams(sort, newFilters, 1); // برگشت به صفحه اول با تغییر فیلترها
-  };
+    setSelectedFilters(newFilters)
+    updateQueryParams(sort, newFilters, 1) // برگشت به صفحه اول با تغییر فیلترها
+  }
 
   // تغییر محدوده قیمت
   const handlePriceRangeChange = (range: [number, number]) => {
-    setPriceRange(range);
-  };
+    setPriceRange(range)
+  }
 
   // تغییر صفحه
   const handlePageChange = (newPage: number) => {
-    updateQueryParams(sort, selectedFilters, newPage);
-  };
+    updateQueryParams(sort, selectedFilters, newPage)
+  }
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
       {/* هدر دسته‌بندی */}
-      <CategoryHeader
-        category={category}
-        productCount={filteredProducts.length}
-      />
+      <CategoryHeader category={category} productCount={filteredProducts.length} />
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* فیلترهای دسکتاپ */}
@@ -168,16 +133,9 @@ export default function CategoryPage({
               </span>
 
               {/* دکمه فیلتر موبایل */}
-              <Sheet
-                open={isMobileFiltersOpen}
-                onOpenChange={setIsMobileFiltersOpen}
-              >
+              <Sheet open={isMobileFiltersOpen} onOpenChange={setIsMobileFiltersOpen}>
                 <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="md:hidden rounded-full ml-2 font-vazirmatn"
-                  >
+                  <Button variant="outline" size="sm" className="md:hidden rounded-full ml-2 font-vazirmatn">
                     <Filter className="h-4 w-4 ml-2" />
                     فیلترها
                   </Button>
@@ -293,10 +251,7 @@ export default function CategoryPage({
           </div>
 
           {/* نمایش محصولات */}
-          <CategoryProducts
-            products={currentPageProducts}
-            viewMode={viewMode}
-          />
+          <CategoryProducts products={currentPageProducts} viewMode={viewMode} />
 
           {/* صفحه‌بندی */}
           {totalPages > 1 && (
@@ -339,5 +294,5 @@ export default function CategoryPage({
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { Expand, ChevronLeft, ChevronRight } from "lucide-react"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { ResponsiveImage } from "@/components/ui/responsive-image"
+import { getLowQualityImageUrl } from "@/lib/image-optimization"
 
 interface ProductGalleryProps {
   images: {
@@ -41,12 +42,15 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
     <div className="space-y-4">
       {/* تصویر اصلی */}
       <div className="relative aspect-square bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden group">
-        <Image
-          src={mainImage.url || "/placeholder.svg"}
+        <ResponsiveImage
+          src={mainImage.url}
           alt={mainImage.alt}
           fill
-          className="object-contain p-4"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          loadingStrategy="progressive"
+          lowQualitySrc={getLowQualityImageUrl(mainImage.url)}
+          className="object-contain p-4"
+          priority
         />
 
         {/* دکمه‌های ناوبری */}
@@ -86,12 +90,13 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
           </DialogTrigger>
           <DialogContent className="max-w-4xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm p-1 sm:p-2">
             <div className="relative aspect-square">
-              <Image
-                src={mainImage.url || "/placeholder.svg"}
+              <ResponsiveImage
+                src={mainImage.url}
                 alt={mainImage.alt}
                 fill
-                className="object-contain"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                className="object-contain"
+                priority
               />
             </div>
           </DialogContent>
@@ -111,12 +116,13 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
                 : "ring-1 ring-gray-200 dark:ring-gray-700 opacity-70 hover:opacity-100",
             )}
           >
-            <Image
-              src={image.url || "/placeholder.svg"}
+            <ResponsiveImage
+              src={image.url}
               alt={image.alt}
               fill
-              className="object-cover"
               sizes="(max-width: 768px) 64px, 80px"
+              className="object-cover"
+              loadingStrategy={index < 4 ? "eager" : "lazy"}
             />
           </button>
         ))}

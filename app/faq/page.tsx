@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import Breadcrumb from "@/components/seo/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { FAQCategory } from "@/components/faq/faq-category"
-// import { FAQSearch } from "@/components/faq/faq-search"
 import { faqCategories } from "@/lib/faq-data"
 import { generateCanonicalUrl } from "@/lib/seo"
+import { Breadcrumb } from "@/components/ui/breadcrumb"
 
 export const metadata: Metadata = {
   title: "سوالات متداول | AME-TAMA",
@@ -21,10 +20,9 @@ export default function FAQPage() {
       {/* بردکرامب */}
       <Breadcrumb
         items={[
-          { name: "خانه", path: "/" },
-          { name: "سوالات متداول", path: "/faq" },
+          { label: "سوالات متداول", href: "/faq", isCurrent: true },
         ]}
-        className="mb-6"
+        className="mb-6 mt-6"
       />
 
       {/* هدر صفحه */}
@@ -36,9 +34,7 @@ export default function FAQPage() {
       </div>
 
       {/* جستجوی سوالات */}
-      <div className="max-w-3xl mx-auto mb-12">
-        {/* <FAQSearch onSearch={(query) => console.log(query)} /> */}
-      </div>
+      <div className="max-w-3xl mx-auto mb-12">{/* <FAQSearch onSearch={(query) => console.log(query)} /> */}</div>
 
       {/* فهرست دسته‌بندی‌ها */}
       <div className="max-w-3xl mx-auto mb-12">

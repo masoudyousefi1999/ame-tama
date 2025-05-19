@@ -1,4 +1,4 @@
-import type { Config } from "tailwindcss"
+import type { Config } from "tailwindcss";
 
 const config = {
   darkMode: ["class"],
@@ -53,7 +53,7 @@ const config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Custom colors for AME-TAMA
+        // Custom colors for AME-TAMA with improved contrast
         purple: {
           50: "#f5f3ff",
           100: "#ede9fe",
@@ -93,10 +93,15 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        shimmer: {
+          "0%": { backgroundPosition: "-1000px 0" },
+          "100%": { backgroundPosition: "1000px 0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: "shimmer 2s infinite linear",
       },
       // Add RTL specific utilities
       textAlign: {
@@ -120,10 +125,14 @@ const config = {
         ".space-end": {
           "margin-left": "var(--tw-space-x-reverse)",
         },
-      }
-      addUtilities(newUtilities)
+        ".focus-visible-ring": {
+          "@apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2":
+            {},
+        },
+      };
+      addUtilities(newUtilities);
     },
   ],
-} satisfies Config
+} satisfies Config;
 
-export default config
+export default config;

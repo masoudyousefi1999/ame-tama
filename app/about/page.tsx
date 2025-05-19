@@ -1,10 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import type { Metadata } from "next"
-import Breadcrumb from "@/components/seo/breadcrumb"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
+import { Breadcrumb } from "@/components/ui/breadcrumb"
 
 export const metadata: Metadata = {
   title: "درباره ما | AME-TAMA",
@@ -31,10 +31,9 @@ export default function AboutPage() {
       {/* بردکرامب */}
       <Breadcrumb
         items={[
-          { name: "خانه", path: "/" },
-          { name: "درباره ما", path: "/about" },
+          { label: "درباره ما", href: "/about",  isCurrent: true},
         ]}
-        className="mb-6"
+        className="mb-6 mt-6" 
       />
 
       {/* هدر صفحه */}

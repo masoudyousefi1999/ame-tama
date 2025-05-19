@@ -9,6 +9,7 @@ import { useCart } from "@/context/cart-context"
 import { toast } from "@/components/ui/use-toast"
 import { ToastAction } from "@/components/ui/toast"
 import { useRouter } from "next/navigation"
+import { useWishlist } from "@/context/wishlist-context"
 
 interface ProductInfoProps {
   product: {
@@ -38,6 +39,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const [addedToCart, setAddedToCart] = useState(false)
   const { addItem } = useCart()
   const router = useRouter()
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -214,8 +216,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           )}
         </Button>
 
-        <Button variant="outline" size="icon" className="rounded-full h-12 w-12">
-          <Heart className="h-5 w-5" />
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full h-12 w-12"
+          onClick={() => (isInWishlist(product.id) ? removeFromWishlist(product.id) : addToWishlist(product))}
+        >
+          <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-red-500 text-red-500" : ""}`} />
           <span className="sr-only">افزودن به علاقه‌مندی‌ها</span>
         </Button>
 

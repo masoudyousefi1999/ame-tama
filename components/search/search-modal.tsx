@@ -1,116 +1,102 @@
-"use client";
+"use client"
 
-import type React from "react";
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
-import { Search, Loader2 } from "lucide-react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import { searchProducts, type SearchResult } from "@/lib/search";
-import { DialogTitle } from "@radix-ui/react-dialog";
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import Image from "next/image"
+import Link from "next/link"
+import { Search, Loader2 } from "lucide-react"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
+import { searchProducts, type SearchResult } from "@/lib/search"
+import { DialogTitle } from "@radix-ui/react-dialog"
 
 interface SearchModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  query: string;
-  onQueryChange: (query: string) => void;
+  isOpen: boolean
+  onClose: () => void
+  query: string
+  onQueryChange: (query: string) => void
 }
 
-export default function SearchModal({
-  isOpen,
-  onClose,
-  query,
-  onQueryChange,
-}: SearchModalProps) {
-  const router = useRouter();
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [recentSearches, setRecentSearches] = useState<string[]>([]);
+export default function SearchModal({ isOpen, onClose, query, onQueryChange }: SearchModalProps) {
+  const router = useRouter()
+  const [results, setResults] = useState<SearchResult[]>([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
 
   useEffect(() => {
-    const storedSearches = localStorage.getItem("ame-tama-recent-searches");
+    const storedSearches = localStorage.getItem("ame-tama-recent-searches")
     if (storedSearches) {
       try {
-        setRecentSearches(JSON.parse(storedSearches));
+        setRecentSearches(JSON.parse(storedSearches))
       } catch (error) {
-        console.error("Error parsing recent searches:", error);
+        console.error("Error parsing recent searches:", error)
       }
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (!query) {
-      setResults([]);
-      return;
+      setResults([])
+      return
     }
 
     const timer = setTimeout(() => {
-      setIsLoading(true);
-      const searchResults = searchProducts(query);
-      setResults(searchResults);
-      setIsLoading(false);
-    }, 300);
+      setIsLoading(true)
+      const searchResults = searchProducts(query)
+      setResults(searchResults)
+      setIsLoading(false)
+    }, 300)
 
-    return () => clearTimeout(timer);
-  }, [query, selectedCategory]);
+    return () => clearTimeout(timer)
+  }, [query, selectedCategory])
 
-  const uniqueCategories = Array.from(
-    new Set(results.map((item) => item.category))
-  );
+  const uniqueCategories = Array.from(new Set(results.map((item) => item.category)))
 
   const handleSearch = () => {
-    if (!query.trim()) return;
+    if (!query.trim()) return
 
-    const updatedSearches = [
-      query,
-      ...recentSearches.filter((s) => s !== query),
-    ].slice(0, 5);
-    setRecentSearches(updatedSearches);
-    localStorage.setItem(
-      "ame-tama-recent-searches",
-      JSON.stringify(updatedSearches)
-    );
+    const updatedSearches = [query, ...recentSearches.filter((s) => s !== query)].slice(0, 5)
+    setRecentSearches(updatedSearches)
+    localStorage.setItem("ame-tama-recent-searches", JSON.stringify(updatedSearches))
 
     router.push(
       `/search?q=${encodeURIComponent(query)}${
-        selectedCategory
-          ? `&category=${encodeURIComponent(selectedCategory)}`
-          : ""
-      }`
-    );
-    onClose();
-  };
+        selectedCategory ? `&category=${encodeURIComponent(selectedCategory)}` : ""
+      }`,
+    )
+    onClose()
+  }
 
   const selectRecentSearch = (search: string) => {
-    onQueryChange(search);
-  };
+    onQueryChange(search)
+  }
 
   const clearRecentSearches = () => {
-    setRecentSearches([]);
-    localStorage.removeItem("ame-tama-recent-searches");
-  };
+    setRecentSearches([])
+    localStorage.removeItem("ame-tama-recent-searches")
+  }
 
   const handleCategoryFilter = (category: string) => {
-    setSelectedCategory(selectedCategory === category ? null : category);
-  };
+    setSelectedCategory(selectedCategory === category ? null : category)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSearch();
+      handleSearch()
     }
-  };
+  }
+
+  const handleProductClick = () => {
+    onClose()
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="sm:max-w-xl p-0 gap-0"
-        onKeyDown={handleKeyDown}
-      >
+      <DialogContent className="sm:max-w-xl p-0 gap-0" onKeyDown={handleKeyDown}>
         <DialogTitle className="sr-only">Search Products</DialogTitle>
         {/* 🔍 Search Input */}
         <div className="p-4 border-b border-gray-100 dark:border-gray-800">
@@ -132,14 +118,12 @@ export default function SearchModal({
               {uniqueCategories.map((category) => (
                 <Badge
                   key={category}
-                  variant={
-                    selectedCategory === category ? "default" : "outline"
-                  }
+                  variant={selectedCategory === category ? "default" : "outline"}
                   className={cn(
                     "cursor-pointer font-vazirmatn",
                     selectedCategory === category
                       ? "bg-purple-500 hover:bg-purple-600"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-800"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-800",
                   )}
                   onClick={() => handleCategoryFilter(category)}
                 >
@@ -178,7 +162,7 @@ export default function SearchModal({
                     key={item.id}
                     href={`/product/${item.id}`}
                     className="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                    onClick={onClose}
+                    onClick={handleProductClick}
                   >
                     <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-800 flex-shrink-0">
                       <Image
@@ -190,9 +174,7 @@ export default function SearchModal({
                       />
                     </div>
                     <div className="mr-3 flex-1">
-                      <h4 className="text-sm font-medium font-vazirmatn">
-                        {item.name}
-                      </h4>
+                      <h4 className="text-sm font-medium font-vazirmatn">{item.name}</h4>
                       <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
                         {item.price.toLocaleString("fa-IR")} تومان
                       </p>
@@ -213,20 +195,15 @@ export default function SearchModal({
           ) : query ? (
             <div className="text-center py-8">
               <Search className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-              <h3 className="text-lg font-medium mb-2 font-vazirmatn">
-                نتیجه‌ای یافت نشد
-              </h3>
+              <h3 className="text-lg font-medium mb-2 font-vazirmatn">نتیجه‌ای یافت نشد</h3>
               <p className="text-gray-500 dark:text-gray-400 font-vazirmatn">
-                هیچ محصولی با عبارت "{query}" یافت نشد. لطفاً عبارت دیگری را
-                جستجو کنید.
+                هیچ محصولی با عبارت "{query}" یافت نشد. لطفاً عبارت دیگری را جستجو کنید.
               </p>
             </div>
           ) : recentSearches.length > 0 ? (
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 font-vazirmatn">
-                  جستجوهای اخیر
-                </h3>
+                <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 font-vazirmatn">جستجوهای اخیر</h3>
                 <Button
                   variant="link"
                   size="sm"
@@ -253,9 +230,7 @@ export default function SearchModal({
           ) : (
             <div className="text-center py-8">
               <Search className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
-              <h3 className="text-lg font-medium mb-2 font-vazirmatn">
-                جستجو در محصولات
-              </h3>
+              <h3 className="text-lg font-medium mb-2 font-vazirmatn">جستجو در محصولات</h3>
               <p className="text-gray-500 dark:text-gray-400 font-vazirmatn">
                 نام محصول، شخصیت یا سری انیمه مورد نظر خود را جستجو کنید.
               </p>
@@ -277,5 +252,5 @@ export default function SearchModal({
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

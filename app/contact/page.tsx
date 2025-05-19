@@ -1,10 +1,10 @@
 import Link from "next/link"
 import type { Metadata } from "next"
-import Breadcrumb from "@/components/seo/breadcrumb"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { ContactForm } from "@/components/contact-form"
+import { Breadcrumb } from "@/components/ui/breadcrumb"
 
 export const metadata: Metadata = {
   title: "تماس با ما | AME-TAMA",
@@ -30,10 +30,9 @@ export default function ContactPage() {
       {/* بردکرامب */}
       <Breadcrumb
         items={[
-          { name: "خانه", path: "/" },
-          { name: "تماس با ما", path: "/contact" },
+          { label: "تماس با ما", href: "/contact", isCurrent: true },
         ]}
-        className="mb-6"
+        className="mb-6 mt-6"
       />
 
       {/* هدر صفحه */}

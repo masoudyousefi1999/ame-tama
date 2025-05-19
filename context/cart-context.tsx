@@ -23,6 +23,7 @@ interface CartContextType {
   discount: number
   total: number
   applyDiscount: (code: string) => boolean
+  recentlyAdded: number | null
 }
 
 // ایجاد context با مقدار پیش‌فرض
@@ -37,6 +38,7 @@ const CartContext = createContext<CartContextType>({
   discount: 0,
   total: 0,
   applyDiscount: () => false,
+  recentlyAdded: null,
 })
 
 // کدهای تخفیف معتبر (در یک پروژه واقعی، این داده‌ها از سرور دریافت می‌شوند)
@@ -51,6 +53,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [discount, setDiscount] = useState<number>(0)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [recentlyAdded, setRecentlyAdded] = useState<number | null>(null)
 
   // بارگذاری سبد خرید از localStorage در هنگام اولین رندر
   useEffect(() => {
@@ -85,6 +88,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
       localStorage.setItem("ame-tama-discount", JSON.stringify(discount))
     }
   }, [items, discount, isInitialized])
+
+  // Clear recently added highlight after 2 seconds
+  useEffect(() => {
+    if (recentlyAdded !== null) {
+      const timer = setTimeout(() => {
+        setRecentlyAdded(null)
+      }, 2000)
+      return () => clearTimeout(timer)
+    }
+  }, [recentlyAdded])
 
   // محاسبه تعداد کل محصولات در سبد خرید
   const itemCount = items.reduce((total, item) => total + item.quantity, 0)
@@ -123,6 +136,9 @@ export function CartProvider({ children }: { children: ReactNode }) {
         ]
       }
     })
+
+    // Set recently added item for highlighting
+    setRecentlyAdded(product.id)
   }
 
   // به‌روزرسانی تعداد محصول در سبد خرید
@@ -171,6 +187,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         discount,
         total,
         applyDiscount,
+        recentlyAdded,
       }}
     >
       {children}

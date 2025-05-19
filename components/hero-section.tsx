@@ -1,6 +1,6 @@
 "use client";
+import heroImage from "@/public/naruto-luffy-clap.jpg";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -20,19 +20,19 @@ export default function HeroSection() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/naruto-luffy-clap.jpg"
+          src={heroImage.src}
           alt="مجسمه‌های لوکس انیمه"
           fill
           priority
-          sizes="100vw"
-          className="object-cover object-center"
+          sizes="100dvw"
+          className="w-full h-full object-cover object-center"
           placeholder="blur"
-          blurDataURL="/placeholder.svg?height=400&width=500" // optional
+          blurDataURL="/placeholder.svg?height=400&width=500"
         />
       </div>
 
       {/* Dark Overlay */}
-      <div className="absolute inset-0 bg-black/60 dark:bg-black/70 z-10" />
+      <div className="absolute inset-0 bg-black/20 dark:bg-black/40 z-10" />
 
       {/* Text Content */}
       <div className="container mx-auto px-4 md:px-6 relative z-20 flex items-center justify-center h-full">
@@ -83,7 +83,7 @@ export default function HeroSection() {
       </div>
 
       {/* Bottom Gradient Fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-background to-transparent z-20" />
+      <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-gray-900/80 to-transparent z-20" />
 
       {/* Scroll Button */}
       <motion.button

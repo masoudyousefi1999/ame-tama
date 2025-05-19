@@ -11,6 +11,8 @@ import RelatedProducts from "@/components/product/related-products";
 import { getProductById, getRelatedProducts } from "@/lib/products";
 import MetaTags from "@/components/seo/meta-tags";
 import ProductSchema from "@/components/seo/product-schema";
+import ProductBreadcrumb from "@/components/product/product-breadcrumb";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export default function ProductPage() {
   const params = useParams();
@@ -19,7 +21,7 @@ export default function ProductPage() {
   const [relatedProducts, setRelatedProducts] = useState([]);
 
   // Parse productId safely
-  const productId = params?.id ? Number.parseInt(params.id) : NaN;
+  const productId = params?.id ? Number.parseInt(params.id as any) : Number.NaN;
 
   useEffect(() => {
     if (isNaN(productId)) {
@@ -62,7 +64,17 @@ export default function ProductPage() {
       />
       <ProductSchema product={product} />
       <div className="container mx-auto px-4 py-8 mt-20" dir="rtl">
-        <div className="mb-6 flex justify-end">
+        <Breadcrumb
+          items={[
+            {
+              label: product.category,
+              href: `/category/${product.category}`,
+            },
+            { label: product.name, href: `/product/${product.id}`, isCurrent: true },
+          ]}
+          className="mb-2 mt-2"
+        />
+        <div className="mb-6 flex justify-between items-center">
           <Button
             variant="ghost"
             onClick={() => window.history.back()}
@@ -72,6 +84,8 @@ export default function ProductPage() {
             <ArrowLeft className="ml-2 h-4 w-4" />
           </Button>
         </div>
+
+        {/* Back to Cart Button Removed */}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
           <ProductGallery images={product.images} />

@@ -35,11 +35,7 @@ export default function ShopPage() {
       <ShopHeader />
 
       {/* تب‌های فروشگاه */}
-      <Tabs
-        defaultValue="all"
-        className="mt-12"
-        onValueChange={setActiveTab}
-      >
+      <Tabs defaultValue="all" className="mt-12" onValueChange={setActiveTab}>
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
           <TabsTrigger value="categories" className="font-vazirmatn">
             دسته‌بندی‌ها
