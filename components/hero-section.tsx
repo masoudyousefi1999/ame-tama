@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useEffect } from "react";
-import { use100vh } from "react-div-100vh";
 
 export default function HeroSection() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  const height = use100vh();
 
   const scrollToProducts = () => {
     const section = document.getElementById("featured-products");
@@ -22,10 +20,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section
-    style={{ height: height ? `${height}px` : "100vh" }}
-    className="relative min-h-screen flex items-center justify-center overflow-hidden"
-    >
+    <section className="relative h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
