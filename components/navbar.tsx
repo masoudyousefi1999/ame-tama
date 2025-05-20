@@ -36,10 +36,19 @@ export default function Navbar() {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
-  const categories = getAllCategories();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth();
+
+  const [categories, setCategories] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const result = await getAllCategories(); // make sure it returns a promise
+      setCategories(result);
+    };
+    fetchCategories();
+  }, []);
 
   useEffect(() => setMounted(true), []);
 
@@ -85,38 +94,21 @@ export default function Navbar() {
     setIsOpen(false);
   };
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => {
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
+    const scrollBarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
 
-  useEffect(() => {
-    const setNoScroll = () => {
-      const scrollBarWidth =
-        window.innerWidth - document.documentElement.clientWidth;
+    if (isOpen) {
       document.body.style.overflow = "hidden";
       document.body.style.paddingRight = `${scrollBarWidth}px`;
-    };
-    const resetScroll = () => {
+    } else {
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
-    };
-
-    if (isOpen) {
-      setNoScroll();
-    } else {
-      resetScroll();
     }
 
     return () => {
-      resetScroll();
+      document.body.style.overflow = "";
+      document.body.style.paddingRight = "";
     };
   }, [isOpen]);
 

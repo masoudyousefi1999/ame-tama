@@ -5,13 +5,8 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useEffect } from "react";
 
 export default function HeroSection() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
-
   const scrollToProducts = () => {
     const section = document.getElementById("featured-products");
     if (section) {
@@ -20,7 +15,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section className="relative h-screen overflow-hidden flex items-center justify-center">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
