@@ -11,7 +11,6 @@ import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
 import { SkipLink } from "@/components/ui/skip-link";
 import ViewportHeightFix from "@/components/viewport-height-fix";
-import PreventPullRefresh from "@/components/prevent-pull-refresh";
 import SplashScreen from "@/components/splash-screen";
 import PWAInstallPrompt from "@/components/pwa-install-prompt";
 import PageTransition from "@/components/page-transition";
@@ -88,7 +87,6 @@ export default function RootLayout({
           <SplashScreen>
             <ViewportHeightFix />
             <ScrollToTop />
-            <PreventPullRefresh />
             <AuthProvider>
               <CartProvider>
                 <WishlistProvider>
