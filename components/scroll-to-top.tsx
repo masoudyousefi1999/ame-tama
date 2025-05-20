@@ -1,13 +1,13 @@
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 /**
  * ScrollToTop component that resets scroll position when navigating between pages
  * This component should be added to the root layout to ensure it's present on all pages
  */
-export default function ScrollToTop() {
+function ScrollToTop() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -26,4 +26,12 @@ export default function ScrollToTop() {
 
   // This component doesn't render anything
   return null;
+}
+
+export default function ScrollToTopWrapper() {
+  return (
+    <Suspense fallback={null}>
+      <ScrollToTop />
+    </Suspense>
+  );
 }

@@ -10,12 +10,12 @@ import { AuthProvider } from "@/context/auth-context";
 import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
 import { SkipLink } from "@/components/ui/skip-link";
-import ScrollToTop from "@/components/scroll-to-top";
 import ViewportHeightFix from "@/components/viewport-height-fix";
 import PreventPullRefresh from "@/components/prevent-pull-refresh";
 import SplashScreen from "@/components/splash-screen";
 import PWAInstallPrompt from "@/components/pwa-install-prompt";
 import PageTransition from "@/components/page-transition";
+import dynamic from "next/dynamic";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -43,6 +43,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const ScrollToTop = dynamic(() => import("@/components/scroll-to-top"), {
+    ssr: true,
+  });
+
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning className="h-full">
       <head>
