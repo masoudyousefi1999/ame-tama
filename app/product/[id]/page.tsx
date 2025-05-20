@@ -11,7 +11,6 @@ import RelatedProducts from "@/components/product/related-products";
 import { getProductById, getRelatedProducts } from "@/lib/products";
 import MetaTags from "@/components/seo/meta-tags";
 import ProductSchema from "@/components/seo/product-schema";
-import ProductBreadcrumb from "@/components/product/product-breadcrumb";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export default function ProductPage() {
@@ -70,7 +69,11 @@ export default function ProductPage() {
               label: product.category,
               href: `/category/${product.category}`,
             },
-            { label: product.name, href: `/product/${product.id}`, isCurrent: true },
+            {
+              label: product.name,
+              href: `/product/${product.id}`,
+              isCurrent: true,
+            },
           ]}
           className="mb-2 mt-2"
         />

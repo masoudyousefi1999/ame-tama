@@ -49,11 +49,11 @@ export function Breadcrumb({
     <nav
       aria-label="breadcrumb"
       className={cn(
-        "w-full flex items-center min-h-12 text-sm bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-1.5 sm:px-6 sm:py-3 text-gray-500 dark:text-gray-400",
+        "w-full overflow-x-auto whitespace-nowrap text-[11px] sm:text-sm bg-gray-100 dark:bg-gray-800 rounded-lg px-2 sm:px-4 py-1 sm:py-2 text-gray-500 dark:text-gray-400",
         className
       )}
     >
-      <ol className="flex items-center justify-center sm:justify-start flex-wrap gap-y-2 text-center w-full">
+      <ol className="flex items-center gap-x-1 sm:gap-x-2 w-full">
         {showHome && (
           <li className="flex items-center justify-center">
             <Link
@@ -61,7 +61,7 @@ export function Breadcrumb({
               className="flex items-center px-2 py-1 rounded-md hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-vazirmatn text-xs sm:text-sm"
             >
               <Home className="h-4 w-4 sm:h-5 sm:w-5 ml-1" />
-              <span>{homeLabel}</span>
+              <span className="truncate max-w-[100px]">{homeLabel}</span>
             </Link>
             {items && items.length > 0 && (
               <span className="mx-2 sm:mx-3">{separator}</span>
@@ -89,10 +89,7 @@ export function Breadcrumb({
                     {item.href ? (
                       <Link
                         href={item.href}
-                        className={cn(
-                          "px-2 py-1 rounded-md hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-vazirmatn text-xs sm:text-sm inline-block text-center",
-                          className
-                        )}
+                        className="px-1 sm:px-2 py-0.5 sm:py-1 rounded-md hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-vazirmatn text-[11px] sm:text-sm flex justify-center items-center"
                       >
                         {item.label}
                       </Link>

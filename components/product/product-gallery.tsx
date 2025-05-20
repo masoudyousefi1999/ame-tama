@@ -1,42 +1,41 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Expand, ChevronLeft, ChevronRight } from "lucide-react"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
-import { ResponsiveImage } from "@/components/ui/responsive-image"
-import { getLowQualityImageUrl } from "@/lib/image-optimization"
+import { useState } from "react";
+import { Expand, ChevronLeft, ChevronRight } from "lucide-react";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { ResponsiveImage } from "@/components/ui/responsive-image";
+import { getLowQualityImageUrl } from "@/lib/image-optimization";
 
 interface ProductGalleryProps {
   images: {
-    id: number
-    url: string
-    alt: string
-  }[]
+    id: number;
+    url: string;
+    alt: string;
+  }[];
 }
 
 export default function ProductGallery({ images }: ProductGalleryProps) {
-  const [mainImage, setMainImage] = useState(images[0])
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [lightboxOpen, setLightboxOpen] = useState(false)
-
+  const [mainImage, setMainImage] = useState(images[0]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const handleThumbnailClick = (image: typeof mainImage, index: number) => {
-    setMainImage(image)
-    setCurrentIndex(index)
-  }
+    setMainImage(image);
+    setCurrentIndex(index);
+  };
 
   const handlePrevImage = () => {
-    const newIndex = (currentIndex - 1 + images.length) % images.length
-    setMainImage(images[newIndex])
-    setCurrentIndex(newIndex)
-  }
+    const newIndex = (currentIndex - 1 + images.length) % images.length;
+    setMainImage(images[newIndex]);
+    setCurrentIndex(newIndex);
+  };
 
   const handleNextImage = () => {
-    const newIndex = (currentIndex + 1) % images.length
-    setMainImage(images[newIndex])
-    setCurrentIndex(newIndex)
-  }
+    const newIndex = (currentIndex + 1) % images.length;
+    setMainImage(images[newIndex]);
+    setCurrentIndex(newIndex);
+  };
 
   return (
     <div className="space-y-4">
@@ -48,7 +47,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           loadingStrategy="progressive"
-          lowQualitySrc={getLowQualityImageUrl(mainImage.url)}
+          lowQualitySrc={mainImage.url}
           className="object-contain p-4"
           priority
         />
@@ -113,20 +112,22 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
               "relative w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all duration-200",
               mainImage.id === image.id
                 ? "ring-2 ring-purple-500 dark:ring-purple-400"
-                : "ring-1 ring-gray-200 dark:ring-gray-700 opacity-70 hover:opacity-100",
+                : "ring-1 ring-gray-200 dark:ring-gray-700 opacity-70 hover:opacity-100"
             )}
           >
             <ResponsiveImage
               src={image.url}
               alt={image.alt}
-              fill
+              fill={false}
               sizes="(max-width: 768px) 64px, 80px"
               className="object-cover"
+              width={100}
+              height={100}
               loadingStrategy={index < 4 ? "eager" : "lazy"}
             />
           </button>
         ))}
       </div>
     </div>
-  )
+  );
 }

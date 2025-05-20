@@ -16,7 +16,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -24,7 +24,6 @@ export default function HeroSection() {
           alt="مجسمه‌های لوکس انیمه"
           fill
           priority
-          // sizes="100dvw"
           className="w-full h-full object-cover object-center"
           placeholder="blur"
           blurDataURL="/placeholder.svg?height=400&width=500"
