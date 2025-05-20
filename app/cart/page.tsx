@@ -1,17 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { Trash2, ShoppingBag, ArrowLeft, RefreshCw, ExternalLink, ChevronUp, ChevronDown } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { useCart } from "@/context/cart-context"
-import { toast } from "@/components/ui/use-toast"
-import { motion, AnimatePresence } from "framer-motion"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { MobileCartItem } from "@/components/cart/mobile-cart-item"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import {
+  Trash2,
+  ShoppingBag,
+  ArrowLeft,
+  RefreshCw,
+  ExternalLink,
+  ChevronUp,
+  ChevronDown,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useCart } from "@/context/cart-context";
+import { toast } from "@/components/ui/use-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { MobileCartItem } from "@/components/cart/mobile-cart-item";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -19,33 +27,42 @@ import {
   BreadcrumbLink,
   BreadcrumbSeparator,
   BreadcrumbCurrent,
-} from "@/components/ui/breadcrumb"
-import { LoadingSpinner } from "@/components/ui/loading-spinner"
+} from "@/components/ui/breadcrumb";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function CartPage() {
-  const router = useRouter()
-  const isMobile = useIsMobile()
-  const { items, updateQuantity, removeItem, clearCart, subtotal, discount, total, applyDiscount } = useCart()
-  const [discountCode, setDiscountCode] = useState("")
-  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false)
-  const [isUpdating, setIsUpdating] = useState(false)
-  const [showSummary, setShowSummary] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const router = useRouter();
+  const isMobile = useIsMobile();
+  const {
+    items,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    subtotal,
+    discount,
+    total,
+    applyDiscount,
+  } = useCart();
+  const [discountCode, setDiscountCode] = useState("");
+  const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Simulate loading state
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [])
+      setIsLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Toggle summary visibility on mobile
   useEffect(() => {
     if (!isMobile) {
-      setShowSummary(true)
+      setShowSummary(true);
     }
-  }, [isMobile])
+  }, [isMobile]);
 
   // اعمال کد تخفیف
   const handleApplyDiscount = () => {
@@ -54,49 +71,49 @@ export default function CartPage() {
         title: "خطا",
         description: "لطفاً کد تخفیف را وارد کنید.",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsApplyingDiscount(true)
+    setIsApplyingDiscount(true);
 
     // شبیه‌سازی تأخیر شبکه
     setTimeout(() => {
-      const success = applyDiscount(discountCode)
+      const success = applyDiscount(discountCode);
 
       if (success) {
         toast({
           title: "کد تخفیف اعمال شد",
           description: `کد تخفیف ${discountCode} با موفقیت اعمال شد.`,
-        })
-        setDiscountCode("")
+        });
+        setDiscountCode("");
       } else {
         toast({
           title: "خطا",
           description: "کد تخفیف نامعتبر است.",
           variant: "destructive",
-        })
+        });
       }
 
-      setIsApplyingDiscount(false)
-    }, 1000)
-  }
+      setIsApplyingDiscount(false);
+    }, 1000);
+  };
 
   const handleQuantityChange = async (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return
-    setIsUpdating(true)
+    if (newQuantity < 1) return;
+    setIsUpdating(true);
     // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 300))
-    updateQuantity(id, newQuantity)
-    setIsUpdating(false)
-  }
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    updateQuantity(id, newQuantity);
+    setIsUpdating(false);
+  };
 
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-16 mt-20 flex items-center justify-center min-h-[50vh]">
         <LoadingSpinner size="lg" />
       </div>
-    )
+    );
   }
 
   // اگر سبد خرید خالی است
@@ -105,9 +122,12 @@ export default function CartPage() {
       <div className="container mx-auto px-4 py-16 mt-20" dir="rtl">
         <div className="max-w-2xl mx-auto text-center py-16">
           <ShoppingBag className="h-20 w-20 mx-auto text-gray-300 dark:text-gray-600 mb-6" />
-          <h1 className="text-2xl font-bold mb-4 font-vazirmatn">سبد خرید شما خالی است</h1>
+          <h1 className="text-2xl font-bold mb-4 font-vazirmatn">
+            سبد خرید شما خالی است
+          </h1>
           <p className="text-gray-600 dark:text-gray-400 mb-8 font-vazirmatn">
-            محصولی در سبد خرید شما وجود ندارد. برای مشاهده محصولات به فروشگاه بروید.
+            محصولی در سبد خرید شما وجود ندارد. برای مشاهده محصولات به فروشگاه
+            بروید.
           </p>
           <Button
             className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
@@ -118,23 +138,15 @@ export default function CartPage() {
           </Button>
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20 pb-24 md:pb-8" dir="rtl">
       <div className="mb-6">
-        <Breadcrumb>
-          <BreadcrumbList>
-            <BreadcrumbItem>
-              <BreadcrumbLink href="/">خانه</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbCurrent>سبد خرید</BreadcrumbCurrent>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <Breadcrumb
+          items={[{ label: "سبد خرید", isCurrent: true, href: "/cart" }]}
+        />
       </div>
 
       <h1 className="text-2xl font-bold mb-8 font-vazirmatn">سبد خرید</h1>
@@ -145,7 +157,9 @@ export default function CartPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden">
             <div className="p-4 md:p-6 border-b border-gray-100 dark:border-gray-700">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold font-vazirmatn">محصولات ({items.length})</h2>
+                <h2 className="text-lg font-semibold font-vazirmatn">
+                  محصولات ({items.length})
+                </h2>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -210,7 +224,9 @@ export default function CartPage() {
                                 href={`/product/${item.id}`}
                                 className="mt-1 inline-flex items-center text-xs text-purple-600 hover:text-purple-800 transition-colors"
                               >
-                                <span className="font-vazirmatn">جزییات محصول</span>
+                                <span className="font-vazirmatn">
+                                  جزییات محصول
+                                </span>
                                 <ExternalLink className="h-3 w-3 mr-1" />
                               </Link>
                             </div>
@@ -218,24 +234,31 @@ export default function CartPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900 dark:text-white font-vazirmatn">
-                            {new Intl.NumberFormat("fa-IR").format(item.price)} تومان
+                            {new Intl.NumberFormat("fa-IR").format(item.price)}{" "}
+                            تومان
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-full w-24">
                             <button
                               className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                              onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                              onClick={() =>
+                                handleQuantityChange(item.id, item.quantity - 1)
+                              }
                               disabled={isUpdating}
                             >
                               -
                             </button>
                             <span className="flex-1 text-center text-sm font-vazirmatn">
-                              {new Intl.NumberFormat("fa-IR").format(item.quantity)}
+                              {new Intl.NumberFormat("fa-IR").format(
+                                item.quantity
+                              )}
                             </span>
                             <button
                               className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                              onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                              onClick={() =>
+                                handleQuantityChange(item.id, item.quantity + 1)
+                              }
                               disabled={isUpdating}
                             >
                               +
@@ -244,7 +267,10 @@ export default function CartPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900 dark:text-white font-vazirmatn">
-                            {new Intl.NumberFormat("fa-IR").format(item.price * item.quantity)} تومان
+                            {new Intl.NumberFormat("fa-IR").format(
+                              item.price * item.quantity
+                            )}{" "}
+                            تومان
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -301,7 +327,11 @@ export default function CartPage() {
             className="w-full flex justify-between items-center rounded-lg font-vazirmatn"
           >
             <span>خلاصه سفارش</span>
-            {showSummary ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {showSummary ? (
+              <ChevronUp className="h-4 w-4" />
+            ) : (
+              <ChevronDown className="h-4 w-4" />
+            )}
           </Button>
         </div>
 
@@ -315,19 +345,28 @@ export default function CartPage() {
               className="lg:col-span-1 overflow-hidden"
             >
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 lg:sticky lg:top-24">
-                <h2 className="text-lg font-semibold mb-4 font-vazirmatn">خلاصه سفارش</h2>
+                <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
+                  خلاصه سفارش
+                </h2>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
-                    <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">مجموع قیمت محصولات:</span>
-                    <span className="font-medium font-vazirmatn">{subtotal.toLocaleString("fa-IR")} تومان</span>
+                    <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+                      مجموع قیمت محصولات:
+                    </span>
+                    <span className="font-medium font-vazirmatn">
+                      {subtotal.toLocaleString("fa-IR")} تومان
+                    </span>
                   </div>
 
                   {discount > 0 && (
                     <div className="flex justify-between text-green-600 dark:text-green-400">
-                      <span className="font-vazirmatn">تخفیف ({discount}%):</span>
+                      <span className="font-vazirmatn">
+                        تخفیف ({discount}%):
+                      </span>
                       <span className="font-medium font-vazirmatn">
-                        {((subtotal * discount) / 100).toLocaleString("fa-IR")} تومان
+                        {((subtotal * discount) / 100).toLocaleString("fa-IR")}{" "}
+                        تومان
                       </span>
                     </div>
                   )}
@@ -335,14 +374,19 @@ export default function CartPage() {
                   <div className="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
                     <div className="flex justify-between font-semibold">
                       <span className="font-vazirmatn">مبلغ قابل پرداخت:</span>
-                      <span className="font-vazirmatn">{total.toLocaleString("fa-IR")} تومان</span>
+                      <span className="font-vazirmatn">
+                        {total.toLocaleString("fa-IR")} تومان
+                      </span>
                     </div>
                   </div>
                 </div>
 
                 {/* کد تخفیف */}
                 <div className="mb-6">
-                  <label htmlFor="discount-code" className="block text-sm font-medium mb-2 font-vazirmatn">
+                  <label
+                    htmlFor="discount-code"
+                    className="block text-sm font-medium mb-2 font-vazirmatn"
+                  >
                     کد تخفیف:
                   </label>
                   <div className="flex gap-x-2 gap-x-reverse">
@@ -360,7 +404,11 @@ export default function CartPage() {
                       onClick={handleApplyDiscount}
                       disabled={isApplyingDiscount}
                     >
-                      {isApplyingDiscount ? <RefreshCw className="h-4 w-4 animate-spin" /> : "اعمال"}
+                      {isApplyingDiscount ? (
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                      ) : (
+                        "اعمال"
+                      )}
                     </Button>
                   </div>
                   <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 font-vazirmatn">
@@ -388,7 +436,9 @@ export default function CartPage() {
           >
             <div className="flex justify-between items-center mb-2">
               <span className="text-sm font-vazirmatn">مجموع:</span>
-              <span className="font-bold font-vazirmatn">{total.toLocaleString("fa-IR")} تومان</span>
+              <span className="font-bold font-vazirmatn">
+                {total.toLocaleString("fa-IR")} تومان
+              </span>
             </div>
             <Button
               className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
@@ -400,5 +450,5 @@ export default function CartPage() {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -1,3 +1,46 @@
+/* Add these rules at the top of your globals.css file, before @tailwind directives */
+
+/* Reset box sizing and remove default margins/padding */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Ensure html and body take full height */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal overflow */
+  position: relative; /* Create stacking context */
+  overscroll-behavior-y: none; /* Prevent overscroll/bounce effects */
+}
+
+/* Fix iOS Safari 100vh issue with CSS variables */
+:root {
+  --vh: 1vh;
+}
+
+/* iOS-specific overscroll prevention */
+@supports (-webkit-touch-callout: none) {
+  body {
+    /* Prevent momentum scrolling on iOS */
+    -webkit-overflow-scrolling: auto;
+  }
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

@@ -1,54 +1,119 @@
-import type React from "react"
-import "@/app/globals.css"
-import { Vazirmatn } from "next/font/google"
-import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/toaster"
-import Navbar from "@/components/navbar"
-import Footer from "@/components/footer"
-import { CartProvider } from "@/context/cart-context"
-import { AuthProvider } from "@/context/auth-context"
-import { WishlistProvider } from "@/context/wishlist-context"
-import { ImageProvider } from "@/context/image-context"
-import { SkipLink } from "@/components/ui/skip-link"
+import type React from "react";
+import "@/app/globals.css";
+import { Vazirmatn } from "next/font/google";
+import { ThemeProvider } from "@/components/theme-provider";
+import { Toaster } from "@/components/ui/toaster";
+import Navbar from "@/components/navbar";
+import Footer from "@/components/footer";
+import { CartProvider } from "@/context/cart-context";
+import { AuthProvider } from "@/context/auth-context";
+import { WishlistProvider } from "@/context/wishlist-context";
+import { ImageProvider } from "@/context/image-context";
+import { SkipLink } from "@/components/ui/skip-link";
+import ScrollToTop from "@/components/scroll-to-top";
+import ViewportHeightFix from "@/components/viewport-height-fix";
+import PreventPullRefresh from "@/components/prevent-pull-refresh";
+import SplashScreen from "@/components/splash-screen";
+import PWAInstallPrompt from "@/components/pwa-install-prompt";
+import PageTransition from "@/components/page-transition";
+import { Suspense } from "react";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
   variable: "--font-vazirmatn",
-})
+});
 
 export const metadata = {
   title: "AME-TAMA | مجسمه‌های انیمه لوکس",
   description:
     "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
   generator: "v0.dev",
-}
+  manifest: "/manifest.json",
+  themeColor: "#ffffff",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "AME-TAMA",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+    userScalable: false,
+  },
+};
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
-      <body className={vazirmatn.variable}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <AuthProvider>
-            <CartProvider>
-              <WishlistProvider>
-                <ImageProvider>
-                  <SkipLink href="#main-content" />
-                  <Navbar />
-                  <main id="main-content" className="min-h-screen">
-                    {children}
-                  </main>
-                  <Footer />
-                  <Toaster />
-                </ImageProvider>
-              </WishlistProvider>
-            </CartProvider>
-          </AuthProvider>
+    <html lang="fa-IR" dir="rtl" suppressHydrationWarning className="h-full">
+      <head>
+        <link
+          rel="apple-touch-icon"
+          sizes="180x180"
+          href="/icons/apple-touch-icon.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="/icons/favicon-32x32.png"
+        />
+        <link
+          rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="/icons/favicon-16x16.png"
+        />
+        <link
+          rel="mask-icon"
+          href="/icons/safari-pinned-tab.svg"
+          color="#5bbad5"
+        />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+      </head>
+      <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SplashScreen>
+            <ViewportHeightFix />
+            <Suspense fallback={null}>
+              <ScrollToTop />
+            </Suspense>
+            <PreventPullRefresh />
+            <AuthProvider>
+              <CartProvider>
+                <WishlistProvider>
+                  <ImageProvider>
+                    <SkipLink href="#main-content" />
+                    <Navbar />
+                    <PageTransition>
+                      <main id="main-content" className="min-h-screen">
+                        {children}
+                      </main>
+                    </PageTransition>
+                    <Footer />
+                    <Toaster />
+                    <PWAInstallPrompt />
+                  </ImageProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </AuthProvider>
+          </SplashScreen>
         </ThemeProvider>
       </body>
     </html>
-  )
+  );
 }
