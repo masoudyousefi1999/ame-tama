@@ -16,7 +16,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative min-h-[100svh] h-[100svh] flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pb-[env(safe-area-inset-bottom)]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -87,11 +87,10 @@ export default function HeroSection() {
       {/* Scroll Button */}
       <motion.button
         onClick={scrollToProducts}
-        dir="rtl"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="absolute bottom-4 sm:bottom-6 left-1/2 transform -translate-x-1/2 z-30 flex items-center justify-center"
+        className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-30 flex items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
