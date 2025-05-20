@@ -53,28 +53,30 @@ export default function RootLayout({
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/icons/apple-touch-icon.png"
+          href="/icons/photo_2025-05-20_19-04-16.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/icons/favicon-32x32.png"
+          href="/icons/photo_2025-05-20_19-04-16.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/icons/favicon-16x16.png"
+          href="/icons/photo_2025-05-20_19-04-16.png"
         />
         <link
           rel="mask-icon"
-          href="/icons/safari-pinned-tab.svg"
+          href="/icons/photo_2025-05-20_19-04-16.png"
           color="#5bbad5"
         />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
         <ThemeProvider

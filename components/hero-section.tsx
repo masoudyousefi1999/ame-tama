@@ -1,27 +1,21 @@
-"use client"
+"use client";
 // import heroImage from "@/public/naruto-luffy-clap.jpg";
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function HeroSection() {
   const scrollToProducts = () => {
-    const section = document.getElementById("featured-products")
+    const section = document.getElementById("featured-products");
     if (section) {
-      section.scrollIntoView({ behavior: "smooth" })
+      section.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
   return (
-    <section
-      className="relative w-full flex items-center justify-center overflow-hidden"
-      style={{
-        height: "calc(var(--vh, 1vh) * 100)",
-        minHeight: "calc(var(--vh, 1vh) * 100)",
-      }}
-    >
+    <section className="relative w-full h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -40,13 +34,17 @@ export default function HeroSection() {
 
       {/* Text Content */}
       <div className="container mx-auto px-4 md:px-6 relative z-20 flex items-center justify-center h-full">
-        <div className="max-w-3xl mx-auto text-center px-4 space-y-4 md:space-y-6">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
             <h1
               className={`
-                text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold
+                text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6
                 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500
-                drop-shadow-lg font-vazirmatn px-2
+                drop-shadow-lg font-vazirmatn
               `}
             >
               مجسمه‌های لوکس انیمه برای کلکسیونرهای مشتاق
@@ -58,8 +56,9 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-xs sm:text-sm md:text-base text-white drop-shadow font-vazirmatn leading-relaxed">
-              مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر و اشتیاق در هر جزئیات ظریف به هم می‌رسند.
+            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white drop-shadow font-vazirmatn">
+              مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر
+              و اشتیاق در هر جزئیات ظریف به هم می‌رسند.
             </p>
           </motion.div>
 
@@ -71,10 +70,10 @@ export default function HeroSection() {
             <Link href="/shop">
               <Button
                 size="lg"
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn text-xs sm:text-sm"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn"
               >
                 مشاهده مجسمه‌های لوکس
-                <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
               </Button>
             </Link>
           </motion.div>
@@ -99,9 +98,14 @@ export default function HeroSection() {
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M19 9l-7 7-7-7"
+          />
         </svg>
       </motion.button>
     </section>
-  )
+  );
 }
