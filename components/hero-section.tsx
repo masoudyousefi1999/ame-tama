@@ -5,8 +5,15 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useEffect } from "react";
+import { use100vh } from "react-div-100vh";
 
 export default function HeroSection() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const height = use100vh();
+
   const scrollToProducts = () => {
     const section = document.getElementById("featured-products");
     if (section) {
@@ -15,7 +22,10 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section
+    style={{ height: height ? `${height}px` : "100vh" }}
+    className="relative min-h-screen flex items-center justify-center overflow-hidden"
+    >
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -34,7 +44,7 @@ export default function HeroSection() {
 
       {/* Text Content */}
       <div className="container mx-auto px-4 md:px-6 relative z-20 flex items-center justify-center h-full">
-        <div className="max-w-3xl mx-auto text-center px-4">
+        <div className="max-w-3xl mx-auto text-center px-4 space-y-4 md:space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -42,9 +52,9 @@ export default function HeroSection() {
           >
             <h1
               className={`
-                text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 md:mb-6
+                text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold
                 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500
-                drop-shadow-lg font-vazirmatn
+                drop-shadow-lg font-vazirmatn px-2
               `}
             >
               مجسمه‌های لوکس انیمه برای کلکسیونرهای مشتاق
@@ -56,7 +66,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-sm sm:text-base md:text-lg mb-6 md:mb-8 text-white drop-shadow font-vazirmatn">
+            <p className="text-xs sm:text-sm md:text-base text-white drop-shadow font-vazirmatn leading-relaxed">
               مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر
               و اشتیاق در هر جزئیات ظریف به هم می‌رسند.
             </p>
@@ -70,10 +80,10 @@ export default function HeroSection() {
             <Link href="/shop">
               <Button
                 size="lg"
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn text-sm md:text-base"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn text-xs sm:text-sm"
               >
                 مشاهده مجسمه‌های لوکس
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
+                <ArrowRight className="ml-2 h-3 w-3 sm:h-4 sm:w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
               </Button>
             </Link>
           </motion.div>
@@ -83,18 +93,17 @@ export default function HeroSection() {
       {/* Bottom Gradient Fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-black/60 via-black/30 to-transparent z-20 pointer-events-none" />
 
-      {/* Scroll Button */}
+      {/* Scroll Button - Centered at Bottom */}
       <motion.button
         onClick={scrollToProducts}
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
-        className="absolute left-1/2 -translate-x-1/2 z-30 flex items-center justify-center"
-        style={{ bottom: "2rem" }}
+        className="absolute bottom-4 z-30 flex items-center justify-center"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-8 h-8 animate-bounce text-white"
+          className="w-6 h-6 sm:w-8 sm:h-8 animate-bounce text-white"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

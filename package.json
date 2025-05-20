@@ -52,6 +52,7 @@
     "next-themes": "latest",
     "react": "^19",
     "react-day-picker": "latest",
+    "react-div-100vh": "^0.7.0",
     "react-dom": "^19",
     "react-hook-form": "latest",
     "react-resizable-panels": "latest",
