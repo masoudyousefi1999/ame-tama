@@ -1,6 +1,5 @@
 "use client";
 import heroImage from "@/public/naruto-luffy-clap.jpg";
-
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -16,7 +15,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -35,7 +34,7 @@ export default function HeroSection() {
 
       {/* Text Content */}
       <div className="container mx-auto px-4 md:px-6 relative z-20 flex items-center justify-center h-full">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-3xl mx-auto text-center px-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -43,7 +42,7 @@ export default function HeroSection() {
           >
             <h1
               className={`
-                text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 md:mb-6
+                text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 md:mb-6
                 bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-indigo-500
                 drop-shadow-lg font-vazirmatn
               `}
@@ -57,7 +56,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <p className="text-base sm:text-lg md:text-xl mb-6 md:mb-8 text-white drop-shadow font-vazirmatn">
+            <p className="text-sm sm:text-base md:text-lg mb-6 md:mb-8 text-white drop-shadow font-vazirmatn">
               مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر
               و اشتیاق در هر جزئیات ظریف به هم می‌رسند.
             </p>
@@ -71,7 +70,7 @@ export default function HeroSection() {
             <Link href="/shop">
               <Button
                 size="lg"
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group font-vazirmatn text-sm md:text-base"
               >
                 مشاهده مجسمه‌های لوکس
                 <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 rotate-180" />
@@ -91,7 +90,7 @@ export default function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
         className="absolute left-1/2 -translate-x-1/2 z-30 flex items-center justify-center"
-        style={{ bottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+        style={{ bottom: "2rem" }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
