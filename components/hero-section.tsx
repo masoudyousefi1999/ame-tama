@@ -24,7 +24,7 @@ export default function HeroSection() {
           alt="مجسمه‌های لوکس انیمه"
           fill
           priority
-          sizes="100dvw"
+          // sizes="100dvw"
           className="w-full h-full object-cover object-center"
           placeholder="blur"
           blurDataURL="/placeholder.svg?height=400&width=500"
