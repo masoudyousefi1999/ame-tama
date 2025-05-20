@@ -1,31 +1,23 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
+import { useEffect } from "react";
 
 export default function ViewportHeightFix() {
   useEffect(() => {
-    // Function to update the CSS variable
-    const updateHeight = () => {
-      // Set the --vh custom property to 1% of the viewport height
-      document.documentElement.style.setProperty("--vh", `${window.innerHeight * 0.01}px`)
-    }
+    const setViewportHeight = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
 
-    // Set the height initially
-    updateHeight()
+    setViewportHeight(); // Initial set
+    window.addEventListener("resize", setViewportHeight);
+    window.addEventListener("orientationchange", setViewportHeight);
 
-    // Update the height on resize and orientation change
-    window.addEventListener("resize", updateHeight)
-    window.addEventListener("orientationchange", updateHeight)
-
-    // Hack for iOS Safari to force recalculation after page load
-    setTimeout(updateHeight, 100)
-
-    // Clean up event listeners
     return () => {
-      window.removeEventListener("resize", updateHeight)
-      window.removeEventListener("orientationchange", updateHeight)
-    }
-  }, [])
+      window.removeEventListener("resize", setViewportHeight);
+      window.removeEventListener("orientationchange", setViewportHeight);
+    };
+  }, []);
 
-  return null // This component doesn't render anything
+  return null;
 }

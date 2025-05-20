@@ -16,7 +16,6 @@ import PreventPullRefresh from "@/components/prevent-pull-refresh";
 import SplashScreen from "@/components/splash-screen";
 import PWAInstallPrompt from "@/components/pwa-install-prompt";
 import PageTransition from "@/components/page-transition";
-import { Suspense } from "react";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -29,7 +28,6 @@ export const metadata = {
     "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
   generator: "v0.dev",
   manifest: "/manifest.json",
-  themeColor: "#ffffff",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -37,12 +35,6 @@ export const metadata = {
   },
   formatDetection: {
     telephone: false,
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    viewportFit: "cover",
-    userScalable: false,
   },
 };
 
@@ -89,9 +81,7 @@ export default function RootLayout({
         >
           <SplashScreen>
             <ViewportHeightFix />
-            <Suspense fallback={null}>
-              <ScrollToTop />
-            </Suspense>
+            <ScrollToTop />
             <PreventPullRefresh />
             <AuthProvider>
               <CartProvider>
