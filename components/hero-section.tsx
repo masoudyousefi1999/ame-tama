@@ -15,7 +15,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full h-[100dvh] min-h-[100dvh] flex items-center justify-center overflow-hidden">
+    <section className="relative w-full h-screen min-h-screen md:h-[100dvh] md:min-h-[100dvh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
