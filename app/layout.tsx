@@ -53,25 +53,21 @@ export default function RootLayout({
         <link
           rel="apple-touch-icon"
           sizes="180x180"
-          href="/icons/photo_2025-05-20_19-04-16.png"
+          href="/icons/pwa-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="32x32"
-          href="/icons/photo_2025-05-20_19-04-16.png"
+          href="/icons/pwa-icon.png"
         />
         <link
           rel="icon"
           type="image/png"
           sizes="16x16"
-          href="/icons/photo_2025-05-20_19-04-16.png"
+          href="/icons/pwa-icon.png"
         />
-        <link
-          rel="mask-icon"
-          href="/icons/photo_2025-05-20_19-04-16.png"
-          color="#5bbad5"
-        />
+        <link rel="mask-icon" href="/icons/pwa-icon.png" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
