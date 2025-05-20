@@ -101,3 +101,19 @@ html {
   direction: rtl !important;
   font-family: "Vazirmatn", sans-serif;
 }
+
+.h-full-dvh {
+  height: 100dvh;
+}
+
+@supports not (height: 100dvh) {
+  .h-full-dvh {
+    height: calc(100vh - env(safe-area-inset-bottom, 0) - env(safe-area-inset-top, 0));
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .h-full-dvh {
+    height: -webkit-fill-available;
+  }
+}

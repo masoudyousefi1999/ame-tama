@@ -1,5 +1,5 @@
 "use client";
-import heroImage from "@/public/naruto-luffy-clap.jpg";
+// import heroImage from "@/public/naruto-luffy-clap.jpg";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ export default function HeroSection() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src={heroImage.src}
+          src='https://images6.alphacoders.com/703/thumb-1920-703719.png'
           alt="مجسمه‌های لوکس انیمه"
           fill
           priority
