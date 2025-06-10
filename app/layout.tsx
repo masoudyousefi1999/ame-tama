@@ -22,7 +22,7 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata = {
-  title: "AME-TAMA | مجسمه‌های انیمه لوکس",
+  title: "30229974",
   description:
     "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
   generator: "v0.dev",
