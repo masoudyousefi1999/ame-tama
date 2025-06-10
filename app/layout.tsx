@@ -74,8 +74,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover, height=device-height"
         />
+        <meta name="robots" content="noindex, nofollow"></meta>
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
         <ThemeProvider
