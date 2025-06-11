@@ -6,9 +6,10 @@ import { useState } from "react"
 import { useCart } from "@/context/cart-context"
 import { toast } from "@/components/ui/use-toast"
 import { ProductCard } from "@/components/product/product-card"
+import type { IProductType } from "@/lib/products"
 
 interface CategoryProductsProps {
-  products: any[]
+  products: IProductType[]
   viewMode: "grid" | "list"
 }
 
@@ -21,11 +22,19 @@ export default function CategoryProducts({ products, viewMode }: CategoryProduct
     event.preventDefault()
     event.stopPropagation()
 
-    addItem(product, 1)
-    toast({
-      title: "محصول به سبد خرید اضافه شد",
-      description: `${product.name} به سبد خرید شما اضافه شد.`,
-    })
+    try {
+      addItem(product, 1)
+      toast({
+        title: "محصول به سبد خرید اضافه شد",
+        description: `${product.name} به سبد خرید شما اضافه شد.`,
+      })
+    } catch (error) {
+      toast({
+        title: "خطا در افزودن به سبد خرید",
+        description: "مشکلی در افزودن محصول به سبد خرید رخ داد.",
+        variant: "destructive",
+      })
+    }
   }
 
   // افزودن محصول به علاقه‌مندی‌ها
@@ -33,10 +42,18 @@ export default function CategoryProducts({ products, viewMode }: CategoryProduct
     event.preventDefault()
     event.stopPropagation()
 
-    toast({
-      title: "محصول به علاقه‌مندی‌ها اضافه شد",
-      description: `${product.name} به لیست علاقه‌مندی‌های شما اضافه شد.`,
-    })
+    try {
+      toast({
+        title: "محصول به علاقه‌مندی‌ها اضافه شد",
+        description: `${product.name} به لیست علاقه‌مندی‌های شما اضافه شد.`,
+      })
+    } catch (error) {
+      toast({
+        title: "خطا در افزودن به علاقه‌مندی‌ها",
+        description: "مشکلی در افزودن محصول به علاقه‌مندی‌ها رخ داد.",
+        variant: "destructive",
+      })
+    }
   }
 
   // اگر محصولی وجود نداشت
@@ -69,9 +86,9 @@ export default function CategoryProducts({ products, viewMode }: CategoryProduct
   if (viewMode === "list") {
     return (
       <div className="space-y-4">
-        {products.map((product) => (
+        {products?.map((product) => (
           <div
-            key={product.id}
+            key={product.uuid}
             className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow"
           >
             <ProductCard
@@ -90,8 +107,8 @@ export default function CategoryProducts({ products, viewMode }: CategoryProduct
   // نمایش شبکه‌ای (پیش‌فرض)
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {products.map((product) => (
-        <ProductCard key={product.id} product={product} showAddToCart={true} showAddToWishlist={true} />
+      {products?.map((product) => (
+        <ProductCard key={product.uuid} product={product} showAddToCart={true} showAddToWishlist={true} />
       ))}
     </div>
   )

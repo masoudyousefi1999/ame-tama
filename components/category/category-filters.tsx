@@ -5,7 +5,9 @@ import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
+import { getSubcategories } from "@/lib/categories"
 import type { Category } from "@/lib/categories"
+import Link from "next/link"
 
 interface CategoryFiltersProps {
   priceRange: [number, number]
@@ -26,6 +28,9 @@ export default function CategoryFilters({
 }: CategoryFiltersProps) {
   const [localPriceRange, setLocalPriceRange] = useState<[number, number]>(priceRange)
   const [localFilters, setLocalFilters] = useState<string[]>(selectedFilters)
+
+  // دریافت زیردسته‌های این دسته‌بندی
+  const subcategories = getSubcategories(category.id)
 
   // همگام‌سازی با props
   useEffect(() => {
@@ -64,6 +69,24 @@ export default function CategoryFilters({
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 space-y-6">
+      {/* نمایش زیردسته‌ها در فیلتر */}
+      {subcategories.length > 0 && (
+        <div className="mb-6">
+          <h3 className="font-medium mb-4 font-vazirmatn">زیردسته‌های {category.name}</h3>
+          <div className="space-y-2">
+            {subcategories.map((subcat) => (
+              <Link
+                key={subcat.id}
+                href={`/category/${subcat.slug}`}
+                className="block p-2 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors font-vazirmatn"
+              >
+                {subcat.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div>
         <h3 className="font-medium mb-4 font-vazirmatn">محدوده قیمت (تومان)</h3>
         <Slider

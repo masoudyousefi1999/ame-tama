@@ -6,7 +6,7 @@ interface ProductSchemaProps {
     name: string
     price: number
     description?: string
-    images: { id: number; url: string; alt: string }[]
+    productMedia: { id: number; url: string; alt: string }[]
     availability: "in-stock" | "low-stock" | "out-of-stock"
     category: string
     manufacturer: string
@@ -26,7 +26,7 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
-    image: product.images.map((img) => (img.url.startsWith("http") ? img.url : getSiteUrl(img.url))),
+    image: product.productMedia.map((img) => (img.url.startsWith("http") ? img.url : getSiteUrl(img.url))),
     description: product.description || `مجسمه ${product.name} از سری محصولات ${product.category}`,
     sku: `AME-${product.id}`,
     mpn: `AME-${product.id}`,

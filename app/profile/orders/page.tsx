@@ -12,27 +12,84 @@ import { useAuth } from "@/context/auth-context"
 import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { BackButton } from "@/components/ui/back-button"
 import { ProductCard } from "@/components/product/product-card"
+import { toast } from "@/components/ui/use-toast"
 
-// Sample order data
+// Sample order data - updated to match API schema
 const sampleOrders = [
   {
+    createdAt: "2025-05-15T08:30:00.000Z",
+    updatedAt: "2025-05-18T15:45:00.000Z",
+    uuid: "order-58b1f289-be86-4344-8d07-3a55a01badbe",
+    totalPrice: 1250000,
+    finalPrice: 1125000,
+    status: "delivered",
+    // Additional fields for UI compatibility
     id: "ORD-1234",
     date: "1402/08/15",
     total: 1250000,
-    status: "delivered",
     items: [
       {
-        id: 1,
-        name: "هدفون بی سیم سونی WH-1000XM4",
-        price: 850000,
+        createdAt: "2025-05-15T08:30:00.000Z",
+        updatedAt: "2025-05-15T08:30:00.000Z",
         quantity: 1,
+        price: 850000,
+        product: {
+          uuid: "prod-58b1f289-be86-4344-8d07-3a55a01badbe",
+          name: "هدفون بی سیم سونی WH-1000XM4",
+          slug: "sony-wh-1000xm4-wireless-headphones",
+          price: 850000,
+          detail: {
+            series: "سونی",
+            character: "هدفون",
+            description: "هدفون بی سیم با کیفیت بالا",
+          },
+          category: {
+            id: 13,
+            name: "لوازم جانبی",
+            slug: "accessories",
+          },
+          productMedia: [
+            {
+              order: 1,
+              isDefault: true,
+              url: "/placeholder.svg?height=80&width=80",
+            },
+          ],
+        },
+        // Additional fields for UI compatibility
+        id: 1,
         image: "/placeholder.svg?height=80&width=80",
       },
       {
-        id: 2,
-        name: "شارژر وایرلس سامسونگ",
-        price: 400000,
+        createdAt: "2025-05-15T08:30:00.000Z",
+        updatedAt: "2025-05-15T08:30:00.000Z",
         quantity: 1,
+        price: 400000,
+        product: {
+          uuid: "prod-7c877e90-bcc0-4fe6-8d5d-8fcae85f0066",
+          name: "شارژر وایرلس سامسونگ",
+          slug: "samsung-wireless-charger",
+          price: 400000,
+          detail: {
+            series: "سامسونگ",
+            character: "شارژر",
+            description: "شارژر وایرلس با کیفیت بالا",
+          },
+          category: {
+            id: 13,
+            name: "لوازم جانبی",
+            slug: "accessories",
+          },
+          productMedia: [
+            {
+              order: 1,
+              isDefault: true,
+              url: "/placeholder.svg?height=80&width=80",
+            },
+          ],
+        },
+        // Additional fields for UI compatibility
+        id: 2,
         image: "/placeholder.svg?height=80&width=80",
       },
     ],
@@ -47,16 +104,47 @@ const sampleOrders = [
     },
   },
   {
+    createdAt: "2025-05-10T14:20:00.000Z",
+    updatedAt: "2025-05-12T10:30:00.000Z",
+    uuid: "order-8d988f91-cdd1-5fe7-9e6e-9fdaf96f0077",
+    totalPrice: 3200000,
+    finalPrice: 3000000,
+    status: "processing",
+    // Additional fields for UI compatibility
     id: "ORD-5678",
     date: "1402/07/22",
     total: 3200000,
-    status: "processing",
     items: [
       {
-        id: 3,
-        name: "لپ تاپ ایسوس ZenBook",
-        price: 3200000,
+        createdAt: "2025-05-10T14:20:00.000Z",
+        updatedAt: "2025-05-10T14:20:00.000Z",
         quantity: 1,
+        price: 3200000,
+        product: {
+          uuid: "prod-8d988f91-cdd1-5fe7-9e6e-9fdaf96f0077",
+          name: "لپ تاپ ایسوس ZenBook",
+          slug: "asus-zenbook-laptop",
+          price: 3200000,
+          detail: {
+            series: "ایسوس",
+            character: "لپ‌تاپ",
+            description: "لپ‌تاپ با کیفیت بالا",
+          },
+          category: {
+            id: 13,
+            name: "لوازم جانبی",
+            slug: "accessories",
+          },
+          productMedia: [
+            {
+              order: 1,
+              isDefault: true,
+              url: "/placeholder.svg?height=80&width=80",
+            },
+          ],
+        },
+        // Additional fields for UI compatibility
+        id: 3,
         image: "/placeholder.svg?height=80&width=80",
       },
     ],
@@ -67,16 +155,47 @@ const sampleOrders = [
     },
   },
   {
+    createdAt: "2025-04-20T09:15:00.000Z",
+    updatedAt: "2025-04-21T11:30:00.000Z",
+    uuid: "order-9e099g02-dee2-6gf8-af7f-agfbga7g0088",
+    totalPrice: 750000,
+    finalPrice: null,
+    status: "cancelled",
+    // Additional fields for UI compatibility
     id: "ORD-9012",
     date: "1402/06/10",
     total: 750000,
-    status: "cancelled",
     items: [
       {
-        id: 4,
-        name: "اسپیکر بلوتوثی JBL",
-        price: 750000,
+        createdAt: "2025-04-20T09:15:00.000Z",
+        updatedAt: "2025-04-20T09:15:00.000Z",
         quantity: 1,
+        price: 750000,
+        product: {
+          uuid: "prod-9e099g02-dee2-6gf8-af7f-agfbga7g0088",
+          name: "اسپیکر بلوتوثی JBL",
+          slug: "jbl-bluetooth-speaker",
+          price: 750000,
+          detail: {
+            series: "JBL",
+            character: "اسپیکر",
+            description: "اسپیکر بلوتوثی با کیفیت بالا",
+          },
+          category: {
+            id: 13,
+            name: "لوازم جانبی",
+            slug: "accessories",
+          },
+          productMedia: [
+            {
+              order: 1,
+              isDefault: true,
+              url: "/placeholder.svg?height=80&width=80",
+            },
+          ],
+        },
+        // Additional fields for UI compatibility
+        id: 4,
         image: "/placeholder.svg?height=80&width=80",
       },
     ],
@@ -135,6 +254,7 @@ export default function OrdersPage() {
   const { user, isLoading } = useAuth()
   const [orders, setOrders] = useState(sampleOrders)
   const [selectedOrder, setSelectedOrder] = useState<(typeof sampleOrders)[0] | null>(null)
+  const [isLoadingOrders, setIsLoadingOrders] = useState(false)
 
   // اگر کاربر وارد نشده باشد، به صفحه اصلی هدایت می‌شود
   useEffect(() => {
@@ -143,9 +263,50 @@ export default function OrdersPage() {
     }
   }, [user, isLoading, router])
 
+  // Load orders data
+  useEffect(() => {
+    const loadOrders = async () => {
+      if (!user) return
+
+      setIsLoadingOrders(true)
+      try {
+        // Here you would normally fetch orders from your API
+        // const fetchedOrders = await getOrdersByUserId(user.id)
+        // setOrders(fetchedOrders)
+
+        // For now, using sample data
+        setOrders(sampleOrders)
+      } catch (error) {
+        console.error("Error loading orders:", error)
+        toast({
+          title: "خطا در بارگذاری سفارش‌ها",
+          description: "مشکلی در بارگذاری سفارش‌های شما رخ داد.",
+          variant: "destructive",
+        })
+        setOrders([])
+      } finally {
+        setIsLoadingOrders(false)
+      }
+    }
+
+    loadOrders()
+  }, [user])
+
   // اگر در حال بارگذاری است یا کاربر وارد نشده، چیزی نمایش نمی‌دهیم
   if (isLoading || !user) {
     return null
+  }
+
+  const handleOrderSelect = (order: (typeof sampleOrders)[0]) => {
+    try {
+      setSelectedOrder(order)
+    } catch (error) {
+      toast({
+        title: "خطا در نمایش جزئیات سفارش",
+        description: "مشکلی در نمایش جزئیات سفارش رخ داد.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -171,41 +332,48 @@ export default function OrdersPage() {
                 <CardDescription className="font-vazirmatn">لیست سفارش‌های شما و وضعیت آن‌ها</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="font-vazirmatn">شماره سفارش</TableHead>
-                        <TableHead className="font-vazirmatn">تاریخ</TableHead>
-                        <TableHead className="font-vazirmatn">مبلغ کل</TableHead>
-                        <TableHead className="font-vazirmatn">وضعیت</TableHead>
-                        <TableHead className="font-vazirmatn">عملیات</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {orders.map((order) => (
-                        <TableRow key={order.id}>
-                          <TableCell className="font-medium font-vazirmatn">{order.id}</TableCell>
-                          <TableCell className="font-vazirmatn">{order.date}</TableCell>
-                          <TableCell className="font-vazirmatn">{formatPrice(order.total)}</TableCell>
-                          <TableCell>
-                            <OrderStatusBadge status={order.status} />
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="font-vazirmatn"
-                              onClick={() => setSelectedOrder(order)}
-                            >
-                              مشاهده جزئیات
-                            </Button>
-                          </TableCell>
+                {isLoadingOrders ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+                    <p className="mt-2 text-sm text-gray-500 font-vazirmatn">در حال بارگذاری...</p>
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="font-vazirmatn">شماره سفارش</TableHead>
+                          <TableHead className="font-vazirmatn">تاریخ</TableHead>
+                          <TableHead className="font-vazirmatn">مبلغ کل</TableHead>
+                          <TableHead className="font-vazirmatn">وضعیت</TableHead>
+                          <TableHead className="font-vazirmatn">عملیات</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                      </TableHeader>
+                      <TableBody>
+                        {orders.map((order) => (
+                          <TableRow key={order.id}>
+                            <TableCell className="font-medium font-vazirmatn">{order.id}</TableCell>
+                            <TableCell className="font-vazirmatn">{order.date}</TableCell>
+                            <TableCell className="font-vazirmatn">{formatPrice(order.total)}</TableCell>
+                            <TableCell>
+                              <OrderStatusBadge status={order.status} />
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="font-vazirmatn"
+                                onClick={() => handleOrderSelect(order)}
+                              >
+                                مشاهده جزئیات
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -238,9 +406,9 @@ export default function OrdersPage() {
                             key={item.id}
                             product={{
                               id: item.id,
-                              name: item.name,
+                              name: item.product.name,
                               price: item.price,
-                              image: item.image,
+                              image: item.product.productMedia[0].url,
                             }}
                             variant="order"
                             showAddToCart={false}

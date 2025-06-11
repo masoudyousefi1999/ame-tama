@@ -1,40 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShopHeader from "@/components/shop/shop-header";
 import CategoryShowcase from "@/components/shop/category-showcase";
 import FeaturedProducts from "@/components/shop/featured-products";
 import NewArrivals from "@/components/shop/new-arrivals";
 import ProductGrid from "@/components/shop/product-grid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getAllProducts } from "@/lib/products";
-import { getAllCategories } from "@/lib/categories";
+import { getAllProducts, IProductType } from "@/lib/products";
+import { getAllCategories, ICategoryType } from "@/lib/categories";
 
 export default function ShopPage() {
   const [activeTab, setActiveTab] = useState("all");
-  const products = getAllProducts();
-  const categories = getAllCategories();
+  const [products, setProducts] = useState<IProductType[]>([]);
+  const [categories, setCategories] = useState<ICategoryType[]>([]);
 
-  // محصولات ویژه (با امتیاز بالا)
+  useEffect(() => {
+    const fetchData = async () => {
+      const productsData = await getAllProducts();
+      setProducts(productsData);
+
+      const categoriesData = await getAllCategories();
+      setCategories(categoriesData);
+    };
+
+    fetchData();
+  }, []);
+
+  // Don't try to process data before it's loaded
+  if (!products.length) return <p>در حال بارگذاری محصولات...</p>;
   const featuredProducts = [...products]
     .sort((a, b) => (b.rating || 0) - (a.rating || 0))
     .slice(0, 4);
 
-  // محصولات جدید
-  const newProducts = [...products]
-    .filter((product) => product.isNew)
-    .sort(
-      (a, b) =>
-        new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
-    )
-    .slice(0, 4);
+  // const newProducts = [...products]
+  //   .filter((product) => product.isNew)
+  //   .sort(
+  //     (a, b) =>
+  //       new Date(b.releaseDate).getTime() - new Date(a.releaseDate).getTime()
+  //   )
+  //   .slice(0, 4);
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
-      {/* هدر فروشگاه */}
       <ShopHeader />
 
-      {/* تب‌های فروشگاه */}
       <Tabs defaultValue="all" className="mt-12" onValueChange={setActiveTab}>
         <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
           <TabsTrigger value="categories" className="font-vazirmatn">
@@ -48,14 +58,12 @@ export default function ShopPage() {
           </TabsTrigger>
         </TabsList>
 
-        {/* محتوای تب دسته‌بندی‌ها */}
         <TabsContent value="categories" className="space-y-12">
           <CategoryShowcase categories={categories} />
           <FeaturedProducts products={featuredProducts} />
-          <NewArrivals products={newProducts} />
+          <NewArrivals products={products} />
         </TabsContent>
 
-        {/* محتوای تب محصولات ویژه */}
         <TabsContent value="featured">
           <div dir="rtl" className="mb-8">
             <h2 className="text-2xl font-bold mb-2 font-vazirmatn">
@@ -69,7 +77,6 @@ export default function ShopPage() {
           <ProductGrid products={featuredProducts} showFilters={true} />
         </TabsContent>
 
-        {/* محتوای تب همه محصولات */}
         <TabsContent value="all">
           <div dir="rtl" className="mb-8">
             <h2 className="text-2xl font-bold mb-2 font-vazirmatn">
@@ -79,7 +86,7 @@ export default function ShopPage() {
               مشاهده و جستجو در تمامی مجسمه‌های انیمه موجود در فروشگاه AME-TAMA
             </p>
           </div>
-          <ProductGrid products={products} showFilters={true} />
+          <ProductGrid products={products} showFilters={false} />
         </TabsContent>
       </Tabs>
     </div>

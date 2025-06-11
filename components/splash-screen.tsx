@@ -5,7 +5,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import logo from "@/public/photo_2025-05-20_19-04-16.jpg";
+// import logo from "@/public/photo_2025-05-20_19-04-16.jpg";
 
 export default function SplashScreen({
   children,
@@ -48,7 +48,8 @@ export default function SplashScreen({
           >
             <div className="relative w-40 h-40 mb-8">
               <Image
-                src={logo.src}
+                // src={logo.src}
+                src={'/placeholder.svg?height=200&width=200'}
                 alt="AME-TAMA Logo"
                 fill
                 priority

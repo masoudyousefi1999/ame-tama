@@ -22,7 +22,7 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata = {
-  title: "آمه تاما",
+  title: "AME-TAMA | مجسمه‌های انیمه لوکس",
   description:
     "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
   generator: "v0.dev",
@@ -74,9 +74,8 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1.0, viewport-fit=cover, height=device-height"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover"
         />
-        <meta name="robots" content="noindex, nofollow"></meta>
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
         <ThemeProvider

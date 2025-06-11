@@ -1,34 +1,39 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { Trash2, ExternalLink } from "lucide-react"
-import { motion, useAnimation } from "framer-motion"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { Trash2, ExternalLink } from "lucide-react";
+import { motion, useAnimation } from "framer-motion";
+import { IProductType } from "@/lib/products";
 
 interface MobileCartItemProps {
   item: {
-    id: number
-    name: string
-    price: number
-    quantity: number
-    image: string
-  }
-  onRemove: (id: number) => void
-  onUpdateQuantity: (id: number, quantity: number) => void
-  isUpdating?: boolean
+    quantity: number;
+    product: IProductType;
+  };
+  onUpdateQuantity: (
+    productUuid: string,
+    quantity: number,
+    type: "increase" | "decrease"
+  ) => void;
+  isUpdating?: boolean;
 }
 
-export function MobileCartItem({ item, onRemove, onUpdateQuantity, isUpdating = false }: MobileCartItemProps) {
-  const [dragX, setDragX] = useState(0)
-  const controls = useAnimation()
-  const [isSwiping, setIsSwiping] = useState(false)
+export function MobileCartItem({
+  item,
+  onUpdateQuantity,
+  isUpdating = false,
+}: MobileCartItemProps) {
+  const [dragX, setDragX] = useState(0);
+  const controls = useAnimation();
+  const [isSwiping, setIsSwiping] = useState(false);
 
   // Reset animation when item changes
   useEffect(() => {
-    controls.start({ x: 0 })
-    setDragX(0)
-  }, [item, controls])
+    controls.start({ x: 0 });
+    setDragX(0);
+  }, [item, controls]);
 
   return (
     <div className="relative overflow-hidden touch-manipulation">
@@ -53,39 +58,47 @@ export function MobileCartItem({ item, onRemove, onUpdateQuantity, isUpdating = 
         onDragStart={() => setIsSwiping(true)}
         onDrag={(_, info) => {
           if (info.offset.x < 0) {
-            setDragX(info.offset.x)
+            setDragX(info.offset.x);
           }
         }}
         onDragEnd={(_, info) => {
-          setIsSwiping(false)
+          setIsSwiping(false);
           if (info.offset.x < -100) {
             controls.start({ x: "-100%", opacity: 0 }).then(() => {
-              onRemove(item.id)
-            })
+              onUpdateQuantity(item.product.uuid, item.quantity, "decrease");
+            });
           } else {
-            controls.start({ x: 0 })
-            setDragX(0)
+            controls.start({ x: 0 });
+            setDragX(0);
           }
         }}
         style={{ x: dragX }}
       >
         <div className="flex items-start">
           <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
-            <Image src={item.image || "/placeholder.svg"} alt={item.name} fill className="object-cover" sizes="80px" />
+            <Image
+              src={item.product?.productMedia[0]?.url || "/placeholder.svg"}
+              alt={item.product.name}
+              fill
+              className="object-cover"
+              sizes="80px"
+            />
           </div>
           <div className="mr-3 flex-1">
-            <h3 className="text-sm font-medium font-vazirmatn">{item.name}</h3>
+            <h3 className="text-sm font-medium font-vazirmatn">
+              {item.product.name}
+            </h3>
             <div className="mt-1 text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-              {new Intl.NumberFormat("fa-IR").format(item.price)} تومان
+              {new Intl.NumberFormat("fa-IR").format(item.product.price)} تومان
             </div>
 
             {/* Product Details Link */}
             <Link
-              href={`/product/${item.id}`}
+              href={`/product/${item.product.slug}`}
               className="mt-1 inline-flex items-center text-xs text-purple-600 hover:text-purple-800 transition-colors"
               onClick={(e) => {
                 if (isSwiping) {
-                  e.preventDefault()
+                  e.preventDefault();
                 }
               }}
             >
@@ -97,7 +110,9 @@ export function MobileCartItem({ item, onRemove, onUpdateQuantity, isUpdating = 
               <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-full">
                 <button
                   className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                  onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
+                  onClick={() =>
+                    onUpdateQuantity(item.product.uuid, 1, "decrease")
+                  }
                   disabled={isUpdating || item.quantity <= 1}
                 >
                   -
@@ -107,14 +122,18 @@ export function MobileCartItem({ item, onRemove, onUpdateQuantity, isUpdating = 
                 </span>
                 <button
                   className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
-                  onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                  onClick={() =>
+                    onUpdateQuantity(item.product.uuid, 1, "increase")
+                  }
                   disabled={isUpdating}
                 >
                   +
                 </button>
               </div>
               <button
-                onClick={() => onRemove(item.id)}
+                onClick={() =>
+                  onUpdateQuantity(item.product.uuid, item.quantity, "decrease")
+                }
                 className="text-red-600 hover:text-red-900 dark:hover:text-red-400 p-2"
                 aria-label="حذف محصول"
               >
@@ -122,11 +141,15 @@ export function MobileCartItem({ item, onRemove, onUpdateQuantity, isUpdating = 
               </button>
             </div>
             <div className="mt-2 text-sm font-medium text-gray-900 dark:text-white font-vazirmatn">
-              مجموع: {new Intl.NumberFormat("fa-IR").format(item.price * item.quantity)} تومان
+              مجموع:{" "}
+              {new Intl.NumberFormat("fa-IR").format(
+                item.product.price * item.quantity
+              )}{" "}
+              تومان
             </div>
           </div>
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

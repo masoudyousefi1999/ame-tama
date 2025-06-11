@@ -8,11 +8,12 @@ import { Button } from "@/components/ui/button"
 import { useCart } from "@/context/cart-context"
 import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
+import { toast } from "@/components/ui/use-toast"
 
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
-  const { items, itemCount, subtotal, removeItem, updateQuantity, total, recentlyAdded } = useCart()
+  const { items, itemCount, subtotal, updateQuantity, total, recentlyAdded } = useCart()
 
   // Close the dropdown when clicking outside of it
   useEffect(() => {
@@ -43,6 +44,19 @@ export default function CartDropdown() {
   // Toggle dropdown visibility
   const toggleDropdown = () => {
     setIsOpen(!isOpen)
+  }
+
+  // Handle quantity updates with error handling
+  const handleQuantityUpdate = (productUuid: string, quantity: number, type: "increase" | "decrease") => {
+    try {
+      updateQuantity(productUuid, quantity, type)
+    } catch (error) {
+      toast({
+        title: "خطا در به‌روزرسانی سبد خرید",
+        description: "مشکلی در به‌روزرسانی تعداد محصول رخ داد.",
+        variant: "destructive",
+      })
+    }
   }
 
   return (
@@ -101,14 +115,14 @@ export default function CartDropdown() {
               <AnimatePresence initial={false}>
                 {items.map((item) => (
                   <motion.li
-                    key={item.id}
+                    key={item.product.uuid}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -100 }}
                     transition={{ duration: 0.3 }}
                     className={cn(
                       "flex gap-x-4 p-3 rounded-lg",
-                      recentlyAdded === item.id
+                      recentlyAdded === item.product.uuid
                         ? "bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800"
                         : "border border-transparent",
                     )}
@@ -116,8 +130,8 @@ export default function CartDropdown() {
                     {/* Product Image */}
                     <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
                       <Image
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.name}
+                        src={item?.product?.productMedia[0]?.url || "/placeholder.svg"}
+                        alt={item.product.name || "product image"}
                         fill
                         className="object-cover"
                         sizes="64px"
@@ -127,20 +141,20 @@ export default function CartDropdown() {
                     {/* Product Info */}
                     <div className="flex-1 mr-4">
                       <Link
-                        href={`/product/${item.id}`}
+                        href={`/product/${item.product.slug}`}
                         className="text-sm font-medium line-clamp-1 hover:text-purple-600 transition-colors font-vazirmatn"
                         onClick={() => setIsOpen(false)}
                       >
-                        {item.name}
+                        {item.product.name}
                       </Link>
                       <div className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-vazirmatn">
-                        {new Intl.NumberFormat("fa-IR").format(item.price)} تومان
+                        {new Intl.NumberFormat("fa-IR").format(item.product.price)} تومان
                       </div>
                       <div className="flex items-center mt-1">
                         <motion.button
                           whileTap={{ scale: 0.9 }}
                           className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-6 h-6 flex items-center justify-center"
-                          onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                          onClick={() => handleQuantityUpdate(item.product.uuid, 1, "decrease")}
                           aria-label="کاهش تعداد"
                           disabled={item.quantity <= 1}
                         >
@@ -157,7 +171,7 @@ export default function CartDropdown() {
                         <motion.button
                           whileTap={{ scale: 0.9 }}
                           className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 w-6 h-6 flex items-center justify-center"
-                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          onClick={() => handleQuantityUpdate(item.product.uuid, 1, "increase")}
                           aria-label="افزایش تعداد"
                         >
                           <Plus className="h-3 w-3" />
@@ -165,12 +179,12 @@ export default function CartDropdown() {
                       </div>
                       <div className="flex justify-between items-center mt-1">
                         <span className="text-sm font-medium font-vazirmatn">
-                          {new Intl.NumberFormat("fa-IR").format(item.price * item.quantity)} تومان
+                          {new Intl.NumberFormat("fa-IR").format(item.product.price * item.quantity)} تومان
                         </span>
                         <motion.button
                           whileTap={{ scale: 0.9 }}
                           className="text-red-500 hover:text-red-700 p-1"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => handleQuantityUpdate(item.product.uuid, item.quantity, "decrease")}
                           aria-label="حذف محصول"
                         >
                           <X className="h-4 w-4" />

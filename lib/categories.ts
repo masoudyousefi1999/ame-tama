@@ -1,122 +1,116 @@
-// تعریف نوع دسته‌بندی
-export interface Category {
-  id: string
-  slug: string
-  name: string
-  description: string
-  image: string
-  filterTitle?: string
-  filters?: {
-    id: string
-    name: string
-  }[]
+// تعریف نوع دسته‌بندی با پشتیبانی از ساختار سلسله مراتبی
+export interface ICategoryType {
+  createdAt: string;
+  updatedAt: string;
+  uuid: string;
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  image: string;
+  children: ICategoryType[];
 }
 
-// داده‌های دسته‌بندی‌ها
-const categories: Category[] = [
-  {
-    id: "one-piece",
-    slug: "one-piece",
-    name: "وان پیس",
-    description: "مجسمه‌های لوکس از دنیای وان پیس، شامل شخصیت‌های محبوب مانند لوفی، زورو، سانجی و دیگران",
-    image: "/placeholder.svg?height=600&width=1200",
-    filterTitle: "شخصیت‌ها",
-    filters: [
-      { id: "luffy", name: "لوفی" },
-      { id: "zoro", name: "زورو" },
-      { id: "sanji", name: "سانجی" },
-      { id: "nami", name: "نامی" },
-      { id: "chopper", name: "چاپر" },
-    ],
-  },
-  {
-    id: "naruto",
-    slug: "naruto",
-    name: "ناروتو",
-    description: "مجسمه‌های با کیفیت از دنیای ناروتو، شامل شخصیت‌های محبوب مانند ناروتو، ساسوکه، کاکاشی و دیگران",
-    image: "/placeholder.svg?height=600&width=1200",
-    filterTitle: "شخصیت‌ها",
-    filters: [
-      { id: "naruto", name: "ناروتو" },
-      { id: "sasuke", name: "ساسوکه" },
-      { id: "kakashi", name: "کاکاشی" },
-      { id: "sakura", name: "ساکورا" },
-      { id: "itachi", name: "ایتاچی" },
-    ],
-  },
-  {
-    id: "demon-slayer",
-    slug: "demon-slayer",
-    name: "شیطان کش",
-    description: "مجسمه‌های فوق‌العاده از انیمه محبوب شیطان کش، شامل تانجیرو، نزوکو، زنیتسو و دیگر شخصیت‌ها",
-    image: "/placeholder.svg?height=600&width=1200",
-    filterTitle: "شخصیت‌ها",
-    filters: [
-      { id: "tanjiro", name: "تانجیرو" },
-      { id: "nezuko", name: "نزوکو" },
-      { id: "zenitsu", name: "زنیتسو" },
-      { id: "inosuke", name: "اینوسوکه" },
-      { id: "rengoku", name: "رنگوکو" },
-    ],
-  },
-  {
-    id: "jujutsu-kaisen",
-    slug: "jujutsu-kaisen",
-    name: "جوجوتسو کایزن",
-    description: "مجسمه‌های با جزئیات دقیق از انیمه جوجوتسو کایزن، شامل گوجو، یوجی، مگومی و دیگر شخصیت‌ها",
-    image: "/placeholder.svg?height=600&width=1200",
-    filterTitle: "شخصیت‌ها",
-    filters: [
-      { id: "gojo", name: "گوجو" },
-      { id: "yuji", name: "یوجی" },
-      { id: "megumi", name: "مگومی" },
-      { id: "nobara", name: "نوبارا" },
-      { id: "sukuna", name: "سوکونا" },
-    ],
-  },
-  {
-    id: "attack-on-titan",
-    slug: "attack-on-titan",
-    name: "حمله به تایتان",
-    description: "مجسمه‌های حیرت‌انگیز از دنیای حمله به تایتان، شامل ارن، میکاسا، لیوای و دیگر شخصیت‌ها",
-    image: "/placeholder.svg?height=600&width=1200",
-    filterTitle: "شخصیت‌ها",
-    filters: [
-      { id: "eren", name: "ارن" },
-      { id: "mikasa", name: "میکاسا" },
-      { id: "levi", name: "لیوای" },
-      { id: "armin", name: "آرمین" },
-      { id: "titan", name: "تایتان‌ها" },
-    ],
-  },
-  {
-    id: "my-hero-academia",
-    slug: "my-hero-academia",
-    name: "آکادمی قهرمان من",
-    description: "مجسمه‌های قهرمانانه از انیمه آکادمی قهرمان من، شامل دکو، آل مایت، باکوگو و دیگر شخصیت‌ها",
-    image: "/placeholder.svg?height=600&width=1200",
-    filterTitle: "شخصیت‌ها",
-    filters: [
-      { id: "deku", name: "دکو" },
-      { id: "all-might", name: "آل مایت" },
-      { id: "bakugo", name: "باکوگو" },
-      { id: "todoroki", name: "تودوروکی" },
-      { id: "uraraka", name: "اوراراکا" },
-    ],
-  },
-]
-
 // دریافت همه دسته‌بندی‌ها
-export function getAllCategories(): Category[] {
-  return categories
+export async function getAllCategories(): Promise<ICategoryType[]> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category`
+  );
+
+  const categories = await res.json();
+  return categories;
 }
 
 // دریافت دسته‌بندی با شناسه
-export function getCategoryById(id: string): Category | undefined {
-  return categories.find((category) => category.id === id)
+export function getCategoryById(id: string): ICategoryType | undefined {
+  return;
 }
 
 // دریافت دسته‌بندی با اسلاگ
-export function getCategoryBySlug(slug: string): Category | undefined {
-  return categories.find((category) => category.slug === slug)
+export async function getCategoryBySlug(
+  slug: string
+): Promise<ICategoryType | undefined> {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category/${slug}`
+  );
+
+  const categories = await res.json();
+  return categories;
+}
+
+// دریافت دسته‌بندی‌های اصلی (آنهایی که children دارند یا سطح بالا هستند)
+export function getRootCategories(): ICategoryType[] {
+  return [];
+}
+
+// دریافت زیر دسته‌های یک دسته‌بندی
+export function getSubcategories(parentUuid: string): ICategoryType[] {
+  const findSubcategories = (cats: ICategoryType[]): ICategoryType[] => {
+    for (const cat of cats) {
+      if (cat.uuid === parentUuid) {
+        return cat.children;
+      }
+      const found = findSubcategories(cat.children);
+      if (found.length > 0) return found;
+    }
+    return [];
+  };
+  return [];
+}
+
+// دریافت مسیر کامل دسته‌بندی (از ریشه تا دسته‌بندی فعلی)
+export function getCategoryPath(categoryUuid: string): ICategoryType[] {
+  const path: ICategoryType[] = [];
+
+  const findPath = (
+    cats: ICategoryType[],
+    targetUuid: string,
+    currentPath: ICategoryType[]
+  ): boolean => {
+    for (const cat of cats) {
+      const newPath = [...currentPath, cat];
+      if (cat.uuid === targetUuid) {
+        path.push(...newPath);
+        return true;
+      }
+      if (findPath(cat.children, targetUuid, newPath)) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  return path;
+}
+
+// بررسی اینکه آیا یک دسته‌بندی زیرمجموعه دسته‌بندی دیگری است
+export function isChildCategory(
+  childUuid: string,
+  parentUuid: string
+): boolean {
+  const findInChildren = (cats: ICategoryType[], targetUuid: string): boolean => {
+    for (const cat of cats) {
+      if (cat.uuid === targetUuid) return true;
+      if (findInChildren(cat.children, targetUuid)) return true;
+    }
+    return false;
+  };
+
+  const parent = getCategoryByUuid(parentUuid);
+  if (!parent) return false;
+
+  return findInChildren(parent.children, childUuid);
+}
+
+// دریافت دسته‌بندی با UUID
+export function getCategoryByUuid(uuid: string): ICategoryType | undefined {
+  const findCategory = (cats: ICategoryType[]): ICategoryType | undefined => {
+    for (const cat of cats) {
+      if (cat.uuid === uuid) return cat;
+      const found = findCategory(cat.children);
+      if (found) return found;
+    }
+    return undefined;
+  };
+  return;
 }

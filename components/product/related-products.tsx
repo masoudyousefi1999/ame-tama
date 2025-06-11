@@ -1,27 +1,20 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { IProductType } from "@/lib/products";
 
 interface RelatedProductsProps {
-  products: {
-    id: number
-    name: string
-    price: number
-    image: string
-    category: string
-    isNew: boolean
-    isLimited: boolean
-  }[]
+  products: IProductType[];
 }
 
 export default function RelatedProducts({ products }: RelatedProductsProps) {
-  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null)
+  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
 
   return (
     <section className="mb-16">
@@ -43,19 +36,19 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <motion.div
-            key={product.id}
+            key={product.uuid}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            onMouseEnter={() => setHoveredProduct(product.id)}
+            onMouseEnter={() => setHoveredProduct(product.uuid)}
             onMouseLeave={() => setHoveredProduct(null)}
             className="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300"
           >
-            <Link href={`/product/${product.id}`} className="block">
+            <Link href={`/product/${product.slug}`} className="block">
               <div className="relative h-64 overflow-hidden">
                 <Image
-                  src={product.image || "/placeholder.svg"}
+                  src={product.productMedia[0].url || "/placeholder.svg"}
                   alt={product.name}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -65,9 +58,15 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
 
                 {/* Product badges */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
-                  {product.isNew && <Badge className="bg-purple-500 hover:bg-purple-600 font-vazirmatn">جدید</Badge>}
-                  {product.isLimited && (
-                    <Badge className="bg-amber-500 hover:bg-amber-600 font-vazirmatn">نسخه محدود</Badge>
+                  {(product.createdAt as any) > new Date() && (
+                    <Badge className="bg-purple-500 hover:bg-purple-600 font-vazirmatn">
+                      جدید
+                    </Badge>
+                  )}
+                  {product.quantity < 10 && (
+                    <Badge className="bg-amber-500 hover:bg-amber-600 font-vazirmatn">
+                      نسخه محدود
+                    </Badge>
                   )}
                 </div>
 
@@ -76,8 +75,8 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                   className="absolute bottom-4 left-0 right-0 flex justify-center"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{
-                    opacity: hoveredProduct === product.id ? 1 : 0,
-                    y: hoveredProduct === product.id ? 0 : 20,
+                    opacity: hoveredProduct === product.uuid ? 1 : 0,
+                    y: hoveredProduct === product.uuid ? 0 : 20,
                   }}
                   transition={{ duration: 0.3 }}
                 >
@@ -104,5 +103,5 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
         ))}
       </div>
     </section>
-  )
+  );
 }

@@ -1,88 +1,81 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Star, Minus, Plus, Heart, Share2, ShoppingCart, Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
-import { useCart } from "@/context/cart-context"
-import { toast } from "@/components/ui/use-toast"
-import { ToastAction } from "@/components/ui/toast"
-import { useRouter } from "next/navigation"
-import { useWishlist } from "@/context/wishlist-context"
+import { useState } from "react";
+import {
+  Star,
+  Minus,
+  Plus,
+  Heart,
+  Share2,
+  ShoppingCart,
+  Check,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
+import { useCart } from "@/context/cart-context";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { useRouter } from "next/navigation";
+import { useWishlist } from "@/context/wishlist-context";
+import { IProductType } from "@/lib/products";
 
 interface ProductInfoProps {
-  product: {
-    id: number
-    name: string
-    price: number
-    originalPrice?: number
-    rating: number
-    reviewCount: number
-    availability: "in-stock" | "low-stock" | "out-of-stock"
-    isNew: boolean
-    isLimited: boolean
-    category: string
-    series: string
-    character: string
-    manufacturer: string
-    releaseDate: string
-    scale: string
-    material: string
-    height: string
-    images: { id: number; url: string; alt: string }[]
-  }
+  product: IProductType;
 }
 
 export default function ProductInfo({ product }: ProductInfoProps) {
-  const [quantity, setQuantity] = useState(1)
-  const [addedToCart, setAddedToCart] = useState(false)
-  const { addItem } = useCart()
-  const router = useRouter()
-  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist()
+  const [quantity, setQuantity] = useState(1);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const { addItem } = useCart();
+  const router = useRouter();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1)
+      setQuantity(quantity - 1);
     }
-  }
+  };
 
   const increaseQuantity = () => {
-    setQuantity(quantity + 1)
-  }
+    setQuantity(quantity + 1);
+  };
 
   const handleAddToCart = () => {
-    addItem(product, quantity)
-    setAddedToCart(true)
+    addItem(product.uuid, quantity);
+    setAddedToCart(true);
 
     toast({
       title: "محصول به سبد خرید اضافه شد",
       description: `${quantity} عدد ${product.name} به سبد خرید شما اضافه شد.`,
       action: (
-        <ToastAction altText="مشاهده سبد خرید" onClick={() => router.push("/cart")}>
+        <ToastAction
+          altText="مشاهده سبد خرید"
+          onClick={() => router.push("/cart")}
+        >
           مشاهده سبد خرید
         </ToastAction>
       ),
-    })
+    });
 
     // بعد از 2 ثانیه، وضعیت دکمه به حالت اولیه برمی‌گردد
     setTimeout(() => {
-      setAddedToCart(false)
-    }, 2000)
-  }
+      setAddedToCart(false);
+    }, 2000);
+  };
 
   // تعیین وضعیت موجودی
   const availabilityText = {
     "in-stock": "موجود در انبار",
     "low-stock": "تنها چند عدد باقی مانده",
     "out-of-stock": "ناموجود",
-  }
+  };
 
   const availabilityColor = {
     "in-stock": "text-green-500",
     "low-stock": "text-amber-500",
     "out-of-stock": "text-red-500",
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -97,12 +90,17 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               key={i}
               className={cn(
                 "w-5 h-5",
-                i < product.rating ? "text-amber-400 fill-amber-400" : "text-gray-300 dark:text-gray-600",
+                i < product.rating
+                  ? "text-amber-400 fill-amber-400"
+                  : "text-gray-300 dark:text-gray-600"
               )}
             />
           ))}
         </div>
-        <span className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">({product.reviewCount} نظر)</span>
+        <span className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
+          ({/* {product.reviewCount}  */}
+          نظر)
+        </span>
       </div>
 
       {/* قیمت */}
@@ -111,23 +109,36 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
         </span>
 
-        {product.originalPrice && (
+        {product.price && (
           <span className="text-lg text-gray-500 line-through font-vazirmatn">
-            {new Intl.NumberFormat("fa-IR").format(product.originalPrice)} تومان
+            {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
           </span>
         )}
       </div>
 
       {/* وضعیت موجودی */}
       <div className="flex items-center gap-x-2 gap-x-reverse">
-        <span className={cn("text-sm font-medium font-vazirmatn", availabilityColor[product.availability])}>
-          {availabilityText[product.availability]}
+        <span
+          className={cn(
+            "text-sm font-medium font-vazirmatn",
+            availabilityColor["in-stock"]
+          )}
+        >
+          {availabilityText["in-stock"]}
         </span>
 
         {/* نشان‌های محصول */}
         <div className="flex gap-x-2 gap-x-reverse mr-4">
-          {product.isNew && <Badge className="bg-purple-500 hover:bg-purple-600 font-vazirmatn">جدید</Badge>}
-          {product.isLimited && <Badge className="bg-amber-500 hover:bg-amber-600 font-vazirmatn">نسخه محدود</Badge>}
+          {(product.createdAt as any) > new Date() && (
+            <Badge className="bg-purple-500 hover:bg-purple-600 font-vazirmatn">
+              جدید
+            </Badge>
+          )}
+          {product.quantity < 10 && (
+            <Badge className="bg-amber-500 hover:bg-amber-600 font-vazirmatn">
+              نسخه محدود
+            </Badge>
+          )}
         </div>
       </div>
 
@@ -138,27 +149,35 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">سری:</span>{" "}
-          <span className="font-medium">{product.series}</span>
+          <span className="font-medium">{product.detail.series}</span>
         </div>
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">شخصیت:</span>{" "}
-          <span className="font-medium">{product.character}</span>
+          <span className="font-medium">{product.detail.character}</span>
         </div>
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">سازنده:</span>{" "}
-          <span className="font-medium">{product.manufacturer}</span>
+          <span className="font-medium">
+            {product.detail?.specifications?.manufacturer}
+          </span>
         </div>
         <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">تاریخ انتشار:</span>{" "}
-          <span className="font-medium">{product.releaseDate}</span>
+          <span className="text-gray-500 dark:text-gray-400">
+            تاریخ انتشار:
+          </span>{" "}
+          <span className="font-medium">{product.createdAt}</span>
         </div>
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">مقیاس:</span>{" "}
-          <span className="font-medium">{product.scale}</span>
+          <span className="font-medium">
+            {product?.detail?.specifications?.scale}
+          </span>
         </div>
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">ارتفاع:</span>{" "}
-          <span className="font-medium">{product.height}</span>
+          <span className="font-medium">
+            {product?.detail?.specifications?.height}
+          </span>
         </div>
       </div>
 
@@ -167,7 +186,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* انتخاب تعداد */}
       <div className="flex items-center gap-x-4 gap-x-reverse">
-        <span className="text-gray-700 dark:text-gray-300 font-vazirmatn">تعداد:</span>
+        <span className="text-gray-700 dark:text-gray-300 font-vazirmatn">
+          تعداد:
+        </span>
         <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-full">
           <Button
             variant="ghost"
@@ -184,7 +205,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             {new Intl.NumberFormat("fa-IR").format(quantity)}
           </span>
 
-          <Button variant="ghost" size="icon" className="rounded-full h-10 w-10" onClick={increaseQuantity}>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-full h-10 w-10"
+            onClick={increaseQuantity}
+          >
             <Plus className="h-4 w-4" />
             <span className="sr-only">افزایش</span>
           </Button>
@@ -198,10 +224,10 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             "flex-1 rounded-full py-6 font-vazirmatn transition-all duration-300",
             addedToCart
               ? "bg-green-500 hover:bg-green-600"
-              : "bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700",
+              : "bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
           )}
           onClick={handleAddToCart}
-          disabled={product.availability === "out-of-stock"}
+          disabled={product.quantity === 0}
         >
           {addedToCart ? (
             <>
@@ -220,17 +246,29 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           variant="outline"
           size="icon"
           className="rounded-full h-12 w-12"
-          onClick={() => (isInWishlist(product.id) ? removeFromWishlist(product.id) : addToWishlist(product))}
+          onClick={() =>
+            isInWishlist(product.uuid)
+              ? removeFromWishlist(product.uuid)
+              : addToWishlist(product)
+          }
         >
-          <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-red-500 text-red-500" : ""}`} />
+          <Heart
+            className={`h-5 w-5 ${
+              isInWishlist(product.uuid) ? "fill-red-500 text-red-500" : ""
+            }`}
+          />
           <span className="sr-only">افزودن به علاقه‌مندی‌ها</span>
         </Button>
 
-        <Button variant="outline" size="icon" className="rounded-full h-12 w-12">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full h-12 w-12"
+        >
           <Share2 className="h-5 w-5" />
           <span className="sr-only">اشتراک‌گذاری</span>
         </Button>
       </div>
     </div>
-  )
+  );
 }

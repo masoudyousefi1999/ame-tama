@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { User, LogOut, Settings, Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,14 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/context/auth-context";
-import AuthModal from "@/components/auth/auth-modal";
+import LoginModal from "@/components/auth/login-modal";
 
 export default function UserMenu() {
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { user, logout } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -41,13 +39,18 @@ export default function UserMenu() {
     setIsOpen(false);
   };
 
+  const handleLoginSuccess = () => {
+    // This will be called when login is successful
+    // The auth context should update and this component will re-render
+  };
+
   if (!user) {
     return (
       <>
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => setIsAuthModalOpen(true)}
+          onClick={() => setIsLoginModalOpen(true)}
           className="hidden md:flex font-vazirmatn"
         >
           <User className="h-5 w-5" />
@@ -55,15 +58,16 @@ export default function UserMenu() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setIsAuthModalOpen(true)}
+          onClick={() => setIsLoginModalOpen(true)}
           className="md:hidden"
           aria-label="ورود / ثبت‌نام"
         >
           <User className="h-5 w-5" />
         </Button>
-        <AuthModal
-          isOpen={isAuthModalOpen}
-          onClose={() => setIsAuthModalOpen(false)}
+        <LoginModal
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onSuccess={handleLoginSuccess}
         />
       </>
     );
@@ -93,26 +97,26 @@ export default function UserMenu() {
         </DropdownMenuTrigger>
 
         <DropdownMenuContent align="end" className="w-56 z-[100] fixed">
-        <div className="flex items-center justify-start p-2">
-  <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3 shrink-0">
-    <Image
-      src={user.avatar || "/placeholder.svg?height=40&width=40"}
-      alt={`${user.firstName} ${user.lastName}`}
-      fill
-      className="object-cover"
-      sizes="40px"
-      priority
-    />
-  </div>
-  <div className="min-w-0">
-    <p className="font-medium truncate font-vazirmatn">
-      {user.firstName} {user.lastName}
-    </p>
-    <p className="text-xs text-gray-500 dark:text-gray-400 truncate font-vazirmatn">
-      {user.email}
-    </p>
-  </div>
-</div>
+          <div className="flex items-center justify-start p-2">
+            <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3 shrink-0">
+              <Image
+                src={user.avatar || "/placeholder.svg?height=40&width=40"}
+                alt={`${user.firstName} ${user.lastName}`}
+                fill
+                className="object-cover"
+                sizes="40px"
+                priority
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="font-medium truncate font-vazirmatn">
+                {user.firstName} {user.lastName}
+              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 truncate font-vazirmatn">
+                {user.email}
+              </p>
+            </div>
+          </div>
 
           <DropdownMenuSeparator />
 

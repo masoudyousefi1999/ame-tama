@@ -1,8 +1,6 @@
 "use client";
 
-import type React from "react";
-
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -13,26 +11,14 @@ import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useWishlist } from "@/context/wishlist-context";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { IProductType } from "@/lib/products";
 
 export interface ProductCardProps {
-  product: {
-    id: number;
-    name: string;
-    price: number;
-    originalPrice?: number;
-    image: string;
-    images?: { id: number; url: string; alt: string }[];
-    rating?: number;
-    reviewCount?: number;
-    availability?: "in-stock" | "low-stock" | "out-of-stock";
-    isNew?: boolean;
-    isLimited?: boolean;
-    inStock?: boolean;
-  };
+  product: IProductType;
   variant?: "default" | "wishlist" | "compact" | "order";
-  onAddToCart?: (product: any) => void;
-  onAddToWishlist?: (product: any) => void;
-  onRemoveFromWishlist?: (id: number) => void;
+  onAddToCart?: (product: IProductType) => void;
+  onAddToWishlist?: (product: IProductType) => void;
+  onRemoveFromWishlist?: (productUuid: string) => void;
   showAddToCart?: boolean;
   showAddToWishlist?: boolean;
   showRemoveFromWishlist?: boolean;
@@ -50,88 +36,60 @@ export function ProductCard({
   showRemoveFromWishlist = false,
   className,
 }: ProductCardProps) {
-  const [hoveredProduct, setHoveredProduct] = useState<boolean>(false);
-  const { toast } = useToast();
+  const [hovered, setHovered] = useState(false);
   const isMobile = useIsMobile();
+  const { toast } = useToast();
   const {
     addToWishlist: addToWishlistContext,
     removeFromWishlist: removeFromWishlistContext,
     isInWishlist,
   } = useWishlist();
 
-  // Always show buttons on mobile
+  // Always show hover actions on mobile
   useEffect(() => {
-    if (isMobile) {
-      setHoveredProduct(true);
-    }
+    if (isMobile) setHovered(true);
   }, [isMobile]);
 
-  // Format price
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
-  };
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("fa-IR").format(price) + " تومان";
 
-  // Calculate discount percentage
-  const discountPercentage = product.originalPrice
-    ? Math.round(
-        ((product.originalPrice - product.price) / product.originalPrice) * 100
-      )
-    : 0;
+  const isInStock = product.quantity && product.quantity > 0;
 
-  // Determine if product is in stock
-  const isInStock =
-    product.inStock !== undefined
-      ? product.inStock
-      : product.availability !== "out-of-stock";
-
-  // Handle add to cart
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (onAddToCart) {
-      onAddToCart(product);
-    } else {
+    if (onAddToCart) onAddToCart(product);
+    else
       toast({
-        title: "به سبد خرید اضافه شد",
+        title: "محصول به سبد خرید اضافه شد",
         description: `${product.name} به سبد خرید شما اضافه شد.`,
       });
-    }
   };
 
-  // Handle add to wishlist
-  const handleAddToWishlist = (e: React.MouseEvent) => {
+  const handleWishlistToggle = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (onAddToWishlist) {
-      onAddToWishlist(product);
+    if (isInWishlist(product.uuid)) {
+      if (onRemoveFromWishlist) onRemoveFromWishlist(product.uuid);
+      else removeFromWishlistContext(product.uuid);
     } else {
-      addToWishlistContext(product);
+      if (onAddToWishlist) onAddToWishlist(product);
+      else addToWishlistContext(product as any);
     }
   };
 
-  // Handle remove from wishlist
-  const handleRemoveFromWishlist = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (onRemoveFromWishlist) {
-      onRemoveFromWishlist(product.id);
-    } else {
-      removeFromWishlistContext(product.id);
-    }
-  };
-
-  // Render different variants
+  // ─────── COMPACT VARIANT ───────
   if (variant === "compact") {
     return (
-      <div className={cn("flex items-center p-2 border rounded-lg", className)}>
-        <div className="relative h-16 w-16 flex-shrink-0">
+      <div
+        className={cn(
+          "flex items-center p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow",
+          className
+        )}
+      >
+        <div className="relative h-16 w-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
           <Image
-            src={
-              product.image || product.images?.[0]?.url || "/placeholder.svg"
-            }
+            src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
             fill
             className="object-contain"
@@ -142,7 +100,7 @@ export function ProductCard({
           <h3 className="text-sm font-medium line-clamp-1 font-vazirmatn">
             {product.name}
           </h3>
-          <p className="text-sm text-gray-500 font-vazirmatn">
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
             {formatPrice(product.price)}
           </p>
         </div>
@@ -161,19 +119,18 @@ export function ProductCard({
     );
   }
 
+  // ─────── ORDER VARIANT ───────
   if (variant === "order") {
     return (
       <div
         className={cn(
-          "flex items-center p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800",
+          "flex items-center p-4 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
           className
         )}
       >
-        <div className="relative h-20 w-20 ml-4">
+        <div className="relative h-20 w-20 ml-4 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
           <Image
-            src={
-              product.image || product.images?.[0]?.url || "/placeholder.svg"
-            }
+            src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
             fill
             className="object-contain"
@@ -195,214 +152,200 @@ export function ProductCard({
     );
   }
 
+  // ─────── WISHLIST VARIANT ───────
   if (variant === "wishlist") {
     return (
-      <div className={cn("border rounded-lg overflow-hidden group", className)}>
-        <div className="relative h-48 bg-gray-100 dark:bg-gray-800">
+      <motion.div
+        className={cn(
+          "group relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow",
+          className
+        )}
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      >
+        <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
           <Image
-            src={
-              product.image || product.images?.[0]?.url || "/placeholder.svg"
-            }
+            src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
             fill
             className="object-contain p-4"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
+
+          {/* Remove from Wishlist Button */}
           {showRemoveFromWishlist && (
-            <Button
-              variant="destructive"
-              size="icon"
-              className="absolute top-2 left-2 h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={handleRemoveFromWishlist}
+            <button
+              onClick={handleWishlistToggle}
+              className="absolute top-2 left-2 h-8 w-8 rounded-full bg-red-600/80 flex items-center justify-center text-white hover:bg-red-700 transition-colors z-10"
             >
               <Trash2 className="h-4 w-4" />
               <span className="sr-only">حذف از علاقه‌مندی‌ها</span>
-            </Button>
+            </button>
           )}
-          {product.originalPrice && product.originalPrice > product.price && (
-            <div className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-vazirmatn">
-              {discountPercentage}% تخفیف
-            </div>
-          )}
-        </div>
-        <div className="p-4">
-          <Link href={`/product/${product.id}`}>
-            <h3 className="font-medium mb-2 line-clamp-2 hover:text-purple-600 transition-colors font-vazirmatn">
-              {product.name}
-            </h3>
-          </Link>
-          <div className="flex items-center mb-2">
-            {product.rating && (
-              <div className="flex items-center text-amber-500">
-                <Star className="fill-current h-4 w-4" />
-                <span className="ml-1 text-sm font-vazirmatn">
-                  {product.rating}
-                </span>
-              </div>
-            )}
-            <div
-              className={`mr-2 text-sm ${
-                isInStock
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
-              } font-vazirmatn`}
-            >
-              {isInStock ? "موجود" : "ناموجود"}
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <div>
-              <div className="font-bold text-lg font-vazirmatn">
-                {formatPrice(product.price)}
-              </div>
-              {product.originalPrice &&
-                product.originalPrice > product.price && (
-                  <div className="text-sm text-gray-500 line-through font-vazirmatn">
-                    {formatPrice(product.originalPrice)}
-                  </div>
-                )}
-            </div>
-            {showAddToCart && (
-              <Button
-                size="sm"
-                className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-                disabled={!isInStock}
-                onClick={handleAddToCart}
-              >
-                <ShoppingCart className="h-4 w-4 ml-1" />
-                <span className="font-vazirmatn">افزودن</span>
-              </Button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
 
-  // Default variant
-  return (
-    <motion.div
-      className={cn(
-        "group relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300",
-        className
-      )}
-      onMouseEnter={() => !isMobile && setHoveredProduct(true)}
-      onMouseLeave={() => !isMobile && setHoveredProduct(false)}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-    >
-      <Link href={`/product/${product.id}`} className="block">
-        <div className="relative h-64 overflow-hidden">
-          <Image
-            src={
-              product.image || product.images?.[0]?.url || "/placeholder.svg"
-            }
-            alt={product.name}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-          {/* نشان‌ها */}
-          <div className="absolute top-2 right-2 flex flex-col gap-1">
-            {product.isNew && (
-              <Badge className="bg-purple-500 hover:bg-purple-600 font-vazirmatn">
-                جدید
-              </Badge>
-            )}
-            {product.isLimited && (
-              <Badge className="bg-amber-500 hover:bg-amber-600 font-vazirmatn">
-                نسخه محدود
-              </Badge>
-            )}
-            {product.availability === "low-stock" && (
-              <Badge className="bg-orange-500 hover:bg-orange-600 font-vazirmatn">
-                موجودی محدود
-              </Badge>
-            )}
-            {product.availability === "out-of-stock" && (
-              <Badge className="bg-red-500 hover:bg-red-600 font-vazirmatn">
+          {/* Badges */}
+          <div className="absolute top-2 right-2 flex flex-col items-end gap-1 z-10">
+            {product.quantity === 0 && (
+              <Badge className="bg-red-600 text-white text-xs font-vazirmatn">
                 ناموجود
               </Badge>
             )}
-          </div>
-
-          {/* دکمه‌های سریع */}
-          <motion.div
-            className="absolute bottom-4 left-0 right-0 flex justify-center gap-x-2 gap-x-reverse"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{
-              opacity: hoveredProduct ? 1 : 0,
-              y: hoveredProduct ? 0 : 20,
-            }}
-            transition={{ duration: 0.3 }}
-          >
-            {showAddToWishlist && (
-              <Button
-                size="sm"
-                variant="outline"
-                className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg rounded-full"
-                onClick={
-                  isInWishlist(product.id)
-                    ? handleRemoveFromWishlist
-                    : handleAddToWishlist
-                }
-              >
-                <Heart
-                  className={`h-4 w-4 ${
-                    isInWishlist(product.id) ? "fill-red-500 text-red-500" : ""
-                  }`}
-                />
-                <span className="sr-only">
-                  {isInWishlist(product.id)
-                    ? "حذف از علاقه‌مندی‌ها"
-                    : "افزودن به علاقه‌مندی‌ها"}
-                </span>
-              </Button>
+            {product.quantity > 0 && product.quantity < 10 && (
+              <Badge className="bg-amber-500 text-white text-xs font-vazirmatn">
+                موجودی محدود
+              </Badge>
             )}
+          </div>
+        </div>
+        <div className="p-4 space-y-2">
+          <Link href={`/product/${product.slug}`}>
+            <h3 className="font-vazirmatn text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+              {product.name}
+            </h3>
+          </Link>
+          <div className="flex items-center space-x-2 rtl:space-x-reverse">
+            {product.rating && (
+              <div className="flex items-center text-amber-400">
+                <Star className="h-4 w-4 fill-amber-400" />
+                <span className="mr-1 text-sm font-vazirmatn">
+                  {product.rating.toFixed(1)}
+                </span>
+              </div>
+            )}
+            <span
+              className={cn(
+                "text-sm font-vazirmatn",
+                product.quantity > 0
+                  ? "text-green-600 dark:text-green-400"
+                  : "text-red-600 dark:text-red-400"
+              )}
+            >
+              {product.quantity > 0 ? "موجود" : "ناموجود"}
+            </span>
+          </div>
+          <div className="flex items-baseline justify-between">
+            <p className="text-lg font-bold text-purple-600 dark:text-purple-400 font-vazirmatn">
+              {formatPrice(product.price)}
+            </p>
             {showAddToCart && (
               <Button
                 size="sm"
-                className="bg-white text-gray-900 hover:bg-gray-100 shadow-lg rounded-full px-4 font-vazirmatn"
+                className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full px-3 py-1 text-xs shadow transition-colors"
                 onClick={handleAddToCart}
                 disabled={!isInStock}
               >
-                <ShoppingCart className="h-4 w-4 ml-2" />
-                افزودن سریع
+                <ShoppingCart className="h-4 w-4 ml-1" />
+                افزودن
               </Button>
-            )}
-          </motion.div>
-        </div>
-
-        <div className="p-4">
-          <h3 className="text-lg font-semibold mb-2 group-hover:text-purple-500 dark:group-hover:text-purple-400 transition-colors font-vazirmatn line-clamp-2">
-            {product.name}
-          </h3>
-
-          <div className="flex justify-between items-center">
-            <p className="text-lg font-bold text-gray-900 dark:text-gray-100 font-vazirmatn">
-              {formatPrice(product.price)}
-            </p>
-            {product.originalPrice && product.originalPrice > product.price && (
-              <span className="text-sm text-gray-500 line-through font-vazirmatn">
-                {formatPrice(product.originalPrice)}
-              </span>
             )}
           </div>
         </div>
-      </Link>
+      </motion.div>
+    );
+  }
 
-      {/* ✅ Added Button below the card */}
-      <div className="p-4 pt-0">
-        <Link href={`/product/${product.id}`}>
-          <Button className="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 rtl:space-x-reverse bg-primary hover:bg-primary/90 h-10 px-4 py-2 flex-row w-full mt-4 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 font-vazirmatn">
-            مشاهده محصول
-          </Button>
-        </Link>
-      </div>
+  // ─────── DEFAULT VARIANT ───────
+  return (
+    <motion.div
+      className={cn(
+        "group relative rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-shadow",
+        className
+      )}
+      onMouseEnter={() => !isMobile && setHovered(true)}
+      onMouseLeave={() => !isMobile && setHovered(false)}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.4 }}
+    >
+      <Link href={`/product/${product.slug}`} className="block">
+        {/* Image Section */}
+        <div className="relative h-64 md:h-72 lg:h-80 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+          <Image
+            src={product.productMedia?.[0]?.url || "/placeholder.svg"}
+            alt={product.name}
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+
+          {/* Gradient Overlay */}
+          <span className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
+
+          {/* Badges */}
+          <div className="absolute top-3 right-3 flex flex-col items-end gap-1 z-10">
+            {product.quantity === 0 && (
+              <Badge className="bg-red-600 text-white text-xs font-vazirmatn">
+                ناموجود
+              </Badge>
+            )}
+            {product.quantity > 0 && product.quantity < 10 && (
+              <Badge className="bg-amber-500 text-white text-xs font-vazirmatn">
+                موجودی محدود
+              </Badge>
+            )}
+            {(product.createdAt as any) > new Date() && (
+              <Badge className="bg-purple-600 text-white text-xs font-vazirmatn">
+                جدید
+              </Badge>
+            )}
+          </div>
+
+          {/* Wishlist Icon */}
+          {showAddToWishlist && (
+            <button
+              onClick={handleWishlistToggle}
+              className="absolute top-3 left-3 z-10 h-10 w-10 rounded-full bg-white/70 dark:bg-gray-900/50 backdrop-blur-md flex items-center justify-center hover:bg-white/90 dark:hover:bg-gray-900/70 transition-colors"
+            >
+              <Heart
+                className={cn(
+                  "h-5 w-5 transition-colors",
+                  isInWishlist(product.uuid)
+                    ? "fill-red-500 text-red-500"
+                    : "text-gray-600 dark:text-gray-300"
+                )}
+              />
+            </button>
+          )}
+        </div>
+
+        {/* Details Section */}
+        <div className="p-4 space-y-2">
+          <h3 className="font-vazirmatn text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+            {product.name}
+          </h3>
+
+          {/* Rating */}
+          {product.rating && (
+            <div className="flex items-center text-amber-400 text-sm">
+              {Array.from({ length: 5 }).map((_, idx) => (
+                <Star
+                  key={idx}
+                  className={cn(
+                    "h-4 w-4",
+                    idx < Math.round(product.rating)
+                      ? "fill-amber-400 text-amber-400"
+                      : "text-gray-300 dark:text-gray-600"
+                  )}
+                />
+              ))}
+              <span className="mr-1 font-vazirmatn text-xs text-gray-600 dark:text-gray-400">
+                ({product.rating.toFixed(1)})
+              </span>
+            </div>
+          )}
+
+          {/* Price */}
+          <div className="flex items-baseline justify-between">
+            <p className="text-lg font-bold text-purple-600 dark:text-purple-400 font-vazirmatn">
+              {formatPrice(product.price)}
+            </p>
+          </div>
+        </div>
+      </Link>
     </motion.div>
   );
 }

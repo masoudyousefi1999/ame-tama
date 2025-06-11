@@ -27,29 +27,41 @@ import { Badge } from "@/components/ui/badge"
 import { Breadcrumb } from "@/components/ui/breadcrumb"
 import { BackButton } from "@/components/ui/back-button"
 
-// Sample address data
+// Sample address data - updated to match API schema
 const sampleAddresses = [
   {
+    createdAt: "2023-01-15T10:35:00.000Z",
+    updatedAt: "2025-05-30T02:10:00.000Z",
+    uuid: "addr-58b1f289-be86-4344-8d07-3a55a01badbe",
+    province: "تهران",
+    city: "تهران",
+    address: "خیابان ولیعصر، بالاتر از میدان ونک",
+    postalCode: "1234567890",
+    houseNumber: "123",
+    floorNumber: "4",
+    // Additional fields for UI compatibility
     id: 1,
     title: "منزل",
     recipient: "علی محمدی",
     phone: "09123456789",
-    postalCode: "1234567890",
-    province: "تهران",
-    city: "تهران",
-    address: "خیابان ولیعصر، بالاتر از میدان ونک، پلاک 123، واحد 4",
     isDefault: true,
     type: "home",
   },
   {
+    createdAt: "2023-02-20T14:50:00.000Z",
+    updatedAt: "2025-05-30T02:15:00.000Z",
+    uuid: "addr-7c877e90-bcc0-4fe6-8d5d-8fcae85f0066",
+    province: "تهران",
+    city: "تهران",
+    address: "خیابان شریعتی، نرسیده به میدان قدس",
+    postalCode: "9876543210",
+    houseNumber: "45",
+    floorNumber: "2",
+    // Additional fields for UI compatibility
     id: 2,
     title: "محل کار",
     recipient: "علی محمدی",
     phone: "09123456789",
-    postalCode: "9876543210",
-    province: "تهران",
-    city: "تهران",
-    address: "خیابان شریعتی، نرسیده به میدان قدس، پلاک 45، طبقه 2",
     isDefault: false,
     type: "work",
   },

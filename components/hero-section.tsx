@@ -15,7 +15,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full h-[100svh] min-h-[100svh] flex items-center justify-center overflow-hidden md:h-[100svh] md:min-h-[100svh]">
+    <section className="relative w-full h-[100vh] min-h-[100vh] flex items-center justify-center overflow-hidden [height:calc(100vh+1px)] [min-height:-webkit-fill-available] md:h-[100dvh] md:min-h-[100dvh]">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image

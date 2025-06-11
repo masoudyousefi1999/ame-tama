@@ -1,29 +1,44 @@
-"use client"
+"use client";
 
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import {
+  decreaseOrderItem,
+  getUserOrder,
+  increaseOrderItem,
+} from "@/lib/order";
+import { IProductType } from "@/lib/products";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 // تعریف نوع محصول در سبد خرید
 export interface CartItem {
-  id: number
-  name: string
-  price: number
-  image: string
-  quantity: number
+  product: IProductType;
+  quantity: number;
+  createdAt: Date;
+  updatedAt: Date;
+  uuid: string;
 }
 
 // تعریف نوع context سبد خرید
 interface CartContextType {
-  items: CartItem[]
-  addItem: (product: any, quantity: number) => void
-  updateQuantity: (id: number, quantity: number) => void
-  removeItem: (id: number) => void
-  clearCart: () => void
-  itemCount: number
-  subtotal: number
-  discount: number
-  total: number
-  applyDiscount: (code: string) => boolean
-  recentlyAdded: number | null
+  items: CartItem[];
+  addItem: (productUuid: string, quantity: number) => void;
+  updateQuantity: (
+    productUuid: string,
+    quantity: number,
+    type: "increase" | "decrease"
+  ) => void;
+  clearCart: () => void;
+  itemCount: number;
+  subtotal: number;
+  discount: number;
+  total: number;
+  applyDiscount: (code: string) => boolean;
+  recentlyAdded: string | null;
 }
 
 // ایجاد context با مقدار پیش‌فرض
@@ -31,7 +46,6 @@ const CartContext = createContext<CartContextType>({
   items: [],
   addItem: () => {},
   updateQuantity: () => {},
-  removeItem: () => {},
   clearCart: () => {},
   itemCount: 0,
   subtotal: 0,
@@ -39,140 +53,125 @@ const CartContext = createContext<CartContextType>({
   total: 0,
   applyDiscount: () => false,
   recentlyAdded: null,
-})
+});
 
 // کدهای تخفیف معتبر (در یک پروژه واقعی، این داده‌ها از سرور دریافت می‌شوند)
 const validDiscountCodes = [
   { code: "WELCOME10", percentage: 10 },
   { code: "SUMMER20", percentage: 20 },
   { code: "ANIME30", percentage: 30 },
-]
+];
 
 export function CartProvider({ children }: { children: ReactNode }) {
   // وضعیت سبد خرید
-  const [items, setItems] = useState<CartItem[]>([])
-  const [discount, setDiscount] = useState<number>(0)
-  const [isInitialized, setIsInitialized] = useState(false)
-  const [recentlyAdded, setRecentlyAdded] = useState<number | null>(null)
+  const [items, setItems] = useState<CartItem[]>([]);
+  const [discount, setDiscount] = useState<number>(0);
+  const [isInitialized, setIsInitialized] = useState(false);
+  const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
 
   // بارگذاری سبد خرید از localStorage در هنگام اولین رندر
   useEffect(() => {
-    const storedCart = localStorage.getItem("ame-tama-cart")
-    const storedDiscount = localStorage.getItem("ame-tama-discount")
-
-    if (storedCart) {
-      try {
-        setItems(JSON.parse(storedCart))
-      } catch (error) {
-        console.error("Error parsing cart from localStorage:", error)
-        setItems([])
+    let userCart;
+    const getOrder = async () => {
+      userCart = await getUserOrder();
+      if (userCart) {
+        setItems(userCart.items);
       }
-    }
+    };
+    getOrder();
 
-    if (storedDiscount) {
-      try {
-        setDiscount(JSON.parse(storedDiscount))
-      } catch (error) {
-        console.error("Error parsing discount from localStorage:", error)
-        setDiscount(0)
-      }
-    }
+    // if (storedDiscount) {
+    //   try {
+    //     setDiscount(JSON.parse(storedDiscount));
+    //   } catch (error) {
+    //     console.error("Error parsing discount from localStorage:", error);
+    //     setDiscount(0);
+    //   }
+    // }
 
-    setIsInitialized(true)
-  }, [])
+    setIsInitialized(true);
+  }, []);
 
-  // ذخیره سبد خرید در localStorage هر زمان که تغییر می‌کند
-  useEffect(() => {
-    if (isInitialized) {
-      localStorage.setItem("ame-tama-cart", JSON.stringify(items))
-      localStorage.setItem("ame-tama-discount", JSON.stringify(discount))
-    }
-  }, [items, discount, isInitialized])
-
-  // Clear recently added highlight after 2 seconds
   useEffect(() => {
     if (recentlyAdded !== null) {
       const timer = setTimeout(() => {
-        setRecentlyAdded(null)
-      }, 2000)
-      return () => clearTimeout(timer)
+        setRecentlyAdded(null);
+      }, 200000);
+      return () => clearTimeout(timer);
     }
-  }, [recentlyAdded])
+  }, [recentlyAdded]);
 
   // محاسبه تعداد کل محصولات در سبد خرید
-  const itemCount = items.reduce((total, item) => total + item.quantity, 0)
+  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
 
   // محاسبه مجموع قیمت محصولات
-  const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0)
+  const subtotal = items.reduce(
+    (total, item) => total + item.product.price * item.quantity,
+    0
+  );
 
   // محاسبه مبلغ تخفیف
-  const discountAmount = (subtotal * discount) / 100
+  const discountAmount = (subtotal * discount) / 100;
 
   // محاسبه مجموع نهایی
-  const total = subtotal - discountAmount
+  const total = subtotal - discountAmount;
 
   // افزودن محصول به سبد خرید
-  const addItem = (product: any, quantity: number) => {
-    setItems((prevItems) => {
-      // بررسی اینکه آیا محصول قبلاً در سبد خرید وجود دارد
-      const existingItemIndex = prevItems.findIndex((item) => item.id === product.id)
+  const addItem = async (productUuid: string, quantity: number) => {
+    await increaseOrderItem({
+      productId: productUuid,
+      quantity,
+    });
+    const updatedCart = await getUserOrder();
+    if (updatedCart) {
+      setItems(updatedCart.items);
+    }
+    setRecentlyAdded(productUuid);
+  };
 
-      if (existingItemIndex !== -1) {
-        // اگر محصول وجود دارد، تعداد آن را افزایش می‌دهیم
-        const updatedItems = [...prevItems]
-        updatedItems[existingItemIndex].quantity += quantity
-        return updatedItems
-      } else {
-        // اگر محصول وجود ندارد، آن را به سبد خرید اضافه می‌کنیم
-        return [
-          ...prevItems,
-          {
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.images?.[0]?.url || product.image || "/placeholder.svg",
-            quantity,
-          },
-        ]
-      }
-    })
-
-    // Set recently added item for highlighting
-    setRecentlyAdded(product.id)
-  }
+  const decreaseItem = async (productUuid: string, quantity: number) => {
+    await decreaseOrderItem({
+      productId: productUuid,
+      quantity,
+    });
+    const updatedCart = await getUserOrder();
+    if (updatedCart) {
+      setItems(updatedCart.items);
+    }
+  };
 
   // به‌روزرسانی تعداد محصول در سبد خرید
-  const updateQuantity = (id: number, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(id)
-      return
+  const updateQuantity = async (
+    productUuid: string,
+    quantity: number,
+    type: "decrease" | "increase"
+  ) => {
+    if (type === "decrease") {
+      await decreaseItem(productUuid, quantity);
+    } else {
+      await addItem(productUuid, quantity);
     }
-
-    setItems((prevItems) => prevItems.map((item) => (item.id === id ? { ...item, quantity } : item)))
-  }
-
-  // حذف محصول از سبد خرید
-  const removeItem = (id: number) => {
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id))
-  }
+  };
 
   // پاک کردن کل سبد خرید
   const clearCart = () => {
-    setItems([])
-    setDiscount(0)
-  }
+    setItems([]);
+    setDiscount(0);
+  };
 
   // اعمال کد تخفیف
   const applyDiscount = (code: string): boolean => {
-    const discountCode = validDiscountCodes.find((dc) => dc.code.toLowerCase() === code.toLowerCase())
+    const discountCode = validDiscountCodes.find(
+      (dc) => dc.code.toLowerCase() === code.toLowerCase()
+    );
 
     if (discountCode) {
-      setDiscount(discountCode.percentage)
-      return true
+      setDiscount(discountCode.percentage);
+      return true;
     }
 
-    return false
-  }
+    return false;
+  };
 
   return (
     <CartContext.Provider
@@ -180,7 +179,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
         items,
         addItem,
         updateQuantity,
-        removeItem,
         clearCart,
         itemCount,
         subtotal,
@@ -192,10 +190,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     >
       {children}
     </CartContext.Provider>
-  )
+  );
 }
 
 // هوک سفارشی برای استفاده آسان از context سبد خرید
 export function useCart() {
-  return useContext(CartContext)
+  return useContext(CartContext);
 }

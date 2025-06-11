@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { ChevronLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getCategoryPath } from "@/lib/categories"
 
 interface BreadcrumbItem {
   name: string
@@ -12,25 +13,42 @@ interface BreadcrumbItem {
 interface BreadcrumbProps {
   items: BreadcrumbItem[]
   className?: string
+  categoryId?: string // اضافه کردن شناسه دسته‌بندی برای نمایش مسیر کامل
 }
 
-export default function Breadcrumb({ items, className }: BreadcrumbProps) {
+export default function Breadcrumb({ items, className, categoryId }: BreadcrumbProps) {
+  // اگر شناسه دسته‌بندی وجود داشت، مسیر کامل دسته‌بندی را دریافت می‌کنیم
+  let breadcrumbItems = [...items]
+
+  if (categoryId) {
+    const categoryPath = getCategoryPath(categoryId)
+
+    // حذف آخرین آیتم که همان دسته‌بندی فعلی است (چون در items هم وجود دارد)
+    if (categoryPath.length > 1) {
+      const parentCategories = categoryPath.slice(0, -1)
+
+      // اضافه کردن دسته‌بندی‌های والد به مسیر
+      breadcrumbItems = [
+        { name: "خانه", path: "/" },
+        ...parentCategories.map((cat) => ({
+          name: cat.name,
+          path: `/category/${cat.slug}`,
+        })),
+        ...items.slice(1), // حذف "خانه" از items اصلی چون قبلاً اضافه شده
+      ]
+    }
+  }
+
   return (
     <nav
       aria-label="breadcrumb"
       className={cn("flex items-center text-sm text-gray-500 dark:text-gray-400", className)}
     >
-      <ol className="flex items-center gap-x-2 gap-x-reverse">
-        <li>
-          <Link href="/" className="hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn">
-            خانه
-          </Link>
-        </li>
-
-        {items.map((item, index) => (
+      <ol className="flex items-center gap-x-2 gap-x-reverse overflow-x-auto whitespace-nowrap">
+        {breadcrumbItems.map((item, index) => (
           <li key={item.path} className="flex items-center">
-            <ChevronLeft className="h-4 w-4 mx-1" />
-            {index === items.length - 1 ? (
+            {index > 0 && <ChevronLeft className="h-4 w-4 mx-1" />}
+            {index === breadcrumbItems.length - 1 ? (
               <span className="text-gray-900 dark:text-gray-100 font-medium font-vazirmatn" aria-current="page">
                 {item.name}
               </span>

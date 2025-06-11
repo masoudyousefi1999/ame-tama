@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ResponsiveImage } from "@/components/ui/responsive-image";
-import { getLowQualityImageUrl } from "@/lib/image-optimization";
 
 interface ProductGalleryProps {
   images: {
@@ -43,7 +42,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
       <div className="relative aspect-square bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden group">
         <ResponsiveImage
           src={mainImage.url}
-          alt={mainImage.alt}
+          alt={mainImage?.alt || 'product image'}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           loadingStrategy="progressive"
@@ -91,7 +90,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
             <div className="relative aspect-square">
               <ResponsiveImage
                 src={mainImage.url}
-                alt={mainImage.alt}
+                alt={mainImage?.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
                 className="object-contain"
@@ -106,7 +105,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
       <div className="flex gap-x-2 gap-x-reverse justify-center">
         {images.map((image, index) => (
           <button
-            key={image.id}
+            key={index}
             onClick={() => handleThumbnailClick(image, index)}
             className={cn(
               "relative w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all duration-200",
@@ -117,7 +116,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
           >
             <ResponsiveImage
               src={image.url}
-              alt={image.alt}
+              alt={image?.alt || 'product image'}
               fill={false}
               sizes="(max-width: 768px) 64px, 80px"
               className="object-cover"
