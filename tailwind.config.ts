@@ -113,7 +113,7 @@ const config = {
   plugins: [
     require("tailwindcss-animate"),
     // Add RTL plugin
-    ({ addUtilities }) => {
+    ({ addUtilities }: any) => {
       const newUtilities = {
         ".flip-x": {
           "--tw-scale-x": "-1",

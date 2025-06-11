@@ -51,7 +51,7 @@ export function Animated500() {
     <div className="relative w-full h-64 flex items-center justify-center">
       <motion.div
         className="text-9xl font-bold text-red-500/20 dark:text-red-600/20 select-none"
-        variants={glitchVariants}
+        variants={glitchVariants as any}
         animate={prefersReducedMotion ? "static" : "animate"}
       >
         500

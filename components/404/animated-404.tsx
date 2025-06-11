@@ -50,7 +50,7 @@ export function Animated404() {
     <div className="relative w-full h-64 flex items-center justify-center">
       <motion.div
         className="text-9xl font-bold text-primary/10 select-none"
-        variants={glitchVariants}
+        variants={glitchVariants as any}
         animate={prefersReducedMotion ? "static" : "animate"}
       >
         404

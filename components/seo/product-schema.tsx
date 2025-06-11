@@ -1,17 +1,18 @@
-import { getSiteUrl } from "@/lib/site-url"
+import { getSiteUrl } from "@/lib/site-url";
 
 interface ProductSchemaProps {
   product: {
-    id: number
-    name: string
-    price: number
-    description?: string
-    productMedia: { id: number; url: string; alt: string }[]
-    availability: "in-stock" | "low-stock" | "out-of-stock"
-    category: string
-    manufacturer: string
-    releaseDate: string
-  }
+    uuid: string;
+    slug: string;
+    name: string;
+    price: number;
+    description?: string;
+    productMedia: { id: number; url: string; alt: string }[];
+    availability: "in-stock" | "low-stock" | "out-of-stock";
+    category: string;
+    manufacturer: string;
+    releaseDate: string;
+  };
 }
 
 export default function ProductSchema({ product }: ProductSchemaProps) {
@@ -20,33 +21,46 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     "in-stock": "https://schema.org/InStock",
     "low-stock": "https://schema.org/LimitedAvailability",
     "out-of-stock": "https://schema.org/OutOfStock",
-  }
+  };
 
   const schemaData = {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
-    image: product.productMedia.map((img) => (img.url.startsWith("http") ? img.url : getSiteUrl(img.url))),
-    description: product.description || `مجسمه ${product.name} از سری محصولات ${product.category}`,
-    sku: `AME-${product.id}`,
-    mpn: `AME-${product.id}`,
+    image: product.productMedia.map((img) =>
+      img.url.startsWith("http") ? img.url : getSiteUrl(img.url)
+    ),
+    description:
+      product.description ||
+      `مجسمه ${product.name} از سری محصولات ${product.category}`,
+    sku: `AME-${product.uuid}`,
+    mpn: `AME-${product.uuid}`,
     brand: {
       "@type": "Brand",
       name: product.manufacturer,
     },
     offers: {
       "@type": "Offer",
-      url: getSiteUrl(`product/${product.id}`),
+      url: getSiteUrl(`product/${product.slug}`),
       priceCurrency: "IRR",
       price: product.price * 10, // تبدیل تومان به ریال برای استاندارد بین‌المللی
-      priceValidUntil: new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0],
-      availability: availabilityMap[product.availability],
+      priceValidUntil: new Date(
+        new Date().setFullYear(new Date().getFullYear() + 1)
+      )
+        .toISOString()
+        .split("T")[0],
+      availability: availabilityMap[product?.availability] || "in-stock",
       seller: {
         "@type": "Organization",
         name: "AME-TAMA",
       },
     },
-  }
+  };
 
-  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }} />
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaData) }}
+    />
+  );
 }

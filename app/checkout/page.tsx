@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Image from "next/image"
-import { CreditCard, MapPin, ChevronDown, ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
-import { useCart } from "@/context/cart-context"
-import { cn } from "@/lib/utils"
-import { useEffect } from "react"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { CreditCard, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import { useCart } from "@/context/cart-context";
+import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 // انواع روش‌های پرداخت
 const paymentMethods = [
@@ -29,7 +29,7 @@ const paymentMethods = [
     description: "پرداخت وجه هنگام تحویل سفارش",
     icon: MapPin,
   },
-]
+];
 
 // انواع روش‌های ارسال
 const shippingMethods = [
@@ -45,11 +45,11 @@ const shippingMethods = [
     description: "تحویل بین ۱ تا ۲ روز کاری",
     price: 45000,
   },
-]
+];
 
 export default function CheckoutPage() {
-  const router = useRouter()
-  const { items, subtotal, discount, total, clearCart } = useCart()
+  const router = useRouter();
+  const { items, subtotal, discount, total, clearCart } = useCart();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -60,38 +60,41 @@ export default function CheckoutPage() {
     city: "",
     province: "",
     notes: "",
-  })
-  const [paymentMethod, setPaymentMethod] = useState("online")
-  const [shippingMethod, setShippingMethod] = useState("standard")
-  const [showOrderSummary, setShowOrderSummary] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  });
+  const [paymentMethod, setPaymentMethod] = useState("online");
+  const [shippingMethod, setShippingMethod] = useState("standard");
+  const [showOrderSummary, setShowOrderSummary] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // محاسبه هزینه ارسال
-  const shippingCost = shippingMethods.find((method) => method.id === shippingMethod)?.price || 0
+  const shippingCost =
+    shippingMethods.find((method) => method.id === shippingMethod)?.price || 0;
 
   // محاسبه مبلغ نهایی با احتساب هزینه ارسال
-  const finalTotal = total + shippingCost
+  const finalTotal = total + shippingCost;
 
   // تغییر مقادیر فرم
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   // ارسال فرم
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
+    setIsSubmitting(true);
 
     // شبیه‌سازی ارسال اطلاعات به سرور
     setTimeout(() => {
       // پاک کردن سبد خرید
-      clearCart()
+      clearCart();
 
       // هدایت به صفحه تأیید سفارش
-      router.push("/checkout/success")
-    }, 2000)
-  }
+      router.push("/checkout/success");
+    }, 2000);
+  };
 
   // اگر سبد خرید خالی است، کاربر را به صفحه سبد خرید هدایت می‌کنیم
   // if (items.length === 0) {
@@ -100,12 +103,12 @@ export default function CheckoutPage() {
   // }
   useEffect(() => {
     if (items.length === 0) {
-      router.push("/cart")
+      router.push("/cart");
     }
-  }, [items, router])
+  }, [items, router]);
 
   if (items.length === 0) {
-    return null // Prevent rendering while redirecting
+    return null; // Prevent rendering while redirecting
   }
 
   return (
@@ -118,7 +121,9 @@ export default function CheckoutPage() {
           <form onSubmit={handleSubmit}>
             {/* اطلاعات شخصی */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">اطلاعات شخصی</h2>
+              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
+                اطلاعات شخصی
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="firstName" className="font-vazirmatn">
@@ -180,7 +185,9 @@ export default function CheckoutPage() {
 
             {/* آدرس ارسال */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">آدرس ارسال</h2>
+              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
+                آدرس ارسال
+              </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <Label htmlFor="address" className="font-vazirmatn">
@@ -241,8 +248,14 @@ export default function CheckoutPage() {
 
             {/* روش ارسال */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">روش ارسال</h2>
-              <RadioGroup value={shippingMethod} onValueChange={setShippingMethod} className="space-y-3">
+              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
+                روش ارسال
+              </h2>
+              <RadioGroup
+                value={shippingMethod}
+                onValueChange={setShippingMethod}
+                className="space-y-3"
+              >
                 {shippingMethods.map((method) => (
                   <div
                     key={method.id}
@@ -250,19 +263,30 @@ export default function CheckoutPage() {
                       "flex items-center justify-between p-4 rounded-lg border",
                       shippingMethod === method.id
                         ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10"
-                        : "border-gray-200 dark:border-gray-700",
+                        : "border-gray-200 dark:border-gray-700"
                     )}
                   >
                     <div className="flex items-center">
-                      <RadioGroupItem value={method.id} id={`shipping-${method.id}`} className="ml-2" />
+                      <RadioGroupItem
+                        value={method.id}
+                        id={`shipping-${method.id}`}
+                        className="ml-2"
+                      />
                       <div>
-                        <Label htmlFor={`shipping-${method.id}`} className="font-medium cursor-pointer font-vazirmatn">
+                        <Label
+                          htmlFor={`shipping-${method.id}`}
+                          className="font-medium cursor-pointer font-vazirmatn"
+                        >
                           {method.name}
                         </Label>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">{method.description}</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+                          {method.description}
+                        </p>
                       </div>
                     </div>
-                    <div className="font-medium font-vazirmatn">{method.price.toLocaleString("fa-IR")} تومان</div>
+                    <div className="font-medium font-vazirmatn">
+                      {method.price.toLocaleString("fa-IR")} تومان
+                    </div>
                   </div>
                 ))}
               </RadioGroup>
@@ -270,8 +294,14 @@ export default function CheckoutPage() {
 
             {/* روش پرداخت */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">روش پرداخت</h2>
-              <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-3">
+              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
+                روش پرداخت
+              </h2>
+              <RadioGroup
+                value={paymentMethod}
+                onValueChange={setPaymentMethod}
+                className="space-y-3"
+              >
                 {paymentMethods.map((method) => (
                   <div
                     key={method.id}
@@ -279,16 +309,25 @@ export default function CheckoutPage() {
                       "flex items-center p-4 rounded-lg border",
                       paymentMethod === method.id
                         ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10"
-                        : "border-gray-200 dark:border-gray-700",
+                        : "border-gray-200 dark:border-gray-700"
                     )}
                   >
-                    <RadioGroupItem value={method.id} id={`payment-${method.id}`} className="ml-2" />
+                    <RadioGroupItem
+                      value={method.id}
+                      id={`payment-${method.id}`}
+                      className="ml-2"
+                    />
                     <method.icon className="h-5 w-5 text-gray-600 dark:text-gray-400 ml-2" />
                     <div>
-                      <Label htmlFor={`payment-${method.id}`} className="font-medium cursor-pointer font-vazirmatn">
+                      <Label
+                        htmlFor={`payment-${method.id}`}
+                        className="font-medium cursor-pointer font-vazirmatn"
+                      >
                         {method.name}
                       </Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">{method.description}</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+                        {method.description}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -297,7 +336,9 @@ export default function CheckoutPage() {
 
             {/* یادداشت سفارش */}
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">یادداشت سفارش (اختیاری)</h2>
+              <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
+                یادداشت سفارش (اختیاری)
+              </h2>
               <Textarea
                 id="notes"
                 name="notes"
@@ -316,24 +357,40 @@ export default function CheckoutPage() {
           <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm sticky top-24">
             {/* هدر خلاصه سفارش برای موبایل */}
             <div className="lg:hidden p-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
-              <h2 className="text-lg font-semibold font-vazirmatn">خلاصه سفارش</h2>
-              <Button variant="ghost" size="sm" className="p-1" onClick={() => setShowOrderSummary(!showOrderSummary)}>
-                {showOrderSummary ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+              <h2 className="text-lg font-semibold font-vazirmatn">
+                خلاصه سفارش
+              </h2>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="p-1"
+                onClick={() => setShowOrderSummary(!showOrderSummary)}
+              >
+                {showOrderSummary ? (
+                  <ChevronUp className="h-5 w-5" />
+                ) : (
+                  <ChevronDown className="h-5 w-5" />
+                )}
               </Button>
             </div>
 
             {/* محتوای خلاصه سفارش */}
             <div className={cn("p-6", !showOrderSummary && "hidden lg:block")}>
-              <h2 className="text-lg font-semibold mb-4 hidden lg:block font-vazirmatn">خلاصه سفارش</h2>
+              <h2 className="text-lg font-semibold mb-4 hidden lg:block font-vazirmatn">
+                خلاصه سفارش
+              </h2>
 
               {/* لیست محصولات */}
               <div className="space-y-4 mb-6">
                 {items.map((item) => (
-                  <div key={item.id} className="flex items-start">
+                  <div key={item.uuid} className="flex items-start">
                     <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
                       <Image
-                        src={item.image || "/placeholder.svg"}
-                        alt={item.name}
+                        src={
+                          item?.product?.productMedia[0]?.url ||
+                          "/placeholder.svg"
+                        }
+                        alt={item?.product?.name}
                         fill
                         className="object-cover"
                         sizes="64px"
@@ -343,9 +400,11 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <div className="flex-1 mr-3">
-                      <h4 className="text-sm font-medium font-vazirmatn">{item.name}</h4>
+                      <h4 className="text-sm font-medium font-vazirmatn">
+                        {item?.product?.name}
+                      </h4>
                       <p className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
-                        {item.price.toLocaleString("fa-IR")} تومان
+                        {item?.product?.price.toLocaleString("fa-IR")} تومان
                       </p>
                     </div>
                   </div>
@@ -355,28 +414,39 @@ export default function CheckoutPage() {
               {/* محاسبات قیمت */}
               <div className="space-y-3 border-t border-gray-100 dark:border-gray-700 pt-4 mb-6">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">مجموع قیمت محصولات:</span>
-                  <span className="font-medium font-vazirmatn">{subtotal.toLocaleString("fa-IR")} تومان</span>
+                  <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+                    مجموع قیمت محصولات:
+                  </span>
+                  <span className="font-medium font-vazirmatn">
+                    {subtotal.toLocaleString("fa-IR")} تومان
+                  </span>
                 </div>
 
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600 dark:text-green-400">
                     <span className="font-vazirmatn">تخفیف ({discount}%):</span>
                     <span className="font-medium font-vazirmatn">
-                      {((subtotal * discount) / 100).toLocaleString("fa-IR")} تومان
+                      {((subtotal * discount) / 100).toLocaleString("fa-IR")}{" "}
+                      تومان
                     </span>
                   </div>
                 )}
 
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">هزینه ارسال:</span>
-                  <span className="font-medium font-vazirmatn">{shippingCost.toLocaleString("fa-IR")} تومان</span>
+                  <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+                    هزینه ارسال:
+                  </span>
+                  <span className="font-medium font-vazirmatn">
+                    {shippingCost.toLocaleString("fa-IR")} تومان
+                  </span>
                 </div>
 
                 <div className="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
                   <div className="flex justify-between font-semibold">
                     <span className="font-vazirmatn">مبلغ قابل پرداخت:</span>
-                    <span className="font-vazirmatn">{finalTotal.toLocaleString("fa-IR")} تومان</span>
+                    <span className="font-vazirmatn">
+                      {finalTotal.toLocaleString("fa-IR")} تومان
+                    </span>
                   </div>
                 </div>
               </div>
@@ -421,5 +491,5 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -110,7 +110,7 @@ export const productSchema = baseEntitySchema.extend({
 })
 
 // Category validation schemas
-export const categorySchema = baseEntitySchema.extend({
+export const categorySchema: any = baseEntitySchema.extend({
   id: z.number(),
   name: z.string().min(2, "Category name must be at least 2 characters"),
   slug: z.string().min(2, "Category slug must be at least 2 characters"),

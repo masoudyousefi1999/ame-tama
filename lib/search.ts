@@ -1,22 +1,25 @@
-import { getAllProducts } from "@/lib/products"
+import { getAllProducts } from "@/lib/products";
 
 // نوع داده نتیجه جستجو
 export interface SearchResult {
-  id: number
-  name: string
-  price: number
-  image: string
-  category: string
-  isNew: boolean
-  isLimited: boolean
-  description?: string
-  releaseDate: string
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  isNew: boolean;
+  isLimited: boolean;
+  description?: string;
+  releaseDate: string;
 }
 
 // جستجوی محصولات
-export function searchProducts(query: string, categories: string[] | null = null): SearchResult[] {
+export async function searchProducts(
+  query: string,
+  categories: string[] | null = null
+): Promise<any> {
   if (!query && !categories?.length) {
-    return getAllProducts().map((product) => ({
+    return (getAllProducts() as any).map((product: any) => ({
       id: product.id,
       name: product.name,
       price: product.price,
@@ -26,86 +29,86 @@ export function searchProducts(query: string, categories: string[] | null = null
       isLimited: product.isLimited,
       description: product.description,
       releaseDate: product.releaseDate,
-    }))
+    }));
   }
 
-  const products = getAllProducts()
-  const normalizedQuery = query.toLowerCase().trim()
+  const products = await getAllProducts();
+  const normalizedQuery = query.toLowerCase().trim();
 
   return products
-    .filter((product) => {
+    ?.filter((product: any) => {
       // فیلتر بر اساس دسته‌بندی
       if (categories?.length && !categories.includes(product.category)) {
-        return false
+        return false;
       }
 
       // اگر کوئری خالی باشد و فقط فیلتر دسته‌بندی داشته باشیم
       if (!normalizedQuery) {
-        return true
+        return true;
       }
 
       // جستجو در نام محصول
       if (product.name.toLowerCase().includes(normalizedQuery)) {
-        return true
+        return true;
       }
 
       // جستجو در توضیحات محصول
       if (product.description?.toLowerCase().includes(normalizedQuery)) {
-        return true
+        return true;
       }
 
       // جستجو در دسته‌بندی محصول
       if (product.category.toLowerCase().includes(normalizedQuery)) {
-        return true
+        return true;
       }
 
       // جستجو در نام شخصیت
       if (product.character?.toLowerCase().includes(normalizedQuery)) {
-        return true
+        return true;
       }
 
       // جستجو در نام سری
       if (product.series?.toLowerCase().includes(normalizedQuery)) {
-        return true
+        return true;
       }
 
-      return false
+      return false;
     })
     .map((product) => ({
-      id: product.id,
+      uuid: product.uuid,
       name: product.name,
       price: product.price,
-      image: product.images?.[0]?.url || "/placeholder.svg",
+      image: product?.productMedia[0]?.url || "/placeholder.svg",
       category: product.category,
-      isNew: product.isNew,
-      isLimited: product.isLimited,
-      description: product.description,
-      releaseDate: product.releaseDate,
-    }))
+      isNew: true,
+      isLimited: true,
+      description: product.detail.description,
+      releaseDate: new Date().toString(),
+    }));
 }
 
 // جستجوی پیشنهادات
-export function getSearchSuggestions(query: string): string[] {
-  if (!query) return []
+export async function getSearchSuggestions(query: string): Promise<string[]> {
+  if (!query) return [];
 
-  const products = getAllProducts()
-  const normalizedQuery = query.toLowerCase().trim()
-  const suggestions = new Set<string>()
+  const products = await getAllProducts();
+  const normalizedQuery = query.toLowerCase().trim();
+  const suggestions = new Set<string>();
 
   products.forEach((product) => {
     if (product.name.toLowerCase().includes(normalizedQuery)) {
-      suggestions.add(product.name)
+      suggestions.add(product.name);
     }
-    if (product.category.toLowerCase().includes(normalizedQuery)) {
-      suggestions.add(product.category)
+    if (product.category.name.toLowerCase().includes(normalizedQuery)) {
+      suggestions.add(product.category.name);
     }
-    if (product.character?.toLowerCase().includes(normalizedQuery)) {
-      suggestions.add(product.character)
+    if (product.detail.character?.toLowerCase().includes(normalizedQuery)) {
+      suggestions.add(product.detail.character);
     }
-    if (product.series?.toLowerCase().includes(normalizedQuery)) {
-      suggestions.add(product.series)
+    if (product.detail.series?.toLowerCase().includes(normalizedQuery)) {
+      suggestions.add(product.detail.series);
     }
-  })
+  });
 
-  return Array.from(suggestions).slice(0, 5)
+  return Array.from(suggestions).slice(0, 5);
 }

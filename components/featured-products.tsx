@@ -7,13 +7,13 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { useCart } from "@/context/cart-context"
-import { getAllProducts } from "@/lib/products"
+import { getAllProducts, IProductType } from "@/lib/products"
 import { toast } from "@/components/ui/use-toast"
 import { ProductCard } from "@/components/product/product-card"
 
 export default function FeaturedProducts() {
   const { addItem } = useCart()
-  const [products, setProducts] = useState(null)
+  const [products, setProducts] = useState<IProductType[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

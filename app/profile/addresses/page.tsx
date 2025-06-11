@@ -1,10 +1,25 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
-import { MapPin, Plus, Edit2, Trash2, Home, Briefcase, Check } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+  MapPin,
+  Plus,
+  Edit2,
+  Trash2,
+  Home,
+  Briefcase,
+  Check,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -13,19 +28,27 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useToast } from "@/hooks/use-toast"
-import { useAuth } from "@/context/auth-context"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Badge } from "@/components/ui/badge"
-import { Breadcrumb } from "@/components/ui/breadcrumb"
-import { BackButton } from "@/components/ui/back-button"
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/context/auth-context";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Badge } from "@/components/ui/badge";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { BackButton } from "@/components/ui/back-button";
 
 // Sample address data - updated to match API schema
 const sampleAddresses = [
@@ -65,12 +88,14 @@ const sampleAddresses = [
     isDefault: false,
     type: "work",
   },
-]
+];
 
 // Form schema
 const addressFormSchema = z.object({
   title: z.string().min(2, { message: "عنوان آدرس باید حداقل 2 کاراکتر باشد" }),
-  recipient: z.string().min(3, { message: "نام گیرنده باید حداقل 3 کاراکتر باشد" }),
+  recipient: z
+    .string()
+    .min(3, { message: "نام گیرنده باید حداقل 3 کاراکتر باشد" }),
   phone: z
     .string()
     .min(11, { message: "شماره تماس باید 11 رقم باشد" })
@@ -83,22 +108,27 @@ const addressFormSchema = z.object({
   province: z.string().min(2, { message: "استان را وارد کنید" }),
   city: z.string().min(2, { message: "شهر را وارد کنید" }),
   address: z.string().min(10, { message: "آدرس باید حداقل 10 کاراکتر باشد" }),
-  type: z.enum(["home", "work", "other"], { message: "نوع آدرس را انتخاب کنید" }),
+  type: z.enum(["home", "work", "other"], {
+    message: "نوع آدرس را انتخاب کنید",
+  }),
   isDefault: z.boolean().default(false),
-})
+});
 
-type AddressFormValues = z.infer<typeof addressFormSchema>
+type AddressFormValues = z.infer<typeof addressFormSchema>;
 
 export default function AddressesPage() {
-  const router = useRouter()
-  const { user, isLoading } = useAuth()
-  const { toast } = useToast()
-  const [addresses, setAddresses] = useState(sampleAddresses)
-  const [isEditing, setIsEditing] = useState(false)
-  const [currentAddress, setCurrentAddress] = useState<(typeof sampleAddresses)[0] | null>(null)
-  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const router = useRouter();
+  const { user, isLoading } = useAuth();
+  const { toast } = useToast();
+  const [addresses, setAddresses] = useState(sampleAddresses);
+  const [isEditing, setIsEditing] = useState(false);
+  const [currentAddress, setCurrentAddress] = useState<
+    (typeof sampleAddresses)[0] | null
+  >(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const form = useForm<AddressFormValues>({
+    //@ts-ignore
     resolver: zodResolver(addressFormSchema),
     defaultValues: {
       title: "",
@@ -111,21 +141,21 @@ export default function AddressesPage() {
       type: "home",
       isDefault: false,
     },
-  })
+  });
 
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/")
+      router.push("/");
     }
-  }, [user, isLoading, router])
+  }, [user, isLoading, router]);
 
   if (isLoading || !user) {
-    return null
+    return null;
   }
 
   const openAddDialog = () => {
-    setIsEditing(false)
-    setCurrentAddress(null)
+    setIsEditing(false);
+    setCurrentAddress(null);
     form.reset({
       title: "",
       recipient: "",
@@ -136,13 +166,13 @@ export default function AddressesPage() {
       address: "",
       type: "home",
       isDefault: false,
-    })
-    setIsDialogOpen(true)
-  }
+    });
+    setIsDialogOpen(true);
+  };
 
   const openEditDialog = (address: (typeof sampleAddresses)[0]) => {
-    setIsEditing(true)
-    setCurrentAddress(address)
+    setIsEditing(true);
+    setCurrentAddress(address);
     form.reset({
       title: address.title,
       recipient: address.recipient,
@@ -153,9 +183,9 @@ export default function AddressesPage() {
       address: address.address,
       type: address.type as "home" | "work" | "other",
       isDefault: address.isDefault,
-    })
-    setIsDialogOpen(true)
-  }
+    });
+    setIsDialogOpen(true);
+  };
 
   const onSubmit = (data: AddressFormValues) => {
     if (isEditing && currentAddress) {
@@ -166,75 +196,83 @@ export default function AddressesPage() {
             return {
               ...addr,
               ...data,
-            }
+            };
           }
           // If this address is set as default, remove default from others
           if (data.isDefault && addr.id !== currentAddress.id) {
-            return { ...addr, isDefault: false }
+            return { ...addr, isDefault: false };
           }
-          return addr
-        }),
-      )
+          return addr;
+        })
+      );
       toast({
         title: "آدرس ویرایش شد",
         description: "آدرس با موفقیت ویرایش شد",
-      })
+      });
     } else {
       // Add new address
       const newAddress = {
-        id: addresses.length > 0 ? Math.max(...addresses.map((a) => a.id)) + 1 : 1,
+        id:
+          addresses.length > 0
+            ? Math.max(...addresses.map((a) => a.id)) + 1
+            : 1,
         ...data,
-      }
+      };
 
       // If this address is set as default or it's the first address, remove default from others
       if (data.isDefault || addresses.length === 0) {
-        setAddresses([newAddress, ...addresses.map((addr) => ({ ...addr, isDefault: false }))])
+        setAddresses([
+          //@ts-ignore
+          newAddress,
+          ...addresses.map((addr) => ({ ...addr, isDefault: false })),
+        ]);
       } else {
-        setAddresses([newAddress, ...addresses])
+        //@ts-ignore
+        setAddresses([newAddress, ...addresses]);
       }
 
       toast({
         title: "آدرس اضافه شد",
         description: "آدرس جدید با موفقیت اضافه شد",
-      })
+      });
     }
-    setIsDialogOpen(false)
-  }
+    setIsDialogOpen(false);
+  };
 
   const deleteAddress = (id: number) => {
-    const addressToDelete = addresses.find((addr) => addr.id === id)
-    setAddresses(addresses.filter((addr) => addr.id !== id))
+    const addressToDelete = addresses.find((addr) => addr.id === id);
+    setAddresses(addresses.filter((addr) => addr.id !== id));
 
     toast({
       title: "آدرس حذف شد",
       description: `آدرس "${addressToDelete?.title}" با موفقیت حذف شد`,
-    })
+    });
 
     // If the deleted address was default and we have other addresses, set the first one as default
     if (addressToDelete?.isDefault && addresses.length > 1) {
-      const remainingAddresses = addresses.filter((addr) => addr.id !== id)
+      const remainingAddresses = addresses.filter((addr) => addr.id !== id);
       setAddresses(
         remainingAddresses.map((addr, index) => ({
           ...addr,
           isDefault: index === 0,
-        })),
-      )
+        }))
+      );
     }
-  }
+  };
 
   const setAsDefault = (id: number) => {
     setAddresses(
       addresses.map((addr) => ({
         ...addr,
         isDefault: addr.id === id,
-      })),
-    )
+      }))
+    );
 
     toast({
       title: "آدرس پیش‌فرض تغییر کرد",
       description: "آدرس انتخاب شده به عنوان آدرس پیش‌فرض تنظیم شد",
-    })
-  }
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
@@ -245,7 +283,11 @@ export default function AddressesPage() {
         <Breadcrumb
           items={[
             { label: "پروفایل", href: "/profile" },
-            { label: "آدرس‌های من", href: "/profile/addresses", isCurrent: true },
+            {
+              label: "آدرس‌های من",
+              href: "/profile/addresses",
+              isCurrent: true,
+            },
           ]}
         />
       </div>
@@ -254,7 +296,9 @@ export default function AddressesPage() {
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle className="font-vazirmatn">آدرس‌های من</CardTitle>
-            <CardDescription className="font-vazirmatn">آدرس‌های ثبت شده برای ارسال سفارش‌ها</CardDescription>
+            <CardDescription className="font-vazirmatn">
+              آدرس‌های ثبت شده برای ارسال سفارش‌ها
+            </CardDescription>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
@@ -268,7 +312,9 @@ export default function AddressesPage() {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[550px]">
               <DialogHeader>
-                <DialogTitle className="font-vazirmatn">{isEditing ? "ویرایش آدرس" : "افزودن آدرس جدید"}</DialogTitle>
+                <DialogTitle className="font-vazirmatn">
+                  {isEditing ? "ویرایش آدرس" : "افزودن آدرس جدید"}
+                </DialogTitle>
                 <DialogDescription className="font-vazirmatn">
                   {isEditing
                     ? "اطلاعات آدرس را ویرایش کنید و سپس دکمه ذخیره را بزنید"
@@ -276,27 +322,41 @@ export default function AddressesPage() {
                 </DialogDescription>
               </DialogHeader>
               <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <form
+                //@ts-ignore
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="title"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-vazirmatn">عنوان آدرس</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            عنوان آدرس
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="مثال: منزل، محل کار" {...field} className="font-vazirmatn" />
+                            <Input
+                              placeholder="مثال: منزل، محل کار"
+                              {...field}
+                              className="font-vazirmatn"
+                            />
                           </FormControl>
                           <FormMessage className="font-vazirmatn" />
                         </FormItem>
                       )}
                     />
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="type"
                       render={({ field }) => (
                         <FormItem className="space-y-3">
-                          <FormLabel className="font-vazirmatn">نوع آدرس</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            نوع آدرس
+                          </FormLabel>
                           <FormControl>
                             <RadioGroup
                               onValueChange={field.onChange}
@@ -325,7 +385,9 @@ export default function AddressesPage() {
                                 <FormControl>
                                   <RadioGroupItem value="other" />
                                 </FormControl>
-                                <FormLabel className="font-vazirmatn">سایر</FormLabel>
+                                <FormLabel className="font-vazirmatn">
+                                  سایر
+                                </FormLabel>
                               </FormItem>
                             </RadioGroup>
                           </FormControl>
@@ -337,26 +399,40 @@ export default function AddressesPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="recipient"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-vazirmatn">نام و نام خانوادگی گیرنده</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            نام و نام خانوادگی گیرنده
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="نام گیرنده" {...field} className="font-vazirmatn" />
+                            <Input
+                              placeholder="نام گیرنده"
+                              {...field}
+                              className="font-vazirmatn"
+                            />
                           </FormControl>
                           <FormMessage className="font-vazirmatn" />
                         </FormItem>
                       )}
                     />
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="phone"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-vazirmatn">شماره موبایل</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            شماره موبایل
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="09123456789" {...field} className="font-vazirmatn" />
+                            <Input
+                              placeholder="09123456789"
+                              {...field}
+                              className="font-vazirmatn"
+                            />
                           </FormControl>
                           <FormDescription className="font-vazirmatn text-xs">
                             شماره موبایل باید 11 رقم و با 09 شروع شود
@@ -369,39 +445,58 @@ export default function AddressesPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="province"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-vazirmatn">استان</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            استان
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="استان" {...field} className="font-vazirmatn" />
+                            <Input
+                              placeholder="استان"
+                              {...field}
+                              className="font-vazirmatn"
+                            />
                           </FormControl>
                           <FormMessage className="font-vazirmatn" />
                         </FormItem>
                       )}
                     />
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="city"
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel className="font-vazirmatn">شهر</FormLabel>
                           <FormControl>
-                            <Input placeholder="شهر" {...field} className="font-vazirmatn" />
+                            <Input
+                              placeholder="شهر"
+                              {...field}
+                              className="font-vazirmatn"
+                            />
                           </FormControl>
                           <FormMessage className="font-vazirmatn" />
                         </FormItem>
                       )}
                     />
                     <FormField
+                    //@ts-ignore
                       control={form.control}
                       name="postalCode"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel className="font-vazirmatn">کد پستی</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            کد پستی
+                          </FormLabel>
                           <FormControl>
-                            <Input placeholder="کد پستی 10 رقمی" {...field} className="font-vazirmatn" />
+                            <Input
+                              placeholder="کد پستی 10 رقمی"
+                              {...field}
+                              className="font-vazirmatn"
+                            />
                           </FormControl>
                           <FormMessage className="font-vazirmatn" />
                         </FormItem>
@@ -410,11 +505,14 @@ export default function AddressesPage() {
                   </div>
 
                   <FormField
+                  //@ts-ignore
                     control={form.control}
                     name="address"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-vazirmatn">آدرس کامل</FormLabel>
+                        <FormLabel className="font-vazirmatn">
+                          آدرس کامل
+                        </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="آدرس دقیق شامل خیابان، کوچه، پلاک و واحد"
@@ -429,6 +527,7 @@ export default function AddressesPage() {
                   />
 
                   <FormField
+                  //@ts-ignore
                     control={form.control}
                     name="isDefault"
                     render={({ field }) => (
@@ -442,9 +541,12 @@ export default function AddressesPage() {
                           />
                         </FormControl>
                         <div className="space-y-1 leading-none">
-                          <FormLabel className="font-vazirmatn">تنظیم به عنوان آدرس پیش‌فرض</FormLabel>
+                          <FormLabel className="font-vazirmatn">
+                            تنظیم به عنوان آدرس پیش‌فرض
+                          </FormLabel>
                           <FormDescription className="font-vazirmatn text-xs">
-                            این آدرس به صورت پیش‌فرض برای ارسال سفارش‌ها استفاده می‌شود
+                            این آدرس به صورت پیش‌فرض برای ارسال سفارش‌ها استفاده
+                            می‌شود
                           </FormDescription>
                         </div>
                       </FormItem>
@@ -471,7 +573,9 @@ export default function AddressesPage() {
                 <div
                   key={address.id}
                   className={`border rounded-lg p-5 relative ${
-                    address.isDefault ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10" : ""
+                    address.isDefault
+                      ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10"
+                      : ""
                   }`}
                 >
                   {address.isDefault && (
@@ -488,8 +592,8 @@ export default function AddressesPage() {
                         address.type === "home"
                           ? "bg-blue-100 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                           : address.type === "work"
-                            ? "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
-                            : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
+                          ? "bg-amber-100 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
+                          : "bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400"
                       }`}
                     >
                       {address.type === "home" ? (
@@ -501,7 +605,9 @@ export default function AddressesPage() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-medium text-lg font-vazirmatn">{address.title}</h3>
+                      <h3 className="font-medium text-lg font-vazirmatn">
+                        {address.title}
+                      </h3>
                       <p className="text-gray-500 dark:text-gray-400 text-sm font-vazirmatn">
                         {address.recipient} | {address.phone}
                       </p>
@@ -510,14 +616,17 @@ export default function AddressesPage() {
                   <div className="mb-3">
                     <p className="text-sm text-gray-600 dark:text-gray-300 font-vazirmatn">
                       <span className="font-medium ml-1">استان:</span>
-                      {address.province}، <span className="font-medium ml-1">شهر:</span>
+                      {address.province}،{" "}
+                      <span className="font-medium ml-1">شهر:</span>
                       {address.city}
                     </p>
                     <p className="text-sm text-gray-600 dark:text-gray-300 font-vazirmatn">
                       <span className="font-medium ml-1">کد پستی:</span>
                       {address.postalCode}
                     </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 font-vazirmatn">{address.address}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 font-vazirmatn">
+                      {address.address}
+                    </p>
                   </div>
                   <div className="flex justify-end space-x-2 space-x-reverse mt-4">
                     {!address.isDefault && (
@@ -556,7 +665,9 @@ export default function AddressesPage() {
           ) : (
             <div className="text-center py-12">
               <MapPin className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-4" />
-              <h3 className="text-lg font-medium mb-2 font-vazirmatn">هنوز آدرسی ثبت نکرده‌اید</h3>
+              <h3 className="text-lg font-medium mb-2 font-vazirmatn">
+                هنوز آدرسی ثبت نکرده‌اید
+              </h3>
               <p className="text-gray-500 dark:text-gray-400 mb-6 font-vazirmatn">
                 برای ثبت سفارش نیاز به حداقل یک آدرس دارید
               </p>
@@ -572,5 +683,5 @@ export default function AddressesPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

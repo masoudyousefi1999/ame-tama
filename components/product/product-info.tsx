@@ -149,16 +149,16 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <div className="grid grid-cols-2 gap-4 text-sm">
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">سری:</span>{" "}
-          <span className="font-medium">{product.detail.series}</span>
+          <span className="font-medium">{product?.detail?.series || ""}</span>
         </div>
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">شخصیت:</span>{" "}
-          <span className="font-medium">{product.detail.character}</span>
+          <span className="font-medium">{product?.detail?.character || ""}</span>
         </div>
         <div className="font-vazirmatn">
           <span className="text-gray-500 dark:text-gray-400">سازنده:</span>{" "}
           <span className="font-medium">
-            {product.detail?.specifications?.manufacturer}
+            {product.detail?.specifications?.manufacturer || ""}
           </span>
         </div>
         <div className="font-vazirmatn">

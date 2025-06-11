@@ -68,9 +68,6 @@ export async function getProductBySlug(
   }
 }
 
-// export function getProductById(id: number): IProductType | null {
-//   return null; // فرض می‌کنیم ID ها از 1 شروع می‌شوند
-// }
 export async function getProductByCategorySlug(
   slug: string
 ): Promise<IProductType | null> {
@@ -99,10 +96,6 @@ export function getRelatedProducts(
   return [];
 }
 
-// دریافت همه محصولات
-// export function getAllProducts(): Product[] {
-//   return products;
-// }
 
 export async function getAllProducts(): Promise<IProductType[]> {
   console.log("get products function is calling.....");
@@ -114,17 +107,6 @@ export async function getAllProducts(): Promise<IProductType[]> {
   return products as IProductType[];
 }
 
-// دریافت محصولات بر اساس دسته‌بندی
-// export async function getProductBySlug(
-//   slug: string
-// ): Promise<Category | undefined> {
-//   const res = await fetch(
-//     `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category/${slug}`
-//   );
-
-//   const categories = await res.json();
-//   return categories;
-// }
 
 // دریافت محصولات جدید (محصولات با تاریخ ایجاد اخیر)
 export function getNewProducts(limit = 8): IProductType[] {

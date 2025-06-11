@@ -91,7 +91,7 @@ export default async function WalletPage() {
         </Card>
       </div>
 
-      <WalletTransactions transactions={walletData.transactions} />
+      <WalletTransactions transactions={walletData.transactions as any} />
     </div>
   )
 }

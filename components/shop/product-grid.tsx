@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/components/ui/use-toast";
-import { getAllCategories } from "@/lib/categories";
+import { getAllCategories, ICategoryType } from "@/lib/categories";
 import { ProductCard } from "../product/product-card";
 
 interface ProductGridProps {
   products: any[];
   showFilters?: boolean;
+  loading: boolean;
 }
 
 export default function ProductGrid({
@@ -38,7 +39,16 @@ export default function ProductGrid({
   const [sortBy, setSortBy] = useState("newest");
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const { addItem } = useCart();
-  const categories = getAllCategories();
+  const [categories, setCategories] = useState<ICategoryType[]>([]);
+
+  useEffect(() => {
+    const getCategories = async () => {
+      const categories = (await getAllCategories()) as ICategoryType[];
+      if (categories) {
+        setCategories(categories);
+      }
+    };
+  }, []);
 
   // اعمال فیلترها و مرتب‌سازی
   useEffect(() => {
@@ -221,8 +231,8 @@ export default function ProductGrid({
                   <div key={category.id} className="flex items-center">
                     <Checkbox
                       id={`category-${category.id}`}
-                      checked={selectedCategories.includes(category.id)}
-                      onCheckedChange={() => toggleCategory(category.id)}
+                      checked={selectedCategories.includes(category.uuid)}
+                      onCheckedChange={() => toggleCategory(category.uuid)}
                     />
                     <Label
                       htmlFor={`category-${category.id}`}
@@ -431,9 +441,11 @@ export default function ProductGrid({
                           <div key={category.id} className="flex items-center">
                             <Checkbox
                               id={`mobile-category-${category.id}`}
-                              checked={selectedCategories.includes(category.id)}
+                              checked={selectedCategories.includes(
+                                category.uuid
+                              )}
                               onCheckedChange={() =>
-                                toggleCategory(category.id)
+                                toggleCategory(category.uuid)
                               }
                             />
                             <Label
@@ -593,7 +605,9 @@ export default function ProductGrid({
             {showFilters && (
               <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
                 {selectedCategories.map((categoryId) => {
-                  const category = categories.find((c) => c.id === categoryId);
+                  const category = categories.find(
+                    (c) => c.uuid === categoryId
+                  );
                   return (
                     category && (
                       <Badge

@@ -1,40 +1,36 @@
-import { getAllProducts, getProductsByCategory } from "@/lib/products"
-import { getAllCategories } from "@/lib/categories"
-import ShopPageClient from "@/components/shop/shop-page-client"
+import { getAllProducts, getProductByCategorySlug } from "@/lib/products";
+import { getAllCategories, ICategoryType } from "@/lib/categories";
+import ShopPageClient from "@/components/shop/shop-page-client";
 
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: { category?: string; search?: string; page?: string }
+  searchParams: { category?: string; search?: string; page?: string };
 }) {
-  let products = []
-  let categories = []
-  let totalPages = 1
+  let products = [];
+  let categories: ICategoryType[] = [];
+  let totalPages = 1;
 
   try {
-    // Fetch categories
-    const fetchedCategories = await getAllCategories()
-    categories = fetchedCategories || []
+    const fetchedCategories = await getAllCategories();
+    categories = fetchedCategories || [];
 
-    // Fetch products based on filters
-    const page = Number.parseInt(searchParams.page || "1")
-    const category = searchParams.category
-    const search = searchParams.search
+    const category = searchParams.category;
 
-    let fetchedProducts
+    let fetchedProducts;
     if (category) {
-      fetchedProducts = await getProductsByCategory(category, page)
+      fetchedProducts = await getProductByCategorySlug(category);
     } else {
-      fetchedProducts = await getAllProducts(page, search)
+      fetchedProducts = await getAllProducts();
     }
 
-    products = fetchedProducts?.products || []
-    totalPages = fetchedProducts?.totalPages || 1
+    products = (fetchedProducts as any)?.products || [];
+    totalPages = (fetchedProducts as any)?.totalPages || 1;
   } catch (error) {
-    console.error("Error fetching shop data:", error)
-    products = []
-    categories = []
-    totalPages = 1
+    console.error("Error fetching shop data:", error);
+    products = [];
+    categories = [];
+    totalPages = 1;
   }
 
   return (
@@ -46,5 +42,5 @@ export default async function ShopPage({
       currentCategory={searchParams.category}
       currentSearch={searchParams.search}
     />
-  )
+  );
 }

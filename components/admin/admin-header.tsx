@@ -143,9 +143,9 @@ export function AdminHeader() {
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="relative h-10 w-10 rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700">
                   <Avatar className="h-9 w-9">
-                    <AvatarImage src={user?.avatar || ""} alt={user?.name || "کاربر"} />
+                    <AvatarImage src={user?.avatar || ""} alt={user?.firstName || "کاربر"} />
                     <AvatarFallback className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white font-vazirmatn">
-                      {user?.name?.charAt(0)?.toUpperCase() || "ا"}
+                      {user?.firstName?.charAt(0)?.toUpperCase() || "ا"}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -154,7 +154,7 @@ export function AdminHeader() {
                 <div className="p-3 border-b border-gray-200 dark:border-gray-700">
                   <div className="flex flex-col space-y-1" dir="rtl">
                     <p className="text-sm font-medium leading-none text-gray-900 dark:text-white font-vazirmatn">
-                      {user?.name || "کاربر سیستم"}
+                      {user?.firstName || "کاربر سیستم"}
                     </p>
                     <p className="text-xs leading-none text-gray-500 dark:text-gray-400 mt-1">
                       {user?.email || "admin@example.com"}

@@ -4,10 +4,9 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getAllProducts, getProductsByCategory } from "@/lib/products"
+import { getAllProducts, getProductByCategorySlug } from "@/lib/products"
 import { toast } from "@/components/ui/use-toast"
-import { ProductGrid } from "@/components/shop/product-grid"
-import { CategoryFilters } from "@/components/category/category-filters"
+import  ProductGrid  from "@/components/shop/product-grid"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search } from "lucide-react"
@@ -23,10 +22,7 @@ interface ShopPageClientProps {
 
 export default function ShopPageClient({
   initialProducts,
-  categories,
   totalPages: initialTotalPages,
-  currentPage,
-  currentCategory,
   currentSearch,
 }: ShopPageClientProps) {
   const [products, setProducts] = useState(initialProducts)
@@ -43,13 +39,13 @@ export default function ShopPageClient({
       let fetchedProducts
 
       if (category) {
-        fetchedProducts = await getProductsByCategory(category, page)
+        fetchedProducts = await getProductByCategorySlug(category)
       } else {
-        fetchedProducts = await getAllProducts(page, search)
+        fetchedProducts = await getAllProducts()
       }
 
-      setProducts(fetchedProducts?.products || [])
-      setTotalPages(fetchedProducts?.totalPages || 1)
+      setProducts((fetchedProducts as any)?.products || [])
+      setTotalPages((fetchedProducts as any)?.totalPages || 1)
     } catch (error) {
       console.error("Error fetching products:", error)
       toast({
@@ -113,20 +109,20 @@ export default function ShopPageClient({
         </form>
 
         {/* Category Filters */}
-        <CategoryFilters
+        {/* <CategoryFilters
           categories={categories}
           selectedCategory={currentCategory}
           onCategoryChange={handleCategoryChange}
-        />
+        /> */}
       </div>
 
       {/* Products Grid */}
       <ProductGrid
         products={products}
         loading={loading}
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
+        // currentPage={currentPage}
+        // totalPages={totalPages}
+        // onPageChange={handlePageChange}
       />
     </div>
   )

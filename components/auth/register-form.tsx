@@ -1,38 +1,41 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useAuth } from "@/context/auth-context"
-import { toast } from "@/components/ui/use-toast"
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/auth-context";
+import { toast } from "@/components/ui/use-toast";
 
 interface RegisterFormProps {
-  onSuccess?: () => void
-  onLogin: () => void
+  onSuccess?: () => void;
+  onLogin: () => void;
 }
 
-export default function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) {
-  const { register } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
+export default function RegisterForm({
+  onSuccess,
+  onLogin,
+}: RegisterFormProps) {
+  const { register } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-  })
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // بررسی تکمیل فیلدها
     if (
@@ -46,8 +49,8 @@ export default function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) 
         title: "خطا",
         description: "لطفاً تمام فیلدها را پر کنید",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     // بررسی تطابق رمز عبور
@@ -56,8 +59,8 @@ export default function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) 
         title: "خطا",
         description: "رمز عبور و تکرار آن مطابقت ندارند",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     // بررسی قدرت رمز عبور
@@ -66,11 +69,11 @@ export default function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) 
         title: "خطا",
         description: "رمز عبور باید حداقل ۸ کاراکتر باشد",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const result = await register({
@@ -79,41 +82,46 @@ export default function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) 
         email: formData.email,
         password: formData.password,
         createdAt: new Date().toISOString(),
-      })
+        role: "USER",
+        uuid: "",
+        avatar: "",
+        updatedAt: new Date().toISOString(),
+      });
 
       if (result.success) {
         toast({
           title: "ثبت‌نام موفقیت‌آمیز",
           description: "حساب کاربری شما با موفقیت ایجاد شد",
-        })
+        });
 
         if (onSuccess) {
-          onSuccess()
+          onSuccess();
         }
       } else {
         toast({
           title: "خطا در ثبت‌نام",
           description: result.message,
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "خطا",
         description: "مشکلی در ایجاد حساب کاربری رخ داد",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="text-center">
         <h3 className="text-2xl font-bold font-vazirmatn">ایجاد حساب کاربری</h3>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-vazirmatn">
-          با ایجاد حساب کاربری، می‌توانید سفارش‌های خود را پیگیری کنید و از امکانات ویژه بهره‌مند شوید
+          با ایجاد حساب کاربری، می‌توانید سفارش‌های خود را پیگیری کنید و از
+          امکانات ویژه بهره‌مند شوید
         </p>
       </div>
 
@@ -232,5 +240,5 @@ export default function RegisterForm({ onSuccess, onLogin }: RegisterFormProps) 
         </p>
       </div>
     </div>
-  )
+  );
 }

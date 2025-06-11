@@ -41,12 +41,12 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
       {/* تصویر اصلی */}
       <div className="relative aspect-square bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden group">
         <ResponsiveImage
-          src={mainImage.url}
+          src={mainImage?.url}
           alt={mainImage?.alt || 'product image'}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           loadingStrategy="progressive"
-          lowQualitySrc={mainImage.url}
+          lowQualitySrc={mainImage?.url}
           className="object-contain p-4"
           priority
         />
@@ -89,7 +89,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
           <DialogContent className="max-w-4xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm p-1 sm:p-2">
             <div className="relative aspect-square">
               <ResponsiveImage
-                src={mainImage.url}
+                src={mainImage?.url}
                 alt={mainImage?.alt}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
@@ -115,7 +115,7 @@ export default function ProductGallery({ images }: ProductGalleryProps) {
             )}
           >
             <ResponsiveImage
-              src={image.url}
+              src={image?.url}
               alt={image?.alt || 'product image'}
               fill={false}
               sizes="(max-width: 768px) 64px, 80px"
