@@ -331,7 +331,7 @@ export default function Navbar() {
             </AnimatePresence>
           </div>
 
-          <Link href="/shop" className="whitespace-nowrap p-2 hover:text-purple-600 transition-colors font-vazirmatn">
+          <Link href="/category/figures" className="whitespace-nowrap p-2 hover:text-purple-600 transition-colors font-vazirmatn">
             فروشگاه
           </Link>
           <Link href="/about" className="whitespace-nowrap p-2 hover:text-purple-600 transition-colors font-vazirmatn">
@@ -423,7 +423,7 @@ export default function Navbar() {
                   </Link>
 
                   <Link
-                    href="/shop"
+                    href="/category/figures"
                     className="flex flex-col items-center justify-center p-3 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                     onClick={handleNavigation}
                   >

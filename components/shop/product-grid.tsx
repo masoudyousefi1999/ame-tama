@@ -3,10 +3,7 @@
 import type React from "react";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { ShoppingCart, Heart, Filter, X } from "lucide-react";
+import { Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
@@ -659,7 +656,7 @@ export default function ProductGrid({
         {/* نمایش محصولات */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product, index) => (
-            <ProductCard product={product} key={index}/>
+            <ProductCard product={product} key={index} />
           ))}
         </div>
       </div>

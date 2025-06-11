@@ -48,8 +48,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const getUser = async () => {
       const user = await getMe();
 
-      if (user) {
+      if (user && !user?.statusCode) {
         setUser(user);
+      } else {
+        setUser(null);
       }
     };
     getUser();

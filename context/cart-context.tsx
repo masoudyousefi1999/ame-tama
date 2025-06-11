@@ -102,13 +102,19 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, [recentlyAdded]);
 
   // محاسبه تعداد کل محصولات در سبد خرید
-  const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+  const itemCount =
+    items?.length > 0
+      ? items.reduce((total, item) => total + item.quantity, 0)
+      : 0;
 
   // محاسبه مجموع قیمت محصولات
-  const subtotal = items.reduce(
-    (total, item) => total + item.product.price * item.quantity,
-    0
-  );
+  const subtotal =
+    itemCount > 0
+      ? items.reduce(
+          (total, item) => total + item.product.price * item.quantity,
+          0
+        )
+      : 0;
 
   // محاسبه مبلغ تخفیف
   const discountAmount = (subtotal * discount) / 100;

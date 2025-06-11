@@ -105,7 +105,7 @@ export default function CartDropdown() {
 
         {/* Cart Content */}
         <div className="max-h-80 overflow-y-auto p-4">
-          {items.length === 0 ? (
+          {items?.length === 0 ? (
             <div className="text-center py-8">
               <ShoppingBag className="h-12 w-12 mx-auto text-gray-300 dark:text-gray-600 mb-3" />
               <p className="text-gray-500 dark:text-gray-400 font-vazirmatn">سبد خرید شما خالی است</p>
@@ -113,7 +113,7 @@ export default function CartDropdown() {
           ) : (
             <ul className="space-y-4">
               <AnimatePresence initial={false}>
-                {items.map((item) => (
+                {items?.map((item) => (
                   <motion.li
                     key={item.product.uuid}
                     initial={{ opacity: 0, y: 20 }}
@@ -199,7 +199,7 @@ export default function CartDropdown() {
         </div>
 
         {/* Cart Footer */}
-        {items.length > 0 && (
+        {items?.length > 0 && (
           <div className="p-4 border-t border-gray-100 dark:border-gray-700">
             <div className="flex justify-between mb-4">
               <span className="font-vazirmatn">مجموع:</span>
