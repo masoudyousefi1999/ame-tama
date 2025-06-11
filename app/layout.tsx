@@ -22,7 +22,7 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata = {
-  title: "30473856",
+  title: "آمه تاما",
   description:
     "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
   generator: "v0.dev",
@@ -71,7 +71,6 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="enamad" content="30473856"></meta>
         <meta name="theme-color" content="#ffffff" />
         <meta
           name="viewport"
