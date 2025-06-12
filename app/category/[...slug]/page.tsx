@@ -41,8 +41,6 @@ export default async function CategoryRoute(props: {
 
   const products = await getProductByCategorySlug(lastSlug);
   if (!Array.isArray(products)) notFound();
-  console.dir({ category }, { depth: null });
-
   // // ✅ safely access after async boundary
   // const sort = typeof searchParams?.sort === "string" ? searchParams.sort : "newest";
   // const filter = typeof searchParams?.filter === "string" ? searchParams.filter : undefined;

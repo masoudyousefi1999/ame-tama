@@ -3,7 +3,6 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/admin")) {
-    console.log("All request cookies:", request.cookies.getAll());
     try {
       const accessToken = request.cookies.get("ACCESS_TOKEN")?.value;
 
@@ -20,7 +19,6 @@ export async function middleware(request: NextRequest) {
       );
 
       const isUserAdmin = await res.json();
-      console.log("is user admin? =>", isUserAdmin);
 
       if (isUserAdmin !== true) {
         return NextResponse.redirect(new URL("/login", request.url));

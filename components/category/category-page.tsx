@@ -5,7 +5,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Filter, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import CategoryHeader from "@/components/category/category-header";
 import CategoryFilters from "@/components/category/category-filters";
 import CategoryProducts from "@/components/category/category-products";
 import { type ICategoryType } from "@/lib/categories";
@@ -16,8 +15,8 @@ import { IProductType } from "@/lib/products";
 import Image from "next/image";
 
 interface CategoryPageProps {
-  category: ICategoryType;
-  subcategories?: ICategoryType[]; // اضافه کردن زیردسته‌ها
+  category: ICategoryType & { image: string };
+  subcategories?: ICategoryType[];
   sort: string;
   filter?: string;
   page: number;
@@ -41,30 +40,15 @@ export default function CategoryPage({
   );
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-  // دریافت محصولات دسته‌بندی (شامل زیردسته‌ها)
-
-  // به‌روزرسانی URL با فیلترهای جدید
+  // sync URL params with state
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // تنظیم پارامترهای جستجو
-    if (sort !== "newest") {
-      params.set("sort", sort);
-    } else {
-      params.delete("sort");
-    }
-
-    if (selectedFilters.length > 0) {
-      params.set("filter", selectedFilters.join(","));
-    } else {
-      params.delete("filter");
-    }
-
-    if (page > 1) {
-      params.set("page", page.toString());
-    } else {
-      params.delete("page");
-    }
+    sort !== "newest" ? params.set("sort", sort) : params.delete("sort");
+    selectedFilters.length
+      ? params.set("filter", selectedFilters.join(","))
+      : params.delete("filter");
+    page > 1 ? params.set("page", page.toString()) : params.delete("page");
 
     const newUrl = params.toString()
       ? `${pathname}?${params.toString()}`
@@ -72,42 +56,17 @@ export default function CategoryPage({
     router.replace(newUrl, { scroll: false });
   }, [sort, selectedFilters, page, pathname, router, searchParams]);
 
-  // تغییر محدوده قیمت
   const handlePriceRangeChange = (range: [number, number]) => {
     setPriceRange(range);
   };
 
-  // تغییر فیلترها
   const handleFilterChange = (filters: string[]) => {
     setSelectedFilters(filters);
   };
 
-  // تغییر مرتب‌سازی
   const handleSortChange = (newSort: string) => {
     const params = new URLSearchParams(searchParams.toString());
-
-    if (newSort !== "newest") {
-      params.set("sort", newSort);
-    } else {
-      params.delete("sort");
-    }
-
-    const newUrl = params.toString()
-      ? `${pathname}?${params.toString()}`
-      : pathname;
-    router.replace(newUrl);
-  };
-
-  // تغییر صفحه
-  const handlePageChange = (newPage: number) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (newPage > 1) {
-      params.set("page", newPage.toString());
-    } else {
-      params.delete("page");
-    }
-
+    newSort !== "newest" ? params.set("sort", newSort) : params.delete("sort");
     const newUrl = params.toString()
       ? `${pathname}?${params.toString()}`
       : pathname;
@@ -133,13 +92,24 @@ export default function CategoryPage({
         className="mb-4"
       />
 
-      {/* Category Header */}
-      <CategoryHeader category={category} />
+      {/* Category Header with full, uncropped image */}
+      <div className="w-full h-64 relative mb-8 rounded-lg overflow-hidden">
+        <Image
+          src={category.image || "/placeholder.jpg"}
+          alt={category.name}
+          fill
+          sizes="100vw"
+          style={{ objectFit: "contain" }}
+          priority
+        />
+        <h1 className="absolute bottom-4 left-4 text-3xl font-extrabold text-black drop-shadow-lg font-vazirmatn">
+          {category?.name === "figures" ? "فیگور ها" : category.name}
+        </h1>
+      </div>
 
-      {/* Subcategories Section */}
+      {/* Subcategories */}
       {subcategories.length > 0 && (
         <section className="mb-14">
-          {/* Header */}
           <div className="flex items-center justify-between mb-5">
             <h2 className="text-2xl font-extrabold font-vazirmatn tracking-tight bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
               زیردسته‌های&nbsp;{category.name}
@@ -148,50 +118,22 @@ export default function CategoryPage({
               ← پیمایش افقی →
             </span>
           </div>
-
-          {/* List */}
-          <div
-            className="
-    /* موبایل: ردیفی با اسکرول افقیِ روان */
-    flex gap-4 overflow-x-auto pb-2
-    snap-x snap-mandatory
-    scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600
-
-    /* ≥ md: تبدیل به گرید */
-    md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5
-    md:gap-8 md:overflow-visible
-  "
-          >
+          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-8 md:overflow-visible">
             {subcategories.map((subcat) => (
               <Link
                 key={subcat.id}
                 href={`/category/figures/${subcat.slug}`}
-                className="
-        relative flex-none          /* ⬅️ جلوگیری از کش آمدن داخل Flex */
-        w-32 sm:w-36 md:w-full      /* ⬅️ اندازهٔ کارت در breakpoints مختلف */
-        aspect-square snap-start    /* ⬅️ کنارِ viewport اسنپ می‌شود */
-        rounded-3xl overflow-hidden
-        group transition-transform duration-300
-        [transform-style:preserve-3d] hover:-rotate-x-2 hover:rotate-y-2
-        focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-purple-400/70
-      "
+                className="relative flex-none w-32 sm:w-36 md:w-full aspect-square snap-start rounded-3xl overflow-hidden group transition-transform duration-300 hover:-rotate-x-2 hover:rotate-y-2"
               >
-                {/* Glass layer */}
                 <div className="absolute inset-0 rounded-3xl backdrop-blur-xl bg-white/30 dark:bg-gray-800/30 shadow-xl shadow-black/5 ring-1 ring-white/20 dark:ring-black/40 transition-all duration-300 group-hover:shadow-2xl" />
-
-                {/* Image */}
                 <Image
                   src={subcat.image ?? "/placeholder.jpg"}
                   alt={subcat.name}
                   fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:rotate-1"
                   sizes="(max-width: 640px) 8rem, (max-width: 768px) 9rem, 18vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:rotate-1"
                 />
-
-                {/* Overlay */}
                 <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
-
-                {/* Label */}
                 <div className="absolute inset-0 flex items-end justify-center pb-4">
                   <span className="font-vazirmatn text-xs sm:text-sm md:text-base font-semibold text-white drop-shadow-lg tracking-wide">
                     {subcat.name}
@@ -204,7 +146,7 @@ export default function CategoryPage({
       )}
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Desktop Filters - shows at ≥1024px */}
+        {/* Desktop Filters */}
         <div className="hidden lg:block w-64 flex-shrink-0">
           <CategoryFilters
             priceRange={priceRange}
@@ -215,7 +157,7 @@ export default function CategoryPage({
           />
         </div>
 
-        {/* Mobile Filter Button - shows below 1024px */}
+        {/* Mobile Filters & Sort */}
         <div className="lg:hidden flex justify-between items-center mb-4">
           <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
             <SheetTrigger asChild>
@@ -254,7 +196,6 @@ export default function CategoryPage({
               </div>
             </SheetContent>
           </Sheet>
-
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-gray-500" />
             <select
@@ -289,7 +230,6 @@ export default function CategoryPage({
               </select>
             </div>
           </div>
-
           <CategoryProducts products={products} viewMode={"grid"} />
         </div>
       </div>
