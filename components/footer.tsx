@@ -196,19 +196,16 @@ export default function Footer() {
               سیاست کوکی
             </Link>
             <a
-              href="https://trustseal.enamad.ir/?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
-              target="_blank"
-              rel="noopener noreferrer"
               referrerPolicy="origin"
-              className="cursor-pointer inline-block"
+              target="_blank"
+              href="https://trustseal.enamad.ir/?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
             >
               <img
-                src="https://trustseal.enamad.ir/logo.aspx?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
-                alt="Enamad Trust Seal"
                 referrerPolicy="origin"
-                className="h-auto w-auto"
-                //@ts-ignore
-                code="BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
+                src="https://trustseal.enamad.ir/logo.aspx?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
+                alt=""
+                style={{ cursor: "pointer" }}
+                data-code="BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
               />
             </a>
           </div>
