@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import Link from "next/link";
+import { Facebook, Instagram, Twitter, Youtube } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function Footer() {
   return (
@@ -15,7 +15,8 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md font-vazirmatn persian-text">
-              ارتقاء کلکسیونی‌های انیمه به هنر زیبا. هر مجسمه AME-TAMA شاهکاری از جزئیات، کیفیت و اشتیاق است.
+              ارتقاء کلکسیونی‌های انیمه به هنر زیبا. هر مجسمه AME-TAMA شاهکاری
+              از جزئیات، کیفیت و اشتیاق است.
             </p>
             <div className="flex gap-x-4">
               <Button
@@ -54,7 +55,9 @@ export default function Footer() {
           </div>
 
           <div className="text-right">
-            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">فروشگاه</h3>
+            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">
+              فروشگاه
+            </h3>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -100,7 +103,9 @@ export default function Footer() {
           </div>
 
           <div className="text-right">
-            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">پشتیبانی</h3>
+            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">
+              پشتیبانی
+            </h3>
             <ul className="space-y-3">
               <li>
                 <Link
@@ -146,9 +151,12 @@ export default function Footer() {
           </div>
 
           <div className="text-right">
-            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">عضویت در خبرنامه</h3>
+            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">
+              عضویت در خبرنامه
+            </h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4 font-vazirmatn persian-text">
-              اولین نفری باشید که از محصولات جدید، پیشنهادات ویژه و رویدادهای کلکسیونری مطلع می‌شوید.
+              اولین نفری باشید که از محصولات جدید، پیشنهادات ویژه و رویدادهای
+              کلکسیونری مطلع می‌شوید.
             </p>
             <div className="flex flex-row-reverse gap-x-2">
               <Input
@@ -187,9 +195,23 @@ export default function Footer() {
             >
               سیاست کوکی
             </Link>
+            <a
+              href="https://trustseal.enamad.ir/?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
+              target="_blank"
+              rel="noopener noreferrer"
+              referrerPolicy="origin"
+              className="cursor-pointer inline-block"
+            >
+              <img
+                src="https://trustseal.enamad.ir/logo.aspx?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
+                alt="Enamad Trust Seal"
+                referrerPolicy="origin"
+                className="h-auto w-auto"
+              />
+            </a>
           </div>
         </div>
       </div>
     </footer>
-  )
+  );
 }
