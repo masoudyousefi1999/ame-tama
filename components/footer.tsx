@@ -207,6 +207,8 @@ export default function Footer() {
                 alt="Enamad Trust Seal"
                 referrerPolicy="origin"
                 className="h-auto w-auto"
+                //@ts-ignore
+                code="BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
               />
             </a>
           </div>
