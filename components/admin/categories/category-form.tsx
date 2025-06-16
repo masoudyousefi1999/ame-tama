@@ -62,7 +62,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       setLoadingParents(true);
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category`,
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/category`,
           {}
         );
 
@@ -359,10 +359,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                   </div>
                 ) : (
                   parentCategories.map((cat) => (
-                    <SelectItem
-                      key={cat.uuid}
-                      value={cat.uuid}
-                    >
+                    <SelectItem key={cat.uuid} value={cat.uuid}>
                       {cat.name}
                     </SelectItem>
                   ))

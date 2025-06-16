@@ -53,7 +53,7 @@ export async function getProductBySlug(
 ): Promise<IProductType | null> {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/product/${slug}`
+      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/product/${slug}`
     );
 
     const product = await res.json();
@@ -73,7 +73,7 @@ export async function getProductByCategorySlug(
 ): Promise<IProductType | null> {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/product/category/${slug}`
+      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/product/category/${slug}`
     );
 
     const product = await res.json();
@@ -96,17 +96,15 @@ export function getRelatedProducts(
   return [];
 }
 
-
 export async function getAllProducts(): Promise<IProductType[]> {
   console.log("get products function is calling.....");
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/product`
+    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/product`
   );
 
   const products = await res.json();
   return products as IProductType[];
 }
-
 
 // دریافت محصولات جدید (محصولات با تاریخ ایجاد اخیر)
 export function getNewProducts(limit = 8): IProductType[] {

@@ -5,12 +5,34 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function customFetch(
+type CustomFetchOptions = RequestInit & {
+  cookies?: string;
+};
+
+export async function customFetch(
   input: string | URL | globalThis.Request,
-  init?: RequestInit
+  init?: CustomFetchOptions
 ): Promise<Response> {
-  return fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}${input}`, {
+  const isServer = typeof window === "undefined";
+
+  const baseUrl = isServer
+    ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT_SERVER! // e.g. https://api.example.com
+    : process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT_CLIENT!; // e.g. /api or ''
+
+  const url = typeof input === "string" ? `${baseUrl}${input}` : input;
+
+  console.log("url: ", url);
+
+  const headers = new Headers(init?.headers || {});
+
+  // ست کردن کوکی‌ها در سرور (از جمله middleware یا API)
+  if (isServer && init?.cookies) {
+    headers.set("cookie", init.cookies);
+  }
+
+  return fetch(url, {
     credentials: "include",
     ...init,
+    headers,
   });
 }

@@ -1,22 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { customFetch } from "./lib/utils";
 
 export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith("/admin")) {
     try {
-      const accessToken = request.cookies.get("ACCESS_TOKEN")?.value;
+      const cookieHeader = request.headers.get("cookie") || "";
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/auth/is-admin`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            ...(accessToken ? { Authorization: accessToken } : {}),
-          },
-        }
-      );
+      const res = await customFetch(`/auth/is-admin`, {
+        method: "GET",
+        cookies: cookieHeader,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       const isUserAdmin = await res.json();
 

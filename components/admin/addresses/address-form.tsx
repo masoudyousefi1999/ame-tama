@@ -1,46 +1,52 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useToast } from "@/hooks/use-toast"
-import { Loader2 } from "lucide-react"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 
 interface User {
-  id: string
-  name: string
-  email: string
+  id: string;
+  name: string;
+  email: string;
 }
 
 interface Address {
-  id?: string
-  user: string
-  userId?: string
-  province: string
-  city: string
-  address: string
-  postalCode: string
-  houseNumber: string
-  floorNumber: string
+  id?: string;
+  user: string;
+  userId?: string;
+  province: string;
+  city: string;
+  address: string;
+  postalCode: string;
+  houseNumber: string;
+  floorNumber: string;
 }
 
 interface AddressFormProps {
-  address?: Address
+  address?: Address;
 }
 
 export function AddressForm({ address }: AddressFormProps) {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
-  const [users, setUsers] = useState<User[]>([])
-  const [loadingUsers, setLoadingUsers] = useState(false)
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(false);
 
   const [formData, setFormData] = useState({
     userId: address?.userId || "",
@@ -50,41 +56,44 @@ export function AddressForm({ address }: AddressFormProps) {
     postalCode: address?.postalCode || "",
     houseNumber: address?.houseNumber || "",
     floorNumber: address?.floorNumber || "",
-  })
+  });
 
   // Fetch users for dropdown
   useEffect(() => {
     const fetchUsers = async () => {
-      setLoadingUsers(true)
+      setLoadingUsers(true);
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/users`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/users`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
 
         if (response.ok) {
-          const usersData = await response.json()
-          setUsers(usersData)
+          const usersData = await response.json();
+          setUsers(usersData);
         }
       } catch (error) {
-        console.error("Error fetching users:", error)
+        console.error("Error fetching users:", error);
         toast({
           title: "خطا",
           description: "دریافت کاربران با مشکل مواجه شد",
           variant: "destructive",
           className: "font-vazirmatn",
-        })
+        });
       } finally {
-        setLoadingUsers(false)
+        setLoadingUsers(false);
       }
-    }
+    };
 
-    fetchUsers()
-  }, [toast])
+    fetchUsers();
+  }, [toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // Validate required fields
     if (!formData.userId) {
@@ -93,21 +102,25 @@ export function AddressForm({ address }: AddressFormProps) {
         description: "انتخاب کاربر الزامی است",
         variant: "destructive",
         className: "font-vazirmatn",
-      })
-      return
+      });
+      return;
     }
 
-    if (!formData.province.trim() || !formData.city.trim() || !formData.address.trim()) {
+    if (
+      !formData.province.trim() ||
+      !formData.city.trim() ||
+      !formData.address.trim()
+    ) {
       toast({
         title: "خطا",
         description: "تمام فیلدهای الزامی را پر کنید",
         variant: "destructive",
         className: "font-vazirmatn",
-      })
-      return
+      });
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
       const payload = {
@@ -118,13 +131,13 @@ export function AddressForm({ address }: AddressFormProps) {
         postalCode: formData.postalCode.trim(),
         houseNumber: formData.houseNumber.trim(),
         floorNumber: formData.floorNumber.trim(),
-      }
+      };
 
       const url = address?.id
-        ? `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/addresses/${address.id}`
-        : `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/addresses`
+        ? `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/addresses/${address.id}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/addresses`;
 
-      const method = address?.id ? "PUT" : "POST"
+      const method = address?.id ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
@@ -133,33 +146,36 @@ export function AddressForm({ address }: AddressFormProps) {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
         body: JSON.stringify(payload),
-      })
+      });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        throw new Error(errorData.message || "عملیات با شکست مواجه شد")
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "عملیات با شکست مواجه شد");
       }
 
       toast({
         title: "موفقیت",
-        description: address ? "آدرس با موفقیت به‌روزرسانی شد" : "آدرس با موفقیت ایجاد شد",
+        description: address
+          ? "آدرس با موفقیت به‌روزرسانی شد"
+          : "آدرس با موفقیت ایجاد شد",
         className: "font-vazirmatn",
-      })
+      });
 
-      router.push("/admin/addresses")
-      router.refresh()
+      router.push("/admin/addresses");
+      router.refresh();
     } catch (error) {
-      console.error("Submit error:", error)
+      console.error("Submit error:", error);
       toast({
         title: "خطا",
-        description: error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
+        description:
+          error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
         variant: "destructive",
         className: "font-vazirmatn",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="max-w-2xl bg-white dark:bg-gray-800" dir="rtl">
@@ -171,12 +187,17 @@ export function AddressForm({ address }: AddressFormProps) {
       <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="userId" className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn">
+            <Label
+              htmlFor="userId"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+            >
               کاربر *
             </Label>
             <Select
               value={formData.userId}
-              onValueChange={(value) => setFormData((prev) => ({ ...prev, userId: value }))}
+              onValueChange={(value) =>
+                setFormData((prev) => ({ ...prev, userId: value }))
+              }
               disabled={loadingUsers}
             >
               <SelectTrigger className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500">
@@ -186,11 +207,17 @@ export function AddressForm({ address }: AddressFormProps) {
                 {loadingUsers ? (
                   <div className="flex items-center justify-center py-2">
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    <span className="text-sm font-vazirmatn">در حال بارگذاری...</span>
+                    <span className="text-sm font-vazirmatn">
+                      در حال بارگذاری...
+                    </span>
                   </div>
                 ) : (
                   users.map((user) => (
-                    <SelectItem key={user.id} value={user.id} className="font-vazirmatn">
+                    <SelectItem
+                      key={user.id}
+                      value={user.id}
+                      className="font-vazirmatn"
+                    >
                       {user.name} ({user.email})
                     </SelectItem>
                   ))
@@ -201,13 +228,18 @@ export function AddressForm({ address }: AddressFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="province" className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn">
+              <Label
+                htmlFor="province"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              >
                 استان *
               </Label>
               <Input
                 id="province"
                 value={formData.province}
-                onChange={(e) => setFormData((prev) => ({ ...prev, province: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, province: e.target.value }))
+                }
                 placeholder="نام استان را وارد کنید"
                 className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
                 required
@@ -215,13 +247,18 @@ export function AddressForm({ address }: AddressFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="city" className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn">
+              <Label
+                htmlFor="city"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              >
                 شهر *
               </Label>
               <Input
                 id="city"
                 value={formData.city}
-                onChange={(e) => setFormData((prev) => ({ ...prev, city: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, city: e.target.value }))
+                }
                 placeholder="نام شهر را وارد کنید"
                 className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
                 required
@@ -230,13 +267,18 @@ export function AddressForm({ address }: AddressFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="address" className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn">
+            <Label
+              htmlFor="address"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+            >
               آدرس کامل *
             </Label>
             <Textarea
               id="address"
               value={formData.address}
-              onChange={(e) => setFormData((prev) => ({ ...prev, address: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, address: e.target.value }))
+              }
               placeholder="آدرس کامل را وارد کنید"
               className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
               rows={3}
@@ -255,7 +297,12 @@ export function AddressForm({ address }: AddressFormProps) {
               <Input
                 id="postalCode"
                 value={formData.postalCode}
-                onChange={(e) => setFormData((prev) => ({ ...prev, postalCode: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    postalCode: e.target.value,
+                  }))
+                }
                 placeholder="کد پستی"
                 className="border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
                 maxLength={10}
@@ -272,7 +319,12 @@ export function AddressForm({ address }: AddressFormProps) {
               <Input
                 id="houseNumber"
                 value={formData.houseNumber}
-                onChange={(e) => setFormData((prev) => ({ ...prev, houseNumber: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    houseNumber: e.target.value,
+                  }))
+                }
                 placeholder="شماره واحد"
                 className="border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
               />
@@ -288,7 +340,12 @@ export function AddressForm({ address }: AddressFormProps) {
               <Input
                 id="floorNumber"
                 value={formData.floorNumber}
-                onChange={(e) => setFormData((prev) => ({ ...prev, floorNumber: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    floorNumber: e.target.value,
+                  }))
+                }
                 placeholder="شماره طبقه"
                 className="border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
               />
@@ -324,5 +381,5 @@ export function AddressForm({ address }: AddressFormProps) {
         </form>
       </CardContent>
     </Card>
-  )
+  );
 }

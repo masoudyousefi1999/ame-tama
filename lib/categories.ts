@@ -13,9 +13,8 @@ export interface ICategoryType {
 
 // دریافت همه دسته‌بندی‌ها
 export async function getAllCategories(): Promise<ICategoryType[]> {
-  console.log('base url are => ',process.env.NEXT_PUBLIC_BACKEND_BASE_URL)
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category`
+    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/category`
   );
 
   const categories = await res.json();
@@ -32,7 +31,7 @@ export async function getCategoryBySlug(
   slug: string
 ): Promise<ICategoryType | undefined> {
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL}/category/${slug}`
+    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/category/${slug}`
   );
 
   const categories = await res.json();
@@ -89,7 +88,10 @@ export function isChildCategory(
   childUuid: string,
   parentUuid: string
 ): boolean {
-  const findInChildren = (cats: ICategoryType[], targetUuid: string): boolean => {
+  const findInChildren = (
+    cats: ICategoryType[],
+    targetUuid: string
+  ): boolean => {
     for (const cat of cats) {
       if (cat.uuid === targetUuid) return true;
       if (findInChildren(cat.children, targetUuid)) return true;
