@@ -13,6 +13,7 @@ export interface ICategoryType {
 
 // دریافت همه دسته‌بندی‌ها
 export async function getAllCategories(): Promise<ICategoryType[]> {
+  console.log("base url is => ",process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT)
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/category`
   );

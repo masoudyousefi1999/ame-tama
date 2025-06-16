@@ -16,16 +16,14 @@ export async function customFetch(
   const isServer = typeof window === "undefined";
 
   const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT_SERVER! // e.g. https://api.example.com
-    : process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT_CLIENT!; // e.g. /api or ''
-
+    ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL_SERVER!
+    : process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT!;
   const url = typeof input === "string" ? `${baseUrl}${input}` : input;
 
   console.log("url: ", url);
 
   const headers = new Headers(init?.headers || {});
 
-  // ست کردن کوکی‌ها در سرور (از جمله middleware یا API)
   if (isServer && init?.cookies) {
     headers.set("cookie", init.cookies);
   }
