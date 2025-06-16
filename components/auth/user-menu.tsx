@@ -86,7 +86,7 @@ export default function UserMenu() {
             <div className="relative h-[36px] w-[36px]">
               <Image
                 src={user.avatar || "/placeholder.svg?height=40&width=40"}
-                alt={`${user.firstName} ${user.lastName}`}
+                alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
                 fill
                 className="object-cover"
                 sizes="36px"
@@ -101,7 +101,7 @@ export default function UserMenu() {
             <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3 shrink-0">
               <Image
                 src={user.avatar || "/placeholder.svg?height=40&width=40"}
-                alt={`${user.firstName} ${user.lastName}`}
+                alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
                 fill
                 className="object-cover"
                 sizes="40px"
@@ -110,10 +110,10 @@ export default function UserMenu() {
             </div>
             <div className="min-w-0">
               <p className="font-medium truncate font-vazirmatn">
-                {user.firstName} {user.lastName}
+                {user.firstName || "کاربر"} {user.lastName || ""}
               </p>
               <p className="text-xs text-gray-500 dark:text-gray-400 truncate font-vazirmatn">
-                {user.email}
+                {user.email || ''}
               </p>
             </div>
           </div>
