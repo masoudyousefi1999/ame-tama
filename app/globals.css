@@ -1,37 +1,29 @@
-/* Add these rules at the top of your globals.css file, before @tailwind directives */
-
-/* Reset box sizing and remove default margins/padding */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-/* Ensure html and body take full height */
 html,
 body {
   height: calc(var(--vh, 1vh) * 100);
   margin: 0;
   padding: 0;
-  overflow-x: hidden; /* Prevent horizontal overflow */
-  position: relative; /* Create stacking context */
-  overscroll-behavior-y: none; /* Prevent overscroll/bounce effects */
+  overflow-x: hidden;
+  position: relative;
+  overscroll-behavior-y: none;
 }
 
-/* Fix iOS Safari 100vh issue with CSS variables */
 :root {
   --vh: 1vh;
 }
 
-/* iOS-specific overscroll prevention */
 @supports (-webkit-touch-callout: none) {
   body {
-    /* Prevent momentum scrolling on iOS */
     -webkit-overflow-scrolling: auto;
   }
 }
 
-/* Safe area insets for notched devices */
 @supports (padding: max(0px)) {
   body {
     padding-left: env(safe-area-inset-left, 0px);
@@ -47,67 +39,74 @@ body {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --background: 230 30% 98%;
+    --foreground: 230 15% 15%; 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: var(--foreground);
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground:
+    --primary: 260 80% 65%; 
+    --primary-foreground: 260 20% 15%;
+    --secondary: 340 85% 70%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 175 85% 55%;
+    --accent-foreground: 175 20% 15%;
+    --muted: 230 20% 92%;
+    --muted-foreground: 230 15% 60%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
+    --success: 140 60% 55%;
+    --success-foreground: 140 60% 20%;
+    --destructive: 345 80% 65%;
+    --destructive-foreground: 345 60% 20%;
+    --warning: 45 100% 75%;
+    --warning-foreground: 45 100% 20%;
+    --info: 200 80% 65%;
+    --info-foreground: 200 80% 15%;
+    --border: 230 10% 85%;
+    --input: 230 10% 92%;
+    --ring: var(--primary);
+    --chart-1: 340 85% 65%;
+    --chart-2: 260 80% 65%;
+    --chart-3: 175 85% 55%;
+    --chart-4: 45 100% 75%;
+    --chart-5: 200 80% 65%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 230 25% 10%;
+    --foreground: 230 15% 90%;
+    --card: 230 20% 12%;
+    --card-foreground: var(--foreground);
+    --popover: 230 25% 10%;
+    --popover-foreground: var(--foreground);
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --primary: 260 90% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 340 90% 70%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 175 90% 60%; 
+    --accent-foreground: 0 0% 100%;
+    --muted: 230 10% 18%;
+    --muted-foreground: 230 10% 60%;
 
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --success: 140 60% 55%;
+    --success-foreground: 0 0% 100%;
+    --destructive: 345 80% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 45 100% 65%;
+    --warning-foreground: 0 0% 10%;
+    --info: 200 80% 65%;
+    --info-foreground: 0 0% 100%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: 230 10% 20%;
+    --input: 230 10% 25%; 
+    --ring: var(--primary); 
   }
 }
+
+
+
 
 @layer base {
   * {
@@ -117,14 +116,12 @@ body {
     @apply bg-background text-foreground;
   }
 
-  /* Improve focus styles for better accessibility */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-purple-500;
   }
 }
 
-/* Improve tap targets on mobile */
-@media (max-width: 640px) {
+/* @media (max-width: 640px) {
   button,
   a,
   input,
@@ -133,57 +130,47 @@ body {
     min-height: 44px;
     min-width: 44px;
   }
-}
+} */
 
 .font-vazirmatn {
   font-family: var(--font-vazirmatn), sans-serif;
 }
 
-/* RTL specific styles */
 [dir="rtl"] {
-  /* Fix icon directions that should be flipped in RTL */
   .flip-icon {
     transform: scaleX(-1);
   }
 
-  /* Fix input placeholder alignment */
   input::placeholder,
   textarea::placeholder {
     text-align: right;
   }
-
-  /* Fix dropdown alignment */
   .dropdown-menu {
     right: 0;
     left: auto;
   }
 }
 
-/* Persian number formatting */
 .persian-nums {
   font-feature-settings: "tnum" 1;
 }
 
-/* Improve Persian text readability */
 .persian-text {
   line-height: 1.8;
   text-align: justify;
   text-justify: inter-word;
 }
 
-/* Fix for some components that might not respect RTL properly */
 .rtl-fix {
   direction: rtl;
   text-align: right;
 }
 
-/* Skeleton loading animation */
 .animate-shimmer {
   animation: shimmer 2s infinite linear;
   background-size: 1000px 100%;
 }
 
-/* Improved scrollbar for better UX */
 ::-webkit-scrollbar {
   width: 0;
   height: 0;
@@ -202,7 +189,6 @@ body {
   background: rgba(156, 163, 175, 0.7);
 }
 
-/* Dark mode scrollbar */
 .dark ::-webkit-scrollbar-thumb {
   background: rgba(75, 85, 99, 0.5);
 }

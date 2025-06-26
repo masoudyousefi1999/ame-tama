@@ -117,14 +117,16 @@ export default function RegisterForm({
 
   return (
     <div className="space-y-6">
+      {/* heading */}
       <div className="text-center">
         <h3 className="text-2xl font-bold font-vazirmatn">ایجاد حساب کاربری</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-vazirmatn">
+        <p className="text-sm text-muted-foreground mt-2 font-vazirmatn">
           با ایجاد حساب کاربری، می‌توانید سفارش‌های خود را پیگیری کنید و از
           امکانات ویژه بهره‌مند شوید
         </p>
       </div>
 
+      {/* form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
@@ -164,6 +166,7 @@ export default function RegisterForm({
           </Label>
           <Input
             id="email"
+            dir="ltr"
             name="email"
             type="email"
             placeholder="example@gmail.com"
@@ -171,7 +174,6 @@ export default function RegisterForm({
             onChange={handleChange}
             disabled={isLoading}
             className="font-vazirmatn"
-            dir="ltr"
           />
         </div>
 
@@ -181,6 +183,7 @@ export default function RegisterForm({
           </Label>
           <Input
             id="password"
+            dir="ltr"
             name="password"
             type="password"
             placeholder="••••••••"
@@ -188,7 +191,6 @@ export default function RegisterForm({
             onChange={handleChange}
             disabled={isLoading}
             className="font-vazirmatn"
-            dir="ltr"
           />
         </div>
 
@@ -198,6 +200,7 @@ export default function RegisterForm({
           </Label>
           <Input
             id="confirmPassword"
+            dir="ltr"
             name="confirmPassword"
             type="password"
             placeholder="••••••••"
@@ -205,14 +208,13 @@ export default function RegisterForm({
             onChange={handleChange}
             disabled={isLoading}
             className="font-vazirmatn"
-            dir="ltr"
           />
         </div>
 
         <Button
           type="submit"
-          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
           disabled={isLoading}
+          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
         >
           {isLoading ? (
             <>
@@ -225,15 +227,16 @@ export default function RegisterForm({
         </Button>
       </form>
 
+      {/* footer link */}
       <div className="text-center">
-        <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+        <p className="text-sm text-muted-foreground font-vazirmatn">
           قبلاً ثبت‌نام کرده‌اید؟{" "}
           <Button
             type="button"
             variant="link"
-            className="p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
             onClick={onLogin}
             disabled={isLoading}
+            className="p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
           >
             وارد شوید
           </Button>

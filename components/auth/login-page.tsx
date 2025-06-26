@@ -247,20 +247,22 @@ export default function LoginPageComponent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <Card className="w-full max-w-md shadow-xl">
+        {/* ── header ───────────────────────────────────────────── */}
         <CardHeader className="text-center space-y-4">
           <div className="flex items-center justify-between">
             <Link
               href="/"
-              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+              className="text-muted-foreground hover:text-foreground transition-colors"
             >
               <Home className="w-5 h-5" />
             </Link>
             <CardTitle className="text-2xl font-bold font-vazirmatn bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
               ورود به حساب کاربری
             </CardTitle>
-            <div className="w-5 h-5" /> {/* Spacer for alignment */}
+            <span className="w-5 h-5" /> {/* spacer */}
           </div>
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+
+          <p className="text-sm text-muted-foreground font-vazirmatn">
             {loginMethod === "otp"
               ? "برای ورود، شماره تلفن خود را وارد کنید"
               : "با ایمیل یا شماره تلفن و رمز عبور وارد شوید"}
@@ -268,7 +270,7 @@ export default function LoginPageComponent() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Error Alert */}
+          {/* error alert */}
           {error && (
             <Alert variant="destructive">
               <AlertDescription className="font-vazirmatn text-right">
@@ -277,10 +279,11 @@ export default function LoginPageComponent() {
             </Alert>
           )}
 
-          {/* OTP Login Flow */}
+          {/* ── OTP flow ─────────────────────────────────────── */}
           {loginMethod === "otp" && (
             <>
               {otpStep === "phone" ? (
+                /* phone-input step */
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label
@@ -292,19 +295,19 @@ export default function LoginPageComponent() {
                     </Label>
                     <Input
                       id="phone"
+                      dir="ltr"
+                      maxLength={11}
                       type="tel"
                       placeholder="09123456789"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       disabled={isLoading}
                       className="font-vazirmatn text-left"
-                      dir="ltr"
-                      maxLength={11}
                     />
                   </div>
 
                   <Button
-                    onClick={() => handleSendOtp()}
+                    onClick={handleSendOtp}
                     disabled={isLoading}
                     className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
                   >
@@ -322,12 +325,14 @@ export default function LoginPageComponent() {
                   </Button>
                 </div>
               ) : (
+                /* code-input step */
                 <div className="space-y-4">
                   <div className="text-center space-y-3">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto" />
-                    <p className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
-                      کد تأیید به شماره{" "}
-                      <span className="font-bold">{phoneNumber}</span> ارسال شد
+                    <p className="text-sm text-muted-foreground font-vazirmatn">
+                      کد تأیید به شماره&nbsp;
+                      <span className="font-bold">{phoneNumber}</span>
+                      &nbsp;ارسال شد
                     </p>
                   </div>
 
@@ -360,10 +365,10 @@ export default function LoginPageComponent() {
 
                   <div className="flex flex-col gap-2">
                     <Button
-                      onClick={handleResendOtp}
                       variant="ghost"
-                      className="w-full font-vazirmatn"
+                      onClick={handleResendOtp}
                       disabled={isLoading || !canResend}
+                      className="w-full font-vazirmatn"
                     >
                       {canResend ? (
                         "ارسال مجدد کد"
@@ -376,10 +381,10 @@ export default function LoginPageComponent() {
                     </Button>
 
                     <Button
-                      onClick={resetToPhoneInput}
                       variant="ghost"
-                      className="w-full font-vazirmatn text-sm"
+                      onClick={resetToPhoneInput}
                       disabled={isLoading}
+                      className="w-full font-vazirmatn text-sm"
                     >
                       <ArrowRight className="w-4 h-4 ml-2" />
                       تغییر شماره تلفن
@@ -390,7 +395,7 @@ export default function LoginPageComponent() {
             </>
           )}
 
-          {/* Password Login Flow */}
+          {/* ── Password flow ─────────────────────────────────── */}
           {loginMethod === "password" && (
             <div className="space-y-4">
               <div className="space-y-2">
@@ -403,13 +408,13 @@ export default function LoginPageComponent() {
                 </Label>
                 <Input
                   id="identifier"
+                  dir="ltr"
                   type="text"
                   placeholder="example@gmail.com یا 09123456789"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   disabled={isLoading}
                   className="font-vazirmatn"
-                  dir="ltr"
                 />
               </div>
 
@@ -423,13 +428,13 @@ export default function LoginPageComponent() {
                 </Label>
                 <Input
                   id="password"
+                  dir="ltr"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   className="font-vazirmatn"
-                  dir="ltr"
                 />
               </div>
 
@@ -450,14 +455,14 @@ export default function LoginPageComponent() {
             </div>
           )}
 
-          {/* Switch Login Method */}
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+          {/* ── switch method button ──────────────────────────── */}
+          <div className="pt-4 border-t border-border">
             {loginMethod === "otp" ? (
               <Button
                 onClick={switchToPasswordLogin}
                 variant="outline"
-                className="w-full font-vazirmatn"
                 disabled={isLoading}
+                className="w-full font-vazirmatn"
               >
                 <Lock className="w-4 h-4 ml-2" />
                 ورود با رمز عبور
@@ -466,8 +471,8 @@ export default function LoginPageComponent() {
               <Button
                 onClick={switchToOtpLogin}
                 variant="outline"
-                className="w-full font-vazirmatn"
                 disabled={isLoading}
+                className="w-full font-vazirmatn"
               >
                 <Shield className="w-4 h-4 ml-2" />
                 ورود با کد تأیید
@@ -475,8 +480,8 @@ export default function LoginPageComponent() {
             )}
           </div>
 
-          {/* Additional Options */}
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-3">
+          {/* ── extra links & test data ───────────────────────── */}
+          <div className="pt-4 border-t border-border space-y-3">
             <div className="text-center">
               <Link
                 href="/register"
@@ -490,7 +495,7 @@ export default function LoginPageComponent() {
               <div className="text-center">
                 <Link
                   href="/forgot-password"
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:underline font-vazirmatn"
+                  className="text-sm text-muted-foreground hover:underline font-vazirmatn"
                 >
                   فراموشی رمز عبور؟
                 </Link>
@@ -498,12 +503,12 @@ export default function LoginPageComponent() {
             )}
           </div>
 
-          {/* Test Data Info */}
-          <div className="mt-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+          {/* test credentials box */}
+          <div className="mt-6 p-4 bg-muted rounded-lg">
             <h4 className="text-sm font-semibold font-vazirmatn mb-2">
               اطلاعات تست:
             </h4>
-            <div className="text-xs text-gray-600 dark:text-gray-400 font-vazirmatn space-y-1">
+            <div className="text-xs text-muted-foreground font-vazirmatn space-y-1">
               <p>
                 <strong>شماره‌های معتبر:</strong> 09123456789, 09987654321
               </p>

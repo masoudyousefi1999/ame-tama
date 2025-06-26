@@ -1,94 +1,99 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useCart } from "@/context/cart-context"
-import { toast } from "@/components/ui/use-toast"
-import { ProductCard } from "@/components/product/product-card"
+import { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/cart-context";
+import { toast } from "@/components/ui/use-toast";
+import { ProductCard } from "@/components/product/product-card";
 
 interface FeaturedProductsProps {
-  products: any[]
+  products: any[];
 }
 
 export default function FeaturedProducts({ products }: FeaturedProductsProps) {
-  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null)
-  const { addItem } = useCart()
+  const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
+  const { addItem } = useCart();
 
   // افزودن محصول به سبد خرید
   const handleAddToCart = (product: any, event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
 
-    addItem(product, 1)
+    addItem(product, 1);
     toast({
       title: "محصول به سبد خرید اضافه شد",
       description: `${product.name} به سبد خرید شما اضافه شد.`,
-    })
-  }
+    });
+  };
 
   // افزودن محصول به علاقه‌مندی‌ها
   const handleAddToWishlist = (product: any, event: React.MouseEvent) => {
-    event.preventDefault()
-    event.stopPropagation()
+    event.preventDefault();
+    event.stopPropagation();
 
     toast({
       title: "محصول به علاقه‌مندی‌ها اضافه شد",
       description: `${product.name} به لیست علاقه‌مندی‌های شما اضافه شد.`,
-    })
-  }
+    });
+  };
 
   return (
     <section id="featured-products">
-      <div className="flex justify-between items-center mb-6">
-        <Button
-          variant="outline"
-          className="hidden sm:flex rounded-full border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-vazirmatn"
-          asChild
-        >
-          <Link href="/shop?tab=featured">
-            مشاهده همه
-            <ArrowRight className="mr-2 h-4 w-4 rotate-180" />
-          </Link>
-        </Button>
+      {/* ————— Header ————— */}
+      <div className="mb-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-6">
         <div>
-          <h2 className="text-2xl font-bold mb-2 font-vazirmatn text-right">محصولات ویژه</h2>
-          <p className="text-gray-600 dark:text-gray-400 font-vazirmatn">
-            مجسمه‌های برتر و محبوب با بالاترین امتیاز از طرف کاربران
+          <h2 className="text-2xl font-bold font-vazirmatn leading-snug">
+            محصولات&nbsp;ویژه
+          </h2>
+          <p className="mt-1 text-muted-foreground">
+            مجسمه‌های برتر با بالاترین امتیاز کاربران
           </p>
         </div>
+
+        {/* desktop CTA */}
+        <Button
+          asChild
+          variant="outline"
+          className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50 font-vazirmatn"
+        >
+          <Link href="/shop?tab=featured">
+            مشاهده&nbsp;همه
+            <ArrowRight className="mr-1.5 h-4 w-4 -scale-x-100" />
+          </Link>
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {products.map((product, index) => (
+      {/* ————— Product Grid ————— */}
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {products.map((p, i) => (
           <motion.div
-            key={product.id}
-            initial={{ opacity: 0, y: 20 }}
+            key={p.id}
+            initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: i * 0.05 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: index * 0.1 }}
           >
-            <ProductCard product={product} showAddToCart={true} showAddToWishlist={true} />
+            <ProductCard product={p} showAddToCart showAddToWishlist />
           </motion.div>
         ))}
       </div>
 
-      <div className="mt-6 sm:hidden">
-        <Button
-          variant="outline"
-          className="w-full rounded-full border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-vazirmatn"
-          asChild
-        >
-          <Link href="/shop?tab=featured">
-            مشاهده همه محصولات ویژه
-            <ArrowRight className="mr-2 h-4 w-4 rotate-180" />
-          </Link>
-        </Button>
-      </div>
+      {/* mobile CTA */}
+      <Button
+        asChild
+        variant="outline"
+        className="mt-6 w-full sm:hidden rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50 font-vazirmatn"
+      >
+        <Link href="/shop?tab=featured">
+          مشاهده&nbsp;همه&nbsp;محصولات&nbsp;ویژه
+          <ArrowRight className="mr-1.5 h-4 w-4 -scale-x-100" />
+        </Link>
+      </Button>
     </section>
-  )
+  );
 }

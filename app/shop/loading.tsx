@@ -1,9 +1,9 @@
-import { Skeleton } from "@/components/ui/skeleton"
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="container mx-auto px-4 py-8 mt-20">
-      {/* اسکلتون هدر فروشگاه */}
+    <div className="container py-8 mt-20">
+      {/* هدر فروشگاه */}
       <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-8">
         <Skeleton className="w-full h-full" />
         <div className="absolute inset-0 flex items-center justify-center">
@@ -11,35 +11,35 @@ export default function Loading() {
         </div>
       </div>
 
-      {/* اسکلتون دسته‌بندی‌ها */}
-      <div className="mb-12">
+      {/* دسته‌بندی‌ها */}
+      <section className="mb-12">
         <Skeleton className="w-48 h-10 mb-6" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="w-full h-64 rounded-lg" />
+          {Array.from({ length: 6 }).map((_, i) => (
+            <Skeleton key={i} className="w-full h-64 rounded-lg" />
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* اسکلتون محصولات ویژه */}
-      <div className="mb-12">
+      {/* محصولات ویژه */}
+      <section className="mb-12">
         <Skeleton className="w-48 h-10 mb-6" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="w-full h-80 rounded-lg" />
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="w-full h-80 rounded-lg" />
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* اسکلتون محصولات جدید */}
-      <div>
+      {/* محصولات جدید */}
+      <section>
         <Skeleton className="w-48 h-10 mb-6" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="w-full h-80 rounded-lg" />
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="w-full h-80 rounded-lg" />
           ))}
         </div>
-      </div>
+      </section>
     </div>
-  )
+  );
 }

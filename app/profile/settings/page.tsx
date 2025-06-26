@@ -118,44 +118,46 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20">
+    <div className="container py-8 mt-20">
+      {/* top bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <div className="flex items-center">
-          <BackButton href="/profile" label="بازگشت به پروفایل" />
-        </div>
+        <BackButton href="/profile" label="بازگشت به پروفایل" />
         <Breadcrumb
           items={[
             { label: "پروفایل", href: "/profile" },
-            { label: "تنظیمات حساب کاربری", href: "/profile/settings", isCurrent: true },
+            {
+              label: "تنظیمات حساب کاربری",
+              href: "/profile/settings",
+              isCurrent: true,
+            },
           ]}
         />
       </div>
 
-      <Tabs defaultValue="profile" className="space-y-6 ">
+      <Tabs defaultValue="profile" className="space-y-6">
+        {/* ---------------------------------------------------------------- */}
+        {/*  Tabs header                                                    */}
+        {/* ---------------------------------------------------------------- */}
         <TabsList className="grid grid-cols-3 max-w-md mx-auto mb-8 h-15 sm:h-12">
-          <TabsTrigger
-            value="profile"
-            className="flex items-center justify-center px-4 py-2 font-vazirmatn"
-          >
-            <User className="ml-2 h-4 w-4" />
-            پروفایل
-          </TabsTrigger>
-          <TabsTrigger
-            value="security"
-            className="flex items-center justify-center px-4 py-2 font-vazirmatn"
-          >
-            <Lock className="ml-2 h-4 w-4" />
-            امنیت
-          </TabsTrigger>
-          <TabsTrigger
-            value="notifications"
-            className="flex items-center justify-center px-4 py-2 font-vazirmatn"
-          >
-            <Bell className="ml-2 h-4 w-4" />
-            اعلان‌ها
-          </TabsTrigger>
+          {[
+            { value: "profile", icon: User, label: "پروفایل" },
+            { value: "security", icon: Lock, label: "امنیت" },
+            { value: "notifications", icon: Bell, label: "اعلان‌ها" },
+          ].map((t) => (
+            <TabsTrigger
+              key={t.value}
+              value={t.value}
+              className="flex items-center justify-center px-4 py-2 font-vazirmatn"
+            >
+              <t.icon className="ml-2 h-4 w-4" />
+              {t.label}
+            </TabsTrigger>
+          ))}
         </TabsList>
 
+        {/* ================================================================ */}
+        {/*  Tab 1 — profile                                                */}
+        {/* ================================================================ */}
         <TabsContent value="profile">
           <Card>
             <CardHeader>
@@ -164,8 +166,10 @@ export default function SettingsPage() {
                 اطلاعات شخصی خود را مدیریت کنید
               </CardDescription>
             </CardHeader>
+
             <CardContent>
               <form onSubmit={handleProfileUpdate} className="space-y-6">
+                {/* avatar */}
                 <div className="flex flex-col items-center mb-6">
                   <div className="relative h-24 w-24 mb-4">
                     <Image
@@ -183,74 +187,65 @@ export default function SettingsPage() {
                         type="button"
                         size="icon"
                         variant="outline"
-                        className="h-8 w-8 rounded-full bg-white dark:bg-gray-800 border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-gray-700"
+                        className="h-8 w-8 rounded-full bg-background border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-muted"
                       >
                         <Upload className="h-4 w-4" />
                         <span className="sr-only">آپلود تصویر</span>
                       </Button>
                     </div>
                   </div>
-                  <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                    تصویر پروفایل (حداکثر 2MB)
+                  <p className="text-sm text-muted-foreground font-vazirmatn">
+                    تصویر پروفایل (حداکثر 2 MB)
                   </p>
                 </div>
 
+                {/* name */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName" className="font-vazirmatn">
-                      نام
-                    </Label>
-                    <Input
-                      id="firstName"
-                      value={profileData.firstName}
-                      onChange={(e) =>
-                        setProfileData({
-                          ...profileData,
-                          firstName: e.target.value,
-                        })
-                      }
-                      className="font-vazirmatn"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName" className="font-vazirmatn">
-                      نام خانوادگی
-                    </Label>
-                    <Input
-                      id="lastName"
-                      value={profileData.lastName}
-                      onChange={(e) =>
-                        setProfileData({
-                          ...profileData,
-                          lastName: e.target.value,
-                        })
-                      }
-                      className="font-vazirmatn"
-                    />
-                  </div>
+                  {[
+                    {
+                      id: "firstName",
+                      label: "نام",
+                      value: profileData.firstName,
+                    },
+                    {
+                      id: "lastName",
+                      label: "نام خانوادگی",
+                      value: profileData.lastName,
+                    },
+                  ].map((f) => (
+                    <div key={f.id} className="space-y-2">
+                      <Label htmlFor={f.id} className="font-vazirmatn">
+                        {f.label}
+                      </Label>
+                      <Input
+                        id={f.id}
+                        value={f.value}
+                        onChange={(e) =>
+                          setProfileData({
+                            ...profileData,
+                            [f.id]: e.target.value,
+                          })
+                        }
+                        className="font-vazirmatn"
+                      />
+                    </div>
+                  ))}
                 </div>
 
+                {/* email / phone */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="font-vazirmatn">
                       ایمیل
                     </Label>
-                    <div className="flex">
-                      <Input
-                        id="email"
-                        type="email"
-                        value={profileData.email}
-                        onChange={(e) =>
-                          setProfileData({
-                            ...profileData,
-                            email: e.target.value,
-                          })
-                        }
-                        className="font-vazirmatn"
-                        disabled
-                      />
-                    </div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 font-vazirmatn">
+                    <Input
+                      id="email"
+                      type="email"
+                      value={profileData.email}
+                      disabled
+                      className="font-vazirmatn"
+                    />
+                    <p className="text-xs text-muted-foreground font-vazirmatn">
                       ایمیل شما قابل تغییر نیست
                     </p>
                   </div>
@@ -261,6 +256,7 @@ export default function SettingsPage() {
                     <Input
                       id="phone"
                       type="tel"
+                      placeholder="09123456789"
                       value={profileData.phone}
                       onChange={(e) =>
                         setProfileData({
@@ -269,7 +265,6 @@ export default function SettingsPage() {
                         })
                       }
                       className="font-vazirmatn"
-                      placeholder="09123456789"
                     />
                   </div>
                 </div>
@@ -288,76 +283,61 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
+        {/* ================================================================ */}
+        {/*  Tab 2 — security                                               */}
+        {/* ================================================================ */}
         <TabsContent value="security">
           <Card>
             <CardHeader>
               <CardTitle className="font-vazirmatn">تنظیمات امنیتی</CardTitle>
               <CardDescription className="font-vazirmatn">
-                رمز عبور خود را تغییر دهید و امنیت حساب کاربری خود را افزایش
-                دهید
+                رمز عبور خود را تغییر دهید و امنیت حساب را افزایش دهید
               </CardDescription>
             </CardHeader>
+
             <CardContent>
               <form onSubmit={handlePasswordUpdate} className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="currentPassword" className="font-vazirmatn">
-                      رمز عبور فعلی
+                {/* three password fields */}
+                {[
+                  {
+                    id: "currentPassword",
+                    label: "رمز عبور فعلی",
+                    val: passwordData.currentPassword,
+                  },
+                  {
+                    id: "newPassword",
+                    label: "رمز عبور جدید",
+                    val: passwordData.newPassword,
+                  },
+                  {
+                    id: "confirmPassword",
+                    label: "تکرار رمز عبور جدید",
+                    val: passwordData.confirmPassword,
+                  },
+                ].map((f) => (
+                  <div key={f.id} className="space-y-2">
+                    <Label htmlFor={f.id} className="font-vazirmatn">
+                      {f.label}
                     </Label>
                     <Input
-                      id="currentPassword"
+                      id={f.id}
                       type="password"
-                      value={passwordData.currentPassword}
+                      value={f.val}
                       onChange={(e) =>
                         setPasswordData({
                           ...passwordData,
-                          currentPassword: e.target.value,
+                          [f.id]: e.target.value,
                         })
                       }
                       className="font-vazirmatn"
                     />
+                    {f.id === "newPassword" && (
+                      <p className="text-xs text-muted-foreground font-vazirmatn">
+                        رمز عبور باید حداقل 8 کاراکتر و شامل حروف و اعداد باشد
+                      </p>
+                    )}
                   </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="newPassword" className="font-vazirmatn">
-                      رمز عبور جدید
-                    </Label>
-                    <Input
-                      id="newPassword"
-                      type="password"
-                      value={passwordData.newPassword}
-                      onChange={(e) =>
-                        setPasswordData({
-                          ...passwordData,
-                          newPassword: e.target.value,
-                        })
-                      }
-                      className="font-vazirmatn"
-                    />
-                    <p className="text-xs text-gray-500 dark:text-gray-400 font-vazirmatn">
-                      رمز عبور باید حداقل 8 کاراکتر و شامل حروف بزرگ، کوچک و
-                      اعداد باشد
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="font-vazirmatn">
-                      تکرار رمز عبور جدید
-                    </Label>
-                    <Input
-                      id="confirmPassword"
-                      type="password"
-                      value={passwordData.confirmPassword}
-                      onChange={(e) =>
-                        setPasswordData({
-                          ...passwordData,
-                          confirmPassword: e.target.value,
-                        })
-                      }
-                      className="font-vazirmatn"
-                    />
-                  </div>
-                </div>
+                ))}
 
                 <div className="flex justify-end">
                   <Button
@@ -373,6 +353,9 @@ export default function SettingsPage() {
           </Card>
         </TabsContent>
 
+        {/* ================================================================ */}
+        {/*  Tab 3 — notifications                                          */}
+        {/* ================================================================ */}
         <TabsContent value="notifications">
           <Card>
             <CardHeader>
@@ -381,113 +364,75 @@ export default function SettingsPage() {
                 نحوه دریافت اعلان‌ها و اطلاع‌رسانی‌ها را مدیریت کنید
               </CardDescription>
             </CardHeader>
+
             <CardContent>
               <div className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between py-2">
+                {/* notification toggles */}
+                {[
+                  {
+                    key: "orderUpdates",
+                    label: "به‌روزرسانی سفارش‌ها",
+                    desc: "دریافت اعلان درباره وضعیت سفارش و ارسال‌ها",
+                  },
+                  {
+                    key: "promotions",
+                    label: "تخفیف‌ها و پیشنهادات ویژه",
+                    desc: "دریافت اعلان درباره تخفیف‌ها و پیشنهادات",
+                  },
+                  {
+                    key: "newProducts",
+                    label: "محصولات جدید",
+                    desc: "دریافت اعلان درباره محصولات جدید فروشگاه",
+                  },
+                ].map((n) => (
+                  <div
+                    key={n.key}
+                    className="flex items-center justify-between py-2"
+                  >
                     <div className="space-y-0.5 max-w-[70%]">
-                      <Label className="font-vazirmatn">
-                        به‌روزرسانی سفارش‌ها
-                      </Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                        دریافت اعلان درباره وضعیت سفارش‌ها و ارسال آن‌ها
+                      <Label className="font-vazirmatn">{n.label}</Label>
+                      <p className="text-sm text-muted-foreground font-vazirmatn">
+                        {n.desc}
                       </p>
                     </div>
                     <Switch
-                      checked={notificationSettings.orderUpdates}
+                      checked={false}
                       onCheckedChange={(checked) =>
                         setNotificationSettings({
                           ...notificationSettings,
-                          orderUpdates: checked,
+                          [n.key]: checked,
                         })
                       }
                       className="scale-75 sm:scale-100"
                     />
                   </div>
+                ))}
 
-                  <div className="flex items-center justify-between py-2">
-                    <div className="space-y-0.5 max-w-[70%]">
-                      <Label className="font-vazirmatn">
-                        تخفیف‌ها و پیشنهادات ویژه
-                      </Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                        دریافت اعلان درباره تخفیف‌ها و پیشنهادات ویژه
-                      </p>
-                    </div>
-                    <Switch
-                      checked={notificationSettings.promotions}
-                      onCheckedChange={(checked) =>
-                        setNotificationSettings({
-                          ...notificationSettings,
-                          promotions: checked,
-                        })
-                      }
-                      className="scale-75 sm:scale-100"
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between py-2">
-                    <div className="space-y-0.5 max-w-[70%]">
-                      <Label className="font-vazirmatn">محصولات جدید</Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                        دریافت اعلان درباره محصولات جدید اضافه شده به فروشگاه
-                      </p>
-                    </div>
-                    <Switch
-                      checked={notificationSettings.newProducts}
-                      onCheckedChange={(checked) =>
-                        setNotificationSettings({
-                          ...notificationSettings,
-                          newProducts: checked,
-                        })
-                      }
-                      className="scale-75 sm:scale-100"
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between py-2">
-                    <div className="space-y-0.5 max-w-[70%]">
-                      <Label className="font-vazirmatn">خبرنامه</Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                        دریافت خبرنامه هفتگی با آخرین اخبار و به‌روزرسانی‌ها
-                      </p>
-                    </div>
-                    <Switch
-                      checked={notificationSettings.newsletter}
-                      onCheckedChange={(checked) =>
-                        setNotificationSettings({
-                          ...notificationSettings,
-                          newsletter: checked,
-                        })
-                      }
-                      className="scale-75 sm:scale-100"
-                    />
-                  </div>
-                </div>
-                <div className="border-t pt-6">
+                {/* theme toggle */}
+                <div className="border-t border-border pt-6">
                   <div className="flex items-center justify-between py-2">
                     <div className="space-y-0.5 max-w-[70%]">
                       <Label className="font-vazirmatn">حالت تیره</Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+                      <p className="text-sm text-muted-foreground font-vazirmatn">
                         تغییر بین حالت روشن و تیره
                       </p>
                     </div>
                     <div className="flex items-center">
-                      <Sun className="h-4 w-4 ml-2 text-gray-500 dark:text-gray-400" />
+                      <Sun className="h-4 w-4 ml-2 text-muted-foreground" />
                       <Switch
                         checked={theme === "dark"}
                         onCheckedChange={toggleTheme}
                         className="scale-75 sm:scale-100"
                       />
-                      <Moon className="h-4 w-4 mr-2 text-gray-500 dark:text-gray-400" />
+                      <Moon className="h-4 w-4 mr-2 text-muted-foreground" />
                     </div>
                   </div>
                 </div>
+
                 <div className="flex justify-end">
                   <Button
-                    type="button"
-                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
                     onClick={handleNotificationUpdate}
+                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
                   >
                     <Save className="ml-2 h-4 w-4" />
                     ذخیره تنظیمات

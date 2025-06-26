@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export function Animated500() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    setPrefersReducedMotion(mediaQuery.matches)
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
 
-    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches)
-    mediaQuery.addEventListener("change", handleChange)
-    return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [])
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   // Electric glitch effect for the 500 text
   const glitchVariants = {
@@ -35,7 +35,7 @@ export function Animated500() {
       },
     },
     static: {},
-  }
+  };
 
   // Circuit lines that light up around the 500
   const circuitLines = [
@@ -45,30 +45,32 @@ export function Animated500() {
     { x1: 0, y1: 20, x2: 0, y2: 50, delay: 0.6 },
     { x1: -70, y1: -30, x2: -40, y2: -15, delay: 0.8 },
     { x1: 40, y1: 15, x2: 70, y2: 30, delay: 1 },
-  ]
+  ];
 
   return (
     <div className="relative w-full h-64 flex items-center justify-center">
+      {/* big “500” with glitch */}
       <motion.div
-        className="text-9xl font-bold text-red-500/20 dark:text-red-600/20 select-none"
         variants={glitchVariants as any}
         animate={prefersReducedMotion ? "static" : "animate"}
+        className="text-9xl font-bold text-destructive/20 dark:text-destructive/20 select-none"
       >
         500
       </motion.div>
 
+      {/* animated “circuit” lines */}
       {!prefersReducedMotion &&
-        circuitLines.map((line, i) => (
+        circuitLines.map((ln, i) => (
           <motion.div
             key={i}
-            className="absolute bg-red-400 dark:bg-red-600 rounded-full"
+            className="absolute rounded-full bg-destructive/60"
             style={{
-              width: Math.abs(line.x2 - line.x1) || 2,
-              height: Math.abs(line.y2 - line.y1) || 2,
+              width: Math.abs(ln.x2 - ln.x1) || 2,
+              height: Math.abs(ln.y2 - ln.y1) || 2,
               left: "50%",
               top: "50%",
-              x: Math.min(line.x1, line.x2),
-              y: Math.min(line.y1, line.y2),
+              x: Math.min(ln.x1, ln.x2),
+              y: Math.min(ln.y1, ln.y2),
             }}
             initial={{ opacity: 0 }}
             animate={{
@@ -76,12 +78,12 @@ export function Animated500() {
               transition: {
                 repeat: Number.POSITIVE_INFINITY,
                 duration: 2,
-                delay: line.delay,
+                delay: ln.delay,
                 ease: "easeInOut",
               },
             }}
           />
         ))}
     </div>
-  )
+  );
 }

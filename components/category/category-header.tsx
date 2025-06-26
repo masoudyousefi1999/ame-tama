@@ -11,62 +11,54 @@ export default function CategoryHeader({ category }: CategoryHeaderProps) {
   return (
     <header
       className={cn(
-        "relative mb-10 rounded-3xl overflow-hidden group",
-        isRoot ? "h-[14rem] md:h-[18rem]" : "h-40 md:h-48"
+        "relative mb-12 overflow-hidden rounded-3xl group transition-all ease-in-out",
+        isRoot ? "h-[16rem] md:h-[20rem]" : "h-48 md:h-56"
       )}
     >
-      {/* تصویر پس‌زمینه  (کیفیت بالاتر + رنگ زنده) */}
-      <div className="relative w-full h-64">
+      {/* Background Image */}
+      <div className="relative h-64 w-full">
         <Image
           src={category.image || "/placeholder.svg"}
           alt={category.name}
           fill
           priority
-          quality={70}
-          sizes="(max-width: 768px) 100vw, 80vw"
+          quality={80}
           className="
-                      object-cover
-                      brightness-95 saturate-110 
-                      transition-transform duration-700
-                      group-hover:scale-105 group-hover:rotate-1
-    "
+            object-fit md:object-cover brightness-95 saturate-110
+            transition-transform duration-700
+            group-hover:scale-105 group-hover:translate-y-2
+          "
         />
       </div>
 
-      {/* گرادیان ملایم‌تر برای خوانایی متن */}
-      <div
-        className="
-      absolute inset-0
-      bg-gradient-to-tr from-black/60 via-black/25 to-transparent
-      /*   ⬆️   تاریک‌تر فقط پایین/چپ  —— بدون blur  */
-    "
-      />
+      {/* Soft Gradient for Legibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/30 to-transparent" />
 
-      {/* متن */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
+      {/* Copy */}
+      <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
         <h1
           className={cn(
-            "font-vazirmatn font-extrabold tracking-tight text-white drop-shadow-lg",
-            isRoot ? "text-4xl md:text-5xl" : "text-3xl md:text-4xl"
+            "font-sans font-extrabold tracking-tight text-white drop-shadow-lg",
+            isRoot ? "text-5xl md:text-6xl" : "text-4xl md:text-5xl"
           )}
         >
           {category.name}
         </h1>
 
         {category.description && (
-          <p className="mt-3 max-w-2xl text-sm md:text-base leading-relaxed text-white/85 font-vazirmatn">
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg font-sans">
             {category.description}
           </p>
         )}
       </div>
 
-      {/* هالهٔ نور پایین کارت (دست‌نخورده) */}
+      {/* Bottom Glow */}
       <div
         className="
-      pointer-events-none absolute -bottom-12 left-1/2 w-[120%] h-24
-      -translate-x-1/2 bg-purple-500/20 blur-[60px]
-      group-hover:bg-purple-600/30 transition-colors
-    "
+        pointer-events-none absolute -bottom-12 left-1/2 h-24 w-[120%]
+        -translate-x-1/2 bg-primary/20 blur-[60px]
+        transition-colors group-hover:bg-primary/30
+      "
       />
     </header>
   );

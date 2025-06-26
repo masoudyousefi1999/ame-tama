@@ -279,7 +279,7 @@ export default function LoginModal({
         </DialogHeader>
 
         <div className="space-y-6">
-          {/* Error Alert */}
+          {/* error alert */}
           {error && (
             <Alert variant="destructive">
               <AlertDescription className="font-vazirmatn text-right">
@@ -288,10 +288,11 @@ export default function LoginModal({
             </Alert>
           )}
 
-          {/* OTP Login Flow */}
+          {/*  OTP flow  */}
           {loginMethod === "otp" && (
             <>
               {otpStep === "phone" ? (
+                /* phone-input step */
                 <div className="space-y-4">
                   <div className="space-y-2">
                     <Label
@@ -303,14 +304,14 @@ export default function LoginModal({
                     </Label>
                     <Input
                       id="phone"
+                      dir="ltr"
+                      maxLength={11}
                       type="tel"
                       placeholder="09123456789"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       disabled={isLoading}
                       className="font-vazirmatn text-left"
-                      dir="ltr"
-                      maxLength={11}
                     />
                   </div>
 
@@ -333,12 +334,14 @@ export default function LoginModal({
                   </Button>
                 </div>
               ) : (
+                /* code-input step */
                 <div className="space-y-4">
                   <div className="text-center space-y-3">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto" />
-                    <p className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
-                      کد تأیید به شماره{" "}
-                      <span className="font-bold">{phoneNumber}</span> ارسال شد
+                    <p className="text-sm text-muted-foreground font-vazirmatn">
+                      کد تأیید به شماره&nbsp;
+                      <span className="font-bold">{phoneNumber}</span>
+                      &nbsp;ارسال شد
                     </p>
                   </div>
 
@@ -373,8 +376,8 @@ export default function LoginModal({
                     <Button
                       onClick={handleResendOtp}
                       variant="ghost"
-                      className="w-full font-vazirmatn"
                       disabled={isLoading || !canResend}
+                      className="w-full font-vazirmatn"
                     >
                       {canResend ? (
                         "ارسال مجدد کد"
@@ -389,8 +392,8 @@ export default function LoginModal({
                     <Button
                       onClick={resetToPhoneInput}
                       variant="ghost"
-                      className="w-full font-vazirmatn text-sm"
                       disabled={isLoading}
+                      className="w-full font-vazirmatn text-sm"
                     >
                       <ArrowRight className="w-4 h-4 ml-2" />
                       تغییر شماره تلفن
@@ -401,7 +404,7 @@ export default function LoginModal({
             </>
           )}
 
-          {/* Password Login Flow */}
+          {/*  Password flow  */}
           {loginMethod === "password" && (
             <div className="space-y-4">
               <div className="space-y-2">
@@ -414,13 +417,13 @@ export default function LoginModal({
                 </Label>
                 <Input
                   id="identifier"
+                  dir="ltr"
                   type="text"
                   placeholder="example@gmail.com یا 09123456789"
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   disabled={isLoading}
                   className="font-vazirmatn"
-                  dir="ltr"
                 />
               </div>
 
@@ -434,13 +437,13 @@ export default function LoginModal({
                 </Label>
                 <Input
                   id="password"
+                  dir="ltr"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
                   className="font-vazirmatn"
-                  dir="ltr"
                 />
               </div>
 
@@ -461,14 +464,14 @@ export default function LoginModal({
             </div>
           )}
 
-          {/* Switch Login Method */}
-          <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
+          {/*  switch method  */}
+          <div className="pt-4 border-t border-border">
             {loginMethod === "otp" ? (
               <Button
                 onClick={switchToPasswordLogin}
                 variant="outline"
-                className="w-full font-vazirmatn"
                 disabled={isLoading}
+                className="w-full font-vazirmatn"
               >
                 <Lock className="w-4 h-4 ml-2" />
                 ورود با رمز عبور
@@ -477,8 +480,8 @@ export default function LoginModal({
               <Button
                 onClick={switchToOtpLogin}
                 variant="outline"
-                className="w-full font-vazirmatn"
                 disabled={isLoading}
+                className="w-full font-vazirmatn"
               >
                 <Shield className="w-4 h-4 ml-2" />
                 ورود با کد تأیید
@@ -486,11 +489,11 @@ export default function LoginModal({
             )}
           </div>
 
-          {/* Link to full login page */}
+          {/*  full login page link  */}
           <div className="text-center pt-2">
             <Link
               href="/login"
-              onClick={() => onClose()}
+              onClick={onClose}
               className="text-sm text-purple-600 dark:text-purple-400 hover:underline font-vazirmatn inline-flex items-center gap-1"
             >
               صفحه ورود کامل

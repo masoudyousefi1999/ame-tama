@@ -5,196 +5,139 @@ import { Input } from "@/components/ui/input";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
+    <footer className="bg-card border-t border-border">
       <div className="container mx-auto px-4 md:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {/* ─────────────────── Brand / about ─────────────────── */}
           <div className="text-right">
             <Link href="/" className="inline-block mb-6">
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-primary">
                 AME-TAMA
               </span>
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 mb-6 max-w-md font-vazirmatn persian-text">
+
+            <p className="mb-6 max-w-md text-muted-foreground font-vazirmatn persian-text">
               ارتقاء کلکسیونی‌های انیمه به هنر زیبا. هر مجسمه AME-TAMA شاهکاری
               از جزئیات، کیفیت و اشتیاق است.
             </p>
+
             <div className="flex gap-x-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/20"
-              >
-                <Facebook className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <span className="sr-only">فیسبوک</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/20"
-              >
-                <Instagram className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <span className="sr-only">اینستاگرام</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/20"
-              >
-                <Twitter className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <span className="sr-only">توییتر</span>
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full hover:bg-purple-100 dark:hover:bg-purple-900/20"
-              >
-                <Youtube className="h-5 w-5 text-gray-600 dark:text-gray-400" />
-                <span className="sr-only">یوتیوب</span>
-              </Button>
+              {/* socials */}
+              {[
+                { Icon: Facebook, label: "فیسبوک" },
+                { Icon: Instagram, label: "اینستاگرام" },
+                { Icon: Twitter, label: "توییتر" },
+                { Icon: Youtube, label: "یوتیوب" },
+              ].map(({ Icon, label }) => (
+                <Button
+                  key={label}
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full hover:bg-accent"
+                >
+                  <Icon className="h-5 w-5 text-muted-foreground" />
+                  <span className="sr-only">{label}</span>
+                </Button>
+              ))}
             </div>
           </div>
 
+          {/* ─────────────────── Shop links ─────────────────── */}
           <div className="text-right">
-            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">
+            <h3 className="mb-4 text-lg font-semibold font-vazirmatn">
               فروشگاه
             </h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  محصولات جدید
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  پرفروش‌ترین‌ها
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  نسخه‌های محدود
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  پیش‌فروش
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  حراج
-                </Link>
-              </li>
+              {[
+                "محصولات جدید",
+                "پرفروش‌ترین‌ها",
+                "نسخه‌های محدود",
+                "پیش‌فروش",
+                "حراج",
+              ].map((link) => (
+                <li key={link}>
+                  <Link
+                    href="#"
+                    className="font-vazirmatn text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {link}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* ─────────────────── Support links ─────────────────── */}
           <div className="text-right">
-            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">
+            <h3 className="mb-4 text-lg font-semibold font-vazirmatn">
               پشتیبانی
             </h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  تماس با ما
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  سوالات متداول
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  ارسال و مرجوعی
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  راهنمای نگهداری مجسمه
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="#"
-                  className="text-gray-600 dark:text-gray-400 hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-                >
-                  پیگیری سفارش
-                </Link>
-              </li>
+              {[
+                "تماس با ما",
+                "سوالات متداول",
+                "ارسال و مرجوعی",
+                "راهنمای نگهداری مجسمه",
+                "پیگیری سفارش",
+              ].map((link) => (
+                <li key={link}>
+                  <Link
+                    href="#"
+                    className="font-vazirmatn text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {link}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
+          {/* ─────────────────── Newsletter ─────────────────── */}
           <div className="text-right">
-            <h3 className="font-semibold text-lg mb-4 font-vazirmatn">
+            <h3 className="mb-4 text-lg font-semibold font-vazirmatn">
               عضویت در خبرنامه
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4 font-vazirmatn persian-text">
+            <p className="mb-4 text-muted-foreground font-vazirmatn persian-text">
               اولین نفری باشید که از محصولات جدید، پیشنهادات ویژه و رویدادهای
               کلکسیونری مطلع می‌شوید.
             </p>
+
             <div className="flex flex-row-reverse gap-x-2">
               <Input
                 type="email"
                 placeholder="ایمیل شما"
-                className="rounded-full bg-white dark:bg-gray-800 text-right font-vazirmatn"
                 dir="rtl"
+                className="rounded-full bg-background text-right font-vazirmatn"
               />
-              <Button className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn">
+              <Button className="rounded-full  hover:from-primary/90 hover:to-accent/90 font-vazirmatn">
                 عضویت
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 md:mb-0 font-vazirmatn">
+        {/* ─────────────────── Bottom bar ─────────────────── */}
+        <div className="mt-12 flex flex-col items-center justify-between border-t border-border pt-8 md:flex-row">
+          <p className="mb-4 text-sm text-muted-foreground md:mb-0 font-vazirmatn">
             © {new Date().getFullYear()} AME-TAMA. تمامی حقوق محفوظ است.
           </p>
+
           <div className="flex gap-x-6">
-            <Link
-              href="#"
-              className="text-gray-500 dark:text-gray-400 text-sm hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-            >
-              سیاست حفظ حریم خصوصی
-            </Link>
-            <Link
-              href="#"
-              className="text-gray-500 dark:text-gray-400 text-sm hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-            >
-              شرایط استفاده از خدمات
-            </Link>
-            <Link
-              href="#"
-              className="text-gray-500 dark:text-gray-400 text-sm hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
-            >
-              سیاست کوکی
-            </Link>
+            {[
+              "سیاست حفظ حریم خصوصی",
+              "شرایط استفاده از خدمات",
+              "سیاست کوکی",
+            ].map((link) => (
+              <Link
+                href="#"
+                key={link}
+                className="text-sm text-muted-foreground transition-colors hover:text-primary font-vazirmatn"
+              >
+                {link}
+              </Link>
+            ))}
+
+            {/* نماد اعتماد */}
             <a
               referrerPolicy="origin"
               target="_blank"
@@ -204,8 +147,8 @@ export default function Footer() {
                 referrerPolicy="origin"
                 src="https://trustseal.enamad.ir/logo.aspx?id=620304&Code=BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
                 alt=""
-                style={{ cursor: "pointer" }}
                 data-code="BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
+                style={{ cursor: "pointer" }}
               />
             </a>
           </div>

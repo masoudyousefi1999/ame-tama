@@ -7,8 +7,10 @@ export async function middleware(request: NextRequest) {
     try {
       const cookieHeader = request.headers.get("cookie") || "";
 
+      console.log("cookieHeaders are => ", cookieHeader);
+
       const res = await customFetch(`/auth/is-admin`, {
-        method: "GET",
+        method: "post",
         cookies: cookieHeader,
         headers: {
           "Content-Type": "application/json",

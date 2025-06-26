@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export function AnimatedServerError() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    setPrefersReducedMotion(mediaQuery.matches)
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
 
-    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches)
-    mediaQuery.addEventListener("change", handleChange)
-    return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [])
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   // Server/robot animation variants
   const serverVariants = {
@@ -28,7 +28,7 @@ export function AnimatedServerError() {
       },
     },
     static: { rotate: 0 },
-  }
+  };
 
   // Smoke/steam animation variants
   const smokeVariants = {
@@ -45,7 +45,7 @@ export function AnimatedServerError() {
       },
     }),
     static: { opacity: 0 },
-  }
+  };
 
   // Spark animation variants
   const sparkVariants = {
@@ -62,49 +62,49 @@ export function AnimatedServerError() {
       },
     }),
     static: { opacity: 0 },
-  }
+  };
 
   return (
     <div className="relative h-64 w-64 mx-auto">
       <motion.div
-        className="relative z-10"
         variants={serverVariants}
         animate={prefersReducedMotion ? "static" : "animate"}
+        className="relative z-10"
       >
         <img
           src="/images/500-server.png"
           alt=""
           className="h-64 w-auto mx-auto"
           onError={(e) => {
-            e.currentTarget.src = "/placeholder.svg?height=256&width=256"
-            e.currentTarget.alt = "خطای سرور"
+            e.currentTarget.src = "/placeholder.svg?height=256&width=256";
+            e.currentTarget.alt = "خطای سرور";
           }}
         />
 
-        {/* Smoke/steam effects */}
+        {/* steam / smoke */}
         {!prefersReducedMotion &&
           [0, 1, 2].map((i) => (
             <motion.div
               key={`smoke-${i}`}
-              className="absolute top-10 left-1/2 h-6 w-6 rounded-full bg-gray-200 dark:bg-gray-700"
               custom={i}
               variants={smokeVariants}
               animate="animate"
+              className="absolute top-10 left-1/2 h-6 w-6 rounded-full bg-muted"
             />
           ))}
 
-        {/* Spark effects */}
+        {/* sparks */}
         {!prefersReducedMotion &&
           [0, 1, 2, 3].map((i) => (
             <motion.div
               key={`spark-${i}`}
-              className="absolute top-20 right-10 h-2 w-2 rounded-full bg-yellow-400"
               custom={i}
               variants={sparkVariants}
               animate="animate"
+              className="absolute top-20 right-10 h-2 w-2 rounded-full bg-chart-4"
             />
           ))}
       </motion.div>
     </div>
-  )
+  );
 }

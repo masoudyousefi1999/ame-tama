@@ -79,45 +79,44 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   return (
     <div className="space-y-6">
-      {/* نام محصول */}
+      {/* ────────── title ────────── */}
       <h1 className="text-3xl font-bold font-vazirmatn">{product.name}</h1>
 
-      {/* امتیاز و نظرات */}
-      <div className="flex items-center gap-x-4 gap-x-reverse">
+      {/* ────────── rating ───────── */}
+      <div className="flex items-center gap-x-4 rtl:gap-x-reverse">
         <div className="flex">
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
               className={cn(
-                "w-5 h-5",
+                "h-5 w-5",
                 i < product.rating
-                  ? "text-amber-400 fill-amber-400"
-                  : "text-gray-300 dark:text-gray-600"
+                  ? "text-yellow-400 fill-yellow-400"
+                  : "text-muted-foreground"
               )}
             />
           ))}
         </div>
-        <span className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
-          ({/* {product.reviewCount}  */}
-          نظر)
+        <span className="text-sm text-muted-foreground font-vazirmatn">
+          (نظر)
         </span>
       </div>
 
-      {/* قیمت */}
-      <div className="flex items-center gap-x-3 gap-x-reverse">
-        <span className="text-3xl font-bold text-gray-900 dark:text-gray-100 font-vazirmatn">
+      {/* ────────── price ────────── */}
+      <div className="flex items-center gap-x-3 rtl:gap-x-reverse">
+        <span className="text-3xl font-bold text-foreground font-vazirmatn">
           {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
         </span>
 
-        {product.price && (
-          <span className="text-lg text-gray-500 line-through font-vazirmatn">
+        {!!product.price && (
+          <span className="text-lg line-through text-muted-foreground font-vazirmatn">
             {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
           </span>
         )}
       </div>
 
-      {/* وضعیت موجودی */}
-      <div className="flex items-center gap-x-2 gap-x-reverse">
+      {/* ─── stock + badges ─── */}
+      <div className="flex items-center gap-x-2 rtl:gap-x-reverse">
         <span
           className={cn(
             "text-sm font-medium font-vazirmatn",
@@ -127,78 +126,49 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           {availabilityText["in-stock"]}
         </span>
 
-        {/* نشان‌های محصول */}
-        <div className="flex gap-x-2 gap-x-reverse mr-4">
+        <div className="mr-4 flex gap-x-2 rtl:gap-x-reverse">
           {(product.createdAt as any) > new Date() && (
-            <Badge className="bg-purple-500 hover:bg-purple-600 font-vazirmatn">
+            <Badge variant="default" className="text-2xs font-vazirmatn">
               جدید
             </Badge>
           )}
           {product.quantity < 10 && (
-            <Badge className="bg-amber-500 hover:bg-amber-600 font-vazirmatn">
+            <Badge variant="destructive" className="text-2xs font-vazirmatn">
               نسخه محدود
             </Badge>
           )}
         </div>
       </div>
 
-      {/* خط جداکننده */}
-      <div className="border-t border-gray-200 dark:border-gray-800 my-6"></div>
+      <div className="my-6 border-t border-border" />
 
-      {/* اطلاعات کلیدی محصول */}
+      {/* ───── key facts ───── */}
       <div className="grid grid-cols-2 gap-4 text-sm">
-        <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">سری:</span>{" "}
-          <span className="font-medium">{product?.detail?.series || ""}</span>
-        </div>
-        <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">شخصیت:</span>{" "}
-          <span className="font-medium">{product?.detail?.character || ""}</span>
-        </div>
-        <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">سازنده:</span>{" "}
-          <span className="font-medium">
-            {product.detail?.specifications?.manufacturer || ""}
-          </span>
-        </div>
-        <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">
-            تاریخ انتشار:
-          </span>{" "}
-          <span className="font-medium">{product.createdAt}</span>
-        </div>
-        <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">مقیاس:</span>{" "}
-          <span className="font-medium">
-            {product?.detail?.specifications?.scale}
-          </span>
-        </div>
-        <div className="font-vazirmatn">
-          <span className="text-gray-500 dark:text-gray-400">ارتفاع:</span>{" "}
-          <span className="font-medium">
-            {product?.detail?.specifications?.height}
-          </span>
-        </div>
+        <Fact label="سری" value={product.detail?.series} />
+        <Fact label="شخصیت" value={product.detail?.character} />
+        <Fact
+          label="سازنده"
+          value={product.detail?.specifications?.manufacturer}
+        />
+        <Fact label="تاریخ انتشار" value={product.createdAt} />
+        <Fact label="مقیاس" value={product.detail?.specifications?.scale} />
+        <Fact label="ارتفاع" value={product.detail?.specifications?.height} />
       </div>
 
-      {/* خط جداکننده */}
-      <div className="border-t border-gray-200 dark:border-gray-800 my-6"></div>
+      <div className="my-6 border-t border-border" />
 
-      {/* انتخاب تعداد */}
-      <div className="flex items-center gap-x-4 gap-x-reverse">
-        <span className="text-gray-700 dark:text-gray-300 font-vazirmatn">
-          تعداد:
-        </span>
-        <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-full">
+      {/* ─── quantity picker ─── */}
+      <div className="flex items-center gap-x-4 rtl:gap-x-reverse">
+        <span className="text-foreground font-vazirmatn">تعداد:</span>
+        <div className="flex items-center rounded-full border border-border">
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10"
+            className="h-10 w-10 rounded-full"
             onClick={decreaseQuantity}
             disabled={quantity <= 1}
           >
             <Minus className="h-4 w-4" />
-            <span className="sr-only">کاهش</span>
           </Button>
 
           <span className="w-10 text-center font-medium font-vazirmatn">
@@ -208,23 +178,22 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full h-10 w-10"
+            className="h-10 w-10 rounded-full"
             onClick={increaseQuantity}
           >
             <Plus className="h-4 w-4" />
-            <span className="sr-only">افزایش</span>
           </Button>
         </div>
       </div>
 
-      {/* دکمه‌های اقدام */}
-      <div className="flex flex-wrap gap-4 mt-8">
+      {/* ─── action buttons ─── */}
+      <div className="mt-8 flex flex-wrap gap-4">
         <Button
           className={cn(
-            "flex-1 rounded-full py-6 font-vazirmatn transition-all duration-300",
+            "flex-1 rounded-full py-6 font-vazirmatn transition-colors",
             addedToCart
-              ? "bg-green-500 hover:bg-green-600"
-              : "bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+              ? "bg-success text-success-foreground hover:bg-success/90"
+              : "bg-primary text-primary-foreground hover:bg-primary/90"
           )}
           onClick={handleAddToCart}
           disabled={product.quantity === 0}
@@ -245,7 +214,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full h-12 w-12"
+          className="h-12 w-12 rounded-full"
           onClick={() =>
             isInWishlist(product.uuid)
               ? removeFromWishlist(product.uuid)
@@ -253,22 +222,31 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           }
         >
           <Heart
-            className={`h-5 w-5 ${
-              isInWishlist(product.uuid) ? "fill-red-500 text-red-500" : ""
-            }`}
+            className={cn(
+              "h-5 w-5",
+              isInWishlist(product.uuid) && "fill-destructive text-destructive"
+            )}
           />
-          <span className="sr-only">افزودن به علاقه‌مندی‌ها</span>
         </Button>
 
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full h-12 w-12"
+          className="h-12 w-12 rounded-full"
         >
           <Share2 className="h-5 w-5" />
-          <span className="sr-only">اشتراک‌گذاری</span>
         </Button>
       </div>
+    </div>
+  );
+}
+
+/* helper */
+function Fact({ label, value }: { label: string; value?: string | number }) {
+  return (
+    <div className="font-vazirmatn">
+      <span className="text-muted-foreground">{label}:</span>{" "}
+      <span className="font-medium">{value ?? "―"}</span>
     </div>
   );
 }

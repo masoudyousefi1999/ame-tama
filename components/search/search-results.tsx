@@ -121,50 +121,46 @@ export default function SearchResults() {
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">
+      {/* ── Header row ─────────────────────────────────── */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <h1 className="text-2xl font-bold mb-4 md:mb-0 font-vazirmatn">
-          {query ? `نتایج جستجو برای "${query}"` : "همه محصولات"}
+          {query ? `نتایج جستجو برای «${query}»` : "همه محصولات"}
         </h1>
 
         <div className="flex flex-col sm:flex-row w-full md:w-auto gap-2">
-          {/* نوار جستجو */}
+          {/* 🔍 search */}
           <div className="relative flex-1">
-            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               type="text"
               placeholder="جستجوی محصولات..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pr-10 rounded-full border-gray-300 dark:border-gray-700 font-vazirmatn"
+              className="w-full pr-10 rounded-full bg-background border font-vazirmatn"
             />
           </div>
 
-          {/* انتخاب مرتب‌سازی */}
+          {/* sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-full border border-gray-300 dark:border-gray-700 bg-transparent px-4 py-2 text-sm font-vazirmatn"
+            className="rounded-full border bg-background px-4 py-2 text-sm font-vazirmatn"
           >
-            {sortOptions.map((option) => (
-              <option
-                key={option.id}
-                value={option.id}
-                className="font-vazirmatn"
-              >
-                {option.name}
+            {sortOptions.map((o) => (
+              <option key={o.id} value={o.id} className="font-vazirmatn">
+                {o.name}
               </option>
             ))}
           </select>
 
-          {/* دکمه فیلتر برای موبایل */}
+          {/* mobile filters */}
           <Sheet>
             <SheetTrigger asChild>
               <Button
                 variant="outline"
                 className="md:hidden rounded-full font-vazirmatn"
               >
-                <Filter className="h-4 w-4 ml-2" />
-                فیلترها
+                <Filter className="h-4 w-4 ml-2" /> فیلترها
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
@@ -176,18 +172,18 @@ export default function SearchResults() {
                   دسته‌بندی‌ها
                 </h3>
                 <div className="space-y-2">
-                  {categories.map((category) => (
-                    <div key={category.id} className="flex items-center">
+                  {categories.map((c) => (
+                    <div key={c.id} className="flex items-center">
                       <Checkbox
-                        id={`mobile-category-${category.id}`}
-                        checked={selectedCategories.includes(category.id)}
-                        onCheckedChange={() => toggleCategory(category.id)}
+                        id={`mobile-category-${c.id}`}
+                        checked={selectedCategories.includes(c.id)}
+                        onCheckedChange={() => toggleCategory(c.id)}
                       />
                       <Label
-                        htmlFor={`mobile-category-${category.id}`}
+                        htmlFor={`mobile-category-${c.id}`}
                         className="mr-2 text-sm font-vazirmatn"
                       >
-                        {category.name}
+                        {c.name}
                       </Label>
                     </div>
                   ))}
@@ -199,22 +195,22 @@ export default function SearchResults() {
       </div>
 
       <div className="flex flex-col md:flex-row gap-8">
-        {/* فیلترهای دسکتاپ */}
-        <div className="hidden md:block w-64 bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 h-fit">
+        {/* ── desktop filters ───────────────────────── */}
+        <aside className="hidden md:block w-64 bg-background rounded-lg shadow-sm p-6 h-fit">
           <h3 className="font-medium mb-4 font-vazirmatn">دسته‌بندی‌ها</h3>
           <div className="space-y-2">
-            {categories.map((category) => (
-              <div key={category.id} className="flex items-center">
+            {categories.map((c) => (
+              <div key={c.id} className="flex items-center">
                 <Checkbox
-                  id={`category-${category.id}`}
-                  checked={selectedCategories.includes(category.id)}
-                  onCheckedChange={() => toggleCategory(category.id)}
+                  id={`category-${c.id}`}
+                  checked={selectedCategories.includes(c.id)}
+                  onCheckedChange={() => toggleCategory(c.id)}
                 />
                 <Label
-                  htmlFor={`category-${category.id}`}
+                  htmlFor={`category-${c.id}`}
                   className="mr-2 text-sm font-vazirmatn"
                 >
-                  {category.name}
+                  {c.name}
                 </Label>
               </div>
             ))}
@@ -223,35 +219,35 @@ export default function SearchResults() {
           {selectedCategories.length > 0 && (
             <Button
               variant="link"
-              className="mt-4 p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
+              className="mt-4 p-0 h-auto text-brand font-vazirmatn"
               onClick={() => setSelectedCategories([])}
             >
               پاک کردن فیلترها
             </Button>
           )}
-        </div>
+        </aside>
 
-        {/* نتایج جستجو */}
-        <div className="flex-1">
-          {/* نمایش فیلترهای انتخاب شده */}
+        {/* ── results column ───────────────────────── */}
+        <main className="flex-1">
+          {/* active filter badges */}
           {selectedCategories.length > 0 && (
             <div className="flex flex-wrap gap-2 mb-4">
-              {selectedCategories.map((categoryId) => {
-                const category = categories.find((c) => c.id === categoryId);
+              {selectedCategories.map((id) => {
+                const cat = categories.find((c) => c.id === id);
                 return (
                   <Badge
-                    key={categoryId}
-                    className="bg-purple-500 hover:bg-purple-600 font-vazirmatn"
-                    onClick={() => toggleCategory(categoryId)}
+                    key={id}
+                    className="bg-brand hover:bg-brand/90 font-vazirmatn"
+                    onClick={() => toggleCategory(id)}
                   >
-                    {category?.name}
+                    {cat?.name}
                     <X className="h-3 w-3 mr-1" />
                   </Badge>
                 );
               })}
               <Button
                 variant="link"
-                className="p-0 h-auto text-purple-600 dark:text-purple-400 text-sm font-vazirmatn"
+                className="p-0 h-auto text-brand text-sm font-vazirmatn"
                 onClick={() => setSelectedCategories([])}
               >
                 پاک کردن همه
@@ -259,47 +255,47 @@ export default function SearchResults() {
             </div>
           )}
 
-          {/* نمایش نتایج */}
+          {/* list / states */}
           {isLoading ? (
-            <p className="text-center text-gray-500 dark:text-gray-400 font-vazirmatn">
-              در حال بارگیری...
+            <p className="text-center text-muted-foreground font-vazirmatn">
+              در حال بارگیری…
             </p>
           ) : results.length === 0 ? (
-            <p className="text-center text-gray-500 dark:text-gray-400 font-vazirmatn">
+            <p className="text-center text-muted-foreground font-vazirmatn">
               هیچ نتیجه‌ای یافت نشد.
             </p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {results.map((product) => (
+              {results.map((p) => (
                 <Card
-                  key={product.id}
-                  className="bg-white dark:bg-gray-800 shadow-md rounded-lg overflow-hidden"
+                  key={p.id}
+                  className="bg-background shadow-md rounded-lg overflow-hidden"
                 >
                   <CardHeader>
                     <CardTitle className="text-lg font-semibold font-vazirmatn">
-                      {product.name}
+                      {p.name}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <img
-                      src={(product as any)?.imageUrl || "/placeholder.svg"}
-                      alt={product.name}
+                      src={(p as any).imageUrl || "/placeholder.svg"}
+                      alt={p.name}
                       className="w-full h-48 object-cover mb-4 rounded-md"
                     />
-                    <p className="text-gray-700 dark:text-gray-300 font-vazirmatn">
-                      {product.description}
+                    <p className="text-foreground/80 font-vazirmatn">
+                      {p.description}
                     </p>
-                    <span className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                      تاریخ انتشار: {formatPersianDate(product.releaseDate)}
+                    <span className="text-xs text-muted-foreground font-vazirmatn">
+                      تاریخ انتشار: {formatPersianDate(p.releaseDate)}
                     </span>
                     <p className="text-xl font-bold mt-2 font-vazirmatn">
-                      {product.price.toLocaleString()} تومان
+                      {p.price.toLocaleString()} تومان
                     </p>
                   </CardContent>
                   <CardFooter>
                     <Button
                       className="w-full font-vazirmatn"
-                      onClick={() => handleAddToCart(product)}
+                      onClick={() => handleAddToCart(p)}
                     >
                       افزودن به سبد خرید
                     </Button>
@@ -308,7 +304,7 @@ export default function SearchResults() {
               ))}
             </div>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );

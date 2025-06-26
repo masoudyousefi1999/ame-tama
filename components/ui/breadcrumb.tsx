@@ -1,9 +1,10 @@
 "use client";
 
-import type React from "react";
+import * as React from "react";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft, Home } from "lucide-react";
+
 import { cn } from "@/lib/utils";
 
 export interface BreadcrumbItem {
@@ -21,21 +22,24 @@ interface BreadcrumbProps {
   children?: ReactNode;
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+   ‣ <Breadcrumb /> – tokenised styles only
+   ------------------------------------------------------------------------- */
 export function Breadcrumb({
   items,
   className,
   showHome = true,
   homeLabel = "خانه",
-  separator = <ChevronLeft className="h-4 w-4 mx-2 sm:mx-3" />,
+  separator = <ChevronLeft className="h-4 w-4" />,
   children,
 }: BreadcrumbProps) {
-  // If children are provided, render them directly
+  /* custom JSX passed – leave layout/styling up to the caller */
   if (children) {
     return (
       <nav
         aria-label="breadcrumb"
         className={cn(
-          "w-full flex items-center justify-center min-h-12 text-sm bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-1.5 sm:px-6 sm:py-3 text-gray-500 dark:text-gray-400",
+          "flex min-h-12 w-full items-center justify-center rounded-lg bg-muted px-4 py-3 text-sm text-muted-foreground",
           className
         )}
       >
@@ -44,151 +48,124 @@ export function Breadcrumb({
     );
   }
 
-  // Otherwise, render using the items prop
+  /* default breadcrumb rendering from `items` */
   return (
     <nav
       aria-label="breadcrumb"
       className={cn(
-        "w-full overflow-x-auto whitespace-nowrap text-[11px] sm:text-sm bg-gray-100 dark:bg-gray-800 rounded-lg px-2 sm:px-4 py-1 sm:py-2 text-gray-500 dark:text-gray-400",
+        "w-full overflow-x-auto whitespace-nowrap rounded-lg bg-muted px-2 py-2 text-xs text-muted-foreground sm:px-4 sm:text-sm",
         className
       )}
     >
-      <ol className="flex items-center gap-x-1 sm:gap-x-2 w-full">
+      <ol className="flex w-full items-center gap-x-1 sm:gap-x-2">
         {showHome && (
-          <li className="flex items-center justify-center">
+          <li className="flex items-center">
             <Link
               href="/"
-              className="flex items-center px-2 py-1 rounded-md hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-vazirmatn text-xs sm:text-sm"
+              className="flex items-center gap-1 rounded-md px-2 py-1 font-vazirmatn transition-colors hover:bg-accent hover:text-primary"
             >
-              <Home className="h-4 w-4 sm:h-5 sm:w-5 ml-1" />
-              <span className="truncate max-w-[100px]">{homeLabel}</span>
+              <Home className="h-4 w-4" />
+              <span className="max-w-[100px] truncate">{homeLabel}</span>
             </Link>
-            {items && items.length > 0 && (
-              <span className="mx-2 sm:mx-3">{separator}</span>
-            )}
+            {items?.length ? (
+              <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>
+            ) : null}
           </li>
         )}
 
-        {items &&
-          items
-            .filter((item) => item.href && item.label) // Skip invalid items
-            .map((item, index) => (
-              <li
-                key={`${item.href}-${index}`}
-                className="flex items-center justify-center"
-              >
-                {item.isCurrent ? (
-                  <span
-                    className="text-gray-900 dark:text-gray-100 font-medium font-vazirmatn text-xs sm:text-sm px-2 py-1 rounded-md"
-                    aria-current="page"
-                  >
+        {items?.filter(Boolean).map((item, idx) => (
+          <li key={`${item.href}-${idx}`} className="flex items-center">
+            {item.isCurrent ? (
+              <BreadcrumbCurrent>{item.label}</BreadcrumbCurrent>
+            ) : (
+              <>
+                {item.href ? (
+                  <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                ) : (
+                  <span className="rounded-md px-2 py-1 font-vazirmatn">
                     {item.label}
                   </span>
-                ) : (
-                  <>
-                    {item.href ? (
-                      <Link
-                        href={item.href}
-                        className="px-1 sm:px-2 py-0.5 sm:py-1 rounded-md hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-vazirmatn text-[11px] sm:text-sm flex justify-center items-center"
-                      >
-                        {item.label}
-                      </Link>
-                    ) : (
-                      <span className="text-gray-500 dark:text-gray-400 font-vazirmatn text-xs sm:text-sm px-2 py-1 rounded-md">
-                        {item.label}
-                      </span>
-                    )}
-                    {index < items.length - 1 && (
-                      <span className="mx-2 sm:mx-3">{separator}</span>
-                    )}
-                  </>
                 )}
-              </li>
-            ))}
+                {idx < items.length - 1 && (
+                  <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>
+                )}
+              </>
+            )}
+          </li>
+        ))}
       </ol>
     </nav>
   );
 }
 
-// Individual components for more customized usage
-export const BreadcrumbList = ({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLOListElement>) => {
-  return (
-    <ol
-      className={cn("flex items-center flex-wrap gap-y-2", className)}
-      {...props}
-    >
-      {children}
-    </ol>
-  );
-};
+/* ────────────────────────────────────────────────────────────────────────────
+   • Primitive sub-components (tokenised)
+   ------------------------------------------------------------------------- */
+export const BreadcrumbList = React.forwardRef<
+  HTMLOListElement,
+  React.HTMLAttributes<HTMLOListElement>
+>(({ className, ...props }, ref) => (
+  <ol
+    ref={ref}
+    className={cn("flex flex-wrap items-center gap-y-2", className)}
+    {...props}
+  />
+));
+BreadcrumbList.displayName = "BreadcrumbList";
 
-export const BreadcrumbItem = ({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLLIElement>) => {
-  return (
-    <li className={cn("flex items-center", className)} {...props}>
-      {children}
-    </li>
-  );
-};
+export const BreadcrumbItem = React.forwardRef<
+  HTMLLIElement,
+  React.HTMLAttributes<HTMLLIElement>
+>(({ className, ...props }, ref) => (
+  <li ref={ref} className={cn("flex items-center", className)} {...props} />
+));
+BreadcrumbItem.displayName = "BreadcrumbItem";
 
-export const BreadcrumbLink = ({
-  children,
-  className,
-  href = "/",
-  ...props
-}: React.HTMLAttributes<HTMLAnchorElement> & { href?: string }) => {
-  return (
-    <Link
-      href={href}
-      className={cn(
-        "px-2 py-1 rounded-md hover:text-purple-500 dark:hover:text-purple-400 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors font-vazirmatn text-xs sm:text-sm",
-        className
-      )}
-      {...props}
-    >
-      {children}
-    </Link>
-  );
-};
+export const BreadcrumbLink = React.forwardRef<
+  HTMLAnchorElement,
+  React.AnchorHTMLAttributes<HTMLAnchorElement> & { href?: string }
+>(({ className, href = "/", ...props }, ref) => (
+  <Link
+    ref={ref as any}
+    href={href}
+    className={cn(
+      "rounded-md px-2 py-1 font-vazirmatn transition-colors hover:bg-accent hover:text-primary",
+      className
+    )}
+    {...props}
+  />
+));
+BreadcrumbLink.displayName = "BreadcrumbLink";
 
-export const BreadcrumbSeparator = ({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement>) => {
-  return (
-    <span
-      className={cn("mx-2 sm:mx-3", className)}
-      aria-hidden="true"
-      {...props}
-    >
-      {children || <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />}
-    </span>
-  );
-};
+export const BreadcrumbSeparator = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement>
+>(({ children, className, ...props }, ref) => (
+  <span
+    ref={ref}
+    className={cn("mx-2", className)}
+    aria-hidden="true"
+    {...props}
+  >
+    {children ?? <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />}
+  </span>
+));
+BreadcrumbSeparator.displayName = "BreadcrumbSeparator";
 
-export const BreadcrumbCurrent = ({
-  children,
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLSpanElement>) => {
-  return (
-    <span
-      className={cn(
-        "text-gray-900 dark:text-gray-100 font-medium font-vazirmatn text-xs sm:text-sm px-2 py-1 rounded-md",
-        className
-      )}
-      aria-current="page"
-      {...props}
-    >
-      {children}
-    </span>
-  );
-};
+export const BreadcrumbCurrent = React.forwardRef<
+  HTMLSpanElement,
+  React.HTMLAttributes<HTMLSpanElement>
+>(({ className, children, ...props }, ref) => (
+  <span
+    ref={ref}
+    aria-current="page"
+    className={cn(
+      "rounded-md px-2 py-1 font-vazirmatn text-foreground",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </span>
+));
+BreadcrumbCurrent.displayName = "BreadcrumbCurrent";

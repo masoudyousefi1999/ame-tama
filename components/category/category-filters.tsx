@@ -69,19 +69,20 @@ export default function CategoryFilters({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm p-6 space-y-6">
-      {/* نمایش زیردسته‌ها در فیلتر */}
+    <div className="space-y-6 rounded-lg bg-card p-6 shadow-sm">
+      {/* sub-categories */}
       {subcategories.length > 0 && (
         <div className="mb-6">
-          <h3 className="font-medium mb-4 font-vazirmatn">
+          <h3 className="mb-4 font-medium font-vazirmatn">
             زیردسته‌های {category.name}
           </h3>
+
           <div className="space-y-2">
             {subcategories.map((subcat) => (
               <Link
                 key={subcat.id}
                 href={`/category/${subcat.slug}`}
-                className="block p-2 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors font-vazirmatn"
+                className="block rounded-lg bg-muted p-2 text-sm transition-colors hover:bg-muted/80 font-vazirmatn"
               >
                 {subcat.name}
               </Link>
@@ -90,18 +91,19 @@ export default function CategoryFilters({
         </div>
       )}
 
+      {/* price slider */}
       <div>
-        <h3 className="font-medium mb-4 font-vazirmatn">محدوده قیمت (تومان)</h3>
+        <h3 className="mb-4 font-medium font-vazirmatn">محدوده قیمت (تومان)</h3>
         <Slider
-          defaultValue={[localPriceRange[0], localPriceRange[1]]}
-          value={[localPriceRange[0], localPriceRange[1]]}
           max={500}
           step={10}
+          value={[localPriceRange[0], localPriceRange[1]]}
+          defaultValue={[localPriceRange[0], localPriceRange[1]]}
           onValueChange={handlePriceChange}
           onValueCommit={applyPriceRange}
           className="mb-6"
         />
-        <div className="flex justify-between text-sm text-gray-500 dark:text-gray-400">
+        <div className="flex justify-between text-sm text-muted-foreground">
           <span className="font-vazirmatn">
             {localPriceRange[0].toLocaleString("fa-IR")}K
           </span>
@@ -111,79 +113,42 @@ export default function CategoryFilters({
         </div>
       </div>
 
-      <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-        <h3 className="font-medium mb-4 font-vazirmatn">وضعیت</h3>
+      {/* status filters */}
+      <div className="border-t border-border pt-6">
+        <h3 className="mb-4 font-medium font-vazirmatn">وضعیت</h3>
         <div className="space-y-2">
-          <div className="flex items-center">
-            <Checkbox
-              id="filter-new"
-              checked={localFilters.includes("new")}
-              onCheckedChange={() => toggleFilter("new")}
-            />
-            <Label htmlFor="filter-new" className="mr-2 text-sm font-vazirmatn">
-              محصولات جدید
-            </Label>
-          </div>
-          <div className="flex items-center">
-            <Checkbox
-              id="filter-limited"
-              checked={localFilters.includes("limited")}
-              onCheckedChange={() => toggleFilter("limited")}
-            />
-            <Label
-              htmlFor="filter-limited"
-              className="mr-2 text-sm font-vazirmatn"
-            >
-              نسخه‌های محدود
-            </Label>
-          </div>
-          <div className="flex items-center">
-            <Checkbox
-              id="filter-in-stock"
-              checked={localFilters.includes("in-stock")}
-              onCheckedChange={() => toggleFilter("in-stock")}
-            />
-            <Label
-              htmlFor="filter-in-stock"
-              className="mr-2 text-sm font-vazirmatn"
-            >
-              فقط موجود
-            </Label>
-          </div>
+          {[
+            { id: "new", label: "محصولات جدید" },
+            { id: "limited", label: "نسخه‌های محدود" },
+            { id: "in-stock", label: "فقط موجود" },
+          ].map(({ id, label }) => (
+            <div key={id} className="flex items-center">
+              <Checkbox
+                id={`filter-${id}`}
+                checked={localFilters.includes(id)}
+                onCheckedChange={() => toggleFilter(id)}
+              />
+              <Label
+                htmlFor={`filter-${id}`}
+                className="mr-2 text-sm font-vazirmatn"
+              >
+                {label}
+              </Label>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* فیلترهای مخصوص دسته‌بندی */}
-      {/* {category.filters && category.filters.length > 0 && (
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
-          <h3 className="font-medium mb-4 font-vazirmatn">{category.filterTitle || "ویژگی‌ها"}</h3>
-          <div className="space-y-2">
-            {category.filters.map((filter) => (
-              <div key={filter.id} className="flex items-center">
-                <Checkbox
-                  id={`filter-${filter.id}`}
-                  checked={localFilters.includes(filter.id)}
-                  onCheckedChange={() => toggleFilter(filter.id)}
-                />
-                <Label htmlFor={`filter-${filter.id}`} className="mr-2 text-sm font-vazirmatn">
-                  {filter.name}
-                </Label>
-              </div>
-            ))}
-          </div>
-        </div>
-      )} */}
-
-      {/* دکمه پاک کردن فیلترها */}
+      {/* clear-all */}
       {(localFilters.length > 0 ||
         localPriceRange[0] > 0 ||
         localPriceRange[1] < 500) && (
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+        <div className="border-t border-border pt-6">
           <Button
-            variant="outline"
             size="sm"
-            className="w-full rounded-full font-vazirmatn"
+            variant="outline"
             onClick={clearAllFilters}
+            className="w-full rounded-full font-vazirmatn"
           >
             پاک کردن فیلترها
           </Button>

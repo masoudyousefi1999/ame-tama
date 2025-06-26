@@ -1,21 +1,23 @@
 "use client";
 
-import type React from "react";
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { CreditCard, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useCart } from "@/context/cart-context";
 import { cn } from "@/lib/utils";
-import { useEffect } from "react";
 
-// انواع روش‌های پرداخت
+/* ------------------------------------------------------------------ */
+/*  Static data                                                       */
+/* ------------------------------------------------------------------ */
+
 const paymentMethods = [
   {
     id: "online",
@@ -31,25 +33,30 @@ const paymentMethods = [
   },
 ];
 
-// انواع روش‌های ارسال
 const shippingMethods = [
   {
     id: "standard",
     name: "ارسال استاندارد",
     description: "تحویل بین ۳ تا ۵ روز کاری",
-    price: 25000,
+    price: 25_000,
   },
   {
     id: "express",
     name: "ارسال سریع",
     description: "تحویل بین ۱ تا ۲ روز کاری",
-    price: 45000,
+    price: 45_000,
   },
 ];
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                         */
+/* ------------------------------------------------------------------ */
 
 export default function CheckoutPage() {
   const router = useRouter();
   const { items, subtotal, discount, total, clearCart } = useCart();
+
+  /* ------------------------ state ------------------------ */
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -66,14 +73,17 @@ export default function CheckoutPage() {
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // محاسبه هزینه ارسال
+  /* -------------------- derived values ------------------- */
   const shippingCost =
-    shippingMethods.find((method) => method.id === shippingMethod)?.price || 0;
-
-  // محاسبه مبلغ نهایی با احتساب هزینه ارسال
+    shippingMethods.find((m) => m.id === shippingMethod)?.price ?? 0;
   const finalTotal = total + shippingCost;
 
-  // تغییر مقادیر فرم
+  /* ------------------------ effects ---------------------- */
+  useEffect(() => {
+    if (items.length === 0) router.push("/cart");
+  }, [items, router]);
+
+  /* ------------------------ handlers --------------------- */
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -81,117 +91,89 @@ export default function CheckoutPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ارسال فرم
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (e?: React.FormEvent) => {
+    e?.preventDefault();
     setIsSubmitting(true);
 
-    // شبیه‌سازی ارسال اطلاعات به سرور
     setTimeout(() => {
-      // پاک کردن سبد خرید
       clearCart();
-
-      // هدایت به صفحه تأیید سفارش
       router.push("/checkout/success");
-    }, 2000);
+    }, 2_000);
   };
 
-  // اگر سبد خرید خالی است، کاربر را به صفحه سبد خرید هدایت می‌کنیم
-  // if (items.length === 0) {
-  //   router.push("/cart");
-  //   return null;
-  // }
-  useEffect(() => {
-    if (items.length === 0) {
-      router.push("/cart");
-    }
-  }, [items, router]);
+  /* guard while redirecting */
+  if (items.length === 0) return null;
 
-  if (items.length === 0) {
-    return null; // Prevent rendering while redirecting
-  }
+  /* ------------------------------------------------------------------ */
+  /*  JSX                                                               */
+  /* ------------------------------------------------------------------ */
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-20">
+    <div className="container py-8 mt-20">
       <h1 className="text-2xl font-bold mb-8 font-vazirmatn">تکمیل سفارش</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* فرم اطلاعات مشتری و ارسال */}
+        {/* ---------------------------------------------------- */}
+        {/*  Left: customer + shipping/payment forms            */}
+        {/* ---------------------------------------------------- */}
         <div className="lg:col-span-2">
           <form onSubmit={handleSubmit}>
-            {/* اطلاعات شخصی */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
+            {/* personal info */}
+            <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
                 اطلاعات شخصی
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="firstName" className="font-vazirmatn">
-                    نام <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 font-vazirmatn"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="lastName" className="font-vazirmatn">
-                    نام خانوادگی <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 font-vazirmatn"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="phone" className="font-vazirmatn">
-                    شماره موبایل <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 font-vazirmatn"
-                    placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email" className="font-vazirmatn">
-                    ایمیل
-                  </Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="mt-1 font-vazirmatn"
-                    placeholder="example@gmail.com"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* آدرس ارسال */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { id: "firstName", label: "نام", required: true },
+                  { id: "lastName", label: "نام خانوادگی", required: true },
+                  {
+                    id: "phone",
+                    label: "شماره موبایل",
+                    required: true,
+                    type: "tel",
+                    placeholder: "۰۹۱۲۳۴۵۶۷۸۹",
+                  },
+                  {
+                    id: "email",
+                    label: "ایمیل",
+                    type: "email",
+                    placeholder: "example@gmail.com",
+                  },
+                ].map((field) => (
+                  <div key={field.id}>
+                    <Label htmlFor={field.id} className="font-vazirmatn">
+                      {field.label}{" "}
+                      {field.required && (
+                        <span className="text-destructive">*</span>
+                      )}
+                    </Label>
+                    <Input
+                      id={field.id}
+                      name={field.id}
+                      type={field.type}
+                      placeholder={field.placeholder}
+                      value={(formData as any)[field.id]}
+                      onChange={handleInputChange}
+                      required={field.required}
+                      className="mt-1 font-vazirmatn"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* address */}
+            <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
                 آدرس ارسال
               </h2>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="md:col-span-2">
                   <Label htmlFor="address" className="font-vazirmatn">
-                    آدرس <span className="text-red-500">*</span>
+                    آدرس <span className="text-destructive">*</span>
                   </Label>
                   <Textarea
                     id="address"
@@ -199,164 +181,157 @@ export default function CheckoutPage() {
                     value={formData.address}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 font-vazirmatn"
                     rows={3}
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="city" className="font-vazirmatn">
-                    شهر <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                    required
                     className="mt-1 font-vazirmatn"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="province" className="font-vazirmatn">
-                    استان <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="province"
-                    name="province"
-                    value={formData.province}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 font-vazirmatn"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="postalCode" className="font-vazirmatn">
-                    کد پستی <span className="text-red-500">*</span>
-                  </Label>
-                  <Input
-                    id="postalCode"
-                    name="postalCode"
-                    value={formData.postalCode}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 font-vazirmatn"
-                    placeholder="۱۲۳۴۵۶۷۸۹۰"
-                  />
-                </div>
-              </div>
-            </div>
 
-            {/* روش ارسال */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
+                {[
+                  { id: "city", label: "شهر", required: true },
+                  { id: "province", label: "استان", required: true },
+                  {
+                    id: "postalCode",
+                    label: "کد پستی",
+                    required: true,
+                    placeholder: "۱۲۳۴۵۶۷۸۹۰",
+                  },
+                ].map((field) => (
+                  <div key={field.id}>
+                    <Label htmlFor={field.id} className="font-vazirmatn">
+                      {field.label}{" "}
+                      {field.required && (
+                        <span className="text-destructive">*</span>
+                      )}
+                    </Label>
+                    <Input
+                      id={field.id}
+                      name={field.id}
+                      placeholder={field.placeholder}
+                      value={(formData as any)[field.id]}
+                      onChange={handleInputChange}
+                      required={field.required}
+                      className="mt-1 font-vazirmatn"
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* shipping method */}
+            <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
                 روش ارسال
               </h2>
+
               <RadioGroup
                 value={shippingMethod}
                 onValueChange={setShippingMethod}
                 className="space-y-3"
               >
-                {shippingMethods.map((method) => (
+                {shippingMethods.map((m) => (
                   <div
-                    key={method.id}
+                    key={m.id}
                     className={cn(
                       "flex items-center justify-between p-4 rounded-lg border",
-                      shippingMethod === method.id
+                      shippingMethod === m.id
                         ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10"
-                        : "border-gray-200 dark:border-gray-700"
+                        : "border-border"
                     )}
                   >
                     <div className="flex items-center">
                       <RadioGroupItem
-                        value={method.id}
-                        id={`shipping-${method.id}`}
+                        value={m.id}
+                        id={`shipping-${m.id}`}
                         className="ml-2"
                       />
                       <div>
                         <Label
-                          htmlFor={`shipping-${method.id}`}
+                          htmlFor={`shipping-${m.id}`}
                           className="font-medium cursor-pointer font-vazirmatn"
                         >
-                          {method.name}
+                          {m.name}
                         </Label>
-                        <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                          {method.description}
+                        <p className="text-sm text-muted-foreground font-vazirmatn">
+                          {m.description}
                         </p>
                       </div>
                     </div>
-                    <div className="font-medium font-vazirmatn">
-                      {method.price.toLocaleString("fa-IR")} تومان
-                    </div>
+                    <span className="font-medium font-vazirmatn">
+                      {m.price.toLocaleString("fa-IR")} تومان
+                    </span>
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </section>
 
-            {/* روش پرداخت */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
+            {/* payment method */}
+            <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
                 روش پرداخت
               </h2>
+
               <RadioGroup
                 value={paymentMethod}
                 onValueChange={setPaymentMethod}
                 className="space-y-3"
               >
-                {paymentMethods.map((method) => (
+                {paymentMethods.map((m) => (
                   <div
-                    key={method.id}
+                    key={m.id}
                     className={cn(
                       "flex items-center p-4 rounded-lg border",
-                      paymentMethod === method.id
+                      paymentMethod === m.id
                         ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10"
-                        : "border-gray-200 dark:border-gray-700"
+                        : "border-border"
                     )}
                   >
                     <RadioGroupItem
-                      value={method.id}
-                      id={`payment-${method.id}`}
+                      value={m.id}
+                      id={`payment-${m.id}`}
                       className="ml-2"
                     />
-                    <method.icon className="h-5 w-5 text-gray-600 dark:text-gray-400 ml-2" />
+                    <m.icon className="h-5 w-5 text-muted-foreground ml-2" />
                     <div>
                       <Label
-                        htmlFor={`payment-${method.id}`}
+                        htmlFor={`payment-${m.id}`}
                         className="font-medium cursor-pointer font-vazirmatn"
                       >
-                        {method.name}
+                        {m.name}
                       </Label>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
-                        {method.description}
+                      <p className="text-sm text-muted-foreground font-vazirmatn">
+                        {m.description}
                       </p>
                     </div>
                   </div>
                 ))}
               </RadioGroup>
-            </div>
+            </section>
 
-            {/* یادداشت سفارش */}
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-6 mb-6">
+            {/* order notes */}
+            <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
                 یادداشت سفارش (اختیاری)
               </h2>
               <Textarea
                 id="notes"
                 name="notes"
+                rows={3}
+                placeholder="اگر توضیحات خاصی برای سفارش خود دارید، اینجا بنویسید..."
                 value={formData.notes}
                 onChange={handleInputChange}
                 className="font-vazirmatn"
-                placeholder="اگر توضیحات خاصی برای سفارش خود دارید، اینجا بنویسید..."
-                rows={3}
               />
-            </div>
+            </section>
           </form>
         </div>
 
-        {/* خلاصه سفارش */}
-        <div className="lg:col-span-1">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm sticky top-24">
-            {/* هدر خلاصه سفارش برای موبایل */}
-            <div className="lg:hidden p-4 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center">
+        {/* ---------------------------------------------------- */}
+        {/*  Right: order summary                               */}
+        {/* ---------------------------------------------------- */}
+        <aside className="lg:col-span-1">
+          <div className="bg-card rounded-2xl shadow-sm sticky top-24">
+            {/* Mobile header */}
+            <div className="lg:hidden p-4 border-b border-border flex justify-between">
               <h2 className="text-lg font-semibold font-vazirmatn">
                 خلاصه سفارش
               </h2>
@@ -364,7 +339,7 @@ export default function CheckoutPage() {
                 variant="ghost"
                 size="sm"
                 className="p-1"
-                onClick={() => setShowOrderSummary(!showOrderSummary)}
+                onClick={() => setShowOrderSummary((o) => !o)}
               >
                 {showOrderSummary ? (
                   <ChevronUp className="h-5 w-5" />
@@ -374,20 +349,20 @@ export default function CheckoutPage() {
               </Button>
             </div>
 
-            {/* محتوای خلاصه سفارش */}
+            {/* Summary content */}
             <div className={cn("p-6", !showOrderSummary && "hidden lg:block")}>
-              <h2 className="text-lg font-semibold mb-4 hidden lg:block font-vazirmatn">
+              <h2 className="hidden lg:block text-lg font-semibold mb-4 font-vazirmatn">
                 خلاصه سفارش
               </h2>
 
-              {/* لیست محصولات */}
+              {/* product list */}
               <div className="space-y-4 mb-6">
                 {items.map((item) => (
                   <div key={item.uuid} className="flex items-start">
-                    <div className="relative h-16 w-16 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+                    <div className="relative h-16 w-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
                       <Image
                         src={
-                          item?.product?.productMedia[0]?.url ||
+                          item?.product?.productMedia[0]?.url ??
                           "/placeholder.svg"
                         }
                         alt={item?.product?.name}
@@ -395,26 +370,26 @@ export default function CheckoutPage() {
                         className="object-cover"
                         sizes="64px"
                       />
-                      <div className="absolute top-0 right-0 bg-gray-800 text-white text-xs rounded-bl-md px-1">
+                      <div className="absolute top-0 right-0 bg-foreground text-background text-xs rounded-bl-md px-1">
                         {item.quantity}
                       </div>
                     </div>
                     <div className="flex-1 mr-3">
                       <h4 className="text-sm font-medium font-vazirmatn">
-                        {item?.product?.name}
+                        {item.product.name}
                       </h4>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
-                        {item?.product?.price.toLocaleString("fa-IR")} تومان
+                      <p className="text-sm text-muted-foreground font-vazirmatn">
+                        {item.product.price.toLocaleString("fa-IR")} تومان
                       </p>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* محاسبات قیمت */}
-              <div className="space-y-3 border-t border-gray-100 dark:border-gray-700 pt-4 mb-6">
+              {/* price breakdown */}
+              <div className="space-y-3 border-t border-border pt-4 mb-6">
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+                  <span className="text-muted-foreground font-vazirmatn">
                     مجموع قیمت محصولات:
                   </span>
                   <span className="font-medium font-vazirmatn">
@@ -433,7 +408,7 @@ export default function CheckoutPage() {
                 )}
 
                 <div className="flex justify-between">
-                  <span className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+                  <span className="text-muted-foreground font-vazirmatn">
                     هزینه ارسال:
                   </span>
                   <span className="font-medium font-vazirmatn">
@@ -441,7 +416,7 @@ export default function CheckoutPage() {
                   </span>
                 </div>
 
-                <div className="border-t border-gray-100 dark:border-gray-700 pt-3 mt-3">
+                <div className="border-t border-border pt-3 mt-3">
                   <div className="flex justify-between font-semibold">
                     <span className="font-vazirmatn">مبلغ قابل پرداخت:</span>
                     <span className="font-vazirmatn">
@@ -451,17 +426,17 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* دکمه ثبت سفارش */}
+              {/* submit */}
               <Button
                 type="submit"
-                className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
-                onClick={handleSubmit}
                 disabled={isSubmitting}
+                onClick={handleSubmit}
+                className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
               >
                 {isSubmitting ? (
                   <div className="flex items-center">
                     <svg
-                      className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      className="animate-spin -ml-1 mr-2 h-4 w-4"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -473,12 +448,12 @@ export default function CheckoutPage() {
                         r="10"
                         stroke="currentColor"
                         strokeWidth="4"
-                      ></circle>
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
+                      />
                     </svg>
                     در حال پردازش...
                   </div>
@@ -488,7 +463,7 @@ export default function CheckoutPage() {
               </Button>
             </div>
           </div>
-        </div>
+        </aside>
       </div>
     </div>
   );

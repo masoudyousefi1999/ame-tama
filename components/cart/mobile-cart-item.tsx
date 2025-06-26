@@ -37,9 +37,9 @@ export function MobileCartItem({
 
   return (
     <div className="relative overflow-hidden touch-manipulation">
-      {/* Delete action revealed on swipe */}
+      {/* delete overlay */}
       <div
-        className="absolute inset-y-0 right-0 flex items-center justify-center bg-red-500 text-white"
+        className="absolute inset-y-0 right-0 flex items-center justify-center bg-destructive text-destructive-foreground"
         style={{
           width: Math.max(Math.abs(dragX), 0),
           opacity: Math.min(Math.abs(dragX) / 100, 1),
@@ -49,17 +49,15 @@ export function MobileCartItem({
       </div>
 
       <motion.div
-        className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4"
         drag="x"
         dragDirectionLock
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.1}
         animate={controls}
+        style={{ x: dragX }}
         onDragStart={() => setIsSwiping(true)}
         onDrag={(_, info) => {
-          if (info.offset.x < 0) {
-            setDragX(info.offset.x);
-          }
+          if (info.offset.x < 0) setDragX(info.offset.x);
         }}
         onDragEnd={(_, info) => {
           setIsSwiping(false);
@@ -72,76 +70,82 @@ export function MobileCartItem({
             setDragX(0);
           }
         }}
-        style={{ x: dragX }}
+        className="bg-card border-b border-border p-4"
       >
         <div className="flex items-start">
-          <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700 flex-shrink-0">
+          {/* image */}
+          <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
             <Image
               src={item.product?.productMedia[0]?.url || "/placeholder.svg"}
               alt={item.product.name}
               fill
-              className="object-cover"
               sizes="80px"
+              className="object-cover"
             />
           </div>
+
+          {/* info */}
           <div className="mr-3 flex-1">
             <h3 className="text-sm font-medium font-vazirmatn">
               {item.product.name}
             </h3>
-            <div className="mt-1 text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+
+            <div className="mt-1 text-sm text-muted-foreground font-vazirmatn">
               {new Intl.NumberFormat("fa-IR").format(item.product.price)} تومان
             </div>
 
-            {/* Product Details Link */}
             <Link
               href={`/product/${item.product.slug}`}
-              className="mt-1 inline-flex items-center text-xs text-purple-600 hover:text-purple-800 transition-colors"
-              onClick={(e) => {
-                if (isSwiping) {
-                  e.preventDefault();
-                }
-              }}
+              onClick={(e) => isSwiping && e.preventDefault()}
+              className="mt-1 inline-flex items-center text-xs text-primary hover:text-primary/80 transition-colors font-vazirmatn"
             >
-              <span className="font-vazirmatn">جزییات محصول</span>
-              <ExternalLink className="h-3 w-3 mr-1" />
+              جزییات محصول
+              <ExternalLink className="mr-1 h-3 w-3" />
             </Link>
 
-            <div className="flex items-center justify-between mt-2">
-              <div className="flex items-center border border-gray-300 dark:border-gray-600 rounded-full">
+            {/* qty & actions */}
+            <div className="mt-2 flex items-center justify-between">
+              <div className="flex items-center rounded-full border border-border">
                 <button
-                  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  aria-label="کاهش تعداد"
                   onClick={() =>
                     onUpdateQuantity(item.product.uuid, 1, "decrease")
                   }
                   disabled={isUpdating || item.quantity <= 1}
+                  className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-foreground"
                 >
                   -
                 </button>
+
                 <span className="w-8 text-center text-sm font-vazirmatn">
                   {new Intl.NumberFormat("fa-IR").format(item.quantity)}
                 </span>
+
                 <button
-                  className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  aria-label="افزایش تعداد"
                   onClick={() =>
                     onUpdateQuantity(item.product.uuid, 1, "increase")
                   }
                   disabled={isUpdating}
+                  className="flex h-8 w-8 items-center justify-center text-muted-foreground hover:text-foreground"
                 >
                   +
                 </button>
               </div>
+
               <button
+                aria-label="حذف محصول"
                 onClick={() =>
                   onUpdateQuantity(item.product.uuid, item.quantity, "decrease")
                 }
-                className="text-red-600 hover:text-red-900 dark:hover:text-red-400 p-2"
-                aria-label="حذف محصول"
+                className="p-2 text-destructive hover:text-destructive-foreground"
               >
                 <Trash2 className="h-5 w-5" />
               </button>
             </div>
-            <div className="mt-2 text-sm font-medium text-gray-900 dark:text-white font-vazirmatn">
-              مجموع:{" "}
+
+            <div className="mt-2 text-sm font-medium text-foreground font-vazirmatn">
+              مجموع:&nbsp;
               {new Intl.NumberFormat("fa-IR").format(
                 item.product.price * item.quantity
               )}{" "}

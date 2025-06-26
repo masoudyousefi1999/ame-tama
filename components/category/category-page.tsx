@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { IProductType } from "@/lib/products";
 import Image from "next/image";
+import CategoryHeader from "./category-header";
 
 interface CategoryPageProps {
   category: ICategoryType & { image: string };
@@ -74,8 +75,8 @@ export default function CategoryPage({
   };
 
   return (
-    <div className="container mx-auto px-4 py-8 mt-16 md:mt-24">
-      {/* Breadcrumb */}
+    <div className="container mx-auto mt-16 px-4 py-8 md:mt-24">
+      {/* breadcrumb */}
       <Breadcrumb
         items={
           category.name === "figures"
@@ -92,50 +93,39 @@ export default function CategoryPage({
         className="mb-4"
       />
 
-      {/* Category Header with full, uncropped image */}
-      <div className="w-full h-64 relative mb-8 rounded-lg overflow-hidden">
-        <Image
-          src={category.image || "/placeholder.jpg"}
-          alt={category.name}
-          fill
-          sizes="100vw"
-          style={{ objectFit: "contain" }}
-          priority
-        />
-        <h1 className="absolute bottom-4 left-4 text-3xl font-extrabold text-black drop-shadow-lg font-vazirmatn">
-          {category?.name === "figures" ? "فیگور ها" : category.name}
-        </h1>
-      </div>
+      {/* hero header */}
+      <CategoryHeader category={category} />
 
-      {/* Subcategories */}
+      {/* sub-categories */}
       {subcategories.length > 0 && (
         <section className="mb-14">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-2xl font-extrabold font-vazirmatn tracking-tight bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-2xl font-extrabold text-transparent font-vazirmatn tracking-tight">
               زیردسته‌های&nbsp;{category.name}
             </h2>
-            <span className="lg:hidden text-xs font-vazirmatn text-gray-400 dark:text-gray-500">
+            <span className="text-xs font-vazirmatn text-muted-foreground lg:hidden">
               ← پیمایش افقی →
             </span>
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-2 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600 md:grid md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 md:gap-8 md:overflow-visible">
+          <div className="scrollbar-thin scrollbar-thumb-border dark:scrollbar-thumb-border flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-8 md:overflow-visible lg:grid-cols-4 xl:grid-cols-5">
             {subcategories.map((subcat) => (
               <Link
                 key={subcat.id}
                 href={`/category/figures/${subcat.slug}`}
-                className="relative flex-none w-32 sm:w-36 md:w-full aspect-square snap-start rounded-3xl overflow-hidden group transition-transform duration-300 hover:-rotate-x-2 hover:rotate-y-2"
+                className="group relative aspect-square w-32 flex-none snap-start overflow-hidden rounded-3xl transition-all duration-300 hover:scale-105 hover:rotate-2 sm:w-36 md:w-full"
               >
-                <div className="absolute inset-0 rounded-3xl backdrop-blur-xl bg-white/30 dark:bg-gray-800/30 shadow-xl shadow-black/5 ring-1 ring-white/20 dark:ring-black/40 transition-all duration-300 group-hover:shadow-2xl" />
+                {/* Subcategory Image */}
                 <Image
                   src={subcat.image ?? "/placeholder.jpg"}
                   alt={subcat.name}
                   fill
-                  sizes="(max-width: 640px) 8rem, (max-width: 768px) 9rem, 18vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105 group-hover:rotate-1"
+                  sizes="(max-width:640px) 8rem, (max-width:768px) 9rem, 18vw"
+                  className="object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-1"
                 />
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-t from-black/60 via-black/25 to-transparent" />
+
+                {/* Text Overlay */}
                 <div className="absolute inset-0 flex items-end justify-center pb-4">
-                  <span className="font-vazirmatn text-xs sm:text-sm md:text-base font-semibold text-white drop-shadow-lg tracking-wide">
+                  <span className="font-sans text-xs font-semibold tracking-wide text-accent sm:text-sm md:text-base drop-shadow-lg">
                     {subcat.name}
                   </span>
                 </div>
@@ -145,9 +135,9 @@ export default function CategoryPage({
         </section>
       )}
 
-      <div className="flex flex-col lg:flex-row gap-8">
-        {/* Desktop Filters */}
-        <div className="hidden lg:block w-64 flex-shrink-0">
+      <div className="flex flex-col gap-8 lg:flex-row">
+        {/* desktop filters */}
+        <div className="hidden w-64 flex-shrink-0 lg:block">
           <CategoryFilters
             priceRange={priceRange}
             onPriceRangeChange={handlePriceRangeChange}
@@ -157,8 +147,8 @@ export default function CategoryPage({
           />
         </div>
 
-        {/* Mobile Filters & Sort */}
-        <div className="lg:hidden flex justify-between items-center mb-4">
+        {/* mobile filter & sort */}
+        <div className="mb-4 flex items-center justify-between lg:hidden">
           <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
             <SheetTrigger asChild>
               <Button
@@ -170,17 +160,17 @@ export default function CategoryPage({
                 <span className="font-vazirmatn">فیلترها</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px] p-0">
-              <div className="p-6 h-full overflow-y-auto">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="font-medium text-lg font-vazirmatn">
+            <SheetContent side="right" className="w-[300px] p-0 sm:w-[400px]">
+              <div className="h-full overflow-y-auto p-6">
+                <div className="mb-6 flex items-center justify-between">
+                  <h3 className="font-vazirmatn text-lg font-medium">
                     فیلترها
                   </h3>
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => setIsFilterOpen(false)}
-                    className="rounded-full h-8 w-8"
+                    className="h-8 w-8 rounded-full"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -196,12 +186,13 @@ export default function CategoryPage({
               </div>
             </SheetContent>
           </Sheet>
+
           <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-gray-500" />
+            <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
             <select
               value={sort}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="bg-transparent text-sm border-none focus:ring-0 font-vazirmatn"
+              className="text-sm font-vazirmatn text-foreground bg-transparent border-none focus:ring-0"
             >
               <option value="newest">جدیدترین</option>
               <option value="price-asc">قیمت: کم به زیاد</option>
@@ -211,17 +202,17 @@ export default function CategoryPage({
           </div>
         </div>
 
-        {/* Products */}
+        {/* products */}
         <div className="flex-1">
-          <div className="hidden lg:flex justify-end mb-6">
+          <div className="mb-6 hidden justify-end lg:flex">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+              <span className="text-sm text-muted-foreground font-vazirmatn">
                 مرتب‌سازی:
               </span>
               <select
                 value={sort}
                 onChange={(e) => handleSortChange(e.target.value)}
-                className="bg-transparent text-sm border-none focus:ring-0 font-vazirmatn"
+                className="text-sm font-vazirmatn text-foreground bg-transparent border-none focus:ring-0"
               >
                 <option value="newest">جدیدترین</option>
                 <option value="price-asc">قیمت: کم به زیاد</option>
@@ -230,7 +221,8 @@ export default function CategoryPage({
               </select>
             </div>
           </div>
-          <CategoryProducts products={products} viewMode={"grid"} />
+
+          <CategoryProducts products={products} viewMode="grid" />
         </div>
       </div>
     </div>

@@ -1,89 +1,97 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { useAuth } from "@/context/auth-context"
-import { toast } from "@/components/ui/use-toast"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/context/auth-context";
+import { toast } from "@/components/ui/use-toast";
 
 interface LoginFormProps {
-  onSuccess?: () => void
-  onForgotPassword: () => void
-  onRegister: () => void
+  onSuccess?: () => void;
+  onForgotPassword: () => void;
+  onRegister: () => void;
 }
 
-export default function LoginForm({ onSuccess, onForgotPassword, onRegister }: LoginFormProps) {
-  const router = useRouter()
-  const { login } = useAuth()
-  const [isLoading, setIsLoading] = useState(false)
+export default function LoginForm({
+  onSuccess,
+  onForgotPassword,
+  onRegister,
+}: LoginFormProps) {
+  const router = useRouter();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-  })
+  });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!formData.email || !formData.password) {
       toast({
         title: "خطا",
         description: "لطفاً تمام فیلدها را پر کنید",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
     try {
-      const result = await login(formData.email, formData.password)
+      const result = await login(formData.email, formData.password);
 
       if (result.success) {
         toast({
           title: "ورود موفقیت‌آمیز",
           description: "با موفقیت وارد حساب کاربری خود شدید",
-        })
+        });
 
         if (onSuccess) {
-          onSuccess()
+          onSuccess();
         }
       } else {
         toast({
           title: "خطا در ورود",
           description: result.message,
           variant: "destructive",
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "خطا",
         description: "مشکلی در ورود به حساب کاربری رخ داد",
         variant: "destructive",
-      })
+      });
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div className="space-y-6">
+      {/* heading */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold font-vazirmatn">ورود به حساب کاربری</h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-2 font-vazirmatn">
+        <h3 className="text-2xl font-bold font-vazirmatn">
+          ورود به حساب کاربری
+        </h3>
+        <p className="text-sm text-muted-foreground mt-2 font-vazirmatn">
           وارد حساب کاربری خود شوید و از امکانات ویژه بهره‌مند شوید
         </p>
       </div>
 
+      {/* form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email" className="font-vazirmatn">
@@ -92,13 +100,13 @@ export default function LoginForm({ onSuccess, onForgotPassword, onRegister }: L
           <Input
             id="email"
             name="email"
+            dir="ltr"
             type="email"
             placeholder="example@gmail.com"
             value={formData.email}
             onChange={handleChange}
             disabled={isLoading}
             className="font-vazirmatn"
-            dir="ltr"
           />
         </div>
 
@@ -110,9 +118,9 @@ export default function LoginForm({ onSuccess, onForgotPassword, onRegister }: L
             <Button
               type="button"
               variant="link"
-              className="p-0 h-auto text-xs text-purple-600 dark:text-purple-400 font-vazirmatn"
               onClick={onForgotPassword}
               disabled={isLoading}
+              className="p-0 h-auto text-xs text-purple-600 dark:text-purple-400 font-vazirmatn"
             >
               فراموشی رمز عبور؟
             </Button>
@@ -120,20 +128,20 @@ export default function LoginForm({ onSuccess, onForgotPassword, onRegister }: L
           <Input
             id="password"
             name="password"
+            dir="ltr"
             type="password"
             placeholder="••••••••"
             value={formData.password}
             onChange={handleChange}
             disabled={isLoading}
             className="font-vazirmatn"
-            dir="ltr"
           />
         </div>
 
         <Button
           type="submit"
-          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
           disabled={isLoading}
+          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
         >
           {isLoading ? (
             <>
@@ -146,20 +154,21 @@ export default function LoginForm({ onSuccess, onForgotPassword, onRegister }: L
         </Button>
       </form>
 
+      {/* footer link */}
       <div className="text-center">
-        <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+        <p className="text-sm text-muted-foreground font-vazirmatn">
           حساب کاربری ندارید؟{" "}
           <Button
             type="button"
             variant="link"
-            className="p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
             onClick={onRegister}
             disabled={isLoading}
+            className="p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
           >
             ثبت‌نام کنید
           </Button>
         </p>
       </div>
     </div>
-  )
+  );
 }

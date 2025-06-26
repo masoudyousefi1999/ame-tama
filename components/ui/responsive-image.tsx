@@ -113,11 +113,16 @@ export function ResponsiveImage({
   return (
     <div
       className={cn(
-        "relative overflow-hidden bg-gray-100 dark:bg-gray-800 aspect-square",
+        // container ────────────────────────────────────────────────────────────
+        "relative overflow-hidden aspect-square",
+        /* palette-aware placeholder behind the image */
+        "bg-muted/40 dark:bg-muted/30",
+        /* respect any explicit sizing passed in */
         !fill && getAspectRatioClass(),
         containerClassName
       )}
     >
+      {/* ░░ Low-quality placeholder ░░───────────────────────────────────────── */}
       {showLowQuality && (
         <Image
           src={lowQualitySrc}
@@ -125,15 +130,17 @@ export function ResponsiveImage({
           fill={fill}
           width={fill ? undefined : 100}
           height={fill ? undefined : 100}
-          className={cn(
-            "absolute inset-0 object-cover opacity-100 transition-opacity",
-            !isLoaded && "z-10"
-          )}
-          sizes={imageSizes}
           aria-hidden="true"
+          sizes={imageSizes}
+          className={cn(
+            "absolute inset-0 object-cover transition-opacity",
+            /* keep it visible until hi-res finishes */
+            !isLoaded && "z-10 opacity-100"
+          )}
         />
       )}
 
+      {/* ░░ High-resolution image ░░────────────────────────────────────────── */}
       <Image
         src={imgSrc || fallbackSrc}
         alt={alt}
@@ -149,7 +156,8 @@ export function ResponsiveImage({
         }}
         onLoad={() => setIsLoaded(true)}
         className={cn(
-          "transition-opacity duration-300 object-cover",
+          "object-cover transition-opacity duration-300",
+          /* fade-in once loaded */
           showLowQuality && !isLoaded && "opacity-0",
           isLoaded && "opacity-100",
           className

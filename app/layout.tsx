@@ -82,7 +82,7 @@ export default function RootLayout({
           attribute="class"
           defaultTheme="light"
           enableSystem
-          disableTransitionOnChange
+          disableTransitionOnChange={true}
         >
           <SplashScreen>
             <ViewportHeightFix />

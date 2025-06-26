@@ -83,11 +83,11 @@ export function ProductCard({
     return (
       <div
         className={cn(
-          "flex items-center p-2 rounded-lg bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-shadow",
+          "flex items-center p-2 rounded-lg bg-card shadow-sm hover:shadow-md transition-shadow",
           className
         )}
       >
-        <div className="relative h-16 w-16 flex-shrink-0 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+        <div className="relative h-16 w-16 flex-shrink-0 rounded-md overflow-hidden bg-muted">
           <Image
             src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
@@ -96,14 +96,16 @@ export function ProductCard({
             sizes="64px"
           />
         </div>
+
         <div className="mr-3 flex-1 min-w-0">
-          <h3 className="text-sm font-medium line-clamp-1 font-vazirmatn">
+          <h3 className="line-clamp-1 text-sm font-medium font-vazirmatn">
             {product.name}
           </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+          <p className="text-sm text-muted-foreground font-vazirmatn">
             {formatPrice(product.price)}
           </p>
         </div>
+
         {showAddToCart && (
           <Button
             size="sm"
@@ -119,16 +121,17 @@ export function ProductCard({
     );
   }
 
-  // ─────── ORDER VARIANT ───────
+  // ─────────────────────────────────────────────────────────
+  // ORDER  ─────────────────────────────────────────────────
   if (variant === "order") {
     return (
       <div
         className={cn(
-          "flex items-center p-4 rounded-lg bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors",
+          "flex items-center p-4 rounded-lg bg-card hover:bg-accent transition-colors",
           className
         )}
       >
-        <div className="relative h-20 w-20 ml-4 rounded-md overflow-hidden bg-gray-100 dark:bg-gray-700">
+        <div className="relative ml-4 h-20 w-20 overflow-hidden rounded-md bg-muted">
           <Image
             src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
@@ -137,27 +140,28 @@ export function ProductCard({
             sizes="80px"
           />
         </div>
+
         <div className="flex-1">
           <h3 className="font-medium font-vazirmatn">{product.name}</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">
+          <p className="text-sm text-muted-foreground font-vazirmatn">
             {formatPrice(product.price)}
           </p>
         </div>
-        <div className="text-right">
-          <p className="font-medium font-vazirmatn">
-            {formatPrice(product.price)}
-          </p>
-        </div>
+
+        <p className="text-right font-medium font-vazirmatn">
+          {formatPrice(product.price)}
+        </p>
       </div>
     );
   }
 
-  // ─────── WISHLIST VARIANT ───────
+  // ─────────────────────────────────────────────────────────
+  // WISHLIST  ───────────────────────────────────────────────
   if (variant === "wishlist") {
     return (
       <motion.div
         className={cn(
-          "group relative rounded-lg overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-shadow",
+          "group relative overflow-hidden rounded-lg border border-border bg-card shadow-sm hover:shadow-md transition-shadow",
           className
         )}
         initial={{ opacity: 0, y: 20 }}
@@ -165,78 +169,73 @@ export function ProductCard({
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
       >
-        <div className="relative h-48 bg-gray-100 dark:bg-gray-700">
+        {/* image */}
+        <div className="relative h-48 bg-muted">
           <Image
             src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
             fill
             className="object-contain p-4"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
           />
 
-          {/* Remove from Wishlist Button */}
+          {/* remove btn */}
           {showRemoveFromWishlist && (
             <button
               onClick={handleWishlistToggle}
-              className="absolute top-2 left-2 h-8 w-8 rounded-full bg-red-600/80 flex items-center justify-center text-white hover:bg-red-700 transition-colors z-10"
+              className="absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               <Trash2 className="h-4 w-4" />
-              <span className="sr-only">حذف از علاقه‌مندی‌ها</span>
             </button>
           )}
 
-          {/* Badges */}
-          <div className="absolute top-2 right-2 flex flex-col items-end gap-1 z-10">
+          {/* badges */}
+          <div className="absolute right-2 top-2 z-10 flex flex-col items-end gap-1">
             {product.quantity === 0 && (
-              <Badge className="bg-red-600 text-white text-xs font-vazirmatn">
+              <Badge variant="destructive" className="text-2xs">
                 ناموجود
               </Badge>
             )}
             {product.quantity > 0 && product.quantity < 10 && (
-              <Badge className="bg-amber-500 text-white text-xs font-vazirmatn">
+              <Badge variant="destructive" className="text-2xs">
                 موجودی محدود
               </Badge>
             )}
           </div>
         </div>
-        <div className="p-4 space-y-2">
+
+        {/* details */}
+        <div className="space-y-2 p-4">
           <Link href={`/product/${product.slug}`}>
-            <h3 className="font-vazirmatn text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+            <h3 className="line-clamp-2 text-base font-semibold transition-colors hover:text-primary font-vazirmatn">
               {product.name}
             </h3>
           </Link>
-          <div className="flex items-center space-x-2 rtl:space-x-reverse">
-            {product.rating && (
-              <div className="flex items-center text-amber-400">
-                <Star className="h-4 w-4 fill-amber-400" />
-                <span className="mr-1 text-sm font-vazirmatn">
-                  {product.rating.toFixed(1)}
-                </span>
-              </div>
-            )}
-            <span
-              className={cn(
-                "text-sm font-vazirmatn",
-                product.quantity > 0
-                  ? "text-green-600 dark:text-green-400"
-                  : "text-red-600 dark:text-red-400"
-              )}
-            >
-              {product.quantity > 0 ? "موجود" : "ناموجود"}
-            </span>
-          </div>
+
+          {/* rating */}
+          {product.rating && (
+            <div className="flex items-center text-amber-400">
+              <Star className="h-4 w-4 fill-amber-400" />
+              <span className="mr-1 text-sm font-vazirmatn">
+                {product.rating.toFixed(1)}
+              </span>
+            </div>
+          )}
+
+          {/* price + add-to-cart */}
           <div className="flex items-baseline justify-between">
-            <p className="text-lg font-bold text-purple-600 dark:text-purple-400 font-vazirmatn">
+            <p className="text-lg font-bold text-primary font-vazirmatn">
               {formatPrice(product.price)}
             </p>
+
             {showAddToCart && (
               <Button
                 size="sm"
-                className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full px-3 py-1 text-xs shadow transition-colors"
+                className="rounded-full bg-primary hover:bg-primary/90 px-3 py-1 text-xs shadow"
                 onClick={handleAddToCart}
                 disabled={!isInStock}
               >
-                <ShoppingCart className="h-4 w-4 ml-1" />
+                <ShoppingCart className="ml-1 h-4 w-4" />
                 افزودن
               </Button>
             )}
@@ -246,11 +245,12 @@ export function ProductCard({
     );
   }
 
-  // ─────── DEFAULT VARIANT ───────
+  // ─────────────────────────────────────────────────────────
+  // DEFAULT  ────────────────────────────────────────────────
   return (
     <motion.div
       className={cn(
-        "group relative rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-shadow",
+        "group relative overflow-hidden rounded-xl border border-border bg-card shadow-sm hover:shadow-lg transition-shadow",
         className
       )}
       onMouseEnter={() => !isMobile && setHovered(true)}
@@ -261,64 +261,58 @@ export function ProductCard({
       transition={{ duration: 0.4 }}
     >
       <Link href={`/product/${product.slug}`} className="block">
-        {/* Image Section */}
-        <div className="relative h-64 md:h-72 lg:h-80 bg-gray-100 dark:bg-gray-700 overflow-hidden">
+        {/* image */}
+        <div className="relative h-64 overflow-hidden bg-muted md:h-72 lg:h-80">
           <Image
             src={product.productMedia?.[0]?.url || "/placeholder.svg"}
             alt={product.name}
             fill
             priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width:768px)100vw,(max-width:1200px)50vw,33vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
 
-          {/* Gradient Overlay */}
+          {/* gradient */}
           <span className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
 
-          {/* Badges */}
-          <div className="absolute top-3 right-3 flex flex-col items-end gap-1 z-10">
+          {/* badges */}
+          <div className="absolute right-3 top-3 z-10 flex flex-col items-end gap-1">
             {product.quantity === 0 && (
-              <Badge className="bg-red-600 text-white text-xs font-vazirmatn">
+              <Badge variant="destructive" className="text-2xs">
                 ناموجود
               </Badge>
             )}
             {product.quantity > 0 && product.quantity < 10 && (
-              <Badge className="bg-amber-500 text-white text-xs font-vazirmatn">
+              <Badge variant="destructive" className="text-2xs">
                 موجودی محدود
-              </Badge>
-            )}
-            {(product.createdAt as any) > new Date() && (
-              <Badge className="bg-purple-600 text-white text-xs font-vazirmatn">
-                جدید
               </Badge>
             )}
           </div>
 
-          {/* Wishlist Icon */}
+          {/* wishlist icon */}
           {showAddToWishlist && (
             <button
               onClick={handleWishlistToggle}
-              className="absolute top-3 left-3 z-10 h-10 w-10 rounded-full bg-white/70 dark:bg-gray-900/50 backdrop-blur-md flex items-center justify-center hover:bg-white/90 dark:hover:bg-gray-900/70 transition-colors"
+              className="absolute left-3 top-3 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-background/70 backdrop-blur hover:bg-background/90"
             >
               <Heart
                 className={cn(
                   "h-5 w-5 transition-colors",
                   isInWishlist(product.uuid)
-                    ? "fill-red-500 text-red-500"
-                    : "text-gray-600 dark:text-gray-300"
+                    ? "fill-destructive text-destructive"
+                    : "text-muted-foreground"
                 )}
               />
             </button>
           )}
         </div>
 
-        {/* Details Section */}
-        <div className="p-4 space-y-2">
-          <h3 className="font-vazirmatn text-base font-semibold text-gray-900 dark:text-gray-100 line-clamp-2 hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+        {/* details */}
+        <div className="space-y-2 p-4">
+          <h3 className="line-clamp-2 text-base font-semibold transition-colors hover:text-primary font-vazirmatn">
             {product.name}
           </h3>
 
-          {/* Rating */}
           {product.rating && (
             <div className="flex items-center text-amber-400 text-sm">
               {Array.from({ length: 5 }).map((_, idx) => (
@@ -328,22 +322,19 @@ export function ProductCard({
                     "h-4 w-4",
                     idx < Math.round(product.rating)
                       ? "fill-amber-400 text-amber-400"
-                      : "text-gray-300 dark:text-gray-600"
+                      : "text-muted-foreground"
                   )}
                 />
               ))}
-              <span className="mr-1 font-vazirmatn text-xs text-gray-600 dark:text-gray-400">
+              <span className="mr-1 text-xs text-muted-foreground font-vazirmatn">
                 ({product.rating.toFixed(1)})
               </span>
             </div>
           )}
 
-          {/* Price */}
-          <div className="flex items-baseline justify-between">
-            <p className="text-lg font-bold text-purple-600 dark:text-purple-400 font-vazirmatn">
-              {formatPrice(product.price)}
-            </p>
-          </div>
+          <p className="text-lg font-bold text-primary font-vazirmatn">
+            {formatPrice(product.price)}
+          </p>
         </div>
       </Link>
     </motion.div>

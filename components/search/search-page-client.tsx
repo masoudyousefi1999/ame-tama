@@ -69,17 +69,18 @@ export default function SearchPageClient({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4 font-vazirmatn">جستجو</h1>
+      {/* ── Header ────────────────────────────────────── */}
+      <header className="mb-8 space-y-4">
+        <h1 className="text-3xl font-bold font-vazirmatn">جستجو</h1>
 
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex gap-2 mb-6">
+        {/* 🔍 Search bar */}
+        <form onSubmit={handleSearch} className="flex gap-2">
           <Input
             type="text"
             placeholder="جستجو در محصولات..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1"
+            className="flex-1 bg-background border focus:ring-brand font-vazirmatn"
           />
           <Button type="submit" size="icon">
             <Search className="h-4 w-4" />
@@ -87,20 +88,17 @@ export default function SearchPageClient({
         </form>
 
         {initialQuery && (
-          <p className="text-gray-600 dark:text-gray-400 mb-4 font-vazirmatn">
-            نتایج جستجو برای: "{initialQuery}"
+          <p className="text-muted-foreground font-vazirmatn">
+            نتایج جستجو برای «{initialQuery}»
           </p>
         )}
-      </div>
+      </header>
 
-      {/* Search Results */}
+      {/* ── Results grid ──────────────────────────────── */}
       <ProductGrid
         products={results}
         loading={loading}
-        // currentPage={currentPage}
-        // totalPages={totalPages}
-        // onPageChange={handlePageChange}
-        // emptyMessage="هیچ محصولی یافت نشد"
+        /* paging props kept but commented */
       />
     </div>
   );

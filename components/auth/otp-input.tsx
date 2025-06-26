@@ -105,22 +105,24 @@ export default function OtpInput({
           ref={(el) => (inputRefs.current[index] = el) as any}
           type="tel"
           inputMode="numeric"
+          dir="ltr"
           maxLength={1}
           value={digit}
+          disabled={disabled}
           onChange={(e) => handleInputChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           onFocus={() => handleFocus(index)}
-          disabled={disabled}
           className={cn(
             "w-12 h-12 text-center text-lg font-bold border-2 transition-all duration-200",
-            "focus:border-purple-500 focus:ring-2 focus:ring-purple-200",
+            /* focus state */
+            "focus:border-primary focus:ring-2 focus:ring-primary/30",
+            /* filled state */
             digit
-              ? "border-purple-400 bg-purple-50 dark:bg-purple-900/20"
-              : "border-gray-300",
-            disabled && "opacity-50 cursor-not-allowed",
-            "dark:border-gray-600 dark:focus:border-purple-400"
+              ? "border-primary bg-primary/10 dark:bg-primary/10"
+              : "border-border",
+            /* disabled */
+            disabled && "opacity-50 cursor-not-allowed"
           )}
-          dir="ltr"
         />
       ))}
     </div>

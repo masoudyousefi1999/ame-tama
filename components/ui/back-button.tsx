@@ -1,39 +1,45 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface BackButtonProps {
-  href?: string
-  label?: string
-  className?: string
+  href?: string;
+  label?: string;
+  className?: string;
 }
 
-export function BackButton({ href, label = "بازگشت", className }: BackButtonProps) {
-  const router = useRouter()
+export function BackButton({
+  href,
+  label = "بازگشت",
+  className,
+}: BackButtonProps) {
+  const router = useRouter();
 
   const handleClick = () => {
     if (href) {
-      router.push(href)
+      router.push(href);
     } else {
-      router.back()
+      router.back();
     }
-  }
+  };
 
   return (
     <Button
       variant="ghost"
       size="sm"
       className={cn(
-        "flex items-center text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 font-vazirmatn",
-        className,
+        /*────────── design-tokens instead of raw grays ──────────*/
+        "flex items-center text-muted-foreground hover:text-foreground font-vazirmatn",
+        className
       )}
       onClick={handleClick}
     >
-      <ArrowRight className="ml-1 h-4 w-4" />
+      {/* RTL support → flip when needed (optional) */}
+      <ArrowRight className="ml-1 h-4 w-4 rtl:rotate-180" />
       {label}
     </Button>
-  )
+  );
 }

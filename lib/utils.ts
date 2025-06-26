@@ -20,8 +20,6 @@ export async function customFetch(
     : process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT!;
   const url = typeof input === "string" ? `${baseUrl}${input}` : input;
 
-  console.log("url: ", url);
-
   const headers = new Headers(init?.headers || {});
 
   if (isServer && init?.cookies) {

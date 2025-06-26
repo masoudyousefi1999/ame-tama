@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 const categories = [
   { id: "one-piece", name: "وان پیس" },
@@ -11,35 +11,38 @@ const categories = [
   { id: "jujutsu-kaisen", name: "جوجوتسو کایزن" },
   { id: "attack-on-titan", name: "حمله به تایتان" },
   { id: "my-hero-academia", name: "آکادمی قهرمان من" },
-]
+];
 
 export default function CategoryFilter() {
-  const [activeCategory, setActiveCategory] = useState("all")
+  const [activeCategory, setActiveCategory] = useState("all");
 
   const handleCategoryClick = (categoryId: string) => {
-    setActiveCategory(categoryId)
+    setActiveCategory(categoryId);
 
     // Scroll to products section
-    const productsSection = document.getElementById("featured-products")
+    const productsSection = document.getElementById("featured-products");
     if (productsSection) {
-      productsSection.scrollIntoView({ behavior: "smooth" })
+      productsSection.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
 
   return (
-    <section className="py-16 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-16">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent font-vazirmatn">
+        {/* ───── header ───── */}
+        <div className="mb-10 text-center">
+          <h2 className="font-vazirmatn text-primary text-3xl font-bold mb-4">
             جستجو بر اساس سری انیمه
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-vazirmatn">
-            مجسمه‌های لوکس ما از سری‌های انیمه مورد علاقه خود را کاوش کنید، هر کدام با دقت استثنایی در جزئیات ساخته
-            شده‌اند.
+          <p className="mx-auto max-w-2xl font-vazirmatn text-muted-foreground">
+            مجسمه‌های لوکس ما از سری‌های انیمه مورد علاقه خود را کاوش کنید، هر
+            کدام با دقت استثنایی در جزئیات ساخته شده‌اند.
           </p>
         </div>
 
+        {/* ───── filter chips ───── */}
         <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+          {/* all-series chip */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -47,13 +50,14 @@ export default function CategoryFilter() {
             className={cn(
               "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 font-vazirmatn",
               activeCategory === "all"
-                ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md"
-                : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:shadow-md",
+                ? "group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl font-vazirmatn"
+                : "bg-card text-foreground hover:shadow-md"
             )}
           >
             همه سری‌ها
           </motion.button>
 
+          {/* dynamic category chips */}
           {categories.map((category) => (
             <motion.button
               key={category.id}
@@ -63,8 +67,8 @@ export default function CategoryFilter() {
               className={cn(
                 "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 font-vazirmatn",
                 activeCategory === category.id
-                  ? "bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md"
-                  : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:shadow-md",
+                  ? "group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl font-vazirmatn"
+                  : "bg-card text-foreground hover:shadow-md"
               )}
             >
               {category.name}
@@ -73,5 +77,5 @@ export default function CategoryFilter() {
         </div>
       </div>
     </section>
-  )
+  );
 }

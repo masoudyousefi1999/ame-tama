@@ -1,44 +1,44 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { CheckCircle, ShoppingBag, Home } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useCart } from "@/context/cart-context"
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { CheckCircle, ShoppingBag, Home } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useCart } from "@/context/cart-context";
 
 export default function CheckoutSuccessPage() {
-  const router = useRouter()
-  const { items } = useCart()
+  const router = useRouter();
+  const { items } = useCart();
 
-  // اگر سبد خرید خالی نیست و کاربر مستقیماً به این صفحه آمده، او را به صفحه اصلی هدایت می‌کنیم
+  // redirect if someone lands here with non-empty cart
   useEffect(() => {
-    if (items.length > 0) {
-      router.push("/")
-    }
-  }, [items, router])
+    if (items.length > 0) router.push("/");
+  }, [items, router]);
 
-  // شماره سفارش تصادفی
-  const orderNumber = Math.floor(10000000 + Math.random() * 90000000)
+  const orderNumber = Math.floor(10000000 + Math.random() * 90000000);
 
   return (
-    <div className="container mx-auto px-4 py-16 mt-20">
+    <div className="container py-16 mt-20">
       <div className="max-w-2xl mx-auto text-center py-16">
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 mb-6">
           <CheckCircle className="h-10 w-10" />
         </div>
 
-        <h1 className="text-2xl font-bold mb-4 font-vazirmatn">سفارش شما با موفقیت ثبت شد</h1>
+        <h1 className="text-2xl font-bold mb-4 font-vazirmatn">
+          سفارش شما با موفقیت ثبت شد
+        </h1>
 
-        <p className="text-gray-600 dark:text-gray-400 mb-2 font-vazirmatn">
+        <p className="text-muted-foreground mb-2 font-vazirmatn">
           از خرید شما متشکریم! سفارش شما با موفقیت ثبت شد و در حال پردازش است.
         </p>
 
-        <p className="text-gray-600 dark:text-gray-400 mb-8 font-vazirmatn">
+        <p className="text-muted-foreground mb-8 font-vazirmatn">
           شماره سفارش: <span className="font-semibold">{orderNumber}</span>
         </p>
 
-        <p className="text-gray-600 dark:text-gray-400 mb-8 font-vazirmatn">
-          یک ایمیل تأیید برای شما ارسال شده است. جزئیات سفارش و اطلاعات پیگیری در ایمیل موجود است.
+        <p className="text-muted-foreground mb-8 font-vazirmatn">
+          یک ایمیل تأیید برای شما ارسال شده است. جزئیات سفارش و اطلاعات پیگیری
+          در ایمیل موجود است.
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -61,5 +61,5 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

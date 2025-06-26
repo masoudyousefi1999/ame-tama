@@ -1,62 +1,68 @@
-import Image from "next/image"
-import Link from "next/link"
-import type { Metadata } from "next"
-import { Card, CardContent } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Button } from "@/components/ui/button"
-import { Breadcrumb } from "@/components/ui/breadcrumb"
+import Image from "next/image";
+import Link from "next/link";
+import type { Metadata } from "next";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 export const metadata: Metadata = {
   title: "درباره ما | AME-TAMA",
   description:
     "با AME-TAMA، برند پیشرو در زمینه مجسمه‌های انیمه لوکس آشنا شوید. داستان ما، ارزش‌های ما و تعهد ما به کیفیت برتر.",
   alternates: {
-    // canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
-    canonical: `https://ametama.com/about`,
+    canonical: "https://ametama.com/about",
   },
   openGraph: {
     title: "درباره ما | AME-TAMA",
-    description: "با AME-TAMA، برند پیشرو در زمینه مجسمه‌های انیمه لوکس آشنا شوید.",
-    // url: `${process.env.NEXT_PUBLIC_SITE_URL}/about`,
-    url: `https://ametama.com/about`,
+    description:
+      "با AME-TAMA، برند پیشرو در زمینه مجسمه‌های انیمه لوکس آشنا شوید.",
+    url: "https://ametama.com/about",
     siteName: "AME-TAMA",
     locale: "fa_IR",
     type: "website",
   },
-}
+};
 
 export default function AboutPage() {
   return (
-    <main className="container mx-auto px-4 py-8 md:py-12">
-      {/* بردکرامب */}
+    <main className="container py-8 md:py-12">
+      {/* Bread­crumb */}
       <Breadcrumb
-        items={[
-          { label: "درباره ما", href: "/about",  isCurrent: true},
-        ]}
-        className="mb-6 mt-6" 
+        items={[{ label: "درباره ما", href: "/about", isCurrent: true }]}
+        className="mb-6 mt-6"
       />
 
-      {/* هدر صفحه */}
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">درباره AME-TAMA</h1>
-        <p className="text-muted-foreground max-w-3xl mx-auto">مرجع برتر مجسمه‌های انیمه لوکس در ایران</p>
+      {/* Page header */}
+      <header className="mb-10 text-center">
+        <h1 className="text-foreground text-3xl md:text-4xl font-bold mb-4">
+          درباره AME-TAMA
+        </h1>
+        <p className="text-muted-foreground max-w-3xl mx-auto">
+          مرجع برتر مجسمه‌های انیمه لوکس در ایران
+        </p>
         <Separator className="mt-6 max-w-md mx-auto" />
-      </div>
+      </header>
 
-      {/* بخش داستان ما */}
+      {/* Our story */}
       <section className="mb-16">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <div className="order-2 md:order-1">
-            <h2 className="text-2xl font-bold mb-4">داستان ما</h2>
+            <h2 className="text-foreground text-2xl font-bold mb-4">
+              داستان ما
+            </h2>
             <p className="mb-4">
-              AME-TAMA در سال ۱۳۹۸ با هدف ارائه مجسمه‌های انیمه با کیفیت برتر به علاقه‌مندان و کلکسیونرهای ایرانی تأسیس
-              شد. ما با شناخت عمیق از فرهنگ انیمه و مانگا، و با درک نیاز بازار ایران به محصولات اصل و با کیفیت، فعالیت
-              خود را آغاز کردیم.
+              AME-TAMA در سال ۱۳۹۸ با هدف ارائه مجسمه‌های انیمه با کیفیت برتر به
+              علاقه‌مندان و کلکسیونرهای ایرانی تأسیس شد. ما با شناخت عمیق از
+              فرهنگ انیمه و مانگا، و با درک نیاز بازار ایران به محصولات اصل و با
+              کیفیت، فعالیت خود را آغاز کردیم.
             </p>
             <p className="mb-4">
-              در طول این سال‌ها، با تلاش مستمر و جلب اعتماد مشتریان، توانسته‌ایم به یکی از معتبرترین فروشگاه‌های مجسمه
-              انیمه در ایران تبدیل شویم. همکاری مستقیم با تولیدکنندگان معتبر ژاپنی و تأمین‌کنندگان بین‌المللی، به ما این
-              امکان را می‌دهد تا جدیدترین و باکیفیت‌ترین مجسمه‌ها را به دست مشتریان برسانیم.
+              در طول این سال‌ها، با تلاش مستمر و جلب اعتماد مشتریان، توانسته‌ایم
+              به یکی از معتبرترین فروشگاه‌های مجسمه انیمه در ایران تبدیل شویم.
+              همکاری مستقیم با تولیدکنندگان معتبر ژاپنی و تأمین‌کنندگان
+              بین‌المللی، به ما این امکان را می‌دهد تا جدیدترین و باکیفیت‌ترین
+              مجسمه‌ها را به دست مشتریان برسانیم.
             </p>
           </div>
           <div className="order-1 md:order-2 flex justify-center">
@@ -71,14 +77,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* بخش ارزش‌های ما */}
+      {/* Our values */}
       <section className="mb-16 bg-muted py-10 px-6 rounded-xl">
-        <h2 className="text-2xl font-bold mb-8 text-center">ارزش‌های ما</h2>
+        <h2 className="text-foreground text-2xl font-bold mb-8 text-center">
+          ارزش‌های ما
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* ارزش ۱ */}
           <Card>
             <CardContent className="pt-6">
               <div className="text-center mb-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-chart-1/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  {/* icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -89,7 +99,7 @@ export default function AboutPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-primary"
+                    className="text-chart-1"
                   >
                     <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
                     <path d="M12 9v4" />
@@ -99,16 +109,18 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold">کیفیت برتر</h3>
               </div>
               <p className="text-center">
-                ما تنها مجسمه‌های اصل و با کیفیت را ارائه می‌دهیم. هر محصول قبل از ارسال به دقت بررسی می‌شود تا از رضایت
-                مشتریان اطمینان حاصل کنیم.
+                ما تنها مجسمه‌های اصل و با کیفیت را ارائه می‌دهیم. هر محصول قبل
+                از ارسال به دقت بررسی می‌شود تا از رضایت مشتریان اطمینان حاصل
+                کنیم.
               </p>
             </CardContent>
           </Card>
 
+          {/* ارزش ۲ */}
           <Card>
             <CardContent className="pt-6">
               <div className="text-center mb-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-chart-2/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -119,7 +131,7 @@ export default function AboutPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-primary"
+                    className="text-chart-2"
                   >
                     <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
                   </svg>
@@ -127,16 +139,18 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold">اشتیاق و تخصص</h3>
               </div>
               <p className="text-center">
-                تیم ما متشکل از علاقه‌مندان واقعی به انیمه و کلکسیونرهای حرفه‌ای است. ما با اشتیاق و دانش تخصصی خود،
-                بهترین محصولات را برای شما انتخاب می‌کنیم.
+                تیم ما متشکل از علاقه‌مندان واقعی به انیمه و کلکسیونرهای حرفه‌ای
+                است. ما با اشتیاق و دانش تخصصی خود، بهترین محصولات را برای شما
+                انتخاب می‌کنیم.
               </p>
             </CardContent>
           </Card>
 
+          {/* ارزش ۳ */}
           <Card>
             <CardContent className="pt-6">
               <div className="text-center mb-4">
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-chart-3/10 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -147,7 +161,7 @@ export default function AboutPage() {
                     strokeWidth="2"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    className="text-primary"
+                    className="text-chart-3"
                   >
                     <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
                     <path d="m9 12 2 2 4-4" />
@@ -156,17 +170,19 @@ export default function AboutPage() {
                 <h3 className="text-xl font-semibold">اعتماد و اطمینان</h3>
               </div>
               <p className="text-center">
-                رضایت و اعتماد مشتریان، مهم‌ترین سرمایه ماست. ما با ارائه خدمات پس از فروش و پشتیبانی مستمر، همواره در
-                کنار مشتریان خود هستیم.
+                رضایت و اعتماد مشتریان، مهم‌ترین سرمایه ماست. ما با ارائه خدمات
+                پس از فروش و پشتیبانی مستمر، همواره در کنار مشتریان خود هستیم.
               </p>
             </CardContent>
           </Card>
         </div>
       </section>
 
-      {/* بخش تیم ما */}
+      {/* Team */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-8 text-center">تیم ما</h2>
+        <h2 className="text-foreground text-2xl font-bold mb-8 text-center">
+          تیم ما
+        </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {[
             {
@@ -192,7 +208,12 @@ export default function AboutPage() {
           ].map((member, index) => (
             <div key={index} className="text-center">
               <div className="mb-4 relative mx-auto w-40 h-40 overflow-hidden rounded-full">
-                <Image src={member.image || "/placeholder.svg"} alt={member.name} fill className="object-cover" />
+                <Image
+                  src={member.image}
+                  alt={member.name}
+                  fill
+                  className="object-cover"
+                />
               </div>
               <h3 className="font-semibold text-lg">{member.name}</h3>
               <p className="text-muted-foreground">{member.position}</p>
@@ -201,11 +222,14 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* بخش تماس با ما */}
+      {/* Contact */}
       <section className="mb-16 text-center">
-        <h2 className="text-2xl font-bold mb-4">می‌خواهید با ما در تماس باشید؟</h2>
+        <h2 className="text-foreground text-2xl font-bold mb-4">
+          می‌خواهید با ما در تماس باشید؟
+        </h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          برای ارسال سوالات، پیشنهادات یا انتقادات خود، می‌توانید از طریق صفحه تماس با ما اقدام کنید.
+          برای ارسال سوالات، پیشنهادات یا انتقادات خود، می‌توانید از طریق صفحه
+          تماس با ما اقدام کنید.
         </p>
         <Link href="/contact">
           <Button size="lg" className="px-8">
@@ -214,9 +238,11 @@ export default function AboutPage() {
         </Link>
       </section>
 
-      {/* بخش پرسش‌های متداول */}
+      {/* FAQ */}
       <section className="mb-16">
-        <h2 className="text-2xl font-bold mb-8 text-center">پرسش‌های متداول</h2>
+        <h2 className="text-foreground text-2xl font-bold mb-8 text-center">
+          پرسش‌های متداول
+        </h2>
         <div className="max-w-3xl mx-auto space-y-4">
           {[
             {
@@ -250,5 +276,5 @@ export default function AboutPage() {
         </div>
       </section>
     </main>
-  )
+  );
 }

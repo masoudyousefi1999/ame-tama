@@ -1,132 +1,176 @@
 "use client";
 
-import { useState } from "react";
-import { Expand, ChevronLeft, ChevronRight } from "lucide-react";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ResponsiveImage } from "@/components/ui/responsive-image";
+import { Button } from "@/components/ui/button";
 
 interface ProductGalleryProps {
-  images: {
-    id: number;
-    url: string;
-    alt: string;
-  }[];
+  images: { url: string }[];
+  alt: string;
 }
 
-export default function ProductGallery({ images }: ProductGalleryProps) {
-  const [mainImage, setMainImage] = useState(images[0]);
+export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const handleThumbnailClick = (image: typeof mainImage, index: number) => {
-    setMainImage(image);
+  const [direction, setDirection] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const constraintsRef = useRef<HTMLDivElement>(null);
+
+  const slideVariants = {
+    enter: (dir: number) => ({
+      x: dir > 0 ? 80 : -80,
+      opacity: 0,
+      scale: 0.98,
+      filter: "blur(2px)",
+    }),
+    center: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      filter: "blur(0px)",
+      transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+    },
+    exit: (dir: number) => ({
+      x: dir < 0 ? 80 : -80,
+      opacity: 0,
+      scale: 0.98,
+      filter: "blur(2px)",
+      transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
+    }),
+  };
+
+  const handleNext = () => {
+    setDirection(1);
+    setCurrentIndex((i) => (i === images.length - 1 ? 0 : i + 1));
+  };
+  const handlePrevious = () => {
+    setDirection(-1);
+    setCurrentIndex((i) => (i === 0 ? images.length - 1 : i - 1));
+  };
+
+  const handleDragEnd = (
+    _e: MouseEvent | TouchEvent | PointerEvent,
+    info: { offset: { x: number } }
+  ) => {
+    setIsDragging(false);
+    if (Math.abs(info.offset.x) > 70)
+      info.offset.x > 0 ? handlePrevious() : handleNext();
+  };
+
+  const handleThumbnailClick = (index: number) => {
+    setDirection(index > currentIndex ? 1 : -1);
     setCurrentIndex(index);
   };
 
-  const handlePrevImage = () => {
-    const newIndex = (currentIndex - 1 + images.length) % images.length;
-    setMainImage(images[newIndex]);
-    setCurrentIndex(newIndex);
-  };
-
-  const handleNextImage = () => {
-    const newIndex = (currentIndex + 1) % images.length;
-    setMainImage(images[newIndex]);
-    setCurrentIndex(newIndex);
-  };
-
   return (
-    <div className="space-y-4">
-      {/* تصویر اصلی */}
-      <div className="relative aspect-square bg-gray-100 dark:bg-gray-800 rounded-2xl overflow-hidden group">
-        <ResponsiveImage
-          src={mainImage?.url}
-          alt={mainImage?.alt || 'product image'}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          loadingStrategy="progressive"
-          lowQualitySrc={mainImage?.url}
-          className="object-contain p-4"
-          priority
-        />
-
-        {/* دکمه‌های ناوبری */}
-        <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full bg-white/80 dark:bg-gray-800/80 shadow-md"
-            onClick={handlePrevImage}
+    <div className="flex flex-col gap-4 w-full">
+      {/* Main image */}
+      <div
+        ref={constraintsRef}
+        className="relative aspect-square overflow-hidden rounded-lg bg-card ring-1 ring-border"
+      >
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            variants={slideVariants as any}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragStart={() => setIsDragging(true)}
+            onDragEnd={handleDragEnd}
+            className="absolute inset-0 h-full w-full"
           >
-            <ChevronRight className="h-5 w-5" />
-            <span className="sr-only">تصویر قبلی</span>
-          </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="rounded-full bg-white/80 dark:bg-gray-800/80 shadow-md"
-            onClick={handleNextImage}
-          >
-            <ChevronLeft className="h-5 w-5" />
-            <span className="sr-only">تصویر بعدی</span>
-          </Button>
-        </div>
-
-        {/* دکمه بزرگنمایی */}
-        <Dialog open={lightboxOpen} onOpenChange={setLightboxOpen}>
-          <DialogTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-4 left-4 rounded-full bg-white/80 dark:bg-gray-800/80 shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-              <Expand className="h-5 w-5" />
-              <span className="sr-only">بزرگنمایی</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-4xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm p-1 sm:p-2">
-            <div className="relative aspect-square">
-              <ResponsiveImage
-                src={mainImage?.url}
-                alt={mainImage?.alt}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
-                className="object-contain"
-                priority
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      {/* تصاویر بندانگشتی */}
-      <div className="flex gap-x-2 gap-x-reverse justify-center">
-        {images.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => handleThumbnailClick(image, index)}
-            className={cn(
-              "relative w-16 h-16 md:w-20 md:h-20 rounded-lg overflow-hidden transition-all duration-200",
-              mainImage.id === image.id
-                ? "ring-2 ring-purple-500 dark:ring-purple-400"
-                : "ring-1 ring-gray-200 dark:ring-gray-700 opacity-70 hover:opacity-100"
-            )}
-          >
-            <ResponsiveImage
-              src={image?.url}
-              alt={image?.alt || 'product image'}
-              fill={false}
-              sizes="(max-width: 768px) 64px, 80px"
-              className="object-cover"
-              width={100}
-              height={100}
-              loadingStrategy={index < 4 ? "eager" : "lazy"}
+            <img
+              src={images[currentIndex]?.url || "/placeholder.svg"}
+              alt={`${alt} - تصویر ${currentIndex + 1}`}
+              className="h-full w-full object-contain"
             />
-          </button>
-        ))}
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Prev / Next buttons */}
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute left-2 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full bg-card/80 backdrop-blur-sm border border-border hover:bg-card/90 hover:scale-105 transition-all focus-visible-ring"
+          onClick={handlePrevious}
+          aria-label="تصویر قبلی"
+        >
+          <ChevronLeft className="h-4 w-4 sm:h-6 sm:w-6 text-foreground" />
+        </Button>
+
+        <Button
+          variant="outline"
+          size="icon"
+          className="absolute right-2 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full bg-card/80 backdrop-blur-sm border border-border hover:bg-card/90 hover:scale-105 transition-all focus-visible-ring"
+          onClick={handleNext}
+          aria-label="تصویر بعدی"
+        >
+          <ChevronRight className="h-4 w-4 sm:h-6 sm:w-6 text-foreground" />
+        </Button>
+
+        {/* Pager dots */}
+        <div
+          className="absolute left-1/2 flex items-center gap-2 rounded-full bg-card/60 px-2 py-1 backdrop-blur-sm transform -translate-x-1/2"
+          style={{
+            bottom: "max(env(safe-area-inset-bottom), 0.5rem)",
+          }}
+        >
+          {images.map((_, i) => {
+            const isActive = i === currentIndex;
+            return (
+              <button
+                key={i}
+                onClick={() => handleThumbnailClick(i)}
+                disabled={isDragging}
+                aria-label={`رفتن به تصویر ${i + 1}`}
+                aria-current={isActive}
+                className={cn(
+                  "rounded-full transition-all duration-300 focus-visible-ring",
+                  // mobile-first sizes:
+                  isActive
+                    ? "h-3 w-6 sm:h-4 sm:w-8 bg-primary"
+                    : "h-3 w-3 sm:h-4 sm:w-4 bg-muted hover:bg-primary/60 hover:scale-110"
+                )}
+              />
+            );
+          })}
+        </div>
       </div>
+
+      {/* Thumbnails */}
+      {images.length > 1 && (
+        <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+          {images.map((image, i) => (
+            <button
+              key={i}
+              onClick={() => handleThumbnailClick(i)}
+              aria-label={`انتخاب تصویر ${i + 1}`}
+              aria-pressed={i === currentIndex}
+              className={cn(
+                "relative aspect-square overflow-hidden rounded-md transition-all duration-200 focus-visible-ring",
+                i === currentIndex
+                  ? "ring-2 ring-primary"
+                  : "ring-1 ring-border hover:scale-[1.03]"
+              )}
+            >
+              <img
+                src={image.url || "/placeholder.svg"}
+                alt={`${alt} - تصویر کوچک ${i + 1}`}
+                className="h-full w-full object-cover"
+              />
+              {i === currentIndex && (
+                <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />
+              )}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

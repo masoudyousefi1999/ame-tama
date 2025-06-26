@@ -45,48 +45,72 @@ export default function ShopPage() {
     <div className="container mx-auto px-4 py-8 mt-20">
       <ShopHeader />
 
-      <Tabs defaultValue="all" className="mt-12" onValueChange={setActiveTab}>
-        <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-8">
-          <TabsTrigger value="categories" className="font-vazirmatn">
+      {/* ─────────────── Tabs ─────────────── */}
+      <Tabs defaultValue="all" onValueChange={setActiveTab} className="mt-12">
+        <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-3 rounded-full bg-muted/40 p-1">
+          <TabsTrigger
+            value="categories"
+            className="font-vazirmatn rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             دسته‌بندی‌ها
           </TabsTrigger>
-          <TabsTrigger value="featured" className="font-vazirmatn">
+          <TabsTrigger
+            value="featured"
+            className="font-vazirmatn rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             محصولات ویژه
           </TabsTrigger>
-          <TabsTrigger value="all" className="font-vazirmatn">
+          <TabsTrigger
+            value="all"
+            className="font-vazirmatn rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+          >
             همه محصولات
           </TabsTrigger>
         </TabsList>
 
+        {/* ─────────────── Categories tab ─────────────── */}
         <TabsContent value="categories" className="space-y-12">
           <CategoryShowcase categories={categories} />
           <FeaturedProducts products={featuredProducts} />
           <NewArrivals products={products} />
         </TabsContent>
 
+        {/* ─────────────── Featured tab ─────────────── */}
         <TabsContent value="featured">
-          <div dir="rtl" className="mb-8">
-            <h2 className="text-2xl font-bold mb-2 font-vazirmatn">
+          <header dir="rtl" className="mb-8">
+            <h2 className="font-vazirmatn text-2xl font-bold text-card-foreground">
               محصولات ویژه
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+            <p className="font-vazirmatn text-muted-foreground">
               مجموعه‌ای از برترین و محبوب‌ترین مجسمه‌های انیمه با بالاترین
               امتیاز از طرف کاربران
             </p>
-          </div>
-          <ProductGrid products={featuredProducts} showFilters={true} />
+          </header>
+
+          <ProductGrid
+            loading={false}
+            products={featuredProducts}
+            showFilters
+          />
         </TabsContent>
 
+        {/* ─────────────── All products tab ─────────────── */}
         <TabsContent value="all">
-          <div dir="rtl" className="mb-8">
-            <h2 className="text-2xl font-bold mb-2 font-vazirmatn">
+          <header dir="rtl" className="mb-8">
+            <h2 className="font-vazirmatn text-2xl font-bold text-card-foreground">
               همه محصولات
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 font-vazirmatn">
-              مشاهده و جستجو در تمامی مجسمه‌های انیمه موجود در فروشگاه AME-TAMA
+            <p className="font-vazirmatn text-muted-foreground">
+              مشاهده و جستجو در تمامی مجسمه‌های انیمه موجود در
+              فروشگاه&nbsp;AME-TAMA
             </p>
-          </div>
-          <ProductGrid products={products} showFilters={false} />
+          </header>
+
+          <ProductGrid
+            loading={false}
+            products={products}
+            showFilters={false}
+          />
         </TabsContent>
       </Tabs>
     </div>

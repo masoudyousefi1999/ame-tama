@@ -1,31 +1,35 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { ChevronLeft } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { getCategoryPath } from "@/lib/categories"
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { getCategoryPath } from "@/lib/categories";
 
 interface BreadcrumbItem {
-  name: string
-  path: string
+  name: string;
+  path: string;
 }
 
 interface BreadcrumbProps {
-  items: BreadcrumbItem[]
-  className?: string
-  categoryId?: string // اضافه کردن شناسه دسته‌بندی برای نمایش مسیر کامل
+  items: BreadcrumbItem[];
+  className?: string;
+  categoryId?: string; // اضافه کردن شناسه دسته‌بندی برای نمایش مسیر کامل
 }
 
-export default function Breadcrumb({ items, className, categoryId }: BreadcrumbProps) {
+export default function Breadcrumb({
+  items,
+  className,
+  categoryId,
+}: BreadcrumbProps) {
   // اگر شناسه دسته‌بندی وجود داشت، مسیر کامل دسته‌بندی را دریافت می‌کنیم
-  let breadcrumbItems = [...items]
+  let breadcrumbItems = [...items];
 
   if (categoryId) {
-    const categoryPath = getCategoryPath(categoryId)
+    const categoryPath = getCategoryPath(categoryId);
 
     // حذف آخرین آیتم که همان دسته‌بندی فعلی است (چون در items هم وجود دارد)
     if (categoryPath.length > 1) {
-      const parentCategories = categoryPath.slice(0, -1)
+      const parentCategories = categoryPath.slice(0, -1);
 
       // اضافه کردن دسته‌بندی‌های والد به مسیر
       breadcrumbItems = [
@@ -35,27 +39,34 @@ export default function Breadcrumb({ items, className, categoryId }: BreadcrumbP
           path: `/category/${cat.slug}`,
         })),
         ...items.slice(1), // حذف "خانه" از items اصلی چون قبلاً اضافه شده
-      ]
+      ];
     }
   }
 
   return (
     <nav
       aria-label="breadcrumb"
-      className={cn("flex items-center text-sm text-gray-500 dark:text-gray-400", className)}
+      className={cn(
+        "flex items-center text-sm text-muted-foreground",
+        className
+      )}
     >
       <ol className="flex items-center gap-x-2 gap-x-reverse overflow-x-auto whitespace-nowrap">
-        {breadcrumbItems.map((item, index) => (
+        {breadcrumbItems.map((item, idx) => (
           <li key={item.path} className="flex items-center">
-            {index > 0 && <ChevronLeft className="h-4 w-4 mx-1" />}
-            {index === breadcrumbItems.length - 1 ? (
-              <span className="text-gray-900 dark:text-gray-100 font-medium font-vazirmatn" aria-current="page">
+            {idx > 0 && <ChevronLeft className="h-4 w-4 mx-1" />}
+
+            {idx === breadcrumbItems.length - 1 ? (
+              <span
+                className="text-foreground font-medium font-vazirmatn"
+                aria-current="page"
+              >
                 {item.name}
               </span>
             ) : (
               <Link
                 href={item.path}
-                className="hover:text-purple-500 dark:hover:text-purple-400 transition-colors font-vazirmatn"
+                className="hover:text-brand transition-colors font-vazirmatn"
               >
                 {item.name}
               </Link>
@@ -64,5 +75,5 @@ export default function Breadcrumb({ items, className, categoryId }: BreadcrumbP
         ))}
       </ol>
     </nav>
-  )
+  );
 }

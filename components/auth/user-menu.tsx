@@ -74,46 +74,47 @@ export default function UserMenu() {
   }
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div ref={menuRef} className="relative">
       <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full overflow-hidden border-2 border-gray-200 dark:border-gray-700 h-9 w-9 box-border"
             aria-label="منوی کاربر"
+            className="rounded-full overflow-hidden border-2 border-border h-9 w-9 box-border"
           >
             <div className="relative h-[36px] w-[36px]">
               <Image
                 src={user.avatar || "/placeholder.svg?height=40&width=40"}
                 alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
                 fill
-                className="object-cover"
                 sizes="36px"
                 priority
+                className="object-cover"
               />
             </div>
           </Button>
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent align="end" className="w-56 z-[100] fixed">
-          <div className="flex items-center justify-start p-2">
-            <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3 shrink-0">
+        <DropdownMenuContent align="end" className="fixed z-[100] w-56">
+          {/* user info */}
+          <div className="flex items-center p-2">
+            <div className="relative h-10 w-10 mr-3 shrink-0 overflow-hidden rounded-full">
               <Image
                 src={user.avatar || "/placeholder.svg?height=40&width=40"}
                 alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
                 fill
-                className="object-cover"
                 sizes="40px"
                 priority
+                className="object-cover"
               />
             </div>
             <div className="min-w-0">
-              <p className="font-medium truncate font-vazirmatn">
+              <p className="truncate font-medium font-vazirmatn">
                 {user.firstName || "کاربر"} {user.lastName || ""}
               </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 truncate font-vazirmatn">
-                {user.email || ''}
+              <p className="truncate text-xs text-muted-foreground font-vazirmatn">
+                {user.email || ""}
               </p>
             </div>
           </div>
@@ -161,7 +162,7 @@ export default function UserMenu() {
 
           <DropdownMenuItem
             onClick={handleLogout}
-            className="text-red-600 dark:text-red-400 cursor-pointer font-vazirmatn"
+            className="cursor-pointer text-red-600 dark:text-red-400 font-vazirmatn"
           >
             <LogOut className="ml-2 h-4 w-4" />
             خروج از حساب کاربری

@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 
 export function AnimatedCharacter() {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
-    setPrefersReducedMotion(mediaQuery.matches)
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
 
-    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches)
-    mediaQuery.addEventListener("change", handleChange)
-    return () => mediaQuery.removeEventListener("change", handleChange)
-  }, [])
+    const handleChange = () => setPrefersReducedMotion(mediaQuery.matches);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
+  }, []);
 
   // Character animation variants
   const characterVariants = {
@@ -28,7 +28,7 @@ export function AnimatedCharacter() {
       },
     },
     static: { y: 0 },
-  }
+  };
 
   // Sweat drop animation variants
   const sweatDropVariants = {
@@ -44,7 +44,7 @@ export function AnimatedCharacter() {
       },
     },
     static: { opacity: 0 },
-  }
+  };
 
   // Question mark animation variants
   const questionMarkVariants = {
@@ -60,41 +60,41 @@ export function AnimatedCharacter() {
       },
     },
     static: { opacity: 0 },
-  }
+  };
 
   return (
     <div className="relative h-64 w-64 mx-auto">
       <motion.div
-        className="relative z-10"
         variants={characterVariants}
         animate={prefersReducedMotion ? "static" : "hover"}
+        className="relative z-10"
       >
         <img
           src="/images/404-character.png"
           alt=""
           className="h-64 w-auto mx-auto"
           onError={(e) => {
-            e.currentTarget.src = "/placeholder.svg?height=256&width=256"
-            e.currentTarget.alt = "صفحه یافت نشد"
+            e.currentTarget.src = "/placeholder.svg?height=256&width=256";
+            e.currentTarget.alt = "صفحه یافت نشد";
           }}
         />
 
-        {/* Sweat drop */}
+        {/* sweat drop */}
         <motion.div
-          className="absolute top-10 right-10 h-4 w-2 bg-blue-400 rounded-full"
           variants={sweatDropVariants}
           animate={prefersReducedMotion ? "static" : "animate"}
+          className="absolute top-10 right-10 h-4 w-2 rounded-full bg-chart-2"
         />
 
-        {/* Question mark */}
+        {/* question mark */}
         <motion.div
-          className="absolute top-0 left-10 text-2xl font-bold text-primary"
           variants={questionMarkVariants}
           animate={prefersReducedMotion ? "static" : "animate"}
+          className="absolute top-0 left-10 text-2xl font-bold text-primary"
         >
           ؟
         </motion.div>
       </motion.div>
     </div>
-  )
+  );
 }

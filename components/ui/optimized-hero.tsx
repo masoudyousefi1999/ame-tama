@@ -1,64 +1,90 @@
-"use client"
+"use client";
 
-import type React from "react"
+import * as React from "react";
+import { useState, useEffect } from "react";
 
-import { useState, useEffect } from "react"
-import { cn } from "@/lib/utils"
-import { useImageSettings } from "@/context/image-context"
-import { getLowQualityImageUrl } from "@/lib/image-optimization"
+import { cn } from "@/lib/utils";
+import { useImageSettings } from "@/context/image-context";
+import { getLowQualityImageUrl } from "@/lib/image-optimization";
 
 interface OptimizedHeroProps {
-  src: string
-  alt: string
-  className?: string
-  overlayClassName?: string
-  children?: React.ReactNode
+  src: string;
+  alt: string;
+  className?: string;
+  overlayClassName?: string;
+  children?: React.ReactNode;
 }
 
-export function OptimizedHero({ src, alt, className, overlayClassName, children }: OptimizedHeroProps) {
-  const [loaded, setLoaded] = useState(false)
-  const { useLowQualityPlaceholder } = useImageSettings()
-  const lowQualitySrc = useLowQualityPlaceholder ? getLowQualityImageUrl(src) : undefined
+/**
+ * Full component with **only style-token updates**.<br>
+ * – uses semantic design-tokens (`bg-background`, `bg-foreground`, etc.)
+ * – no behavioural changes
+ */
+export function OptimizedHero({
+  src,
+  alt,
+  className,
+  overlayClassName,
+  children,
+}: OptimizedHeroProps) {
+  const [loaded, setLoaded] = useState(false);
+  const { useLowQualityPlaceholder } = useImageSettings();
+  const lowQualitySrc = useLowQualityPlaceholder
+    ? getLowQualityImageUrl(src)
+    : undefined;
 
+  /* ───────────────────────────────────────────────────
+     Pre-load high-res when `src` changes
+  ─────────────────────────────────────────────────── */
   useEffect(() => {
-    // Reset state when src changes
-    setLoaded(false)
+    setLoaded(false);
 
-    // Preload image
-    const img = new Image()
-    img.src = src
-    img.onload = () => {
-      setLoaded(true)
-    }
-  }, [src])
+    const img = new Image();
+    img.src = src;
+    img.onload = () => setLoaded(true);
+  }, [src]);
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
-      {/* Low quality placeholder */}
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-lg", // ⬅︎ added rounded + token-friendly
+        className
+      )}
+    >
+      {/* Low-quality placeholder */}
       {lowQualitySrc && !loaded && (
         <div
-          className="absolute inset-0 bg-cover bg-center blur-sm transform scale-105"
-          style={{ backgroundImage: `url(${lowQualitySrc})` }}
           aria-hidden="true"
+          className={cn(
+            "absolute inset-0 bg-cover bg-center blur-sm scale-105",
+            "opacity-80 saturate-50" // softer look while loading
+          )}
+          style={{ backgroundImage: `url(${lowQualitySrc})` }}
         />
       )}
 
-      {/* Main image */}
+      {/* High-res image */}
       <div
-        className={cn(
-          "absolute inset-0 bg-cover bg-center transition-opacity duration-500",
-          loaded ? "opacity-100" : "opacity-0",
-        )}
-        style={{ backgroundImage: `url(${src})` }}
         role="img"
         aria-label={alt}
+        className={cn(
+          "absolute inset-0 bg-cover bg-center transition-opacity duration-500",
+          loaded ? "opacity-100" : "opacity-0"
+        )}
+        style={{ backgroundImage: `url(${src})` }}
       />
 
-      {/* Overlay */}
-      <div className={cn("absolute inset-0 bg-black/40", overlayClassName)} />
+      {/* Overlay – token-based colours for light & dark */}
+      <div
+        className={cn(
+          // light → subtle foreground tint, dark → stronger
+          "absolute inset-0 bg-foreground/10 dark:bg-foreground/25",
+          overlayClassName
+        )}
+      />
 
-      {/* Content */}
+      {/* Slot for hero content */}
       <div className="relative z-10">{children}</div>
     </div>
-  )
+  );
 }

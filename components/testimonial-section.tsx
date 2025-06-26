@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const testimonials = [
   {
@@ -34,74 +34,76 @@ const testimonials = [
     rating: 4,
     avatar: "/placeholder.svg?height=100&width=100",
   },
-]
+];
 
 export default function TestimonialSection() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [width, setWidth] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    setWidth(window.innerWidth)
+    setWidth(window.innerWidth);
 
     const handleResize = () => {
-      setWidth(window.innerWidth)
-    }
+      setWidth(window.innerWidth);
+    };
 
-    window.addEventListener("resize", handleResize)
-    return () => window.removeEventListener("resize", handleResize)
-  }, [])
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const nextTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length)
-  }
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % testimonials.length);
+  };
 
   const prevTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length)
-  }
+    setCurrentIndex(
+      (prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length
+    );
+  };
 
-  // For mobile, show one testimonial at a time
-  // For desktop, show all testimonials
-  const displayedTestimonials = width < 768 ? [testimonials[currentIndex]] : testimonials
+  const displayedTestimonials =
+    width < 768 ? [testimonials[currentIndex]] : testimonials;
 
   return (
-    <section className="py-20 bg-gray-50 dark:bg-gray-900/50">
+    <section className="py-20 bg-muted">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-indigo-600 bg-clip-text text-transparent font-vazirmatn">
+        {/* ── section header ─────────────────────────────── */}
+        <div className="mb-12 text-center">
+          <h2 className="font-vazirmatn text-primary text-3xl font-bold mb-4">
             نظرات کلکسیونرهای ما
           </h2>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto font-vazirmatn">
-            به جامعه کلکسیونرهای مشتاق ما بپیوندید که برای مجسمه‌های انیمه لوکس خود به AME-TAMA اعتماد می‌کنند.
+          <p className="mx-auto max-w-2xl font-vazirmatn text-muted-foreground">
+            به جامعه کلکسیونرهای مشتاق ما بپیوندید که برای مجسمه‌های انیمه لوکس
+            خود به&nbsp;AME-TAMA اعتماد می‌کنند.
           </p>
         </div>
 
+        {/* ── carousel wrapper ──────────────────────────── */}
         <div className="relative">
-          {/* Mobile navigation buttons */}
+          {/* mobile nav arrows */}
           {width < 768 && (
             <>
               <Button
                 variant="ghost"
-                size="icon"
-                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 rounded-full shadow-md md:hidden"
-                onClick={prevTestimonial}
-              >
-                <ChevronLeft className="h-5 w-5" />
-                <span className="sr-only">نظر قبلی</span>
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="icon"
-                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800/80 rounded-full shadow-md md:hidden"
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-10 p-0.5 w-4 h-6 bg-card/80 rounded-full shadow-sm sm:hidden"
                 onClick={nextTestimonial}
               >
-                <ChevronRight className="h-5 w-5" />
+                <ChevronLeft className="h-3 w-3" />
+                <span className="sr-only">نظر قبلی</span>
+              </Button>
+              <Button
+                variant="ghost"
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-10 p-0.5 w-6 h-6 bg-card/80 rounded-full shadow-sm sm:hidden"
+                onClick={prevTestimonial}
+              >
+                <ChevronRight className="h-3 w-3" />
                 <span className="sr-only">نظر بعدی</span>
               </Button>
             </>
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* testimonials grid */}
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {displayedTestimonials.map((testimonial, index) => (
               <motion.div
                 key={testimonial.id}
@@ -109,10 +111,11 @@ export default function TestimonialSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-md hover:shadow-lg transition-all duration-300"
+                className="bg-card rounded-2xl p-8 shadow-md hover:shadow-lg transition-all duration-300"
               >
-                <div className="flex items-center mb-6">
-                  <div className="relative w-12 h-12 rounded-full overflow-hidden ml-4">
+                {/* user header */}
+                <div className="mb-6 flex items-center">
+                  <div className="relative ml-4 h-12 w-12 overflow-hidden rounded-full">
                     <img
                       src={testimonial.avatar || "/placeholder.svg"}
                       alt={testimonial.name}
@@ -120,42 +123,52 @@ export default function TestimonialSection() {
                     />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 font-vazirmatn">
+                    <h4 className="font-vazirmatn font-semibold text-foreground">
                       {testimonial.name}
                     </h4>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 font-vazirmatn">{testimonial.role}</p>
+                    <p className="font-vazirmatn text-sm text-muted-foreground">
+                      {testimonial.role}
+                    </p>
                   </div>
                 </div>
 
-                <div className="flex mb-4">
+                {/* rating */}
+                <div className="mb-4 flex">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
                       className={cn(
-                        "w-4 h-4",
-                        i < testimonial.rating ? "text-amber-400 fill-amber-400" : "text-gray-300 dark:text-gray-600",
+                        "h-4 w-4",
+                        i < testimonial.rating
+                          ? "text-amber-400 fill-amber-400"
+                          : "text-muted-foreground"
                       )}
                     />
                   ))}
                 </div>
 
-                <p className="text-gray-700 dark:text-gray-300 italic font-vazirmatn">"{testimonial.content}"</p>
+                {/* testimonial body */}
+                <p className="font-vazirmatn italic text-foreground/90">
+                  &quot;{testimonial.content}&quot;
+                </p>
               </motion.div>
             ))}
           </div>
 
-          {/* Mobile pagination indicators */}
+          {/* mobile pagination dots */}
           {width < 768 && (
-            <div className="flex justify-center mt-6 gap-x-2">
+            <div className="mt-6 flex justify-center gap-x-2">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentIndex(index)}
-                  className={cn(
-                    "w-2 h-2 rounded-full transition-all duration-300",
-                    index === currentIndex ? "bg-purple-500 w-6" : "bg-gray-300 dark:bg-gray-600",
-                  )}
                   aria-label={`رفتن به نظر ${index + 1}`}
+                  className={cn(
+                    "h-2 w-2 rounded-full transition-all duration-300",
+                    index === currentIndex
+                      ? "bg-primary w-6"
+                      : "bg-muted-foreground/40"
+                  )}
                 />
               ))}
             </div>
@@ -163,5 +176,5 @@ export default function TestimonialSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }
