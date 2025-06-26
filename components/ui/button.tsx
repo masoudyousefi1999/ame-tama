@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 /* ────────────────────────────────────────────────────────── */
 /* Base + variants                                            */
 /* ────────────────────────────────────────────────────────── */
-const buttonVariants = cva(
+export const buttonVariants = cva(
   [
     // base
     "inline-flex items-center justify-center gap-2 whitespace-nowrap font-semibold",
