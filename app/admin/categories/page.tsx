@@ -1,18 +1,28 @@
 import { CategoriesTable } from "@/components/admin/categories/categories-table";
 import { customFetch } from "@/lib/utils";
 
-// This would fetch from your API
-async function getCategories() {
-  const res = await customFetch("/category/figures");
-
-  const categories = await res.json();
-
-  return categories.children;
+// This function will be run on every request
+export async function getServerSideProps() {
+  try {
+    // Fetch data from the server-side API
+    const res = await customFetch("/category/figures");
+    const categories = await res.json();
+    return {
+      props: {
+        categories: categories.children, // Pass the categories to the page
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return {
+      props: {
+        categories: [], // Return an empty array if the fetch fails
+      },
+    };
+  }
 }
 
-export default async function CategoriesPage() {
-  const categories = await getCategories();
-
+export default function CategoriesPage({ categories }: { categories: any[] }) {
   return (
     <div className="space-y-6" dir="rtl">
       <div>
