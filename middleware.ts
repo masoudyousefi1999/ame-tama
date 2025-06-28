@@ -38,15 +38,14 @@ export async function middleware(request: NextRequest) {
   // Check if user is authenticated
   let isAuthenticated = false;
   try {
-    const meRes = await customFetch("/auth/me", {
+    const meRes = await customFetch("https://api.ame-tama.com/auth/me", {
       method: "GET",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log("✅ me Status:", meRes.status);
-    console.log("✅ me Response:", await meRes.json());
 
     isAuthenticated = meRes.ok;
   } catch (error) {
@@ -66,18 +65,20 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const adminRes = await customFetch("/auth/is-admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      console.log("✅ is-admin Status:", adminRes.status);
+      const adminRes = await customFetch(
+        "https://api.ame-tama.com/auth/is-admin",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       const isAdmin = await adminRes.json();
-      console.log("✅ is-admin Response:", isAdmin);
+
       if (isAdmin !== true) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
