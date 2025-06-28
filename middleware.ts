@@ -6,6 +6,20 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const accessToken = request.cookies.get("ACCESS_TOKEN")?.value;
 
+  console.log("🔍 URL", request.nextUrl.pathname);
+  console.log(
+    "🍪 Incoming Cookie Header:",
+    request.headers.get("cookie") || "❌ No cookie"
+  );
+  console.log(
+    "🌐 Request Origin:",
+    request.headers.get("origin") || "❌ No origin"
+  );
+  console.log(
+    "🔐 Secure?",
+    request.nextUrl.protocol === "https:" ? "Yes" : "No"
+  );
+
   // Shortcut: no token, not authenticated
   if (!accessToken) {
     if (pathname === "/login") return NextResponse.next();
@@ -50,6 +64,9 @@ export async function middleware(request: NextRequest) {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+
+      console.log("✅ is-admin Status:", adminRes.status);
+      console.log("✅ is-admin Response:", await adminRes.clone().json());
 
       const isAdmin = await adminRes.json();
       if (isAdmin !== true) {
