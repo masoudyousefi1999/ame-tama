@@ -2,15 +2,18 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { customFetch } from "./lib/utils";
 
+// Helper function to extract the ACCESS_TOKEN from the cookie header
+function getAccessTokenFromCookie(cookieHeader: string): string | null {
+  const match = cookieHeader.match(/ACCESS_TOKEN=([^;]+)/);
+  return match ? match[1] : null;
+}
+
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
-  const accessToken = request.cookies.get("ACCESS_TOKEN")?.value;
+  const cookieHeader = request.headers.get("cookie") || "";
 
   console.log("🔍 URL", request.nextUrl.pathname);
-  console.log(
-    "🍪 Incoming Cookie Header:",
-    request.headers.get("cookie") || "❌ No cookie"
-  );
+  console.log("🍪 Incoming Cookie Header:", cookieHeader || "❌ No cookie");
   console.log(
     "🌐 Request Origin:",
     request.headers.get("origin") || "❌ No origin"
@@ -19,6 +22,9 @@ export async function middleware(request: NextRequest) {
     "🔐 Secure?",
     request.nextUrl.protocol === "https:" ? "Yes" : "No"
   );
+
+  // Get the ACCESS_TOKEN from the cookie header
+  const accessToken = getAccessTokenFromCookie(cookieHeader);
 
   // Shortcut: no token, not authenticated
   if (!accessToken) {
@@ -39,6 +45,8 @@ export async function middleware(request: NextRequest) {
         Authorization: `Bearer ${accessToken}`,
       },
     });
+    console.log("✅ me Status:", meRes.status);
+    console.log("✅ me Response:", await meRes.json());
 
     isAuthenticated = meRes.ok;
   } catch {
@@ -66,9 +74,9 @@ export async function middleware(request: NextRequest) {
       });
 
       console.log("✅ is-admin Status:", adminRes.status);
-      console.log("✅ is-admin Response:", await adminRes.clone().json());
 
       const isAdmin = await adminRes.json();
+      console.log("✅ is-admin Response:", isAdmin);
       if (isAdmin !== true) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
