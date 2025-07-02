@@ -30,7 +30,7 @@ export default function AboutPage() {
       {/* Bread­crumb */}
       <Breadcrumb
         items={[{ label: "درباره ما", href: "/about", isCurrent: true }]}
-        className="mb-6 mt-6"
+        className="mb-6 mt-8"
       />
 
       {/* Page header */}

@@ -159,7 +159,7 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
             onChange={handleInputChange}
             dir="rtl"
             className={cn(
-              "w-full pr-10 pl-10 rounded-full font-vazirmatn text-right",
+              "w-full pr-10 pl-10 rounded-full text-right",
               "border" /* ← replaces border-gray-300 / dark:border-gray-700 */,
               "bg-background/90" /* ← replaces bg-white/90 + dark:gray-800/90 */
             )}
@@ -183,7 +183,7 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
           <Button
             variant="ghost"
             size="sm"
-            className="mr-2 font-vazirmatn"
+            className="mr-2"
             onClick={handleCancel}
           >
             لغو

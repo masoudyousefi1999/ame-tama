@@ -32,7 +32,7 @@ export function BackButton({
       size="sm"
       className={cn(
         /*────────── design-tokens instead of raw grays ──────────*/
-        "flex items-center text-muted-foreground hover:text-foreground font-vazirmatn",
+        "flex items-center text-muted-foreground hover:text-foreground",
         className
       )}
       onClick={handleClick}

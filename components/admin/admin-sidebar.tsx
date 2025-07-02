@@ -69,7 +69,7 @@ export function AdminSidebar() {
             {/* …“بازگشت به سایت” link… */}
 
             <div className="pt-2 pb-1">
-              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider font-vazirmatn">
+              <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                 مدیریت
               </p>
             </div>
@@ -104,13 +104,12 @@ export function AdminSidebar() {
                         isActive ? "text-purple-500" : "text-gray-400"
                       )}
                     />
-                    <span className="font-vazirmatn">{item.name}</span>
+                    <span>{item.name}</span>
                   </div>
                   {item.count && (
                     <Badge
                       variant={item.highlight ? "destructive" : "secondary"}
                       className={cn(
-                        "font-vazirmatn",
                         item.highlight ? "bg-red-500 hover:bg-red-600" : ""
                       )}
                     >
@@ -133,7 +132,7 @@ export function AdminSidebar() {
               {/* …“بازگشت به سایت” link… */}
 
               <div className="pt-2 pb-1">
-                <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider font-vazirmatn">
+                <p className="px-3 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   مدیریت
                 </p>
               </div>
@@ -168,7 +167,7 @@ export function AdminSidebar() {
                                 isActive ? "text-purple-500" : "text-gray-400"
                               )}
                             />
-                            <span className="font-vazirmatn">{item.name}</span>
+                            <span>{item.name}</span>
                           </div>
                           {item.count && (
                             <Badge
@@ -176,7 +175,6 @@ export function AdminSidebar() {
                                 item.highlight ? "destructive" : "secondary"
                               }
                               className={cn(
-                                "font-vazirmatn",
                                 item.highlight
                                   ? "bg-red-500 hover:bg-red-600"
                                   : ""
@@ -187,7 +185,7 @@ export function AdminSidebar() {
                           )}
                         </Link>
                       </TooltipTrigger>
-                      <TooltipContent side="left" className="font-vazirmatn">
+                      <TooltipContent side="left">
                         {item.name}
                         {item.count &&
                           item.highlight &&

@@ -11,10 +11,10 @@ export default async function CategoriesPage() {
     return (
       <div className="space-y-6" dir="rtl">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white font-vazirmatn">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
             مدیریت دسته‌بندی‌ها
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2 font-vazirmatn">
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
             دسته‌بندی‌های محصولات را مدیریت کنید
           </p>
         </div>
@@ -24,8 +24,6 @@ export default async function CategoriesPage() {
     );
   } catch (error) {
     console.error("Error fetching categories:", error);
-    return (
-      <div>Error fetching categories. Please try again later.</div>
-    );
+    return <div>Error fetching categories. Please try again later.</div>;
   }
 }

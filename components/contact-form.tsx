@@ -1,6 +1,6 @@
 "use client"
 
-import { useFormState, useFormStatus } from "react-dom"
+import { useFormStatus } from "react-dom"
 import { submitContactForm, type ContactFormState } from "@/app/actions/contact"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ReloadIcon } from "@radix-ui/react-icons"
+import { useActionState } from "react"
 
 const initialState: ContactFormState = {}
 
@@ -29,7 +30,7 @@ function SubmitButton() {
 }
 
 export function ContactForm() {
-  const [state, formAction] = useFormState(submitContactForm, initialState)
+  const [state, formAction] = useActionState(submitContactForm, initialState)
 
   return (
     <form action={formAction} className="space-y-6">

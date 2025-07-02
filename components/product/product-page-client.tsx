@@ -41,7 +41,7 @@ export default function ProductPageClient({
           onClick={() => window.history.back()}
           className="flex items-center text-muted-foreground hover:text-primary transition-colors"
         >
-          <span className="font-vazirmatn">بازگشت</span>
+          <span>بازگشت</span>
         </Button>
       </div>
 

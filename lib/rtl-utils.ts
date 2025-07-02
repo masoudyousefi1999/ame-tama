@@ -5,8 +5,9 @@
  */
 export function isPersianText(text: string): boolean {
   // محدوده کاراکترهای فارسی در یونیکد
-  const persianPattern = /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/
-  return persianPattern.test(text)
+  const persianPattern =
+    /[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]/;
+  return persianPattern.test(text);
 }
 
 /**
@@ -15,7 +16,7 @@ export function isPersianText(text: string): boolean {
  * @returns "rtl" اگر متن فارسی باشد، در غیر این صورت "ltr"
  */
 export function getTextDirection(text: string): "rtl" | "ltr" {
-  return isPersianText(text) ? "rtl" : "ltr"
+  return isPersianText(text) ? "rtl" : "ltr";
 }
 
 /**
@@ -24,6 +25,6 @@ export function getTextDirection(text: string): "rtl" | "ltr" {
  * @returns کلاس‌های CSS مناسب برای جهت متن
  */
 export function getDirectionClasses(text: string): string {
-  const direction = getTextDirection(text)
-  return direction === "rtl" ? "text-right font-vazirmatn" : "text-left"
+  const direction = getTextDirection(text);
+  return direction === "rtl" ? "text-right" : "text-left";
 }

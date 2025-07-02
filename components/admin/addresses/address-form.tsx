@@ -82,7 +82,6 @@ export function AddressForm({ address }: AddressFormProps) {
           title: "خطا",
           description: "دریافت کاربران با مشکل مواجه شد",
           variant: "destructive",
-          className: "font-vazirmatn",
         });
       } finally {
         setLoadingUsers(false);
@@ -101,7 +100,6 @@ export function AddressForm({ address }: AddressFormProps) {
         title: "خطا",
         description: "انتخاب کاربر الزامی است",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -115,7 +113,6 @@ export function AddressForm({ address }: AddressFormProps) {
         title: "خطا",
         description: "تمام فیلدهای الزامی را پر کنید",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -158,7 +155,6 @@ export function AddressForm({ address }: AddressFormProps) {
         description: address
           ? "آدرس با موفقیت به‌روزرسانی شد"
           : "آدرس با موفقیت ایجاد شد",
-        className: "font-vazirmatn",
       });
 
       router.push("/admin/addresses");
@@ -170,7 +166,6 @@ export function AddressForm({ address }: AddressFormProps) {
         description:
           error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
     } finally {
       setIsLoading(false);
@@ -180,7 +175,7 @@ export function AddressForm({ address }: AddressFormProps) {
   return (
     <Card className="max-w-2xl bg-white dark:bg-gray-800" dir="rtl">
       <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-        <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white font-vazirmatn">
+        <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
           {address ? "ویرایش آدرس" : "ایجاد آدرس جدید"}
         </CardTitle>
       </CardHeader>
@@ -189,7 +184,7 @@ export function AddressForm({ address }: AddressFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="userId"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               کاربر *
             </Label>
@@ -200,24 +195,18 @@ export function AddressForm({ address }: AddressFormProps) {
               }
               disabled={loadingUsers}
             >
-              <SelectTrigger className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500">
+              <SelectTrigger className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500">
                 <SelectValue placeholder="کاربر را انتخاب کنید" />
               </SelectTrigger>
               <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
                 {loadingUsers ? (
                   <div className="flex items-center justify-center py-2">
                     <Loader2 className="h-4 w-4 animate-spin ml-2" />
-                    <span className="text-sm font-vazirmatn">
-                      در حال بارگذاری...
-                    </span>
+                    <span className="text-sm">در حال بارگذاری...</span>
                   </div>
                 ) : (
                   users.map((user) => (
-                    <SelectItem
-                      key={user.id}
-                      value={user.id}
-                      className="font-vazirmatn"
-                    >
+                    <SelectItem key={user.id} value={user.id}>
                       {user.name} ({user.email})
                     </SelectItem>
                   ))
@@ -230,7 +219,7 @@ export function AddressForm({ address }: AddressFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="province"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 استان *
               </Label>
@@ -241,7 +230,7 @@ export function AddressForm({ address }: AddressFormProps) {
                   setFormData((prev) => ({ ...prev, province: e.target.value }))
                 }
                 placeholder="نام استان را وارد کنید"
-                className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+                className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
                 required
               />
             </div>
@@ -249,7 +238,7 @@ export function AddressForm({ address }: AddressFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="city"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 شهر *
               </Label>
@@ -260,7 +249,7 @@ export function AddressForm({ address }: AddressFormProps) {
                   setFormData((prev) => ({ ...prev, city: e.target.value }))
                 }
                 placeholder="نام شهر را وارد کنید"
-                className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+                className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
                 required
               />
             </div>
@@ -269,7 +258,7 @@ export function AddressForm({ address }: AddressFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="address"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               آدرس کامل *
             </Label>
@@ -280,7 +269,7 @@ export function AddressForm({ address }: AddressFormProps) {
                 setFormData((prev) => ({ ...prev, address: e.target.value }))
               }
               placeholder="آدرس کامل را وارد کنید"
-              className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+              className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
               rows={3}
               required
             />
@@ -290,7 +279,7 @@ export function AddressForm({ address }: AddressFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="postalCode"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 کد پستی
               </Label>
@@ -312,7 +301,7 @@ export function AddressForm({ address }: AddressFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="houseNumber"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 شماره واحد
               </Label>
@@ -333,7 +322,7 @@ export function AddressForm({ address }: AddressFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="floorNumber"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 شماره طبقه
               </Label>
@@ -356,7 +345,7 @@ export function AddressForm({ address }: AddressFormProps) {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed font-vazirmatn"
+              className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -373,7 +362,7 @@ export function AddressForm({ address }: AddressFormProps) {
               type="button"
               variant="outline"
               onClick={() => router.push("/admin/addresses")}
-              className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full font-vazirmatn"
+              className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full"
             >
               لغو
             </Button>

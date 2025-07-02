@@ -65,7 +65,7 @@ export function UserForm({ user }: UserFormProps) {
       toast({
         title: "موفقیت",
         description: `کاربر با موفقیت ${user ? "به‌روزرسانی" : "ایجاد"} شد`,
-        className: "bg-green-600 text-white font-vazirmatn",
+        className: "bg-green-600 text-white",
       });
 
       router.push("/admin/users");
@@ -74,7 +74,7 @@ export function UserForm({ user }: UserFormProps) {
         title: "خطا",
         description: `${user ? "به‌روزرسانی" : "ایجاد"} کاربر با شکست مواجه شد`,
         variant: "destructive",
-        className: "bg-red-600 text-white font-vazirmatn",
+        className: "bg-red-600 text-white",
       });
     } finally {
       setIsLoading(false);
@@ -85,7 +85,7 @@ export function UserForm({ user }: UserFormProps) {
     <div dir="rtl">
       <Card className="max-w-2xl bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-gray-200 dark:border-gray-700">
         <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-          <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white font-vazirmatn">
+          <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
             {user ? "ویرایش کاربر" : "ایجاد کاربر"}
           </CardTitle>
         </CardHeader>
@@ -94,7 +94,7 @@ export function UserForm({ user }: UserFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="name"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 نام
               </Label>
@@ -105,7 +105,7 @@ export function UserForm({ user }: UserFormProps) {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
-                className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white font-vazirmatn"
+                className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
                 placeholder="نام کاربر را وارد کنید"
               />
             </div>
@@ -113,7 +113,7 @@ export function UserForm({ user }: UserFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="email"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 ایمیل
               </Label>
@@ -133,7 +133,7 @@ export function UserForm({ user }: UserFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="role"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                className="text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 نقش
               </Label>
@@ -143,20 +143,14 @@ export function UserForm({ user }: UserFormProps) {
                   setFormData({ ...formData, role: value })
                 }
               >
-                <SelectTrigger className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white font-vazirmatn">
+                <SelectTrigger className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white">
                   <SelectValue placeholder="نقش را انتخاب کنید" />
                 </SelectTrigger>
                 <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                  <SelectItem
-                    value="user"
-                    className="dark:text-gray-300 font-vazirmatn"
-                  >
+                  <SelectItem value="user" className="dark:text-gray-300">
                     کاربر
                   </SelectItem>
-                  <SelectItem
-                    value="admin"
-                    className="dark:text-gray-300 font-vazirmatn"
-                  >
+                  <SelectItem value="admin" className="dark:text-gray-300">
                     مدیر
                   </SelectItem>
                 </SelectContent>
@@ -167,7 +161,7 @@ export function UserForm({ user }: UserFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="password"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
                 >
                   رمز عبور
                 </Label>
@@ -189,7 +183,7 @@ export function UserForm({ user }: UserFormProps) {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed font-vazirmatn"
+                className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading
                   ? "در حال ذخیره..."
@@ -201,7 +195,7 @@ export function UserForm({ user }: UserFormProps) {
                 type="button"
                 variant="outline"
                 onClick={() => router.push("/admin/users")}
-                className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full font-vazirmatn"
+                className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full"
               >
                 لغو
               </Button>

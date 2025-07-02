@@ -50,19 +50,19 @@ export default function ShopPage() {
         <TabsList className="mx-auto mb-8 grid w-full max-w-md grid-cols-3 rounded-full bg-muted/40 p-1">
           <TabsTrigger
             value="categories"
-            className="font-vazirmatn rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="  rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             دسته‌بندی‌ها
           </TabsTrigger>
           <TabsTrigger
             value="featured"
-            className="font-vazirmatn rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="  rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             محصولات ویژه
           </TabsTrigger>
           <TabsTrigger
             value="all"
-            className="font-vazirmatn rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+            className="  rounded-full data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
           >
             همه محصولات
           </TabsTrigger>
@@ -78,10 +78,10 @@ export default function ShopPage() {
         {/* ─────────────── Featured tab ─────────────── */}
         <TabsContent value="featured">
           <header dir="rtl" className="mb-8">
-            <h2 className="font-vazirmatn text-2xl font-bold text-card-foreground">
+            <h2 className="  text-2xl font-bold text-card-foreground">
               محصولات ویژه
             </h2>
-            <p className="font-vazirmatn text-muted-foreground">
+            <p className="  text-muted-foreground">
               مجموعه‌ای از برترین و محبوب‌ترین مجسمه‌های انیمه با بالاترین
               امتیاز از طرف کاربران
             </p>
@@ -97,10 +97,10 @@ export default function ShopPage() {
         {/* ─────────────── All products tab ─────────────── */}
         <TabsContent value="all">
           <header dir="rtl" className="mb-8">
-            <h2 className="font-vazirmatn text-2xl font-bold text-card-foreground">
+            <h2 className="  text-2xl font-bold text-card-foreground">
               همه محصولات
             </h2>
-            <p className="font-vazirmatn text-muted-foreground">
+            <p className="  text-muted-foreground">
               مشاهده و جستجو در تمامی مجسمه‌های انیمه موجود در
               فروشگاه&nbsp;AME-TAMA
             </p>

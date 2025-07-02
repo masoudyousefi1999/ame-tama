@@ -11,12 +11,10 @@ export default function Footer() {
           {/* ─────────────────── Brand / about ─────────────────── */}
           <div className="text-right">
             <Link href="/" className="inline-block mb-6">
-              <span className="text-2xl font-bold text-primary">
-                AME-TAMA
-              </span>
+              <span className="text-2xl font-bold text-primary">AME-TAMA</span>
             </Link>
 
-            <p className="mb-6 max-w-md text-muted-foreground font-vazirmatn persian-text">
+            <p className="mb-6 max-w-md text-muted-foreground persian-text">
               ارتقاء کلکسیونی‌های انیمه به هنر زیبا. هر مجسمه AME-TAMA شاهکاری
               از جزئیات، کیفیت و اشتیاق است.
             </p>
@@ -44,9 +42,7 @@ export default function Footer() {
 
           {/* ─────────────────── Shop links ─────────────────── */}
           <div className="text-right">
-            <h3 className="mb-4 text-lg font-semibold font-vazirmatn">
-              فروشگاه
-            </h3>
+            <h3 className="mb-4 text-lg font-semibold">فروشگاه</h3>
             <ul className="space-y-3">
               {[
                 "محصولات جدید",
@@ -58,7 +54,7 @@ export default function Footer() {
                 <li key={link}>
                   <Link
                     href="#"
-                    className="font-vazirmatn text-muted-foreground transition-colors hover:text-primary"
+                    className="  text-muted-foreground transition-colors hover:text-primary"
                   >
                     {link}
                   </Link>
@@ -69,9 +65,7 @@ export default function Footer() {
 
           {/* ─────────────────── Support links ─────────────────── */}
           <div className="text-right">
-            <h3 className="mb-4 text-lg font-semibold font-vazirmatn">
-              پشتیبانی
-            </h3>
+            <h3 className="mb-4 text-lg font-semibold">پشتیبانی</h3>
             <ul className="space-y-3">
               {[
                 "تماس با ما",
@@ -83,7 +77,7 @@ export default function Footer() {
                 <li key={link}>
                   <Link
                     href="#"
-                    className="font-vazirmatn text-muted-foreground transition-colors hover:text-primary"
+                    className="  text-muted-foreground transition-colors hover:text-primary"
                   >
                     {link}
                   </Link>
@@ -94,10 +88,8 @@ export default function Footer() {
 
           {/* ─────────────────── Newsletter ─────────────────── */}
           <div className="text-right">
-            <h3 className="mb-4 text-lg font-semibold font-vazirmatn">
-              عضویت در خبرنامه
-            </h3>
-            <p className="mb-4 text-muted-foreground font-vazirmatn persian-text">
+            <h3 className="mb-4 text-lg font-semibold">عضویت در خبرنامه</h3>
+            <p className="mb-4 text-muted-foreground persian-text">
               اولین نفری باشید که از محصولات جدید، پیشنهادات ویژه و رویدادهای
               کلکسیونری مطلع می‌شوید.
             </p>
@@ -107,9 +99,9 @@ export default function Footer() {
                 type="email"
                 placeholder="ایمیل شما"
                 dir="rtl"
-                className="rounded-full bg-background text-right font-vazirmatn"
+                className="rounded-full bg-background text-right"
               />
-              <Button className="rounded-full  hover:from-primary/90 hover:to-accent/90 font-vazirmatn">
+              <Button className="rounded-full  hover:from-primary/90 hover:to-accent/90">
                 عضویت
               </Button>
             </div>
@@ -118,7 +110,7 @@ export default function Footer() {
 
         {/* ─────────────────── Bottom bar ─────────────────── */}
         <div className="mt-12 flex flex-col items-center justify-between border-t border-border pt-8 md:flex-row">
-          <p className="mb-4 text-sm text-muted-foreground md:mb-0 font-vazirmatn">
+          <p className="mb-4 text-sm text-muted-foreground md:mb-0">
             © {new Date().getFullYear()} AME-TAMA. تمامی حقوق محفوظ است.
           </p>
 
@@ -131,7 +123,7 @@ export default function Footer() {
               <Link
                 href="#"
                 key={link}
-                className="text-sm text-muted-foreground transition-colors hover:text-primary font-vazirmatn"
+                className="text-sm text-muted-foreground transition-colors hover:text-primary"
               >
                 {link}
               </Link>

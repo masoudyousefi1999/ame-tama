@@ -33,7 +33,7 @@ export default function ProfilePage() {
 
   return (
     <div className="container py-8 mt-20">
-      <h1 className="text-2xl font-bold mb-8 font-vazirmatn">پروفایل من</h1>
+      <h1 className="text-2xl font-bold mb-8">پروفایل من</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
         {/* ----------- Sidebar: user info & nav ----------- */}
@@ -49,19 +49,17 @@ export default function ProfilePage() {
                   sizes="96px"
                 />
               </div>
-              <CardTitle className="font-vazirmatn">
+              <CardTitle>
                 {user.firstName} {user.lastName}
               </CardTitle>
-              <CardDescription className="font-vazirmatn">
-                {user.email}
-              </CardDescription>
+              <CardDescription>{user.email}</CardDescription>
             </CardHeader>
 
             <CardContent>
               <nav className="space-y-2">
                 <Link
                   href="/profile"
-                  className="flex items-center p-2 rounded-lg bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400 font-vazirmatn"
+                  className="flex items-center p-2 rounded-lg bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400"
                 >
                   <ShoppingBag className="h-4 w-4 ml-2" />
                   سفارش‌های من
@@ -87,7 +85,7 @@ export default function ProfilePage() {
                   <Link
                     key={l.href}
                     href={l.href}
-                    className="flex items-center p-2 rounded-lg hover:bg-muted transition-colors font-vazirmatn"
+                    className="flex items-center p-2 rounded-lg hover:bg-muted transition-colors"
                   >
                     <l.icon className="h-4 w-4 ml-2" />
                     {l.label}
@@ -96,7 +94,7 @@ export default function ProfilePage() {
 
                 <button
                   onClick={logout}
-                  className="flex items-center w-full text-right p-2 rounded-lg hover:bg-muted transition-colors text-destructive font-vazirmatn"
+                  className="flex items-center w-full text-right p-2 rounded-lg hover:bg-muted transition-colors text-destructive"
                 >
                   <LogOut className="h-4 w-4 ml-2" />
                   خروج از حساب کاربری
@@ -110,25 +108,23 @@ export default function ProfilePage() {
         <section className="lg:col-span-3">
           <Card>
             <CardHeader>
-              <CardTitle className="font-vazirmatn">سفارش‌های اخیر</CardTitle>
-              <CardDescription className="font-vazirmatn">
-                لیست سفارش‌های اخیر شما
-              </CardDescription>
+              <CardTitle>سفارش‌های اخیر</CardTitle>
+              <CardDescription>لیست سفارش‌های اخیر شما</CardDescription>
             </CardHeader>
 
             <CardContent>
               {/* empty-state */}
               <div className="text-center py-12">
                 <ShoppingBag className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-                <h3 className="text-lg font-medium mb-2 font-vazirmatn">
+                <h3 className="text-lg font-medium mb-2">
                   هنوز سفارشی ثبت نکرده‌اید
                 </h3>
-                <p className="text-muted-foreground mb-6 font-vazirmatn">
+                <p className="text-muted-foreground mb-6">
                   به فروشگاه بروید و اولین سفارش خود را ثبت کنید
                 </p>
                 <Button
                   onClick={() => router.push("/shop")}
-                  className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                  className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                 >
                   <ShoppingBag className="ml-2 h-4 w-4" />
                   رفتن به فروشگاه

@@ -98,10 +98,8 @@ export function ProductCard({
         </div>
 
         <div className="mr-3 flex-1 min-w-0">
-          <h3 className="line-clamp-1 text-sm font-medium font-vazirmatn">
-            {product.name}
-          </h3>
-          <p className="text-sm text-muted-foreground font-vazirmatn">
+          <h3 className="line-clamp-1 text-sm font-medium">{product.name}</h3>
+          <p className="text-sm text-muted-foreground">
             {formatPrice(product.price)}
           </p>
         </div>
@@ -142,15 +140,13 @@ export function ProductCard({
         </div>
 
         <div className="flex-1">
-          <h3 className="font-medium font-vazirmatn">{product.name}</h3>
-          <p className="text-sm text-muted-foreground font-vazirmatn">
+          <h3 className="font-medium">{product.name}</h3>
+          <p className="text-sm text-muted-foreground">
             {formatPrice(product.price)}
           </p>
         </div>
 
-        <p className="text-right font-medium font-vazirmatn">
-          {formatPrice(product.price)}
-        </p>
+        <p className="text-right font-medium">{formatPrice(product.price)}</p>
       </div>
     );
   }
@@ -207,7 +203,7 @@ export function ProductCard({
         {/* details */}
         <div className="space-y-2 p-4">
           <Link href={`/product/${product.slug}`}>
-            <h3 className="line-clamp-2 text-base font-semibold transition-colors hover:text-primary font-vazirmatn">
+            <h3 className="line-clamp-2 text-base font-semibold transition-colors hover:text-primary">
               {product.name}
             </h3>
           </Link>
@@ -216,15 +212,13 @@ export function ProductCard({
           {product.rating && (
             <div className="flex items-center text-amber-400">
               <Star className="h-4 w-4 fill-amber-400" />
-              <span className="mr-1 text-sm font-vazirmatn">
-                {product.rating.toFixed(1)}
-              </span>
+              <span className="mr-1 text-sm">{product.rating.toFixed(1)}</span>
             </div>
           )}
 
           {/* price + add-to-cart */}
           <div className="flex items-baseline justify-between">
-            <p className="text-lg font-bold text-primary font-vazirmatn">
+            <p className="text-lg font-bold text-primary">
               {formatPrice(product.price)}
             </p>
 
@@ -309,7 +303,7 @@ export function ProductCard({
 
         {/* details */}
         <div className="space-y-2 p-4">
-          <h3 className="line-clamp-2 text-base font-semibold transition-colors hover:text-primary font-vazirmatn">
+          <h3 className="line-clamp-2 text-base font-semibold transition-colors hover:text-primary">
             {product.name}
           </h3>
 
@@ -326,13 +320,13 @@ export function ProductCard({
                   )}
                 />
               ))}
-              <span className="mr-1 text-xs text-muted-foreground font-vazirmatn">
+              <span className="mr-1 text-xs text-muted-foreground">
                 ({product.rating.toFixed(1)})
               </span>
             </div>
           )}
 
-          <p className="text-lg font-bold text-primary font-vazirmatn">
+          <p className="text-lg font-bold text-primary">
             {formatPrice(product.price)}
           </p>
         </div>

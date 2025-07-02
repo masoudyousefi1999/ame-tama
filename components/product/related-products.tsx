@@ -20,7 +20,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
     <section className="mb-16">
       {/* ­­­­­­­­­­­­­­­­­­­ Heading & arrows */}
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-bold font-vazirmatn">محصولات مرتبط</h2>
+        <h2 className="text-2xl font-bold">محصولات مرتبط</h2>
 
         <div className="flex gap-x-2 rtl:gap-x-reverse">
           <Button variant="outline" size="icon" className="rounded-full">
@@ -62,12 +62,12 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                 {/* badges */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
                   {(product.createdAt as any) > new Date() && (
-                    <Badge className="bg-primary text-primary-foreground font-vazirmatn">
+                    <Badge className="bg-primary text-primary-foreground">
                       جدید
                     </Badge>
                   )}
                   {product.quantity < 10 && (
-                    <Badge className="bg-warning text-warning-foreground font-vazirmatn">
+                    <Badge className="bg-warning text-warning-foreground">
                       نسخه محدود
                     </Badge>
                   )}
@@ -85,7 +85,7 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
                 >
                   <Button
                     size="sm"
-                    className="rounded-full px-6 shadow-lg bg-background text-foreground hover:bg-muted font-vazirmatn"
+                    className="rounded-full px-6 shadow-lg bg-background text-foreground hover:bg-muted"
                   >
                     <ShoppingCart className="ml-2 h-4 w-4" />
                     افزودن سریع
@@ -95,10 +95,10 @@ export default function RelatedProducts({ products }: RelatedProductsProps) {
 
               {/* details */}
               <div className="p-4">
-                <h3 className="mb-2 text-lg font-semibold transition-colors group-hover:text-primary font-vazirmatn">
+                <h3 className="mb-2 text-lg font-semibold transition-colors group-hover:text-primary">
                   {product.name}
                 </h3>
-                <p className="text-lg font-bold font-vazirmatn text-foreground">
+                <p className="text-lg font-bold text-foreground">
                   {product.price.toLocaleString("fa-IR")} تومان
                 </p>
               </div>

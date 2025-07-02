@@ -83,10 +83,8 @@ export default function LoginForm({
     <div className="space-y-6">
       {/* heading */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold font-vazirmatn">
-          ورود به حساب کاربری
-        </h3>
-        <p className="text-sm text-muted-foreground mt-2 font-vazirmatn">
+        <h3 className="text-2xl font-bold">ورود به حساب کاربری</h3>
+        <p className="text-sm text-muted-foreground mt-2">
           وارد حساب کاربری خود شوید و از امکانات ویژه بهره‌مند شوید
         </p>
       </div>
@@ -94,9 +92,7 @@ export default function LoginForm({
       {/* form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email" className="font-vazirmatn">
-            ایمیل
-          </Label>
+          <Label htmlFor="email">ایمیل</Label>
           <Input
             id="email"
             name="email"
@@ -106,21 +102,18 @@ export default function LoginForm({
             value={formData.email}
             onChange={handleChange}
             disabled={isLoading}
-            className="font-vazirmatn"
           />
         </div>
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="font-vazirmatn">
-              رمز عبور
-            </Label>
+            <Label htmlFor="password">رمز عبور</Label>
             <Button
               type="button"
               variant="link"
               onClick={onForgotPassword}
               disabled={isLoading}
-              className="p-0 h-auto text-xs text-purple-600 dark:text-purple-400 font-vazirmatn"
+              className="p-0 h-auto text-xs text-purple-600 dark:text-purple-400"
             >
               فراموشی رمز عبور؟
             </Button>
@@ -134,14 +127,13 @@ export default function LoginForm({
             value={formData.password}
             onChange={handleChange}
             disabled={isLoading}
-            className="font-vazirmatn"
           />
         </div>
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
         >
           {isLoading ? (
             <>
@@ -156,14 +148,14 @@ export default function LoginForm({
 
       {/* footer link */}
       <div className="text-center">
-        <p className="text-sm text-muted-foreground font-vazirmatn">
+        <p className="text-sm text-muted-foreground">
           حساب کاربری ندارید؟{" "}
           <Button
             type="button"
             variant="link"
             onClick={onRegister}
             disabled={isLoading}
-            className="p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
+            className="p-0 h-auto text-purple-600 dark:text-purple-400"
           >
             ثبت‌نام کنید
           </Button>

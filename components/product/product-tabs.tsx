@@ -12,27 +12,21 @@ export default function ProductTabs({ product }: ProductTabsProps) {
     <Tabs defaultValue="description" className="mb-16" dir="rtl">
       {/* -------- tab bar -------- */}
       <TabsList className="grid w-full max-w-md grid-cols-3 mx-auto mb-8">
-        <TabsTrigger value="description" className="font-vazirmatn">
-          توضیحات
-        </TabsTrigger>
-        <TabsTrigger value="specifications" className="font-vazirmatn">
-          مشخصات
-        </TabsTrigger>
-        <TabsTrigger value="reviews" className="font-vazirmatn">
-          نظرات
-        </TabsTrigger>
+        <TabsTrigger value="description">توضیحات</TabsTrigger>
+        <TabsTrigger value="specifications">مشخصات</TabsTrigger>
+        <TabsTrigger value="reviews">نظرات</TabsTrigger>
       </TabsList>
 
       {/* -------- توضیحات -------- */}
       <TabsContent value="description" className="mt-4">
         <div className="rounded-2xl p-6 shadow-sm bg-background">
-          <h3 className="mb-6 text-2xl font-bold font-vazirmatn text-foreground">
+          <h3 className="mb-6 text-2xl font-bold text-foreground">
             درباره این محصول
           </h3>
 
           <div className="rounded-xl p-5 shadow-sm border bg-muted">
             <div
-              className="prose prose-lg max-w-none leading-relaxed text-justify font-vazirmatn dark:prose-invert"
+              className="prose prose-lg max-w-none leading-relaxed text-justify dark:prose-invert"
               dangerouslySetInnerHTML={{
                 __html:
                   product?.detail?.description ??
@@ -46,7 +40,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
       {/* -------- مشخصات -------- */}
       <TabsContent value="specifications" className="mt-4">
         <div className="rounded-2xl p-6 shadow-sm bg-background">
-          <h3 className="mb-6 text-2xl font-bold font-vazirmatn text-foreground">
+          <h3 className="mb-6 text-2xl font-bold text-foreground">
             مشخصات فنی
           </h3>
 
@@ -58,10 +52,10 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                     key={key}
                     className="rounded-xl p-4 shadow-sm border bg-muted"
                   >
-                    <div className="mb-1 text-sm font-vazirmatn text-muted-foreground">
+                    <div className="mb-1 text-sm text-muted-foreground">
                       {key} :
                     </div>
-                    <div className="text-base font-vazirmatn text-foreground">
+                    <div className="text-base text-foreground">
                       {Array.isArray(value) ? value.join("، ") : String(value)}
                     </div>
                   </div>
@@ -69,7 +63,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
               )}
             </div>
           ) : (
-            <p className="py-8 text-center font-vazirmatn text-muted-foreground">
+            <p className="py-8 text-center text-muted-foreground">
               مشخصات فنی این محصول در دسترس نیست.
             </p>
           )}
@@ -79,7 +73,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
       {/* -------- نظرات -------- */}
       <TabsContent value="reviews" className="mt-4">
         <div className="rounded-2xl p-6 shadow-sm bg-background">
-          <h3 className="mb-6 text-xl font-bold font-vazirmatn text-foreground">
+          <h3 className="mb-6 text-xl font-bold text-foreground">
             نظرات کاربران
           </h3>
 
@@ -92,10 +86,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                   className="pb-6 border-b last:border-0 border"
                 >
                   <div className="mb-2 flex justify-between">
-                    <h4 className="font-semibold font-vazirmatn">
-                      {review.user}
-                    </h4>
-                    <span className="text-sm font-vazirmatn text-muted-foreground">
+                    <h4 className="font-semibold">{review.user}</h4>
+                    <span className="text-sm text-muted-foreground">
                       {review.date}
                     </span>
                   </div>
@@ -118,9 +110,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                     ))}
                   </div>
 
-                  <p className="font-vazirmatn text-foreground">
-                    {review.comment}
-                  </p>
+                  <p className="  text-foreground">{review.comment}</p>
                 </div>
               ))
             }

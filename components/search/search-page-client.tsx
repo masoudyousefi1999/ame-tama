@@ -71,7 +71,7 @@ export default function SearchPageClient({
     <div className="container mx-auto px-4 py-8">
       {/* ── Header ────────────────────────────────────── */}
       <header className="mb-8 space-y-4">
-        <h1 className="text-3xl font-bold font-vazirmatn">جستجو</h1>
+        <h1 className="text-3xl font-bold">جستجو</h1>
 
         {/* 🔍 Search bar */}
         <form onSubmit={handleSearch} className="flex gap-2">
@@ -80,7 +80,7 @@ export default function SearchPageClient({
             placeholder="جستجو در محصولات..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="flex-1 bg-background border focus:ring-brand font-vazirmatn"
+            className="flex-1 bg-background border focus:ring-brand"
           />
           <Button type="submit" size="icon">
             <Search className="h-4 w-4" />
@@ -88,7 +88,7 @@ export default function SearchPageClient({
         </form>
 
         {initialQuery && (
-          <p className="text-muted-foreground font-vazirmatn">
+          <p className="text-muted-foreground">
             نتایج جستجو برای «{initialQuery}»
           </p>
         )}

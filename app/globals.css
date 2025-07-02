@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+*{
+  font-family: var(--font-vazirmatn), sans-serif;
+}
+
 html,
 body {
   height: calc(var(--vh, 1vh) * 100);
@@ -131,10 +135,6 @@ body {
     min-width: 44px;
   }
 } */
-
-.font-vazirmatn {
-  font-family: var(--font-vazirmatn), sans-serif;
-}
 
 [dir="rtl"] {
   .flip-icon {

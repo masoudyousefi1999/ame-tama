@@ -147,7 +147,7 @@ export default function SettingsPage() {
             <TabsTrigger
               key={t.value}
               value={t.value}
-              className="flex items-center justify-center px-4 py-2 font-vazirmatn"
+              className="flex items-center justify-center px-4 py-2"
             >
               <t.icon className="ml-2 h-4 w-4" />
               {t.label}
@@ -161,10 +161,8 @@ export default function SettingsPage() {
         <TabsContent value="profile">
           <Card>
             <CardHeader>
-              <CardTitle className="font-vazirmatn">اطلاعات پروفایل</CardTitle>
-              <CardDescription className="font-vazirmatn">
-                اطلاعات شخصی خود را مدیریت کنید
-              </CardDescription>
+              <CardTitle>اطلاعات پروفایل</CardTitle>
+              <CardDescription>اطلاعات شخصی خود را مدیریت کنید</CardDescription>
             </CardHeader>
 
             <CardContent>
@@ -194,7 +192,7 @@ export default function SettingsPage() {
                       </Button>
                     </div>
                   </div>
-                  <p className="text-sm text-muted-foreground font-vazirmatn">
+                  <p className="text-sm text-muted-foreground">
                     تصویر پروفایل (حداکثر 2 MB)
                   </p>
                 </div>
@@ -214,9 +212,7 @@ export default function SettingsPage() {
                     },
                   ].map((f) => (
                     <div key={f.id} className="space-y-2">
-                      <Label htmlFor={f.id} className="font-vazirmatn">
-                        {f.label}
-                      </Label>
+                      <Label htmlFor={f.id}>{f.label}</Label>
                       <Input
                         id={f.id}
                         value={f.value}
@@ -226,7 +222,6 @@ export default function SettingsPage() {
                             [f.id]: e.target.value,
                           })
                         }
-                        className="font-vazirmatn"
                       />
                     </div>
                   ))}
@@ -235,24 +230,19 @@ export default function SettingsPage() {
                 {/* email / phone */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="font-vazirmatn">
-                      ایمیل
-                    </Label>
+                    <Label htmlFor="email">ایمیل</Label>
                     <Input
                       id="email"
                       type="email"
                       value={profileData.email}
                       disabled
-                      className="font-vazirmatn"
                     />
-                    <p className="text-xs text-muted-foreground font-vazirmatn">
+                    <p className="text-xs text-muted-foreground">
                       ایمیل شما قابل تغییر نیست
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="phone" className="font-vazirmatn">
-                      شماره موبایل
-                    </Label>
+                    <Label htmlFor="phone">شماره موبایل</Label>
                     <Input
                       id="phone"
                       type="tel"
@@ -264,7 +254,6 @@ export default function SettingsPage() {
                           phone: e.target.value,
                         })
                       }
-                      className="font-vazirmatn"
                     />
                   </div>
                 </div>
@@ -272,7 +261,7 @@ export default function SettingsPage() {
                 <div className="flex justify-end">
                   <Button
                     type="submit"
-                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                   >
                     <Save className="ml-2 h-4 w-4" />
                     ذخیره تغییرات
@@ -289,8 +278,8 @@ export default function SettingsPage() {
         <TabsContent value="security">
           <Card>
             <CardHeader>
-              <CardTitle className="font-vazirmatn">تنظیمات امنیتی</CardTitle>
-              <CardDescription className="font-vazirmatn">
+              <CardTitle>تنظیمات امنیتی</CardTitle>
+              <CardDescription>
                 رمز عبور خود را تغییر دهید و امنیت حساب را افزایش دهید
               </CardDescription>
             </CardHeader>
@@ -316,9 +305,7 @@ export default function SettingsPage() {
                   },
                 ].map((f) => (
                   <div key={f.id} className="space-y-2">
-                    <Label htmlFor={f.id} className="font-vazirmatn">
-                      {f.label}
-                    </Label>
+                    <Label htmlFor={f.id}>{f.label}</Label>
                     <Input
                       id={f.id}
                       type="password"
@@ -329,10 +316,9 @@ export default function SettingsPage() {
                           [f.id]: e.target.value,
                         })
                       }
-                      className="font-vazirmatn"
                     />
                     {f.id === "newPassword" && (
-                      <p className="text-xs text-muted-foreground font-vazirmatn">
+                      <p className="text-xs text-muted-foreground">
                         رمز عبور باید حداقل 8 کاراکتر و شامل حروف و اعداد باشد
                       </p>
                     )}
@@ -342,7 +328,7 @@ export default function SettingsPage() {
                 <div className="flex justify-end">
                   <Button
                     type="submit"
-                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                   >
                     <Lock className="ml-2 h-4 w-4" />
                     تغییر رمز عبور
@@ -359,8 +345,8 @@ export default function SettingsPage() {
         <TabsContent value="notifications">
           <Card>
             <CardHeader>
-              <CardTitle className="font-vazirmatn">تنظیمات اعلان‌ها</CardTitle>
-              <CardDescription className="font-vazirmatn">
+              <CardTitle>تنظیمات اعلان‌ها</CardTitle>
+              <CardDescription>
                 نحوه دریافت اعلان‌ها و اطلاع‌رسانی‌ها را مدیریت کنید
               </CardDescription>
             </CardHeader>
@@ -390,10 +376,8 @@ export default function SettingsPage() {
                     className="flex items-center justify-between py-2"
                   >
                     <div className="space-y-0.5 max-w-[70%]">
-                      <Label className="font-vazirmatn">{n.label}</Label>
-                      <p className="text-sm text-muted-foreground font-vazirmatn">
-                        {n.desc}
-                      </p>
+                      <Label>{n.label}</Label>
+                      <p className="text-sm text-muted-foreground">{n.desc}</p>
                     </div>
                     <Switch
                       checked={false}
@@ -412,8 +396,8 @@ export default function SettingsPage() {
                 <div className="border-t border-border pt-6">
                   <div className="flex items-center justify-between py-2">
                     <div className="space-y-0.5 max-w-[70%]">
-                      <Label className="font-vazirmatn">حالت تیره</Label>
-                      <p className="text-sm text-muted-foreground font-vazirmatn">
+                      <Label>حالت تیره</Label>
+                      <p className="text-sm text-muted-foreground">
                         تغییر بین حالت روشن و تیره
                       </p>
                     </div>
@@ -432,7 +416,7 @@ export default function SettingsPage() {
                 <div className="flex justify-end">
                   <Button
                     onClick={handleNotificationUpdate}
-                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                   >
                     <Save className="ml-2 h-4 w-4" />
                     ذخیره تنظیمات

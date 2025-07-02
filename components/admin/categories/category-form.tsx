@@ -105,7 +105,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         title: "خطا",
         description: "لطفاً فقط فایل‌های تصویری انتخاب کنید",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -116,7 +115,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         title: "خطا",
         description: "حجم فایل نباید بیشتر از ۵ مگابایت باشد",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -146,7 +144,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "موفقیت",
         description: "تصویر با موفقیت آپلود شد",
-        className: "font-vazirmatn",
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -157,7 +154,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
             ? error.message
             : "آپلود تصویر با شکست مواجه شد",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
     } finally {
       setIsUploading(false);
@@ -173,7 +169,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         title: "خطا",
         description: "نام دسته‌بندی الزامی است",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -183,7 +178,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         title: "خطا",
         description: "نامک دسته‌بندی الزامی است",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -194,7 +188,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         title: "خطا",
         description: "لطفاً تصویر دسته‌بندی را انتخاب کنید",
         variant: "destructive",
-        className: "font-vazirmatn",
       });
       return;
     }
@@ -232,7 +225,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         description: category
           ? "دسته‌بندی با موفقیت به‌روزرسانی شد"
           : "دسته‌بندی با موفقیت ایجاد شد",
-        className: "font-vazirmatn",
       });
 
       router.push("/admin/categories");
@@ -244,7 +236,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
         description:
           error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
         variant: "destructive",
-        className: "font-vazirmatn",
+        className: "",
       });
     } finally {
       setIsLoading(false);
@@ -262,7 +254,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
   return (
     <Card className="max-w-2xl bg-white dark:bg-gray-800" dir="rtl">
       <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-        <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white font-vazirmatn">
+        <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
           {category ? "ویرایش دسته‌بندی" : "ایجاد دسته‌بندی جدید"}
         </CardTitle>
       </CardHeader>
@@ -271,7 +263,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="name"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               نام دسته‌بندی *
             </Label>
@@ -282,7 +274,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
               placeholder="نام دسته‌بندی را وارد کنید"
-              className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+              className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
               required
             />
           </div>
@@ -290,7 +282,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="slug"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               اسلاگ
             </Label>
@@ -303,7 +295,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               placeholder="اسلاگ"
               className="border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400 font-vazirmatn">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               نامک برای URL استفاده می‌شود و باید منحصر به فرد باشد
             </p>
           </div>
@@ -311,7 +303,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="description"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               توضیحات
             </Label>
@@ -325,7 +317,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 }))
               }
               placeholder="توضیحات دسته‌بندی را وارد کنید"
-              className="font-vazirmatn border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+              className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
               rows={3}
             />
           </div>
@@ -333,7 +325,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="parentId"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn"
+              className="text-sm font-medium text-gray-700 dark:text-gray-300"
             >
               دسته‌بندی والد
             </Label>
@@ -369,7 +361,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300 font-vazirmatn">
+            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
               تصویر دسته‌بندی {!category && "*"}
             </Label>
 
@@ -412,12 +404,12 @@ export function CategoryForm({ category }: CategoryFormProps) {
                   ) : (
                     <ImageIcon className="h-8 w-8 text-gray-400" />
                   )}
-                  <span className="text-sm text-gray-600 dark:text-gray-400 font-vazirmatn">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
                     {isUploading
                       ? "در حال آپلود..."
                       : "برای انتخاب تصویر کلیک کنید"}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-500 font-vazirmatn">
+                  <span className="text-xs text-gray-500 dark:text-gray-500">
                     حداکثر ۵ مگابایت - JPG, PNG, GIF
                   </span>
                 </label>
@@ -429,7 +421,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
             <Button
               type="submit"
               disabled={isLoading || isUploading || (!category && !imageUuid)}
-              className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed font-vazirmatn"
+              className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -446,7 +438,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               type="button"
               variant="outline"
               onClick={() => router.push("/admin/categories")}
-              className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full font-vazirmatn"
+              className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full"
             >
               لغو
             </Button>

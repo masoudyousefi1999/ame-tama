@@ -50,7 +50,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="font-vazirmatn font-semi-bold text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight text-foreground drop-shadow-[0_8px_10px_rgba(0,0,0,0.7)]"
+            className="  font-semi-bold text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight text-foreground drop-shadow-[0_8px_10px_rgba(0,0,0,0.7)]"
           >
             مجسمه‌های لوکس انیمه
             <br />
@@ -60,7 +60,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="font-vazirmatn text-foreground/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)] max-w-prose mx-auto"
+            className="  text-foreground/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)] max-w-prose mx-auto"
           >
             مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر و
             اشتیاق در هر جزئیات ظریف به هم می‌رسند.
@@ -73,7 +73,7 @@ export default function HeroSection() {
             <Link href="/shop">
               <Button
                 size="lg"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground shadow-xl transition-transform duration-300 hover:scale-105 hover:bg-primary/90 focus-visible-ring font-vazirmatn"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground shadow-xl transition-transform duration-300 hover:scale-105 hover:bg-primary/90 focus-visible-ring"
               >
                 مشاهده مجسمه‌های لوکس
                 <ArrowRight className="h-5 w-5 rotate-180 transition-transform duration-300 group-hover:translate-x-1" />

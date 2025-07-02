@@ -362,10 +362,8 @@ export default function OrdersPage() {
             {/* ---------------- History table ---------------- */}
             <Card>
               <CardHeader>
-                <CardTitle className="font-vazirmatn">
-                  تاریخچه سفارش‌ها
-                </CardTitle>
-                <CardDescription className="font-vazirmatn">
+                <CardTitle>تاریخچه سفارش‌ها</CardTitle>
+                <CardDescription>
                   لیست سفارش‌های شما و وضعیت آن‌ها
                 </CardDescription>
               </CardHeader>
@@ -374,7 +372,7 @@ export default function OrdersPage() {
                 {isLoadingOrders ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto" />
-                    <p className="mt-2 text-sm text-muted-foreground font-vazirmatn">
+                    <p className="mt-2 text-sm text-muted-foreground">
                       در حال بارگذاری...
                     </p>
                   </div>
@@ -390,9 +388,7 @@ export default function OrdersPage() {
                             "وضعیت",
                             "عملیات",
                           ].map((h) => (
-                            <TableHead key={h} className="font-vazirmatn">
-                              {h}
-                            </TableHead>
+                            <TableHead key={h}>{h}</TableHead>
                           ))}
                         </TableRow>
                       </TableHeader>
@@ -400,15 +396,11 @@ export default function OrdersPage() {
                       <TableBody>
                         {orders.map((order) => (
                           <TableRow key={order.id}>
-                            <TableCell className="font-medium font-vazirmatn">
+                            <TableCell className="font-medium">
                               {order.id}
                             </TableCell>
-                            <TableCell className="font-vazirmatn">
-                              {order.date}
-                            </TableCell>
-                            <TableCell className="font-vazirmatn">
-                              {formatPrice(order.total)}
-                            </TableCell>
+                            <TableCell>{order.date}</TableCell>
+                            <TableCell>{formatPrice(order.total)}</TableCell>
                             <TableCell>
                               <OrderStatusBadge status={order.status} />
                             </TableCell>
@@ -416,7 +408,6 @@ export default function OrdersPage() {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                className="font-vazirmatn"
                                 onClick={() => handleOrderSelect(order)}
                               >
                                 مشاهده جزئیات
@@ -436,12 +427,10 @@ export default function OrdersPage() {
               <Card>
                 <CardHeader>
                   <div className="flex justify-between items-center">
-                    <CardTitle className="font-vazirmatn">
-                      جزئیات سفارش {selectedOrder.id}
-                    </CardTitle>
+                    <CardTitle>جزئیات سفارش {selectedOrder.id}</CardTitle>
                     <OrderStatusBadge status={selectedOrder.status} />
                   </div>
-                  <CardDescription className="font-vazirmatn">
+                  <CardDescription>
                     تاریخ سفارش: {selectedOrder.date}
                   </CardDescription>
                 </CardHeader>
@@ -449,11 +438,11 @@ export default function OrdersPage() {
                 <CardContent>
                   <Tabs defaultValue="items">
                     <TabsList className="mb-4">
-                      <TabsTrigger value="items" className="font-vazirmatn">
+                      <TabsTrigger value="items">
                         <Package className="ml-2 h-4 w-4" />
                         اقلام سفارش
                       </TabsTrigger>
-                      <TabsTrigger value="tracking" className="font-vazirmatn">
+                      <TabsTrigger value="tracking">
                         <Truck className="ml-2 h-4 w-4" />
                         پیگیری ارسال
                       </TabsTrigger>
@@ -478,10 +467,8 @@ export default function OrdersPage() {
                         ))}
 
                         <div className="pt-4 border-t border-border mt-6 flex justify-between">
-                          <span className="font-medium font-vazirmatn">
-                            مجموع:
-                          </span>
-                          <span className="font-bold font-vazirmatn">
+                          <span className="font-medium">مجموع:</span>
+                          <span className="font-bold">
                             {formatPrice(selectedOrder.total)}
                           </span>
                         </div>
@@ -493,13 +480,13 @@ export default function OrdersPage() {
                       {selectedOrder.tracking ? (
                         <div className="space-y-4">
                           <div className="bg-muted p-4 rounded-lg">
-                            <p className="font-vazirmatn">
+                            <p>
                               <span className="font-medium ml-2">
                                 شرکت پستی:
                               </span>
                               {selectedOrder.tracking.carrier}
                             </p>
-                            <p className="font-vazirmatn">
+                            <p>
                               <span className="font-medium ml-2">
                                 کد رهگیری:
                               </span>
@@ -519,13 +506,9 @@ export default function OrdersPage() {
                                       : "bg-purple-600"
                                   }`}
                                 />
-                                <div className="mb-1 font-vazirmatn">
-                                  {u.date}
-                                </div>
-                                <div className="font-medium font-vazirmatn">
-                                  {u.status}
-                                </div>
-                                <div className="text-sm text-muted-foreground font-vazirmatn">
+                                <div className="mb-1">{u.date}</div>
+                                <div className="font-medium">{u.status}</div>
+                                <div className="text-sm text-muted-foreground">
                                   {u.location}
                                 </div>
                               </div>
@@ -535,10 +518,10 @@ export default function OrdersPage() {
                       ) : (
                         <div className="text-center py-8">
                           <AlertCircle className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-                          <h3 className="text-lg font-medium mb-2 font-vazirmatn">
+                          <h3 className="text-lg font-medium mb-2">
                             اطلاعات ارسال موجود نیست
                           </h3>
-                          <p className="text-muted-foreground font-vazirmatn">
+                          <p className="text-muted-foreground">
                             این سفارش هنوز ارسال نشده یا اطلاعات ارسال آن ثبت
                             نشده است
                           </p>
@@ -555,15 +538,15 @@ export default function OrdersPage() {
           <Card>
             <CardContent className="text-center py-12">
               <Package className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-              <h3 className="text-lg font-medium mb-2 font-vazirmatn">
+              <h3 className="text-lg font-medium mb-2">
                 هنوز سفارشی ثبت نکرده‌اید
               </h3>
-              <p className="text-muted-foreground mb-6 font-vazirmatn">
+              <p className="text-muted-foreground mb-6">
                 به فروشگاه بروید و اولین سفارش خود را ثبت کنید
               </p>
               <Button
                 onClick={() => router.push("/shop")}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
                 <Package className="ml-2 h-4 w-4" />
                 رفتن به فروشگاه

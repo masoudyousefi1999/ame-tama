@@ -20,7 +20,7 @@ export default function CategoryShowcase({
       {/* ————— Header ————— */}
       <div className="mb-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-6">
         <div>
-          <h2 className="text-2xl font-bold font-vazirmatn leading-snug">
+          <h2 className="text-2xl font-bold leading-snug">
             دسته‌بندی‌های&nbsp;انیمه
           </h2>
           <p className="mt-1 text-muted-foreground">
@@ -32,7 +32,7 @@ export default function CategoryShowcase({
         <Button
           asChild
           variant="outline"
-          className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50 font-vazirmatn"
+          className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
         >
           <Link href="/shop?tab=all" prefetch={false}>
             مشاهده&nbsp;همه
@@ -76,7 +76,7 @@ export default function CategoryShowcase({
 
               {/* copy */}
               <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                <h3 className="font-vazirmatn font-semibold text-lg sm:text-xl tracking-tight group-hover:text-primary-200">
+                <h3 className="  font-semibold text-lg sm:text-xl tracking-tight group-hover:text-primary-200">
                   {cat.name}
                 </h3>
 
@@ -100,7 +100,7 @@ export default function CategoryShowcase({
       <Button
         asChild
         variant="outline"
-        className="mt-6 w-full sm:hidden rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50 font-vazirmatn"
+        className="mt-6 w-full sm:hidden rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
       >
         <Link href="/shop?tab=all">
           مشاهده&nbsp;همه&nbsp;دسته‌بندی‌ها

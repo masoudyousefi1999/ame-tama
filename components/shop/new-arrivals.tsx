@@ -47,9 +47,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
       {/* ————— Header ————— */}
       <div className="mb-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-6">
         <div>
-          <h2 className="text-2xl font-bold font-vazirmatn leading-snug">
-            محصولات&nbsp;جدید
-          </h2>
+          <h2 className="text-2xl font-bold leading-snug">محصولات&nbsp;جدید</h2>
           <p className="mt-1 text-muted-foreground">
             تازه‌ترین مجسمه‌های اضافه‌شده به AME-TAMA
           </p>
@@ -59,7 +57,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
         <Button
           asChild
           variant="outline"
-          className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50 font-vazirmatn"
+          className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
         >
           <Link href="/shop?tab=all&sort=newest">
             مشاهده&nbsp;همه
@@ -87,7 +85,7 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
       <Button
         asChild
         variant="outline"
-        className="mt-6 w-full sm:hidden rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50 font-vazirmatn"
+        className="mt-6 w-full sm:hidden rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
       >
         <Link href="/shop?tab=all&sort=newest">
           مشاهده&nbsp;همه&nbsp;محصولات&nbsp;جدید

@@ -86,18 +86,16 @@ export function MobileCartItem({
 
           {/* info */}
           <div className="mr-3 flex-1">
-            <h3 className="text-sm font-medium font-vazirmatn">
-              {item.product.name}
-            </h3>
+            <h3 className="text-sm font-medium">{item.product.name}</h3>
 
-            <div className="mt-1 text-sm text-muted-foreground font-vazirmatn">
+            <div className="mt-1 text-sm text-muted-foreground">
               {new Intl.NumberFormat("fa-IR").format(item.product.price)} تومان
             </div>
 
             <Link
               href={`/product/${item.product.slug}`}
               onClick={(e) => isSwiping && e.preventDefault()}
-              className="mt-1 inline-flex items-center text-xs text-primary hover:text-primary/80 transition-colors font-vazirmatn"
+              className="mt-1 inline-flex items-center text-xs text-primary hover:text-primary/80 transition-colors"
             >
               جزییات محصول
               <ExternalLink className="mr-1 h-3 w-3" />
@@ -117,7 +115,7 @@ export function MobileCartItem({
                   -
                 </button>
 
-                <span className="w-8 text-center text-sm font-vazirmatn">
+                <span className="w-8 text-center text-sm">
                   {new Intl.NumberFormat("fa-IR").format(item.quantity)}
                 </span>
 
@@ -144,7 +142,7 @@ export function MobileCartItem({
               </button>
             </div>
 
-            <div className="mt-2 text-sm font-medium text-foreground font-vazirmatn">
+            <div className="mt-2 text-sm font-medium text-foreground">
               مجموع:&nbsp;
               {new Intl.NumberFormat("fa-IR").format(
                 item.product.price * item.quantity

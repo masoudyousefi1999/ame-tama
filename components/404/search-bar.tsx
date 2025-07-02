@@ -31,7 +31,7 @@ export function SearchBar() {
         placeholder="جستجوی محصولات..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="w-full pr-10 rounded-full border border-border font-vazirmatn text-right"
+        className="w-full pr-10 rounded-full border border-border text-right"
       />
 
       {/* submit */}

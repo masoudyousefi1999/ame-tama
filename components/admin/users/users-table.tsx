@@ -64,7 +64,7 @@ export function UsersTable({ data }: UsersTableProps) {
       toast({
         title: "موفقیت",
         description: "کاربر با موفقیت حذف شد",
-        className: "bg-green-600 text-white font-vazirmatn",
+        className: "bg-green-600 text-white",
       });
 
       window.location.reload();
@@ -73,7 +73,7 @@ export function UsersTable({ data }: UsersTableProps) {
         title: "خطا",
         description: "حذف کاربر با شکست مواجه شد",
         variant: "destructive",
-        className: "bg-red-600 text-white font-vazirmatn",
+        className: "bg-red-600 text-white",
       });
     } finally {
       setIsDeleting(null);
@@ -85,19 +85,19 @@ export function UsersTable({ data }: UsersTableProps) {
       <Table>
         <TableHeader>
           <TableRow className="border-gray-200 dark:border-gray-700">
-            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium font-vazirmatn whitespace-nowrap px-4 py-2">
+            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap px-4 py-2">
               نام
             </TableHead>
-            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium font-vazirmatn whitespace-nowrap px-4 py-2">
+            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap px-4 py-2">
               ایمیل
             </TableHead>
-            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium font-vazirmatn whitespace-nowrap px-4 py-2">
+            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap px-4 py-2">
               نقش
             </TableHead>
-            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium font-vazirmatn whitespace-nowrap px-4 py-2">
+            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap px-4 py-2">
               تاریخ ایجاد
             </TableHead>
-            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium font-vazirmatn whitespace-nowrap px-4 py-2">
+            <TableHead className="sticky top-0 z-10 bg-gray-50/90 dark:bg-gray-800/90 text-right text-gray-900 dark:text-gray-100 font-medium whitespace-nowrap px-4 py-2">
               عملیات
             </TableHead>
           </TableRow>
@@ -112,16 +112,16 @@ export function UsersTable({ data }: UsersTableProps) {
                   : "bg-gray-50/50 dark:bg-gray-700/25"
               }`}
             >
-              <TableCell className="text-right font-medium text-gray-900 dark:text-gray-100 font-vazirmatn whitespace-nowrap px-4 py-2">
+              <TableCell className="text-right font-medium text-gray-900 dark:text-gray-100 whitespace-nowrap px-4 py-2">
                 {`${user.firstName} ${user.lastName}`}
               </TableCell>
-              <TableCell className="text-right text-gray-600 dark:text-gray-400 font-vazirmatn whitespace-nowrap px-4 py-2">
+              <TableCell className="text-right text-gray-600 dark:text-gray-400 whitespace-nowrap px-4 py-2">
                 {user.email}
               </TableCell>
               <TableCell className="text-right whitespace-nowrap px-4 py-2">
                 <Badge
                   variant={user.role === "admin" ? "default" : "secondary"}
-                  className={`font-vazirmatn ${
+                  className={`${
                     user.role === "admin"
                       ? "bg-purple-100 text-purple-800 dark:bg-purple-900/50 dark:text-purple-300"
                       : "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
@@ -130,7 +130,7 @@ export function UsersTable({ data }: UsersTableProps) {
                   {user.role === "ADMIN" ? "مدیر" : "کاربر"}
                 </Badge>
               </TableCell>
-              <TableCell className="text-right text-gray-600 dark:text-gray-400 font-vazirmatn whitespace-nowrap px-4 py-2">
+              <TableCell className="text-right text-gray-600 dark:text-gray-400 whitespace-nowrap px-4 py-2">
                 {new Date(user.createdAt).toLocaleDateString("fa-IR")}
               </TableCell>
               <TableCell className="text-right whitespace-nowrap px-4 py-2">
@@ -160,22 +160,22 @@ export function UsersTable({ data }: UsersTableProps) {
                       dir="rtl"
                     >
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-gray-900 dark:text-gray-100 font-vazirmatn">
+                        <AlertDialogTitle className="text-gray-900 dark:text-gray-100">
                           آیا مطمئن هستید؟
                         </AlertDialogTitle>
-                        <AlertDialogDescription className="text-gray-600 dark:text-gray-400 font-vazirmatn">
+                        <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
                           این عمل قابل بازگشت نیست. این کار حساب کاربری را به
                           طور دائم حذف خواهد کرد.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-vazirmatn">
+                        <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                           لغو
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => handleDelete(user.uuid)}
                           disabled={isDeleting === user.uuid}
-                          className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed font-vazirmatn"
+                          className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {isDeleting === user.uuid ? "در حال حذف..." : "حذف"}
                         </AlertDialogAction>

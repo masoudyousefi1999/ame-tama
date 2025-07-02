@@ -80,7 +80,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   return (
     <div className="space-y-6">
       {/* ────────── title ────────── */}
-      <h1 className="text-3xl font-bold font-vazirmatn">{product.name}</h1>
+      <h1 className="text-3xl font-bold">{product.name}</h1>
 
       {/* ────────── rating ───────── */}
       <div className="flex items-center gap-x-4 rtl:gap-x-reverse">
@@ -97,19 +97,17 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             />
           ))}
         </div>
-        <span className="text-sm text-muted-foreground font-vazirmatn">
-          (نظر)
-        </span>
+        <span className="text-sm text-muted-foreground">(نظر)</span>
       </div>
 
       {/* ────────── price ────────── */}
       <div className="flex items-center gap-x-3 rtl:gap-x-reverse">
-        <span className="text-3xl font-bold text-foreground font-vazirmatn">
+        <span className="text-3xl font-bold text-foreground">
           {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
         </span>
 
         {!!product.price && (
-          <span className="text-lg line-through text-muted-foreground font-vazirmatn">
+          <span className="text-lg line-through text-muted-foreground">
             {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
           </span>
         )}
@@ -118,22 +116,19 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* ─── stock + badges ─── */}
       <div className="flex items-center gap-x-2 rtl:gap-x-reverse">
         <span
-          className={cn(
-            "text-sm font-medium font-vazirmatn",
-            availabilityColor["in-stock"]
-          )}
+          className={cn("text-sm font-medium", availabilityColor["in-stock"])}
         >
           {availabilityText["in-stock"]}
         </span>
 
         <div className="mr-4 flex gap-x-2 rtl:gap-x-reverse">
           {(product.createdAt as any) > new Date() && (
-            <Badge variant="default" className="text-2xs font-vazirmatn">
+            <Badge variant="default" className="text-2xs">
               جدید
             </Badge>
           )}
           {product.quantity < 10 && (
-            <Badge variant="destructive" className="text-2xs font-vazirmatn">
+            <Badge variant="destructive" className="text-2xs">
               نسخه محدود
             </Badge>
           )}
@@ -159,7 +154,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* ─── quantity picker ─── */}
       <div className="flex items-center gap-x-4 rtl:gap-x-reverse">
-        <span className="text-foreground font-vazirmatn">تعداد:</span>
+        <span className="text-foreground">تعداد:</span>
         <div className="flex items-center rounded-full border border-border">
           <Button
             variant="ghost"
@@ -171,7 +166,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             <Minus className="h-4 w-4" />
           </Button>
 
-          <span className="w-10 text-center font-medium font-vazirmatn">
+          <span className="w-10 text-center font-medium">
             {new Intl.NumberFormat("fa-IR").format(quantity)}
           </span>
 
@@ -190,7 +185,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <div className="mt-8 flex flex-wrap gap-4">
         <Button
           className={cn(
-            "flex-1 rounded-full py-6 font-vazirmatn transition-colors",
+            "flex-1 rounded-full py-6 transition-colors",
             addedToCart
               ? "bg-success text-success-foreground hover:bg-success/90"
               : "bg-primary text-primary-foreground hover:bg-primary/90"
@@ -244,7 +239,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 /* helper */
 function Fact({ label, value }: { label: string; value?: string | number }) {
   return (
-    <div className="font-vazirmatn">
+    <div>
       <span className="text-muted-foreground">{label}:</span>{" "}
       <span className="font-medium">{value ?? "―"}</span>
     </div>

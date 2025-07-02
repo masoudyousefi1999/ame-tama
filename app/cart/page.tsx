@@ -149,15 +149,13 @@ export default function CartPage() {
       <div className="container py-16 mt-20" dir="rtl">
         <div className="max-w-2xl mx-auto text-center py-16">
           <ShoppingBag className="h-20 w-20 mx-auto text-muted-foreground/60 mb-6" />
-          <h1 className="text-2xl font-bold mb-4 font-vazirmatn">
-            سبد خرید شما خالی است
-          </h1>
-          <p className="text-muted-foreground mb-8 font-vazirmatn">
+          <h1 className="text-2xl font-bold mb-4">سبد خرید شما خالی است</h1>
+          <p className="text-muted-foreground mb-8">
             محصولی در سبد خرید شما وجود ندارد. برای مشاهده محصولات به فروشگاه
             بروید.
           </p>
           <Button
-            className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+            className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
             onClick={() => router.push("/shop")}
           >
             <ShoppingBag className="ml-2 h-5 w-5" />
@@ -177,7 +175,7 @@ export default function CartPage() {
         className="mb-6"
         items={[{ label: "سبد خرید", href: "/cart", isCurrent: true }]}
       />
-      <h1 className="text-2xl font-bold mb-8 font-vazirmatn">سبد خرید</h1>
+      <h1 className="text-2xl font-bold mb-8">سبد خرید</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* ------------------------------------------------- */}
@@ -187,14 +185,14 @@ export default function CartPage() {
           <div className="bg-card rounded-2xl shadow-sm overflow-hidden">
             <div className="p-4 md:p-6 border-b border-border">
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold font-vazirmatn">
+                <h2 className="text-lg font-semibold">
                   محصولات ({items.length})
                 </h2>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={handleClearCart}
-                  className="text-destructive hover:text-destructive/80 hover:bg-destructive/10 font-vazirmatn"
+                  className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
                 >
                   <Trash2 className="h-4 w-4 ml-2" />
                   حذف همه
@@ -206,7 +204,7 @@ export default function CartPage() {
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-muted">
-                  <tr className="text-xs uppercase tracking-wider font-vazirmatn">
+                  <tr className="text-xs uppercase tracking-wider">
                     {["محصول", "قیمت", "تعداد", "مجموع", "عملیات"].map((th) => (
                       <th
                         key={th}
@@ -244,7 +242,7 @@ export default function CartPage() {
                               />
                             </div>
                             <div className="mr-4">
-                              <div className="text-sm font-medium text-foreground font-vazirmatn">
+                              <div className="text-sm font-medium text-foreground">
                                 {item.product.name}
                               </div>
                               <Link
@@ -260,7 +258,7 @@ export default function CartPage() {
 
                         {/* Price */}
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-foreground font-vazirmatn">
+                          <div className="text-sm text-foreground">
                             {new Intl.NumberFormat("fa-IR").format(
                               item.product.price
                             )}{" "}
@@ -284,7 +282,7 @@ export default function CartPage() {
                             >
                               -
                             </button>
-                            <span className="flex-1 text-center text-sm font-vazirmatn">
+                            <span className="flex-1 text-center text-sm">
                               {new Intl.NumberFormat("fa-IR").format(
                                 item.quantity
                               )}
@@ -307,7 +305,7 @@ export default function CartPage() {
 
                         {/* Total */}
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-foreground font-vazirmatn">
+                          <div className="text-sm text-foreground">
                             {new Intl.NumberFormat("fa-IR").format(
                               item.product.price * item.quantity
                             )}{" "}
@@ -350,7 +348,7 @@ export default function CartPage() {
                   />
                 ))}
               </AnimatePresence>
-              <p className="p-4 text-xs text-center text-muted-foreground font-vazirmatn">
+              <p className="p-4 text-xs text-center text-muted-foreground">
                 برای حذف محصول، آن را به سمت چپ بکشید
               </p>
             </div>
@@ -358,11 +356,11 @@ export default function CartPage() {
             {/* Continue shopping */}
             <div className="p-6 border-t border-border">
               <Link
-                href="/shop"
-                className="inline-flex items-center text-primary font-medium font-vazirmatn"
+                href="/category/figures"
+                className="inline-flex items-center text-primary font-medium"
               >
                 <ArrowLeft className="ml-2 h-4 w-4" />
-                ادامه خرید
+               افزودن محصولات بیشتر
               </Link>
             </div>
           </div>
@@ -375,7 +373,7 @@ export default function CartPage() {
           <Button
             variant="outline"
             onClick={() => setShowSummary(!showSummary)}
-            className="w-full flex justify-between items-center rounded-lg font-vazirmatn"
+            className="w-full flex justify-between items-center rounded-lg"
           >
             <span>خلاصه سفارش</span>
             {showSummary ? (
@@ -395,26 +393,24 @@ export default function CartPage() {
               className="lg:col-span-1 overflow-hidden"
             >
               <div className="bg-card rounded-lg shadow-sm p-6 lg:sticky lg:top-24">
-                <h2 className="text-lg font-semibold mb-4 font-vazirmatn">
-                  خلاصه سفارش
-                </h2>
+                <h2 className="text-lg font-semibold mb-4">خلاصه سفارش</h2>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground font-vazirmatn">
+                    <span className="text-muted-foreground">
                       مجموع قیمت محصولات:
                     </span>
-                    <span className="font-medium font-vazirmatn">
+                    <span className="font-medium">
                       {subtotal.toLocaleString("fa-IR")} تومان
                     </span>
                   </div>
 
                   {discount > 0 && (
                     <div className="flex justify-between text-green-600 dark:text-green-400">
-                      <span className="font-vazirmatn">
+                      <span>
                         تخفیف ({discount}%):
                       </span>
-                      <span className="font-medium font-vazirmatn">
+                      <span className="font-medium">
                         {((subtotal * discount) / 100).toLocaleString("fa-IR")}{" "}
                         تومان
                       </span>
@@ -423,8 +419,8 @@ export default function CartPage() {
 
                   <div className="border-t border-border pt-3 mt-3">
                     <div className="flex justify-between font-semibold">
-                      <span className="font-vazirmatn">مبلغ قابل پرداخت:</span>
-                      <span className="font-vazirmatn">
+                      <span>مبلغ قابل پرداخت:</span>
+                      <span>
                         {total.toLocaleString("fa-IR")} تومان
                       </span>
                     </div>
@@ -435,7 +431,7 @@ export default function CartPage() {
                 <div className="mb-6">
                   <label
                     htmlFor="discount-code"
-                    className="block text-sm font-medium mb-2 font-vazirmatn"
+                    className="block text-sm font-medium mb-2"
                   >
                     کد تخفیف:
                   </label>
@@ -446,11 +442,11 @@ export default function CartPage() {
                       placeholder="کد تخفیف خود را وارد کنید"
                       value={discountCode}
                       onChange={(e) => setDiscountCode(e.target.value)}
-                      className="rounded-full font-vazirmatn"
+                      className="rounded-full"
                     />
                     <Button
                       variant="outline"
-                      className="rounded-full font-vazirmatn"
+                      className="rounded-full"
                       onClick={handleApplyDiscount}
                       disabled={isApplyingDiscount}
                     >
@@ -461,13 +457,10 @@ export default function CartPage() {
                       )}
                     </Button>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-2 font-vazirmatn">
-                    کدهای تخفیف نمونه: WELCOME10, SUMMER20, ANIME30
-                  </p>
                 </div>
 
                 <Button
-                  className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                  className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                   onClick={() => router.push("/checkout")}
                 >
                   ادامه فرآیند خرید
@@ -487,13 +480,13 @@ export default function CartPage() {
             className="fixed bottom-0 left-0 right-0 bg-card shadow-lg border-t border-border p-4 z-40"
           >
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm font-vazirmatn">مجموع:</span>
-              <span className="font-bold font-vazirmatn">
+              <span className="text-sm">مجموع:</span>
+              <span className="font-bold">
                 {total.toLocaleString("fa-IR")} تومان
               </span>
             </div>
             <Button
-              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               onClick={() => router.push("/checkout")}
             >
               ادامه فرآیند خرید

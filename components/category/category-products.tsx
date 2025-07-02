@@ -77,10 +77,8 @@ export default function CategoryProducts({
             d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h3 className="mb-2 font-vazirmatn text-lg font-medium">
-          محصولی یافت نشد
-        </h3>
-        <p className="font-vazirmatn text-muted-foreground">
+        <h3 className="mb-2 text-lg font-medium">محصولی یافت نشد</h3>
+        <p className="  text-muted-foreground">
           با معیارهای فیلتر فعلی محصولی یافت نشد. لطفاً فیلترها را تغییر دهید.
         </p>
       </div>

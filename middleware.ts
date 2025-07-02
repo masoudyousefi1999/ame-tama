@@ -9,19 +9,23 @@ function getAccessTokenFromCookie(cookieHeader: string): string | null {
 }
 
 export async function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
+  const { pathname, searchParams } = request.nextUrl
+
+  if (pathname.startsWith('/checkout/success/payments/zarinpal')) {
+    console.log('🔍 URL', request.nextUrl.pathname);
+    const authority = searchParams.get('Authority')
+    const status = searchParams.get('Status')
+
+    // Create new redirect URL with parameters added
+    const redirectUrl = new URL('/checkout/success', request.url)
+    if (authority) redirectUrl.searchParams.set('Authority', authority)
+    if (status) redirectUrl.searchParams.set('Status', status)
+
+    return NextResponse.redirect(redirectUrl)
+  }
+
   const cookieHeader = request.headers.get("cookie") || "";
 
-  console.log("🔍 URL", request.nextUrl.pathname);
-  console.log("🍪 Incoming Cookie Header:", cookieHeader || "❌ No cookie");
-  console.log(
-    "🌐 Request Origin:",
-    request.headers.get("origin") || "❌ No origin"
-  );
-  console.log(
-    "🔐 Secure?",
-    request.nextUrl.protocol === "https:" ? "Yes" : "No"
-  );
 
   // Get the ACCESS_TOKEN from the cookie header
   const accessToken = getAccessTokenFromCookie(cookieHeader);
@@ -92,5 +96,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login"],
+  matcher: ["/admin/:path*", "/login",'/checkout/success/:path*'],
 };

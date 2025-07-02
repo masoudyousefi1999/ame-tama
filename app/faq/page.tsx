@@ -19,7 +19,7 @@ export default function FAQPage() {
       {/* Breadcrumb */}
       <Breadcrumb
         items={[{ label: "سوالات متداول", href: "/faq", isCurrent: true }]}
-        className="mb-6 mt-6"
+        className="mb-6 mt-8"
       />
 
       {/* Header */}

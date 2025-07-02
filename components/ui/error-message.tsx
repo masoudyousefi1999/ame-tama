@@ -19,13 +19,13 @@ export function ErrorMessage({
       {/* icon colour → design-token */}
       <AlertTriangle className="mb-4 h-12 w-12 text-destructive" />
 
-      <h3 className="mb-2 text-lg font-medium font-vazirmatn">{title}</h3>
+      <h3 className="mb-2 text-lg font-medium">{title}</h3>
 
       {/* muted foreground token instead of hard-coded greys */}
-      <p className="mb-4 text-muted-foreground font-vazirmatn">{message}</p>
+      <p className="mb-4 text-muted-foreground">{message}</p>
 
       {retry && (
-        <Button onClick={retry} variant="outline" className="font-vazirmatn">
+        <Button onClick={retry} variant="outline">
           تلاش مجدد
         </Button>
       )}

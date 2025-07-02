@@ -177,16 +177,14 @@ export default function ProductGrid({
             d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
-        <h3 className="mb-2 text-lg font-medium font-vazirmatn">
-          محصولی یافت نشد
-        </h3>
-        <p className="font-vazirmatn text-muted-foreground">
+        <h3 className="mb-2 text-lg font-medium">محصولی یافت نشد</h3>
+        <p className="  text-muted-foreground">
           با معیارهای فیلتر فعلی محصولی یافت نشد. لطفاً فیلترها را تغییر دهید.
         </p>
         {showFilters && (
           <Button
             variant="outline"
-            className="mt-4 rounded-full font-vazirmatn hover:bg-purple-50 dark:hover:bg-purple-900/10"
+            className="mt-4 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/10"
             onClick={clearAllFilters}
           >
             پاک کردن فیلترها
@@ -205,7 +203,7 @@ export default function ProductGrid({
           <div className="sticky top-24 space-y-6 rounded-2xl bg-card p-6 shadow-lg ring-1 ring-border/30">
             {/* ─ Price range ─ */}
             <div>
-              <h3 className="mb-4 text-sm font-semibold text-muted-foreground font-vazirmatn">
+              <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
                 محدوده قیمت (تومان)
               </h3>
               <Slider
@@ -217,18 +215,14 @@ export default function ProductGrid({
                 className="mb-6"
               />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span className="font-vazirmatn">
-                  {priceRange[0].toLocaleString("fa-IR")}K
-                </span>
-                <span className="font-vazirmatn">
-                  {priceRange[1].toLocaleString("fa-IR")}K
-                </span>
+                <span>{priceRange[0].toLocaleString("fa-IR")}K</span>
+                <span>{priceRange[1].toLocaleString("fa-IR")}K</span>
               </div>
             </div>
 
             {/* ─ Categories ─ */}
             <div className="border-t border-border/60 pt-6">
-              <h3 className="mb-4 text-sm font-semibold text-muted-foreground font-vazirmatn">
+              <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
                 دسته‌بندی‌ها
               </h3>
               <div className="space-y-2">
@@ -241,7 +235,7 @@ export default function ProductGrid({
                     />
                     <Label
                       htmlFor={`category-${category.id}`}
-                      className="mr-2 text-sm font-vazirmatn"
+                      className="mr-2 text-sm"
                     >
                       {category.name}
                     </Label>
@@ -252,7 +246,7 @@ export default function ProductGrid({
 
             {/* ─ Status filters ─ */}
             <div className="border-t border-border/60 pt-6">
-              <h3 className="mb-4 text-sm font-semibold text-muted-foreground font-vazirmatn">
+              <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
                 وضعیت
               </h3>
               <div className="space-y-2">
@@ -267,10 +261,7 @@ export default function ProductGrid({
                       checked={selectedFilters.includes(f.id)}
                       onCheckedChange={() => toggleFilter(f.id)}
                     />
-                    <Label
-                      htmlFor={`filter-${f.id}`}
-                      className="mr-2 text-sm font-vazirmatn"
-                    >
+                    <Label htmlFor={`filter-${f.id}`} className="mr-2 text-sm">
                       {f.label}
                     </Label>
                   </div>
@@ -280,7 +271,7 @@ export default function ProductGrid({
 
             {/* ─ Sorting ─ */}
             <div className="border-t border-border/60 pt-6">
-              <h3 className="mb-4 text-sm font-semibold text-muted-foreground font-vazirmatn">
+              <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
                 مرتب‌سازی
               </h3>
               {[
@@ -298,10 +289,7 @@ export default function ProductGrid({
                     checked={sortBy === s.id}
                     onChange={() => setSortBy(s.id)}
                   />
-                  <Label
-                    htmlFor={`sort-${s.id}`}
-                    className="text-sm font-vazirmatn"
-                  >
+                  <Label htmlFor={`sort-${s.id}`} className="text-sm">
                     {s.label}
                   </Label>
                 </div>
@@ -318,7 +306,7 @@ export default function ProductGrid({
                 <Button
                   variant="outline"
                   size="sm"
-                  className="w-full rounded-full font-vazirmatn hover:bg-purple-50 dark:hover:bg-purple-900/10"
+                  className="w-full rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/10"
                   onClick={clearAllFilters}
                 >
                   پاک کردن فیلترها
@@ -335,7 +323,7 @@ export default function ProductGrid({
         {showFilters && (
           <div className="mb-6 flex flex-wrap items-center justify-between">
             <div className="flex items-center">
-              <span className="ml-2 text-sm font-vazirmatn text-muted-foreground">
+              <span className="ml-2 text-sm text-muted-foreground">
                 {filteredProducts.length} محصول
               </span>
 
@@ -348,7 +336,7 @@ export default function ProductGrid({
                   <Button
                     variant="outline"
                     size="sm"
-                    className="ml-2 rounded-full font-vazirmatn md:hidden"
+                    className="ml-2 rounded-full md:hidden"
                   >
                     <Filter className="ml-2 h-4 w-4" />
                     فیلترها
@@ -359,7 +347,7 @@ export default function ProductGrid({
                 {/* 👉 all classes inside the drawer mirror the desktop ones */}
                 <SheetContent side="right" className="w-[300px]">
                   <SheetHeader>
-                    <SheetTitle className="font-vazirmatn">فیلترها</SheetTitle>
+                    <SheetTitle>فیلترها</SheetTitle>
                   </SheetHeader>
                   <div className="space-y-6 py-4">
                     {/* Price, categories, status, sort – identical markup omitted for brevity */}
@@ -379,7 +367,7 @@ export default function ProductGrid({
                     cat && (
                       <Badge
                         key={cid}
-                        className="bg-purple-600 hover:bg-purple-700 font-vazirmatn"
+                        className="bg-purple-600 hover:bg-purple-700"
                         onClick={() => toggleCategory(cid)}
                       >
                         {cat.name}
@@ -395,7 +383,7 @@ export default function ProductGrid({
                     selectedFilters.includes(f) && (
                       <Badge
                         key={f}
-                        className="bg-purple-600 hover:bg-purple-700 font-vazirmatn"
+                        className="bg-purple-600 hover:bg-purple-700"
                         onClick={() => toggleFilter(f)}
                       >
                         {f === "new"
@@ -413,7 +401,7 @@ export default function ProductGrid({
                   selectedCategories.length > 0) && (
                   <Badge
                     variant="outline"
-                    className="cursor-pointer border-purple-300 text-purple-700 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/10 font-vazirmatn"
+                    className="cursor-pointer border-purple-300 text-purple-700 hover:bg-purple-50 dark:border-purple-700 dark:text-purple-300 dark:hover:bg-purple-900/10"
                     onClick={() => {
                       setSelectedFilters([]);
                       setSelectedCategories([]);

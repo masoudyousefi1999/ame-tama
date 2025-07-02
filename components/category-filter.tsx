@@ -31,10 +31,10 @@ export default function CategoryFilter() {
       <div className="container mx-auto px-4 md:px-6">
         {/* ───── header ───── */}
         <div className="mb-10 text-center">
-          <h2 className="font-vazirmatn text-primary text-3xl font-bold mb-4">
+          <h2 className="  text-primary text-3xl font-bold mb-4">
             جستجو بر اساس سری انیمه
           </h2>
-          <p className="mx-auto max-w-2xl font-vazirmatn text-muted-foreground">
+          <p className="mx-auto max-w-2xl text-muted-foreground">
             مجسمه‌های لوکس ما از سری‌های انیمه مورد علاقه خود را کاوش کنید، هر
             کدام با دقت استثنایی در جزئیات ساخته شده‌اند.
           </p>
@@ -48,9 +48,9 @@ export default function CategoryFilter() {
             whileTap={{ scale: 0.95 }}
             onClick={() => handleCategoryClick("all")}
             className={cn(
-              "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 font-vazirmatn",
+              "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300",
               activeCategory === "all"
-                ? "group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl font-vazirmatn"
+                ? "group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl"
                 : "bg-card text-foreground hover:shadow-md"
             )}
           >
@@ -65,9 +65,9 @@ export default function CategoryFilter() {
               whileTap={{ scale: 0.95 }}
               onClick={() => handleCategoryClick(category.id)}
               className={cn(
-                "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 font-vazirmatn",
+                "px-6 py-2 rounded-full text-sm font-medium transition-all duration-300",
                 activeCategory === category.id
-                  ? "group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl font-vazirmatn"
+                  ? "group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl"
                   : "bg-card text-foreground hover:shadow-md"
               )}
             >

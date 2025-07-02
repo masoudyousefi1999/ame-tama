@@ -119,8 +119,8 @@ export default function RegisterForm({
     <div className="space-y-6">
       {/* heading */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold font-vazirmatn">ایجاد حساب کاربری</h3>
-        <p className="text-sm text-muted-foreground mt-2 font-vazirmatn">
+        <h3 className="text-2xl font-bold">ایجاد حساب کاربری</h3>
+        <p className="text-sm text-muted-foreground mt-2">
           با ایجاد حساب کاربری، می‌توانید سفارش‌های خود را پیگیری کنید و از
           امکانات ویژه بهره‌مند شوید
         </p>
@@ -130,9 +130,7 @@ export default function RegisterForm({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
-            <Label htmlFor="firstName" className="font-vazirmatn">
-              نام
-            </Label>
+            <Label htmlFor="firstName">نام</Label>
             <Input
               id="firstName"
               name="firstName"
@@ -140,14 +138,11 @@ export default function RegisterForm({
               value={formData.firstName}
               onChange={handleChange}
               disabled={isLoading}
-              className="font-vazirmatn"
             />
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="lastName" className="font-vazirmatn">
-              نام خانوادگی
-            </Label>
+            <Label htmlFor="lastName">نام خانوادگی</Label>
             <Input
               id="lastName"
               name="lastName"
@@ -155,15 +150,12 @@ export default function RegisterForm({
               value={formData.lastName}
               onChange={handleChange}
               disabled={isLoading}
-              className="font-vazirmatn"
             />
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="email" className="font-vazirmatn">
-            ایمیل
-          </Label>
+          <Label htmlFor="email">ایمیل</Label>
           <Input
             id="email"
             dir="ltr"
@@ -173,14 +165,11 @@ export default function RegisterForm({
             value={formData.email}
             onChange={handleChange}
             disabled={isLoading}
-            className="font-vazirmatn"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="password" className="font-vazirmatn">
-            رمز عبور
-          </Label>
+          <Label htmlFor="password">رمز عبور</Label>
           <Input
             id="password"
             dir="ltr"
@@ -190,14 +179,11 @@ export default function RegisterForm({
             value={formData.password}
             onChange={handleChange}
             disabled={isLoading}
-            className="font-vazirmatn"
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="confirmPassword" className="font-vazirmatn">
-            تکرار رمز عبور
-          </Label>
+          <Label htmlFor="confirmPassword">تکرار رمز عبور</Label>
           <Input
             id="confirmPassword"
             dir="ltr"
@@ -207,14 +193,13 @@ export default function RegisterForm({
             value={formData.confirmPassword}
             onChange={handleChange}
             disabled={isLoading}
-            className="font-vazirmatn"
           />
         </div>
 
         <Button
           type="submit"
           disabled={isLoading}
-          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
         >
           {isLoading ? (
             <>
@@ -229,14 +214,14 @@ export default function RegisterForm({
 
       {/* footer link */}
       <div className="text-center">
-        <p className="text-sm text-muted-foreground font-vazirmatn">
+        <p className="text-sm text-muted-foreground">
           قبلاً ثبت‌نام کرده‌اید؟{" "}
           <Button
             type="button"
             variant="link"
             onClick={onLogin}
             disabled={isLoading}
-            className="p-0 h-auto text-purple-600 dark:text-purple-400 font-vazirmatn"
+            className="p-0 h-auto text-purple-600 dark:text-purple-400"
           >
             وارد شوید
           </Button>

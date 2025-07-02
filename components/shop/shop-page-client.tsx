@@ -97,8 +97,8 @@ export default function ShopPageClient({
   return (
     <div className="container mx-auto px-4 py-8">
       {/* ───────────────────  Header  ─────────────────── */}
-      <header className="mb-8 space-y-6">
-        <h1 className="font-vazirmatn text-3xl font-extrabold text-card-foreground">
+      <header className="mb-8 space-y-6 mt-20">
+        <h1 className="  text-3xl font-extrabold text-card-foreground">
           فروشگاه
         </h1>
 
@@ -114,7 +114,7 @@ export default function ShopPageClient({
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               dir="rtl"
-              className="w-full rounded-full pr-10 font-vazirmatn"
+              className="w-full rounded-full pr-10"
             />
             <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           </div>
@@ -122,7 +122,7 @@ export default function ShopPageClient({
           <Button
             type="submit"
             size="icon"
-            className="rounded-full bg-gradient-to-r from-primary to-secondary text-white transition-colors hover:from-primary/90 hover:to-secondary/90"
+            className="rounded-full bg-gradient-to-r from-accent to-secondary text-white"
           >
             <Search className="h-4 w-4" />
           </Button>

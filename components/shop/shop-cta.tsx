@@ -7,11 +7,11 @@ export default function ShopCTA() {
     <section className="py-16 bg-muted">
       <div className="container mx-auto px-4">
         <div className="mx-auto max-w-3xl text-center">
-          <h2 className="font-vazirmatn mb-4 text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
+          <h2 className="  mb-4 text-3xl font-extrabold tracking-tight text-foreground md:text-4xl">
             مجموعه کامل فیگورهای انیمه
           </h2>
 
-          <p className="font-vazirmatn mb-8 text-lg text-muted-foreground">
+          <p className="  mb-8 text-lg text-muted-foreground">
             بیش از&nbsp;1000&nbsp;فیگور از برترین انیمه‌ها و مانگاهای محبوب شما؛
             از شخصیت‌های کلاسیک گرفته تا جدیدترین سری‌ها.
           </p>
@@ -21,7 +21,7 @@ export default function ShopCTA() {
               size="lg"
               iconPosition="end"
               variant={"default"}
-              className="group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl font-vazirmatn"
+              className="group rounded-full bg-primary text-primary-foreground shadow-lg transition-all duration-300 hover:bg-primary/90 hover:shadow-xl"
             >
               <span>مشاهده فروشگاه</span>
               <ArrowRight className="h-5 w-5 transition-transform rtl:rotate-180 group-hover:translate-x-1" />

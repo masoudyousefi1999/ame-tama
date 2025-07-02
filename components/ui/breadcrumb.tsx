@@ -62,7 +62,7 @@ export function Breadcrumb({
           <li className="flex items-center">
             <Link
               href="/"
-              className="flex items-center gap-1 rounded-md px-2 py-1 font-vazirmatn transition-colors hover:bg-accent hover:text-primary"
+              className="flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-accent hover:text-primary"
             >
               <Home className="h-4 w-4" />
               <span className="max-w-[100px] truncate">{homeLabel}</span>
@@ -82,9 +82,7 @@ export function Breadcrumb({
                 {item.href ? (
                   <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
                 ) : (
-                  <span className="rounded-md px-2 py-1 font-vazirmatn">
-                    {item.label}
-                  </span>
+                  <span className="rounded-md px-2 py-1">{item.label}</span>
                 )}
                 {idx < items.length - 1 && (
                   <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>
@@ -129,7 +127,7 @@ export const BreadcrumbLink = React.forwardRef<
     ref={ref as any}
     href={href}
     className={cn(
-      "rounded-md px-2 py-1 font-vazirmatn transition-colors hover:bg-accent hover:text-primary",
+      "rounded-md px-2 py-1 transition-colors hover:bg-accent hover:text-primary",
       className
     )}
     {...props}
@@ -159,10 +157,7 @@ export const BreadcrumbCurrent = React.forwardRef<
   <span
     ref={ref}
     aria-current="page"
-    className={cn(
-      "rounded-md px-2 py-1 font-vazirmatn text-foreground",
-      className
-    )}
+    className={cn("rounded-md px-2 py-1 text-foreground", className)}
     {...props}
   >
     {children}

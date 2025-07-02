@@ -52,14 +52,10 @@ export function EmptyState({
       />
 
       {/* title */}
-      <h3 className="mb-2 text-lg font-medium font-vazirmatn text-foreground">
-        {title}
-      </h3>
+      <h3 className="mb-2 text-lg font-medium text-foreground">{title}</h3>
 
       {/* description */}
-      <p className="max-w-xs text-sm text-muted-foreground font-vazirmatn">
-        {description}
-      </p>
+      <p className="max-w-xs text-sm text-muted-foreground">{description}</p>
     </div>
   );
 }
@@ -170,7 +166,7 @@ export default function SearchModal({
             placeholder="جستجو کنید..."
             title="search"
             autoFocus
-            className="w-full p-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-brand font-vazirmatn
+            className="w-full p-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-brand
                      bg-background text-foreground"
           />
         </div>
@@ -186,7 +182,7 @@ export default function SearchModal({
                     selectedCategory === category ? "default" : "outline"
                   }
                   className={cn(
-                    "cursor-pointer font-vazirmatn",
+                    "cursor-pointer",
                     selectedCategory !== category && "hover:bg-muted"
                   )}
                   onClick={() => handleCategoryFilter(category)}
@@ -207,14 +203,14 @@ export default function SearchModal({
           ) : results.length > 0 ? (
             <>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-muted-foreground font-vazirmatn">
+                <h3 className="text-sm font-medium text-muted-foreground">
                   {results.length} نتیجه برای «{query}»
                 </h3>
                 <Button
                   variant="link"
                   size="sm"
                   onClick={handleSearch}
-                  className="p-0 h-auto text-brand font-vazirmatn"
+                  className="p-0 h-auto text-brand"
                 >
                   مشاهده همه
                 </Button>
@@ -238,10 +234,8 @@ export default function SearchModal({
                       />
                     </div>
                     <div className="mr-3 flex-1">
-                      <h4 className="text-sm font-medium font-vazirmatn">
-                        {item.name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground font-vazirmatn">
+                      <h4 className="text-sm font-medium">{item.name}</h4>
+                      <p className="text-sm text-muted-foreground">
                         {item.price.toLocaleString("fa-IR")} تومان
                       </p>
                     </div>
@@ -252,7 +246,7 @@ export default function SearchModal({
               {results.length > 5 && (
                 <Button
                   onClick={handleSearch}
-                  className="w-full rounded-full bg-muted hover:bg-muted/70 text-foreground font-vazirmatn"
+                  className="w-full rounded-full bg-muted hover:bg-muted/70 text-foreground"
                 >
                   مشاهده همه {results.length} نتیجه
                 </Button>
@@ -267,14 +261,14 @@ export default function SearchModal({
           ) : recentSearches.length > 0 ? (
             <>
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-medium text-muted-foreground font-vazirmatn">
+                <h3 className="text-sm font-medium text-muted-foreground">
                   جستجوهای اخیر
                 </h3>
                 <Button
                   variant="link"
                   size="sm"
                   onClick={clearRecentSearches}
-                  className="p-0 h-auto text-muted-foreground font-vazirmatn"
+                  className="p-0 h-auto text-muted-foreground"
                 >
                   پاک کردن
                 </Button>
@@ -288,7 +282,7 @@ export default function SearchModal({
                     onClick={() => selectRecentSearch(s)}
                   >
                     <Search className="h-4 w-4 text-muted-foreground ml-2" />
-                    <span className="text-sm font-vazirmatn">{s}</span>
+                    <span className="text-sm">{s}</span>
                   </button>
                 ))}
               </div>
@@ -307,7 +301,7 @@ export default function SearchModal({
           <div className="p-4 border-t border">
             <Button
               onClick={handleSearch}
-              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
             >
               <Search className="ml-2 h-4 w-4" />
               جستجوی «{query}»

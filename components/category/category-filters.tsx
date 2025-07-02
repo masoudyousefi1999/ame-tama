@@ -73,16 +73,14 @@ export default function CategoryFilters({
       {/* sub-categories */}
       {subcategories.length > 0 && (
         <div className="mb-6">
-          <h3 className="mb-4 font-medium font-vazirmatn">
-            زیردسته‌های {category.name}
-          </h3>
+          <h3 className="mb-4 font-medium">زیردسته‌های {category.name}</h3>
 
           <div className="space-y-2">
             {subcategories.map((subcat) => (
               <Link
                 key={subcat.id}
                 href={`/category/${subcat.slug}`}
-                className="block rounded-lg bg-muted p-2 text-sm transition-colors hover:bg-muted/80 font-vazirmatn"
+                className="block rounded-lg bg-muted p-2 text-sm transition-colors hover:bg-muted/80"
               >
                 {subcat.name}
               </Link>
@@ -93,7 +91,7 @@ export default function CategoryFilters({
 
       {/* price slider */}
       <div>
-        <h3 className="mb-4 font-medium font-vazirmatn">محدوده قیمت (تومان)</h3>
+        <h3 className="mb-4 font-medium">محدوده قیمت (تومان)</h3>
         <Slider
           max={500}
           step={10}
@@ -104,18 +102,14 @@ export default function CategoryFilters({
           className="mb-6"
         />
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span className="font-vazirmatn">
-            {localPriceRange[0].toLocaleString("fa-IR")}K
-          </span>
-          <span className="font-vazirmatn">
-            {localPriceRange[1].toLocaleString("fa-IR")}K
-          </span>
+          <span>{localPriceRange[0].toLocaleString("fa-IR")}K</span>
+          <span>{localPriceRange[1].toLocaleString("fa-IR")}K</span>
         </div>
       </div>
 
       {/* status filters */}
       <div className="border-t border-border pt-6">
-        <h3 className="mb-4 font-medium font-vazirmatn">وضعیت</h3>
+        <h3 className="mb-4 font-medium">وضعیت</h3>
         <div className="space-y-2">
           {[
             { id: "new", label: "محصولات جدید" },
@@ -128,10 +122,7 @@ export default function CategoryFilters({
                 checked={localFilters.includes(id)}
                 onCheckedChange={() => toggleFilter(id)}
               />
-              <Label
-                htmlFor={`filter-${id}`}
-                className="mr-2 text-sm font-vazirmatn"
-              >
+              <Label htmlFor={`filter-${id}`} className="mr-2 text-sm">
                 {label}
               </Label>
             </div>
@@ -148,7 +139,7 @@ export default function CategoryFilters({
             size="sm"
             variant="outline"
             onClick={clearAllFilters}
-            className="w-full rounded-full font-vazirmatn"
+            className="w-full rounded-full"
           >
             پاک کردن فیلترها
           </Button>

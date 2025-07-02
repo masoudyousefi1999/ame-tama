@@ -100,10 +100,10 @@ export default function CategoryPage({
       {subcategories.length > 0 && (
         <section className="mb-14">
           <div className="mb-5 flex items-center justify-between">
-            <h2 className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-2xl font-extrabold text-transparent font-vazirmatn tracking-tight">
+            <h2 className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-2xl font-extrabold text-transparent tracking-tight">
               زیردسته‌های&nbsp;{category.name}
             </h2>
-            <span className="text-xs font-vazirmatn text-muted-foreground lg:hidden">
+            <span className="text-xs text-muted-foreground lg:hidden">
               ← پیمایش افقی →
             </span>
           </div>
@@ -157,15 +157,13 @@ export default function CategoryPage({
                 className="flex items-center gap-2"
               >
                 <Filter className="h-4 w-4" />
-                <span className="font-vazirmatn">فیلترها</span>
+                <span>فیلترها</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] p-0 sm:w-[400px]">
               <div className="h-full overflow-y-auto p-6">
                 <div className="mb-6 flex items-center justify-between">
-                  <h3 className="font-vazirmatn text-lg font-medium">
-                    فیلترها
-                  </h3>
+                  <h3 className="  text-lg font-medium">فیلترها</h3>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -192,7 +190,7 @@ export default function CategoryPage({
             <select
               value={sort}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="text-sm font-vazirmatn text-foreground bg-transparent border-none focus:ring-0"
+              className="text-sm text-foreground bg-transparent border-none focus:ring-0"
             >
               <option value="newest">جدیدترین</option>
               <option value="price-asc">قیمت: کم به زیاد</option>
@@ -206,13 +204,11 @@ export default function CategoryPage({
         <div className="flex-1">
           <div className="mb-6 hidden justify-end lg:flex">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground font-vazirmatn">
-                مرتب‌سازی:
-              </span>
+              <span className="text-sm text-muted-foreground">مرتب‌سازی:</span>
               <select
                 value={sort}
                 onChange={(e) => handleSortChange(e.target.value)}
-                className="text-sm font-vazirmatn text-foreground bg-transparent border-none focus:ring-0"
+                className="text-sm text-foreground bg-transparent border-none focus:ring-0"
               >
                 <option value="newest">جدیدترین</option>
                 <option value="price-asc">قیمت: کم به زیاد</option>

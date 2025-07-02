@@ -67,10 +67,10 @@ export default function FeaturedProducts() {
         <div className="container mx-auto px-4 md:px-6">
           {/* ───── header ───── */}
           <div className="mb-12 text-center">
-            <h2 className="font-vazirmatn text-primary text-3xl font-bold mb-4">
+            <h2 className="  text-primary text-3xl font-bold mb-4">
               مجسمه‌های لوکس ویژه
             </h2>
-            <p className="mx-auto max-w-2xl font-vazirmatn text-muted-foreground">
+            <p className="mx-auto max-w-2xl text-muted-foreground">
               در حال بارگذاری محصولات...
             </p>
           </div>
@@ -95,10 +95,10 @@ export default function FeaturedProducts() {
       <div className="container mx-auto px-4 md:px-6">
         {/* ───── header ───── */}
         <div className="mb-12 text-center">
-          <h2 className="font-vazirmatn text-primary text-3xl font-bold mb-4">
+          <h2 className="  text-primary text-3xl font-bold mb-4">
             مجسمه‌های لوکس ویژه
           </h2>
-          <p className="mx-auto max-w-2xl font-vazirmatn text-muted-foreground">
+          <p className="mx-auto max-w-2xl text-muted-foreground">
             محبوب‌ترین کالکشن‌های ما را کاوش کنید، هر کدام شاهکاری از جزئیات و
             صنعتگری.
           </p>
@@ -124,9 +124,7 @@ export default function FeaturedProducts() {
             ))
           ) : (
             <div className="col-span-full py-12 text-center">
-              <p className="font-vazirmatn text-muted-foreground">
-                هیچ محصولی یافت نشد
-              </p>
+              <p className="  text-muted-foreground">هیچ محصولی یافت نشد</p>
             </div>
           )}
         </div>
@@ -137,7 +135,7 @@ export default function FeaturedProducts() {
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full border-border font-vazirmatn hover:bg-accent hover:text-accent-foreground"
+              className="rounded-full border-border hover:bg-accent hover:text-accent-foreground"
             >
               مشاهده همه مجسمه‌های لوکس
             </Button>

@@ -84,11 +84,9 @@ export default function ForgotPasswordForm({
           </svg>
         </div>
 
-        <h3 className="text-2xl font-bold font-vazirmatn">
-          ایمیل بازیابی ارسال شد
-        </h3>
+        <h3 className="text-2xl font-bold">ایمیل بازیابی ارسال شد</h3>
 
-        <p className="text-muted-foreground font-vazirmatn">
+        <p className="text-muted-foreground">
           لینک بازیابی رمز عبور به ایمیل&nbsp;
           <span className="font-semibold">{email}</span> ارسال شد. لطفاً صندوق
           ورودی خود را بررسی کنید.
@@ -97,7 +95,7 @@ export default function ForgotPasswordForm({
         <Button
           type="button"
           variant="outline"
-          className="rounded-full font-vazirmatn"
+          className="rounded-full"
           onClick={onBack}
         >
           <ArrowRight className="ml-2 h-4 w-4" />
@@ -111,8 +109,8 @@ export default function ForgotPasswordForm({
     <div className="space-y-6">
       {/* heading */}
       <div className="text-center">
-        <h3 className="text-2xl font-bold font-vazirmatn">بازیابی رمز عبور</h3>
-        <p className="text-sm text-muted-foreground mt-2 font-vazirmatn">
+        <h3 className="text-2xl font-bold">بازیابی رمز عبور</h3>
+        <p className="text-sm text-muted-foreground mt-2">
           ایمیل خود را وارد کنید تا لینک بازیابی رمز عبور برای شما ارسال شود
         </p>
       </div>
@@ -120,9 +118,7 @@ export default function ForgotPasswordForm({
       {/* form */}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email" className="font-vazirmatn">
-            ایمیل
-          </Label>
+          <Label htmlFor="email">ایمیل</Label>
           <Input
             id="email"
             dir="ltr"
@@ -131,7 +127,6 @@ export default function ForgotPasswordForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={isLoading}
-            className="font-vazirmatn"
           />
         </div>
 
@@ -141,7 +136,7 @@ export default function ForgotPasswordForm({
             variant="outline"
             onClick={onBack}
             disabled={isLoading}
-            className="rounded-full font-vazirmatn"
+            className="rounded-full"
           >
             <ArrowRight className="ml-2 h-4 w-4" />
             بازگشت
@@ -150,7 +145,7 @@ export default function ForgotPasswordForm({
           <Button
             type="submit"
             disabled={isLoading}
-            className="flex-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+            className="flex-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
           >
             {isLoading ? (
               <>

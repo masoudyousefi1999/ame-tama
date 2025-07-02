@@ -49,7 +49,7 @@ export default function SplashScreen({
             <div className="relative w-40 h-40 mb-8">
               <Image
                 // src={logo.src}
-                src={'/placeholder.svg?height=200&width=200'}
+                src={"/placeholder.svg?height=200&width=200"}
                 alt="AME-TAMA Logo"
                 fill
                 priority
@@ -61,7 +61,7 @@ export default function SplashScreen({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.5 }}
-              className="text-3xl font-bold text-center mb-4 font-vazirmatn"
+              className="text-3xl font-bold text-center mb-4"
             >
               AME-TAMA
             </motion.h1>
@@ -70,7 +70,7 @@ export default function SplashScreen({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6, duration: 0.5 }}
-              className="text-lg text-center text-gray-600 dark:text-gray-300 font-vazirmatn"
+              className="text-lg text-center text-gray-600 dark:text-gray-300"
             >
               مجسمه‌های انیمه لوکس
             </motion.p>

@@ -77,10 +77,8 @@ export default function WishlistPage() {
         {/* ------------------------------------------------------------ */}
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="font-vazirmatn">
-              مجسمه‌های مورد علاقه من
-            </CardTitle>
-            <CardDescription className="font-vazirmatn">
+            <CardTitle>مجسمه‌های مورد علاقه من</CardTitle>
+            <CardDescription>
               فیگورهای انیمه و اکشن فیگورهای مورد علاقه شما
             </CardDescription>
           </div>
@@ -92,7 +90,7 @@ export default function WishlistPage() {
               placeholder="جستجو در مجسمه‌های مورد علاقه..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pr-10 font-vazirmatn"
+              className="pr-10"
             />
           </div>
         </CardHeader>
@@ -118,16 +116,16 @@ export default function WishlistPage() {
             /* empty-state */
             <div className="text-center py-12">
               <Heart className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-              <h3 className="text-lg font-medium mb-2 font-vazirmatn">
+              <h3 className="text-lg font-medium mb-2">
                 لیست مجسمه‌های مورد علاقه شما خالی است
               </h3>
-              <p className="text-muted-foreground mb-6 font-vazirmatn">
+              <p className="text-muted-foreground mb-6">
                 فیگورهای انیمه و اکشن فیگورهای مورد علاقه خود را به این لیست
                 اضافه کنید
               </p>
               <Button
                 onClick={() => router.push("/shop")}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
                 <Search className="ml-2 h-4 w-4" />
                 مشاهده محصولات

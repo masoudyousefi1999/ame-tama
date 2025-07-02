@@ -57,16 +57,13 @@ export default function Breadcrumb({
             {idx > 0 && <ChevronLeft className="h-4 w-4 mx-1" />}
 
             {idx === breadcrumbItems.length - 1 ? (
-              <span
-                className="text-foreground font-medium font-vazirmatn"
-                aria-current="page"
-              >
+              <span className="text-foreground font-medium" aria-current="page">
                 {item.name}
               </span>
             ) : (
               <Link
                 href={item.path}
-                className="hover:text-brand transition-colors font-vazirmatn"
+                className="hover:text-brand transition-colors"
               >
                 {item.name}
               </Link>

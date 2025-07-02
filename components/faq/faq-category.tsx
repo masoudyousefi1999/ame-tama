@@ -22,9 +22,7 @@ export function FAQCategory({ title, description, items }: FAQCategoryProps) {
       <h2 className="mb-2 text-2xl font-bold text-foreground">{title}</h2>
 
       {description && (
-        <p className="mb-4 font-vazirmatn text-muted-foreground">
-          {description}
-        </p>
+        <p className="mb-4 text-muted-foreground">{description}</p>
       )}
 
       <Accordion type="single" collapsible className="w-full">

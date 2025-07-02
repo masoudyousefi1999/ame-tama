@@ -256,13 +256,13 @@ export default function LoginPageComponent() {
             >
               <Home className="w-5 h-5" />
             </Link>
-            <CardTitle className="text-2xl font-bold font-vazirmatn bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">
               ورود به حساب کاربری
             </CardTitle>
             <span className="w-5 h-5" /> {/* spacer */}
           </div>
 
-          <p className="text-sm text-muted-foreground font-vazirmatn">
+          <p className="text-sm text-muted-foreground">
             {loginMethod === "otp"
               ? "برای ورود، شماره تلفن خود را وارد کنید"
               : "با ایمیل یا شماره تلفن و رمز عبور وارد شوید"}
@@ -273,7 +273,7 @@ export default function LoginPageComponent() {
           {/* error alert */}
           {error && (
             <Alert variant="destructive">
-              <AlertDescription className="font-vazirmatn text-right">
+              <AlertDescription className="  text-right">
                 {error}
               </AlertDescription>
             </Alert>
@@ -288,7 +288,7 @@ export default function LoginPageComponent() {
                   <div className="space-y-2">
                     <Label
                       htmlFor="phone"
-                      className="font-vazirmatn flex items-center gap-2"
+                      className="  flex items-center gap-2"
                     >
                       <Phone className="w-4 h-4" />
                       شماره تلفن
@@ -302,14 +302,14 @@ export default function LoginPageComponent() {
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       disabled={isLoading}
-                      className="font-vazirmatn text-left"
+                      className="  text-left"
                     />
                   </div>
 
                   <Button
                     onClick={handleSendOtp}
                     disabled={isLoading}
-                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                   >
                     {isLoading ? (
                       <>
@@ -329,7 +329,7 @@ export default function LoginPageComponent() {
                 <div className="space-y-4">
                   <div className="text-center space-y-3">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto" />
-                    <p className="text-sm text-muted-foreground font-vazirmatn">
+                    <p className="text-sm text-muted-foreground">
                       کد تأیید به شماره&nbsp;
                       <span className="font-bold">{phoneNumber}</span>
                       &nbsp;ارسال شد
@@ -337,7 +337,7 @@ export default function LoginPageComponent() {
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="font-vazirmatn text-center block">
+                    <Label className="  text-center block">
                       کد تأیید ۴ رقمی را وارد کنید
                     </Label>
                     <OtpInput
@@ -351,7 +351,7 @@ export default function LoginPageComponent() {
                   <Button
                     onClick={handleVerifyOtp}
                     disabled={isLoading || otpCode.length !== 4}
-                    className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-vazirmatn"
+                    className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
                   >
                     {isLoading ? (
                       <>
@@ -368,7 +368,7 @@ export default function LoginPageComponent() {
                       variant="ghost"
                       onClick={handleResendOtp}
                       disabled={isLoading || !canResend}
-                      className="w-full font-vazirmatn"
+                      className="w-full"
                     >
                       {canResend ? (
                         "ارسال مجدد کد"
@@ -384,7 +384,7 @@ export default function LoginPageComponent() {
                       variant="ghost"
                       onClick={resetToPhoneInput}
                       disabled={isLoading}
-                      className="w-full font-vazirmatn text-sm"
+                      className="w-full text-sm"
                     >
                       <ArrowRight className="w-4 h-4 ml-2" />
                       تغییر شماره تلفن
@@ -401,7 +401,7 @@ export default function LoginPageComponent() {
               <div className="space-y-2">
                 <Label
                   htmlFor="identifier"
-                  className="font-vazirmatn flex items-center gap-2"
+                  className="  flex items-center gap-2"
                 >
                   <Mail className="w-4 h-4" />
                   ایمیل یا شماره تلفن
@@ -414,15 +414,11 @@ export default function LoginPageComponent() {
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   disabled={isLoading}
-                  className="font-vazirmatn"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="font-vazirmatn flex items-center gap-2"
-                >
+                <Label htmlFor="password" className="  flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   رمز عبور
                 </Label>
@@ -434,14 +430,13 @@ export default function LoginPageComponent() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className="font-vazirmatn"
                 />
               </div>
 
               <Button
                 onClick={handlePasswordLogin}
                 disabled={isLoading}
-                className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
                 {isLoading ? (
                   <>
@@ -462,7 +457,7 @@ export default function LoginPageComponent() {
                 onClick={switchToPasswordLogin}
                 variant="outline"
                 disabled={isLoading}
-                className="w-full font-vazirmatn"
+                className="w-full"
               >
                 <Lock className="w-4 h-4 ml-2" />
                 ورود با رمز عبور
@@ -472,7 +467,7 @@ export default function LoginPageComponent() {
                 onClick={switchToOtpLogin}
                 variant="outline"
                 disabled={isLoading}
-                className="w-full font-vazirmatn"
+                className="w-full"
               >
                 <Shield className="w-4 h-4 ml-2" />
                 ورود با کد تأیید
@@ -485,7 +480,7 @@ export default function LoginPageComponent() {
             <div className="text-center">
               <Link
                 href="/register"
-                className="text-sm text-purple-600 dark:text-purple-400 hover:underline font-vazirmatn"
+                className="text-sm text-purple-600 dark:text-purple-400 hover:underline"
               >
                 حساب کاربری ندارید؟ ثبت‌نام کنید
               </Link>
@@ -495,7 +490,7 @@ export default function LoginPageComponent() {
               <div className="text-center">
                 <Link
                   href="/forgot-password"
-                  className="text-sm text-muted-foreground hover:underline font-vazirmatn"
+                  className="text-sm text-muted-foreground hover:underline"
                 >
                   فراموشی رمز عبور؟
                 </Link>
@@ -505,10 +500,8 @@ export default function LoginPageComponent() {
 
           {/* test credentials box */}
           <div className="mt-6 p-4 bg-muted rounded-lg">
-            <h4 className="text-sm font-semibold font-vazirmatn mb-2">
-              اطلاعات تست:
-            </h4>
-            <div className="text-xs text-muted-foreground font-vazirmatn space-y-1">
+            <h4 className="text-sm font-semibold mb-2">اطلاعات تست:</h4>
+            <div className="text-xs text-muted-foreground space-y-1">
               <p>
                 <strong>شماره‌های معتبر:</strong> 09123456789, 09987654321
               </p>

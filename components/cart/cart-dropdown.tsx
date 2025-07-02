@@ -86,7 +86,7 @@ export default function CartDropdown() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs"
+              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-primary-foreground text-xs"
             >
               {itemCount}
             </motion.span>
@@ -106,7 +106,7 @@ export default function CartDropdown() {
       >
         {/* header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
-          <h3 className="text-lg font-semibold font-vazirmatn">سبد خرید</h3>
+          <h3 className="text-lg font-semibold">سبد خرید</h3>
           <Button
             variant="ghost"
             size="sm"
@@ -123,9 +123,7 @@ export default function CartDropdown() {
           {items?.length === 0 ? (
             <div className="py-8 text-center">
               <ShoppingBag className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
-              <p className="text-muted-foreground font-vazirmatn">
-                سبد خرید شما خالی است
-              </p>
+              <p className="text-muted-foreground">سبد خرید شما خالی است</p>
             </div>
           ) : (
             <ul className="space-y-4">
@@ -163,12 +161,12 @@ export default function CartDropdown() {
                       <Link
                         href={`/product/${item.product.slug}`}
                         onClick={() => setIsOpen(false)}
-                        className="line-clamp-1 text-sm font-medium hover:text-primary transition-colors font-vazirmatn"
+                        className="line-clamp-1 text-sm font-medium hover:text-primary transition-colors"
                       >
                         {item.product.name}
                       </Link>
 
-                      <div className="mt-1 text-sm text-muted-foreground font-vazirmatn">
+                      <div className="mt-1 text-sm text-muted-foreground">
                         {new Intl.NumberFormat("fa-IR").format(
                           item.product.price
                         )}{" "}
@@ -197,7 +195,7 @@ export default function CartDropdown() {
                           key={item.quantity}
                           initial={{ scale: 0.8, opacity: 0 }}
                           animate={{ scale: 1, opacity: 1 }}
-                          className="mx-2 text-sm font-vazirmatn"
+                          className="mx-2 text-sm"
                         >
                           {new Intl.NumberFormat("fa-IR").format(item.quantity)}
                         </motion.span>
@@ -219,7 +217,7 @@ export default function CartDropdown() {
                       </div>
 
                       <div className="mt-1 flex items-center justify-between">
-                        <span className="text-sm font-medium font-vazirmatn">
+                        <span className="text-sm font-medium">
                           {new Intl.NumberFormat("fa-IR").format(
                             item.product.price * item.quantity
                           )}{" "}
@@ -252,32 +250,26 @@ export default function CartDropdown() {
         {items?.length > 0 && (
           <div className="p-4 border-t border-border">
             <div className="mb-4 flex justify-between">
-              <span className="font-vazirmatn">مجموع:</span>
+              <span>مجموع:</span>
               <motion.span
                 key={subtotal}
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="font-semibold font-vazirmatn"
+                className="font-semibold"
               >
                 {new Intl.NumberFormat("fa-IR").format(subtotal)} تومان
               </motion.span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid gap-2">
               <Link
                 href="/cart"
                 onClick={() => setIsOpen(false)}
-                className="rounded-full border border-primary bg-background py-2 px-4 text-center text-sm font-medium text-primary hover:bg-primary/10 transition-colors font-vazirmatn"
+                className="rounded-full border border-primary bg-background py-2 px-4 text-center text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
               >
                 مشاهده سبد خرید
               </Link>
-              <Link
-                href="/checkout"
-                onClick={() => setIsOpen(false)}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 py-2 px-4 text-center text-sm font-medium text-white hover:from-purple-600 hover:to-indigo-700 transition-colors font-vazirmatn"
-              >
-                تسویه حساب
-              </Link>
+              
             </div>
           </div>
         )}

@@ -44,10 +44,10 @@ export default async function EditAddressPage({
   return (
     <div className="space-y-6" dir="rtl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white font-vazirmatn">
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
           ویرایش آدرس
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2 font-vazirmatn">
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
           اطلاعات آدرس را ویرایش کنید
         </p>
       </div>

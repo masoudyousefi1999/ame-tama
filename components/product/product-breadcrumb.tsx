@@ -38,7 +38,7 @@ export default function ProductBreadcrumb({
         <li>
           <Link
             href={`/category/${category.slug}`}
-            className="font-vazirmatn transition-colors text-muted-foreground hover:text-primary"
+            className="  transition-colors text-muted-foreground hover:text-primary"
           >
             {category.name}
           </Link>
@@ -50,10 +50,7 @@ export default function ProductBreadcrumb({
 
         {/* Current page */}
         <li>
-          <span
-            className="font-vazirmatn line-clamp-1 text-foreground"
-            aria-current="page"
-          >
+          <span className="  line-clamp-1 text-foreground" aria-current="page">
             {productName}
           </span>
         </li>

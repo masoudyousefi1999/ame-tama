@@ -76,7 +76,7 @@ export default function ShopHeader() {
           {/* slide content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-card-foreground">
             <motion.h1
-              className="mb-4 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl font-vazirmatn"
+              className="mb-4 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{
                 opacity: currentSlide === index ? 1 : 0,
@@ -88,7 +88,7 @@ export default function ShopHeader() {
             </motion.h1>
 
             <motion.p
-              className="mb-8 max-w-2xl text-lg md:text-xl font-vazirmatn"
+              className="mb-8 max-w-2xl text-lg md:text-xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{
                 opacity: currentSlide === index ? 1 : 0,
@@ -110,7 +110,7 @@ export default function ShopHeader() {
               <Button
                 size="lg"
                 asChild
-                className="group rounded-full bg-gradient-to-r from-primary to-secondary px-8 py-6 text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:from-primary/90 hover:to-secondary/90 font-vazirmatn"
+                className="group rounded-full bg-gradient-to-r from-primary to-secondary px-8 py-6 text-primary-foreground shadow-lg transition-all duration-300 hover:scale-105 hover:from-primary/90 hover:to-secondary/90"
               >
                 <a href={slide.link}>
                   {slide.cta}

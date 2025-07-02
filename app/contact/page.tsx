@@ -28,7 +28,7 @@ export default function ContactPage() {
       {/* Bread­crumb */}
       <Breadcrumb
         items={[{ label: "تماس با ما", href: "/contact", isCurrent: true }]}
-        className="mb-6 mt-6"
+        className="mb-6 mt-8"
       />
 
       {/* Page header */}

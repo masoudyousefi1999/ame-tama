@@ -123,7 +123,7 @@ export default function SearchResults() {
     <div className="container mx-auto px-4 py-8 mt-20">
       {/* ── Header row ─────────────────────────────────── */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <h1 className="text-2xl font-bold mb-4 md:mb-0 font-vazirmatn">
+        <h1 className="text-2xl font-bold mb-4 md:mb-0">
           {query ? `نتایج جستجو برای «${query}»` : "همه محصولات"}
         </h1>
 
@@ -136,7 +136,7 @@ export default function SearchResults() {
               placeholder="جستجوی محصولات..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full pr-10 rounded-full bg-background border font-vazirmatn"
+              className="w-full pr-10 rounded-full bg-background border"
             />
           </div>
 
@@ -144,10 +144,10 @@ export default function SearchResults() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="rounded-full border bg-background px-4 py-2 text-sm font-vazirmatn"
+            className="rounded-full border bg-background px-4 py-2 text-sm"
           >
             {sortOptions.map((o) => (
-              <option key={o.id} value={o.id} className="font-vazirmatn">
+              <option key={o.id} value={o.id}>
                 {o.name}
               </option>
             ))}
@@ -156,21 +156,16 @@ export default function SearchResults() {
           {/* mobile filters */}
           <Sheet>
             <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                className="md:hidden rounded-full font-vazirmatn"
-              >
+              <Button variant="outline" className="md:hidden rounded-full">
                 <Filter className="h-4 w-4 ml-2" /> فیلترها
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
               <SheetHeader>
-                <SheetTitle className="font-vazirmatn">فیلترها</SheetTitle>
+                <SheetTitle>فیلترها</SheetTitle>
               </SheetHeader>
               <div className="py-4">
-                <h3 className="font-medium mb-3 font-vazirmatn">
-                  دسته‌بندی‌ها
-                </h3>
+                <h3 className="font-medium mb-3">دسته‌بندی‌ها</h3>
                 <div className="space-y-2">
                   {categories.map((c) => (
                     <div key={c.id} className="flex items-center">
@@ -181,7 +176,7 @@ export default function SearchResults() {
                       />
                       <Label
                         htmlFor={`mobile-category-${c.id}`}
-                        className="mr-2 text-sm font-vazirmatn"
+                        className="mr-2 text-sm"
                       >
                         {c.name}
                       </Label>
@@ -197,7 +192,7 @@ export default function SearchResults() {
       <div className="flex flex-col md:flex-row gap-8">
         {/* ── desktop filters ───────────────────────── */}
         <aside className="hidden md:block w-64 bg-background rounded-lg shadow-sm p-6 h-fit">
-          <h3 className="font-medium mb-4 font-vazirmatn">دسته‌بندی‌ها</h3>
+          <h3 className="font-medium mb-4">دسته‌بندی‌ها</h3>
           <div className="space-y-2">
             {categories.map((c) => (
               <div key={c.id} className="flex items-center">
@@ -206,10 +201,7 @@ export default function SearchResults() {
                   checked={selectedCategories.includes(c.id)}
                   onCheckedChange={() => toggleCategory(c.id)}
                 />
-                <Label
-                  htmlFor={`category-${c.id}`}
-                  className="mr-2 text-sm font-vazirmatn"
-                >
+                <Label htmlFor={`category-${c.id}`} className="mr-2 text-sm">
                   {c.name}
                 </Label>
               </div>
@@ -219,7 +211,7 @@ export default function SearchResults() {
           {selectedCategories.length > 0 && (
             <Button
               variant="link"
-              className="mt-4 p-0 h-auto text-brand font-vazirmatn"
+              className="mt-4 p-0 h-auto text-brand"
               onClick={() => setSelectedCategories([])}
             >
               پاک کردن فیلترها
@@ -237,7 +229,7 @@ export default function SearchResults() {
                 return (
                   <Badge
                     key={id}
-                    className="bg-brand hover:bg-brand/90 font-vazirmatn"
+                    className="bg-brand hover:bg-brand/90"
                     onClick={() => toggleCategory(id)}
                   >
                     {cat?.name}
@@ -247,7 +239,7 @@ export default function SearchResults() {
               })}
               <Button
                 variant="link"
-                className="p-0 h-auto text-brand text-sm font-vazirmatn"
+                className="p-0 h-auto text-brand text-sm"
                 onClick={() => setSelectedCategories([])}
               >
                 پاک کردن همه
@@ -257,11 +249,9 @@ export default function SearchResults() {
 
           {/* list / states */}
           {isLoading ? (
-            <p className="text-center text-muted-foreground font-vazirmatn">
-              در حال بارگیری…
-            </p>
+            <p className="text-center text-muted-foreground">در حال بارگیری…</p>
           ) : results.length === 0 ? (
-            <p className="text-center text-muted-foreground font-vazirmatn">
+            <p className="text-center text-muted-foreground">
               هیچ نتیجه‌ای یافت نشد.
             </p>
           ) : (
@@ -272,7 +262,7 @@ export default function SearchResults() {
                   className="bg-background shadow-md rounded-lg overflow-hidden"
                 >
                   <CardHeader>
-                    <CardTitle className="text-lg font-semibold font-vazirmatn">
+                    <CardTitle className="text-lg font-semibold">
                       {p.name}
                     </CardTitle>
                   </CardHeader>
@@ -282,19 +272,17 @@ export default function SearchResults() {
                       alt={p.name}
                       className="w-full h-48 object-cover mb-4 rounded-md"
                     />
-                    <p className="text-foreground/80 font-vazirmatn">
-                      {p.description}
-                    </p>
-                    <span className="text-xs text-muted-foreground font-vazirmatn">
+                    <p className="text-foreground/80">{p.description}</p>
+                    <span className="text-xs text-muted-foreground">
                       تاریخ انتشار: {formatPersianDate(p.releaseDate)}
                     </span>
-                    <p className="text-xl font-bold mt-2 font-vazirmatn">
+                    <p className="text-xl font-bold mt-2">
                       {p.price.toLocaleString()} تومان
                     </p>
                   </CardContent>
                   <CardFooter>
                     <Button
-                      className="w-full font-vazirmatn"
+                      className="w-full"
                       onClick={() => handleAddToCart(p)}
                     >
                       افزودن به سبد خرید

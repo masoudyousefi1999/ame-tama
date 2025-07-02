@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { WalletTransactions } from "@/components/admin/wallet/wallet-transactions"
-import { Wallet, TrendingUp, TrendingDown } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { WalletTransactions } from "@/components/admin/wallet/wallet-transactions";
+import { Wallet, TrendingUp, TrendingDown } from "lucide-react";
 
 // This would fetch from your API
 async function getWalletData() {
@@ -25,23 +25,27 @@ async function getWalletData() {
         createdAt: new Date().toISOString(),
       },
     ],
-  }
+  };
 }
 
 export default async function WalletPage() {
-  const walletData = await getWalletData()
+  const walletData = await getWalletData();
 
   return (
     <div className="space-y-6" dir="rtl">
       <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white font-vazirmatn">کیف پول</h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2 font-vazirmatn">مدیریت موجودی کیف پول و تراکنش‌ها</p>
+        <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+          کیف پول
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">
+          مدیریت موجودی کیف پول و تراکنش‌ها
+        </p>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
         <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-gray-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 font-vazirmatn">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
               موجودی فعلی
             </CardTitle>
             <div className="p-2 bg-purple-100 dark:bg-purple-900/50 rounded-lg">
@@ -49,16 +53,18 @@ export default async function WalletPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-900 dark:text-white font-vazirmatn">
+            <div className="text-2xl font-bold text-gray-900 dark:text-white">
               ${walletData.balance.toLocaleString("fa-IR")}
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-vazirmatn">موجودی قابل استفاده</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              موجودی قابل استفاده
+            </p>
           </CardContent>
         </Card>
 
         <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-gray-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 font-vazirmatn">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
               کل درآمد
             </CardTitle>
             <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-lg">
@@ -66,16 +72,18 @@ export default async function WalletPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400 font-vazirmatn">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
               ${walletData.totalIncome.toLocaleString("fa-IR")}
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-vazirmatn">درآمد کل زمان</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              درآمد کل زمان
+            </p>
           </CardContent>
         </Card>
 
         <Card className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-gray-200 dark:border-gray-700">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400 font-vazirmatn">
+            <CardTitle className="text-sm font-medium text-gray-600 dark:text-gray-400">
               کل هزینه‌ها
             </CardTitle>
             <div className="p-2 bg-red-100 dark:bg-red-900/50 rounded-lg">
@@ -83,15 +91,17 @@ export default async function WalletPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600 dark:text-red-400 font-vazirmatn">
+            <div className="text-2xl font-bold text-red-600 dark:text-red-400">
               ${walletData.totalExpenses.toLocaleString("fa-IR")}
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 font-vazirmatn">هزینه کل زمان</p>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              هزینه کل زمان
+            </p>
           </CardContent>
         </Card>
       </div>
 
       <WalletTransactions transactions={walletData.transactions as any} />
     </div>
-  )
+  );
 }

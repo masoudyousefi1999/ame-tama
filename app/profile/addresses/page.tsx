@@ -298,8 +298,8 @@ export default function AddressesPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
-            <CardTitle className="font-vazirmatn">آدرس‌های من</CardTitle>
-            <CardDescription className="font-vazirmatn">
+            <CardTitle>آدرس‌های من</CardTitle>
+            <CardDescription>
               آدرس‌های ثبت شده برای ارسال سفارش‌ها
             </CardDescription>
           </div>
@@ -309,7 +309,7 @@ export default function AddressesPage() {
             <DialogTrigger asChild>
               <Button
                 onClick={openAddDialog}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
                 <Plus className="ml-2 h-4 w-4" />
                 افزودن آدرس جدید
@@ -319,10 +319,10 @@ export default function AddressesPage() {
             {/* -------- Dialog markup (unchanged except border colors) ------ */}
             <DialogContent className="sm:max-w-[550px]">
               <DialogHeader>
-                <DialogTitle className="font-vazirmatn">
+                <DialogTitle>
                   {isEditing ? "ویرایش آدرس" : "افزودن آدرس جدید"}
                 </DialogTitle>
-                <DialogDescription className="font-vazirmatn">
+                <DialogDescription>
                   {isEditing
                     ? "اطلاعات آدرس را ویرایش کنید و سپس دکمه ذخیره را بزنید"
                     : "اطلاعات آدرس جدید را وارد کنید"}
@@ -360,7 +360,7 @@ export default function AddressesPage() {
                   {/* Default badge */}
                   {addr.isDefault && (
                     <div className="absolute top-3 left-3">
-                      <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-800/20 dark:text-purple-400 font-vazirmatn">
+                      <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-800/20 dark:text-purple-400">
                         <Check className="ml-1 h-3 w-3" />
                         پیش‌فرض
                       </Badge>
@@ -391,17 +391,15 @@ export default function AddressesPage() {
                     </div>
 
                     <div className="flex-1">
-                      <h3 className="font-medium text-lg font-vazirmatn">
-                        {addr.title}
-                      </h3>
-                      <p className="text-muted-foreground text-sm font-vazirmatn">
+                      <h3 className="font-medium text-lg">{addr.title}</h3>
+                      <p className="text-muted-foreground text-sm">
                         {addr.recipient} | {addr.phone}
                       </p>
                     </div>
                   </div>
 
                   {/* Details */}
-                  <div className="mb-3 text-sm text-muted-foreground space-y-1 font-vazirmatn">
+                  <div className="mb-3 text-sm text-muted-foreground space-y-1">
                     <p>
                       <span className="font-medium ml-1">استان:</span>
                       {addr.province}،{" "}
@@ -422,7 +420,7 @@ export default function AddressesPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setAsDefault(addr.id)}
-                        className="text-purple-600 border-purple-200 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-800 dark:hover:bg-purple-900/20 font-vazirmatn"
+                        className="text-purple-600 border-purple-200 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-800 dark:hover:bg-purple-900/20"
                       >
                         <Check className="ml-1 h-4 w-4" />
                         تنظیم به عنوان پیش‌فرض
@@ -432,7 +430,6 @@ export default function AddressesPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => openEditDialog(addr)}
-                      className="font-vazirmatn"
                     >
                       <Edit2 className="ml-1 h-4 w-4" />
                       ویرایش
@@ -441,7 +438,7 @@ export default function AddressesPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => deleteAddress(addr.id)}
-                      className="text-destructive border-destructive/20 hover:bg-destructive/10 font-vazirmatn"
+                      className="text-destructive border-destructive/20 hover:bg-destructive/10"
                     >
                       <Trash2 className="ml-1 h-4 w-4" />
                       حذف
@@ -456,15 +453,15 @@ export default function AddressesPage() {
             /* ============================================================ */
             <div className="text-center py-12">
               <MapPin className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-              <h3 className="text-lg font-medium mb-2 font-vazirmatn">
+              <h3 className="text-lg font-medium mb-2">
                 هنوز آدرسی ثبت نکرده‌اید
               </h3>
-              <p className="text-muted-foreground mb-6 font-vazirmatn">
+              <p className="text-muted-foreground mb-6">
                 برای ثبت سفارش نیاز به حداقل یک آدرس دارید
               </p>
               <Button
                 onClick={openAddDialog}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
                 <Plus className="ml-2 h-4 w-4" />
                 افزودن آدرس جدید

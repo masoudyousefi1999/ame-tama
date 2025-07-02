@@ -69,10 +69,10 @@ export default function TestimonialSection() {
       <div className="container mx-auto px-4 md:px-6">
         {/* ── section header ─────────────────────────────── */}
         <div className="mb-12 text-center">
-          <h2 className="font-vazirmatn text-primary text-3xl font-bold mb-4">
+          <h2 className="  text-primary text-3xl font-bold mb-4">
             نظرات کلکسیونرهای ما
           </h2>
-          <p className="mx-auto max-w-2xl font-vazirmatn text-muted-foreground">
+          <p className="mx-auto max-w-2xl text-muted-foreground">
             به جامعه کلکسیونرهای مشتاق ما بپیوندید که برای مجسمه‌های انیمه لوکس
             خود به&nbsp;AME-TAMA اعتماد می‌کنند.
           </p>
@@ -123,10 +123,10 @@ export default function TestimonialSection() {
                     />
                   </div>
                   <div>
-                    <h4 className="font-vazirmatn font-semibold text-foreground">
+                    <h4 className="  font-semibold text-foreground">
                       {testimonial.name}
                     </h4>
-                    <p className="font-vazirmatn text-sm text-muted-foreground">
+                    <p className="  text-sm text-muted-foreground">
                       {testimonial.role}
                     </p>
                   </div>
@@ -148,7 +148,7 @@ export default function TestimonialSection() {
                 </div>
 
                 {/* testimonial body */}
-                <p className="font-vazirmatn italic text-foreground/90">
+                <p className="  italic text-foreground/90">
                   &quot;{testimonial.content}&quot;
                 </p>
               </motion.div>

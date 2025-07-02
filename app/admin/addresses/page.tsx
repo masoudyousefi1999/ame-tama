@@ -1,7 +1,7 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
-import { AddressesTable } from "@/components/admin/addresses/addresses-table"
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
+import { AddressesTable } from "@/components/admin/addresses/addresses-table";
 
 // This would fetch from your API
 async function getAddresses() {
@@ -27,22 +27,26 @@ async function getAddresses() {
       houseNumber: "456",
       floorNumber: "5",
     },
-  ]
+  ];
 }
 
 export default async function AddressesPage() {
-  const addresses = await getAddresses()
+  const addresses = await getAddresses();
 
   return (
     <div className="space-y-6" dir="rtl">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 dark:border-gray-700 pb-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white font-vazirmatn">آدرس‌ها</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2 font-vazirmatn">مدیریت آدرس‌های مشتریان</p>
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+            آدرس‌ها
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            مدیریت آدرس‌های مشتریان
+          </p>
         </div>
         <Button
           asChild
-          className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full font-vazirmatn"
+          className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full"
         >
           <Link href="/admin/addresses/new">
             <Plus className="ml-2 h-4 w-4" />
@@ -55,5 +59,5 @@ export default async function AddressesPage() {
         <AddressesTable addresses={addresses} />
       </div>
     </div>
-  )
+  );
 }

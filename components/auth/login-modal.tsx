@@ -273,7 +273,7 @@ export default function LoginModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-center font-vazirmatn text-xl">
+          <DialogTitle className="text-center text-xl">
             ورود به حساب کاربری
           </DialogTitle>
         </DialogHeader>
@@ -282,7 +282,7 @@ export default function LoginModal({
           {/* error alert */}
           {error && (
             <Alert variant="destructive">
-              <AlertDescription className="font-vazirmatn text-right">
+              <AlertDescription className="  text-right">
                 {error}
               </AlertDescription>
             </Alert>
@@ -297,7 +297,7 @@ export default function LoginModal({
                   <div className="space-y-2">
                     <Label
                       htmlFor="phone"
-                      className="font-vazirmatn flex items-center gap-2"
+                      className="  flex items-center gap-2"
                     >
                       <Phone className="w-4 h-4" />
                       شماره تلفن
@@ -311,14 +311,14 @@ export default function LoginModal({
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
                       disabled={isLoading}
-                      className="font-vazirmatn text-left"
+                      className="  text-left"
                     />
                   </div>
 
                   <Button
                     onClick={handleSendOtp}
                     disabled={isLoading}
-                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
                   >
                     {isLoading ? (
                       <>
@@ -338,7 +338,7 @@ export default function LoginModal({
                 <div className="space-y-4">
                   <div className="text-center space-y-3">
                     <CheckCircle className="w-12 h-12 text-green-500 mx-auto" />
-                    <p className="text-sm text-muted-foreground font-vazirmatn">
+                    <p className="text-sm text-muted-foreground">
                       کد تأیید به شماره&nbsp;
                       <span className="font-bold">{phoneNumber}</span>
                       &nbsp;ارسال شد
@@ -346,7 +346,7 @@ export default function LoginModal({
                   </div>
 
                   <div className="space-y-3">
-                    <Label className="font-vazirmatn text-center block">
+                    <Label className="  text-center block">
                       کد تأیید ۴ رقمی را وارد کنید
                     </Label>
                     <OtpInput
@@ -360,7 +360,7 @@ export default function LoginModal({
                   <Button
                     onClick={handleVerifyOtp}
                     disabled={isLoading || otpCode.length !== 4}
-                    className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 font-vazirmatn"
+                    className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
                   >
                     {isLoading ? (
                       <>
@@ -377,7 +377,7 @@ export default function LoginModal({
                       onClick={handleResendOtp}
                       variant="ghost"
                       disabled={isLoading || !canResend}
-                      className="w-full font-vazirmatn"
+                      className="w-full"
                     >
                       {canResend ? (
                         "ارسال مجدد کد"
@@ -393,7 +393,7 @@ export default function LoginModal({
                       onClick={resetToPhoneInput}
                       variant="ghost"
                       disabled={isLoading}
-                      className="w-full font-vazirmatn text-sm"
+                      className="w-full text-sm"
                     >
                       <ArrowRight className="w-4 h-4 ml-2" />
                       تغییر شماره تلفن
@@ -410,7 +410,7 @@ export default function LoginModal({
               <div className="space-y-2">
                 <Label
                   htmlFor="identifier"
-                  className="font-vazirmatn flex items-center gap-2"
+                  className="  flex items-center gap-2"
                 >
                   <Mail className="w-4 h-4" />
                   ایمیل یا شماره تلفن
@@ -423,15 +423,11 @@ export default function LoginModal({
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                   disabled={isLoading}
-                  className="font-vazirmatn"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="font-vazirmatn flex items-center gap-2"
-                >
+                <Label htmlFor="password" className="  flex items-center gap-2">
                   <Lock className="w-4 h-4" />
                   رمز عبور
                 </Label>
@@ -443,14 +439,13 @@ export default function LoginModal({
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className="font-vazirmatn"
                 />
               </div>
 
               <Button
                 onClick={handlePasswordLogin}
                 disabled={isLoading}
-                className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 font-vazirmatn"
+                className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
                 {isLoading ? (
                   <>
@@ -471,7 +466,7 @@ export default function LoginModal({
                 onClick={switchToPasswordLogin}
                 variant="outline"
                 disabled={isLoading}
-                className="w-full font-vazirmatn"
+                className="w-full"
               >
                 <Lock className="w-4 h-4 ml-2" />
                 ورود با رمز عبور
@@ -481,7 +476,7 @@ export default function LoginModal({
                 onClick={switchToOtpLogin}
                 variant="outline"
                 disabled={isLoading}
-                className="w-full font-vazirmatn"
+                className="w-full"
               >
                 <Shield className="w-4 h-4 ml-2" />
                 ورود با کد تأیید
@@ -494,7 +489,7 @@ export default function LoginModal({
             <Link
               href="/login"
               onClick={onClose}
-              className="text-sm text-purple-600 dark:text-purple-400 hover:underline font-vazirmatn inline-flex items-center gap-1"
+              className="text-sm text-purple-600 dark:text-purple-400 hover:underline inline-flex items-center gap-1"
             >
               صفحه ورود کامل
               <ExternalLink className="w-3 h-3" />

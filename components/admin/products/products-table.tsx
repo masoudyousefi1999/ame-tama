@@ -1,10 +1,17 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import Image from "next/image"
-import { Button } from "@/components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,66 +22,66 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import { Badge } from "@/components/ui/badge"
-import { Edit, Trash2, Star } from "lucide-react"
-import { useToast } from "@/hooks/use-toast"
+} from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Edit, Trash2, Star } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface Product {
-  uuid: string
-  name: string
-  slug: string
-  price: number
-  quantity: number
-  category: string
-  rating: number
-  image: string
+  uuid: string;
+  name: string;
+  slug: string;
+  price: number;
+  quantity: number;
+  category: string;
+  rating: number;
+  image: string;
 }
 
 interface ProductsTableProps {
   data: {
-    products: Product[]
-    total: number
-    page: number
-    limit: number
-  }
+    products: Product[];
+    total: number;
+    page: number;
+    limit: number;
+  };
 }
 
 export function ProductsTable({ data }: ProductsTableProps) {
-  const [isDeleting, setIsDeleting] = useState<string | null>(null)
-  const { toast } = useToast()
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
+  const { toast } = useToast();
 
   const handleDelete = async (productId: string) => {
-    setIsDeleting(productId)
+    setIsDeleting(productId);
     try {
       // Replace with actual API call
       const response = await fetch(`/api/product/${productId}`, {
         method: "DELETE",
-      })
+      });
 
       if (!response.ok) {
-        throw new Error("Failed to delete product")
+        throw new Error("Failed to delete product");
       }
 
       toast({
         title: "موفقیت",
         description: "محصول با موفقیت حذف شد",
-        className: "bg-green-600 text-white font-vazirmatn",
-      })
+        className: "bg-green-600 text-white",
+      });
 
       // Refresh the page or update the data
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       toast({
         title: "خطا",
         description: "حذف محصول با شکست مواجه شد",
         variant: "destructive",
-        className: "bg-red-600 text-white font-vazirmatn",
-      })
+        className: "bg-red-600 text-white",
+      });
     } finally {
-      setIsDeleting(null)
+      setIsDeleting(null);
     }
-  }
+  };
 
   return (
     <div className="overflow-hidden" dir="rtl">
@@ -82,25 +89,25 @@ export function ProductsTable({ data }: ProductsTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-gray-200 dark:border-gray-700">
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
                 تصویر
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
                 نام
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
                 قیمت
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
                 موجودی
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
                 دسته‌بندی
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
                 امتیاز
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium text-left font-vazirmatn">
+              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium text-left">
                 عملیات
               </TableHead>
             </TableRow>
@@ -110,7 +117,9 @@ export function ProductsTable({ data }: ProductsTableProps) {
               <TableRow
                 key={product.uuid}
                 className={`border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${
-                  index % 2 === 0 ? "bg-white dark:bg-gray-800" : "bg-gray-50/50 dark:bg-gray-700/25"
+                  index % 2 === 0
+                    ? "bg-white dark:bg-gray-800"
+                    : "bg-gray-50/50 dark:bg-gray-700/25"
                 }`}
               >
                 <TableCell>
@@ -123,16 +132,18 @@ export function ProductsTable({ data }: ProductsTableProps) {
                   />
                 </TableCell>
                 <TableCell className="font-medium text-gray-900 dark:text-gray-100 max-w-xs">
-                  <div className="truncate font-vazirmatn">{product.name}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 truncate">{product.slug}</div>
+                  <div className="truncate">{product.name}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
+                    {product.slug}
+                  </div>
                 </TableCell>
-                <TableCell className="font-semibold text-gray-900 dark:text-gray-100 font-vazirmatn">
+                <TableCell className="font-semibold text-gray-900 dark:text-gray-100">
                   ${product.price.toLocaleString("fa-IR")}
                 </TableCell>
                 <TableCell>
                   <Badge
                     variant={product.quantity > 0 ? "default" : "destructive"}
-                    className={`font-vazirmatn ${
+                    className={`${
                       product.quantity > 0
                         ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
                         : "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300"
@@ -141,18 +152,25 @@ export function ProductsTable({ data }: ProductsTableProps) {
                     {product.quantity.toLocaleString("fa-IR")} موجود
                   </Badge>
                 </TableCell>
-                <TableCell className="text-gray-600 dark:text-gray-400 font-vazirmatn">{product.category}</TableCell>
+                <TableCell className="text-gray-600 dark:text-gray-400">
+                  {product.category}
+                </TableCell>
                 <TableCell>
                   <div className="flex items-center">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 ml-1" />
-                    <span className="text-gray-900 dark:text-gray-100 font-medium font-vazirmatn">
+                    <span className="text-gray-900 dark:text-gray-100 font-medium">
                       {product.rating.toLocaleString("fa-IR")}
                     </span>
                   </div>
                 </TableCell>
                 <TableCell className="text-left">
                   <div className="flex items-center justify-start space-x-2 space-x-reverse">
-                    <Button variant="ghost" size="sm" asChild className="hover:bg-gray-100 dark:hover:bg-gray-600">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="hover:bg-gray-100 dark:hover:bg-gray-600"
+                    >
                       <Link href={`/admin/products/${product.uuid}/edit`}>
                         <Edit className="h-4 w-4" />
                       </Link>
@@ -167,25 +185,31 @@ export function ProductsTable({ data }: ProductsTableProps) {
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-white dark:bg-gray-800" dir="rtl">
+                      <AlertDialogContent
+                        className="bg-white dark:bg-gray-800"
+                        dir="rtl"
+                      >
                         <AlertDialogHeader>
-                          <AlertDialogTitle className="text-gray-900 dark:text-gray-100 font-vazirmatn">
+                          <AlertDialogTitle className="text-gray-900 dark:text-gray-100">
                             آیا مطمئن هستید؟
                           </AlertDialogTitle>
-                          <AlertDialogDescription className="text-gray-600 dark:text-gray-400 font-vazirmatn">
-                            این عمل قابل بازگشت نیست. این کار محصول را به طور دائم حذف خواهد کرد.
+                          <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                            این عمل قابل بازگشت نیست. این کار محصول را به طور
+                            دائم حذف خواهد کرد.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 font-vazirmatn">
+                          <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                             لغو
                           </AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() => handleDelete(product.uuid)}
                             disabled={isDeleting === product.uuid}
-                            className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed font-vazirmatn"
+                            className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            {isDeleting === product.uuid ? "در حال حذف..." : "حذف"}
+                            {isDeleting === product.uuid
+                              ? "در حال حذف..."
+                              : "حذف"}
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
@@ -198,5 +222,5 @@ export function ProductsTable({ data }: ProductsTableProps) {
         </Table>
       </div>
     </div>
-  )
+  );
 }

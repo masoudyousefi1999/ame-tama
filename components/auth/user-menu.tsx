@@ -51,7 +51,7 @@ export default function UserMenu() {
           variant="ghost"
           size="sm"
           onClick={() => setIsLoginModalOpen(true)}
-          className="hidden md:flex font-vazirmatn"
+          className="hidden md:flex"
         >
           <User className="h-5 w-5" />
         </Button>
@@ -110,10 +110,10 @@ export default function UserMenu() {
               />
             </div>
             <div className="min-w-0">
-              <p className="truncate font-medium font-vazirmatn">
+              <p className="truncate font-medium">
                 {user.firstName || "کاربر"} {user.lastName || ""}
               </p>
-              <p className="truncate text-xs text-muted-foreground font-vazirmatn">
+              <p className="truncate text-xs text-muted-foreground">
                 {user.email || ""}
               </p>
             </div>
@@ -122,37 +122,28 @@ export default function UserMenu() {
           <DropdownMenuSeparator />
 
           <DropdownMenuItem asChild>
-            <Link href="/profile" className="cursor-pointer font-vazirmatn">
+            <Link href="/profile" className="cursor-pointer">
               <User className="ml-2 h-4 w-4" />
               پروفایل من
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link
-              href="/profile/orders"
-              className="cursor-pointer font-vazirmatn"
-            >
+            <Link href="/profile/orders" className="cursor-pointer">
               <ShoppingBag className="ml-2 h-4 w-4" />
               سفارش‌های من
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link
-              href="/profile/wishlist"
-              className="cursor-pointer font-vazirmatn"
-            >
+            <Link href="/profile/wishlist" className="cursor-pointer">
               <Heart className="ml-2 h-4 w-4" />
               علاقه‌مندی‌ها
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem asChild>
-            <Link
-              href="/profile/settings"
-              className="cursor-pointer font-vazirmatn"
-            >
+            <Link href="/profile/settings" className="cursor-pointer">
               <Settings className="ml-2 h-4 w-4" />
               تنظیمات
             </Link>
@@ -162,7 +153,7 @@ export default function UserMenu() {
 
           <DropdownMenuItem
             onClick={handleLogout}
-            className="cursor-pointer text-red-600 dark:text-red-400 font-vazirmatn"
+            className="cursor-pointer text-red-600 dark:text-red-400"
           >
             <LogOut className="ml-2 h-4 w-4" />
             خروج از حساب کاربری
