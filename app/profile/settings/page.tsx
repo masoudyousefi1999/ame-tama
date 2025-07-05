@@ -17,9 +17,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/auth-context";
-import { useTheme } from "next-themes";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { BackButton } from "@/components/ui/back-button";
 
@@ -27,7 +26,6 @@ export default function SettingsPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
-  const { theme, setTheme } = useTheme();
 
   const [profileData, setProfileData] = useState({
     firstName: "",
@@ -85,7 +83,7 @@ export default function SettingsPage() {
       toast({
         title: "خطا در تغییر رمز عبور",
         description: "رمز عبور جدید و تکرار آن مطابقت ندارند",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -110,10 +108,9 @@ export default function SettingsPage() {
   };
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
     toast({
       title: "تم سایت تغییر کرد",
-      description: theme === "dark" ? "تم روشن فعال شد" : "تم تیره فعال شد",
+      description: "تم روشن فعال شد",
     });
   };
 
@@ -404,7 +401,7 @@ export default function SettingsPage() {
                     <div className="flex items-center">
                       <Sun className="h-4 w-4 ml-2 text-muted-foreground" />
                       <Switch
-                        checked={theme === "dark"}
+                        checked={false}
                         onCheckedChange={toggleTheme}
                         className="scale-75 sm:scale-100"
                       />

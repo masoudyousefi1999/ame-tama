@@ -37,42 +37,32 @@ export default function LoginForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!formData.email || !formData.password) {
-      toast({
-        title: "خطا",
-        description: "لطفاً تمام فیلدها را پر کنید",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
       const result = await login(formData.email, formData.password);
-
       if (result.success) {
-        toast({
-          title: "ورود موفقیت‌آمیز",
-          description: "با موفقیت وارد حساب کاربری خود شدید",
-        });
-
-        if (onSuccess) {
-          onSuccess();
-        }
+        onSuccess?.();
       } else {
         toast({
+          variant: "error",
           title: "خطا در ورود",
-          description: result.message,
-          variant: "destructive",
+          description:
+            typeof result.message === "string"
+              ? result.message
+              : (result.message && JSON.stringify(result.message)) ||
+                "خطا در ورود به حساب کاربری",
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       toast({
-        title: "خطا",
-        description: "مشکلی در ورود به حساب کاربری رخ داد",
-        variant: "destructive",
+        variant: "error",
+        title: "خطا در ورود",
+        description:
+          typeof error?.message === "string"
+            ? error.message
+            : (error && JSON.stringify(error)) ||
+              "مشکلی در ورود به حساب کاربری رخ داد",
       });
     } finally {
       setIsLoading(false);
@@ -113,7 +103,7 @@ export default function LoginForm({
               variant="link"
               onClick={onForgotPassword}
               disabled={isLoading}
-              className="p-0 h-auto text-xs text-purple-600 dark:text-purple-400"
+              className="p-0 h-auto text-purple-600 dark:text-purple-400"
             >
               فراموشی رمز عبور؟
             </Button>

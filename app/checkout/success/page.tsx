@@ -93,7 +93,13 @@ export default function CheckoutSuccessPage() {
             متاسفانه اطلاعات پرداخت شما ناقص است. لطفا مجددا تلاش کنید یا با
             پشتیبانی تماس بگیرید.
           </p>
-          <Button onClick={() => router.push("/")}>بازگشت به صفحه اصلی</Button>
+          <Button
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            بازگشت به صفحه اصلی
+          </Button>
         </div>
       </div>
     );
@@ -109,7 +115,13 @@ export default function CheckoutSuccessPage() {
             {result?.error ||
               "پرداخت شما تایید نشد. لطفا مجددا تلاش کنید یا با پشتیبانی تماس بگیرید."}
           </p>
-          <Button onClick={() => router.push("/")}>بازگشت به صفحه اصلی</Button>
+          <Button
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            بازگشت به صفحه اصلی
+          </Button>
         </div>
       </div>
     );
@@ -120,7 +132,7 @@ export default function CheckoutSuccessPage() {
   return (
     <div className="container py-16 mt-20">
       <div className="max-w-2xl mx-auto text-center py-16">
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 mb-6">
+        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-900/20 text-green-400 mb-6">
           <CheckCircle className="h-10 w-10" />
         </div>
         <h1 className="text-2xl font-bold mb-4">
@@ -150,15 +162,19 @@ export default function CheckoutSuccessPage() {
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button
             className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-            onClick={() => router.push("/shop")}
+            onClick={() => {
+              window.location.href = "/shop";
+            }}
           >
             <ShoppingBag className="ml-2 h-5 w-5" />
             ادامه خرید
           </Button>
           <Button
             variant="outline"
-            className="rounded-full border-purple-300 dark:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-purple-700 dark:text-purple-300"
-            onClick={() => router.push("/")}
+            className="rounded-full border-purple-700 hover:bg-purple-900/20 text-purple-300"
+            onClick={() => {
+              window.location.href = "/";
+            }}
           >
             <Home className="ml-2 h-5 w-5" />
             بازگشت به صفحه اصلی

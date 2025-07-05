@@ -3,6 +3,7 @@ import { getCategoryBySlug } from "@/lib/categories";
 import CategoryPage from "@/components/category/category-page";
 import type { Metadata } from "next";
 import { getProductByCategorySlug } from "@/lib/products";
+import { productLimit } from "@/lib/product-limit";
 
 // ✅ Use correct server function prop type
 type Props = {
@@ -12,7 +13,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const category = await getCategoryBySlug(params.slug[params.slug.length - 1]);
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug[slug.length - 1]);
 
   if (!category) {
     return {
@@ -31,20 +33,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryRoute(props: {
   params: { slug: string[] };
+  searchParams?: { page?: string };
 }) {
-  const { params } = props;
-
+  const { params, searchParams } = props;
   const lastSlug = params.slug[params.slug.length - 1];
-
+  const page = Number.parseInt(searchParams?.page || "1");
+  const limit = productLimit;
   const category = await getCategoryBySlug(lastSlug);
   if (!category) notFound();
-
-  const products = await getProductByCategorySlug(lastSlug);
+  const { products, totalCount } = await getProductByCategorySlug(
+    lastSlug,
+    page,
+    limit
+  );
   if (!Array.isArray(products)) notFound();
-  // // ✅ safely access after async boundary
-  // const sort = typeof searchParams?.sort === "string" ? searchParams.sort : "newest";
-  // const filter = typeof searchParams?.filter === "string" ? searchParams.filter : undefined;
-  // const page = typeof searchParams?.page === "string" ? parseInt(searchParams.page) : 1;
 
   return (
     <CategoryPage
@@ -52,8 +54,10 @@ export default async function CategoryRoute(props: {
       subcategories={category.children}
       sort={"newest"}
       filter={undefined}
-      page={1}
+      page={page}
       products={products}
+      totalCount={totalCount}
+      limit={limit}
     />
   );
 }

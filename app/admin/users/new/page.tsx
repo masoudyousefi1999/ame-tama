@@ -1,4 +1,4 @@
-import { UserForm } from "@/components/admin/users/user-form"
+import { UserForm } from "@/components/admin/users/user-form";
 
 export default function NewUserPage() {
   return (

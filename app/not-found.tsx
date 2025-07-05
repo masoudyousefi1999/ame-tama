@@ -1,18 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { SearchBar } from "@/components/404/search-bar";
-import {
-  HomeIcon,
-  ShoppingBagIcon,
-  HelpCircleIcon,
-  ArrowRightIcon,
-} from "lucide-react";
-import { AnimatedCharacter } from "@/components/404/animated-character";
 import { Animated404 } from "@/components/404/animated-404";
+import { AnimatedCharacter } from "@/components/404/animated-character";
+import { HomeIcon, ShoppingBagIcon, HelpCircleIcon, ArrowRightIcon } from "lucide-react";
 import { motion } from "framer-motion";
+import { Card, CardContent } from "@/components/ui/card";
+import SearchBar from "@/components/search/search-bar";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function NotFound() {
   return (

@@ -74,9 +74,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let userCart;
     const getOrder = async () => {
       userCart = await getUserOrder();
-      if (userCart) {
-        setItems(userCart.items);
-      }
+      setItems(userCart?.items || []);
     };
     getOrder();
 
@@ -129,9 +127,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       quantity,
     });
     const updatedCart = await getUserOrder();
-    if (updatedCart) {
-      setItems(updatedCart.items);
-    }
+    setItems(updatedCart?.items || []);
     setRecentlyAdded(productUuid);
   };
 
@@ -141,9 +137,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       quantity,
     });
     const updatedCart = await getUserOrder();
-    if (updatedCart) {
-      setItems(updatedCart.items);
-    }
+    setItems(updatedCart?.items || []);
   };
 
   // به‌روزرسانی تعداد محصول در سبد خرید

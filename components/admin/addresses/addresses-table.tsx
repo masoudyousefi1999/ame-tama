@@ -23,7 +23,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Edit, Trash2 } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Address {
   id: string;
@@ -68,7 +68,7 @@ export function AddressesTable({ addresses }: AddressesTableProps) {
       toast({
         title: "خطا",
         description: "حذف آدرس با شکست مواجه شد",
-        variant: "destructive",
+        variant: "error",
         className: "bg-red-600 text-white",
       });
     } finally {

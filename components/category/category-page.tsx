@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Filter, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,13 @@ import CategoryFilters from "@/components/category/category-filters";
 import CategoryProducts from "@/components/category/category-products";
 import { type ICategoryType } from "@/lib/categories";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { cn } from "@/lib/utils";
+import { customFetch } from "@/lib/utils";
 import Link from "next/link";
 import { IProductType } from "@/lib/products";
 import Image from "next/image";
 import CategoryHeader from "./category-header";
+import { productLimit } from "@/lib/product-limit";
+import { GoToTopButton } from "@/components/go-to-top-button";
 
 interface CategoryPageProps {
   category: ICategoryType & { image: string };
@@ -22,6 +24,8 @@ interface CategoryPageProps {
   filter?: string;
   page: number;
   products: IProductType[];
+  totalCount: number;
+  limit: number;
 }
 
 export default function CategoryPage({
@@ -29,8 +33,10 @@ export default function CategoryPage({
   subcategories = [],
   sort,
   filter,
-  page,
-  products,
+  page: initialPage,
+  products: initialProducts,
+  totalCount,
+  limit,
 }: CategoryPageProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,22 +46,28 @@ export default function CategoryPage({
     filter ? filter.split(",") : []
   );
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [products, setProducts] = useState(initialProducts);
+  const [page, setPage] = useState(initialPage);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(initialProducts.length < totalCount);
+  const loader = useRef<HTMLDivElement | null>(null);
 
-  // sync URL params with state
+  // Infinite scroll effect
   useEffect(() => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    sort !== "newest" ? params.set("sort", sort) : params.delete("sort");
-    selectedFilters.length
-      ? params.set("filter", selectedFilters.join(","))
-      : params.delete("filter");
-    page > 1 ? params.set("page", page.toString()) : params.delete("page");
-
-    const newUrl = params.toString()
-      ? `${pathname}?${params.toString()}`
-      : pathname;
-    router.replace(newUrl, { scroll: false });
-  }, [sort, selectedFilters, page, pathname, router, searchParams]);
+    if (!hasMore || loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchMore();
+        }
+      },
+      { threshold: 1 }
+    );
+    if (loader.current) observer.observe(loader.current);
+    return () => {
+      if (loader.current) observer.unobserve(loader.current);
+    };
+  }, [loader, hasMore, loading]);
 
   const handlePriceRangeChange = (range: [number, number]) => {
     setPriceRange(range);
@@ -72,6 +84,34 @@ export default function CategoryPage({
       ? `${pathname}?${params.toString()}`
       : pathname;
     router.replace(newUrl);
+  };
+
+  const fetchMore = async () => {
+    setLoading(true);
+    try {
+      const nextPage = page + 1;
+      let url = `/product/category/${category.slug}?page=${nextPage}&limit=${productLimit}`;
+      const res = await customFetch(url, { method: "GET" });
+      const result = await res.json();
+      const newProducts = result.products || [];
+      setProducts((prev: IProductType[]) => {
+        const existingUuids = new Set(prev.map((p: IProductType) => p.uuid));
+        const filteredNew = newProducts.filter(
+          (p: IProductType) => !existingUuids.has(p.uuid)
+        );
+        return [...prev, ...filteredNew];
+      });
+      setPage((prev) => prev + 1);
+      if (newProducts.length === 0) {
+        setHasMore(false);
+      } else {
+        setHasMore(newProducts.length === productLimit);
+      }
+    } catch (error) {
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -219,8 +259,15 @@ export default function CategoryPage({
           </div>
 
           <CategoryProducts products={products} viewMode="grid" />
+          {loading && (
+            <div className="flex justify-center py-8">
+              <span className="text-muted-foreground">در حال بارگذاری...</span>
+            </div>
+          )}
+          <div ref={loader} />
         </div>
       </div>
+      <GoToTopButton />
     </div>
   );
 }

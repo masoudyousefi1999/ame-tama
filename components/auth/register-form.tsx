@@ -48,7 +48,7 @@ export default function RegisterForm({
       toast({
         title: "خطا",
         description: "لطفاً تمام فیلدها را پر کنید",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -58,7 +58,7 @@ export default function RegisterForm({
       toast({
         title: "خطا",
         description: "رمز عبور و تکرار آن مطابقت ندارند",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -68,7 +68,7 @@ export default function RegisterForm({
       toast({
         title: "خطا",
         description: "رمز عبور باید حداقل ۸ کاراکتر باشد",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -101,14 +101,14 @@ export default function RegisterForm({
         toast({
           title: "خطا در ثبت‌نام",
           description: result.message,
-          variant: "destructive",
+          variant: "error",
         });
       }
     } catch (error) {
       toast({
         title: "خطا",
         description: "مشکلی در ایجاد حساب کاربری رخ داد",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

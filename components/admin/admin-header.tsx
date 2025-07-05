@@ -12,13 +12,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Bell, LogOut, Moon, Settings, Sun, User } from "lucide-react";
-import { useTheme } from "next-themes";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 
 export function AdminHeader() {
   const { user, logout } = useAuth();
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [notifications, setNotifications] = useState<
     { id: string; title: string; read: boolean }[]
@@ -64,14 +62,9 @@ export function AdminHeader() {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className="rounded-full h-9 w-9 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600"
               >
-                {theme === "dark" ? (
-                  <Sun className="h-5 w-5 text-yellow-500" />
-                ) : (
-                  <Moon className="h-5 w-5 text-gray-700" />
-                )}
+                <Sun className="h-5 w-5 text-yellow-500" />
                 <span className="sr-only">تغییر تم</span>
               </Button>
             )}

@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Loader2 } from "lucide-react";
 
 interface User {
@@ -81,7 +81,7 @@ export function AddressForm({ address }: AddressFormProps) {
         toast({
           title: "خطا",
           description: "دریافت کاربران با مشکل مواجه شد",
-          variant: "destructive",
+          variant: "error",
         });
       } finally {
         setLoadingUsers(false);
@@ -99,7 +99,7 @@ export function AddressForm({ address }: AddressFormProps) {
       toast({
         title: "خطا",
         description: "انتخاب کاربر الزامی است",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -112,7 +112,7 @@ export function AddressForm({ address }: AddressFormProps) {
       toast({
         title: "خطا",
         description: "تمام فیلدهای الزامی را پر کنید",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -165,7 +165,7 @@ export function AddressForm({ address }: AddressFormProps) {
         title: "خطا",
         description:
           error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

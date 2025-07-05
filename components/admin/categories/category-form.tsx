@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { X, ImageIcon, Loader2 } from "lucide-react";
 import { customFetch } from "@/lib/utils";
 
@@ -104,7 +104,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "خطا",
         description: "لطفاً فقط فایل‌های تصویری انتخاب کنید",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -114,7 +114,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "خطا",
         description: "حجم فایل نباید بیشتر از ۵ مگابایت باشد",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -153,7 +153,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           error instanceof Error
             ? error.message
             : "آپلود تصویر با شکست مواجه شد",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsUploading(false);
@@ -168,7 +168,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "خطا",
         description: "نام دسته‌بندی الزامی است",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -177,7 +177,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "خطا",
         description: "نامک دسته‌بندی الزامی است",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -187,7 +187,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "خطا",
         description: "لطفاً تصویر دسته‌بندی را انتخاب کنید",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -235,7 +235,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
         title: "خطا",
         description:
           error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
-        variant: "destructive",
+        variant: "error",
         className: "",
       });
     } finally {

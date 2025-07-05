@@ -1,85 +1,85 @@
 // تعریف نوع کاربر
 // import myImage from "@/public/photo_2025-05-14_11-44-03.jpg";
 export interface User {
-  createdAt: string
-  updatedAt: string
-  uuid: string
-  firstName: string
-  lastName: string
-  email: string
-  password?: string
-  phone?: string
-  avatar?: string
-  role: string
+  createdAt: string;
+  updatedAt: string;
+  uuid: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password?: string;
+  phone?: string;
+  avatar?: string;
+  role: string;
 }
 
 // تعریف نوع آدرس کاربر
 export interface UserAddress {
-  createdAt: string
-  updatedAt: string
-  uuid: string
-  province: string
-  city: string
-  address: string
-  postalCode: string
-  houseNumber: string
-  floorNumber: string
+  createdAt: string;
+  updatedAt: string;
+  uuid: string;
+  province: string;
+  city: string;
+  address: string;
+  postalCode: string;
+  houseNumber: string;
+  floorNumber: string;
 }
 
 // تعریف نوع موجودی کاربر
 export interface UserBalance {
-  createdAt: string
-  updatedAt: string
-  uuid: string
-  balance: number
+  createdAt: string;
+  updatedAt: string;
+  uuid: string;
+  balance: number;
   user: {
-    uuid: string
-    firstName: string
-    lastName: string
-    role: string
-    email: string
-    phone: string
-  }
+    uuid: string;
+    firstName: string;
+    lastName: string;
+    role: string;
+    email: string;
+    phone: string;
+  };
 }
 
 // تعریف نوع آیتم سفارش
 export interface OrderItem {
-  createdAt: string
-  updatedAt: string
-  quantity: number
-  price: number | null
+  createdAt: string;
+  updatedAt: string;
+  quantity: number;
+  price: number | null;
   product: {
-    uuid: string
-    name: string
-    slug: string
-    price: number
+    uuid: string;
+    name: string;
+    slug: string;
+    price: number;
     detail: {
-      series: string
-      character: string
-      description: string
-    }
+      series: string;
+      character: string;
+      description: string;
+    };
     category: {
-      id: number
-      name: string
-      slug: string
-    }
+      id: number;
+      name: string;
+      slug: string;
+    };
     productMedia: {
-      order: number
-      isDefault: boolean
-      url: string
-    }[]
-  }
+      order: number;
+      isDefault: boolean;
+      url: string;
+    }[];
+  };
 }
 
 // تعریف نوع سفارش
 export interface Order {
-  createdAt: string
-  updatedAt: string
-  uuid: string
-  totalPrice: number | null
-  finalPrice: number | null
-  status: string
-  items: OrderItem[]
+  createdAt: string;
+  updatedAt: string;
+  uuid: string;
+  totalPrice: number | null;
+  finalPrice: number | null;
+  status: string;
+  items: OrderItem[];
 }
 
 // داده‌های نمونه برای کاربران
@@ -108,7 +108,7 @@ const users: User[] = [
     avatar: "/placeholder.svg?height=200&width=200",
     role: "customer",
   },
-]
+];
 
 // داده‌های نمونه برای آدرس‌های کاربران
 const userAddresses: { [userUuid: string]: UserAddress[] } = {
@@ -138,7 +138,7 @@ const userAddresses: { [userUuid: string]: UserAddress[] } = {
       floorNumber: "2",
     },
   ],
-}
+};
 
 // داده‌های نمونه برای موجودی کاربران
 const userBalances: { [userUuid: string]: UserBalance } = {
@@ -170,7 +170,7 @@ const userBalances: { [userUuid: string]: UserBalance } = {
       phone: "09198765432",
     },
   },
-}
+};
 
 // داده‌های نمونه برای سفارش‌ها
 const userOrders: { [userUuid: string]: Order[] } = {
@@ -196,7 +196,8 @@ const userOrders: { [userUuid: string]: Order[] } = {
             detail: {
               series: "وان پیس",
               character: "مانکی دی. لوفی",
-              description: "مجسمه لوفی گیر ۵ یکی از شاهکارهای مجموعه AME-TAMA است",
+              description:
+                "مجسمه لوفی گیر ۵ یکی از شاهکارهای مجموعه AME-TAMA است",
             },
             category: {
               id: 2,
@@ -244,48 +245,50 @@ const userOrders: { [userUuid: string]: Order[] } = {
       ],
     },
   ],
-}
+};
 
 // دریافت کاربر با ایمیل
 export function getUserByEmail(email: string): User | undefined {
-  return users.find((user) => user.email === email)
+  return users.find((user) => user.email === email);
 }
 
 // دریافت کاربر با شناسه UUID
 export function getUserByUuid(uuid: string): User | undefined {
-  return users.find((user) => user.uuid === uuid)
+  return users.find((user) => user.uuid === uuid);
 }
 
 // دریافت آدرس‌های کاربر
 export function getUserAddresses(userUuid: string): UserAddress[] {
-  return userAddresses[userUuid] || []
+  return userAddresses[userUuid] || [];
 }
 
 // دریافت موجودی کاربر
 export function getUserBalance(userUuid: string): UserBalance | undefined {
-  return userBalances[userUuid]
+  return userBalances[userUuid];
 }
 
 // دریافت سفارش‌های کاربر
 export function getUserOrders(userUuid: string): Order[] {
-  return userOrders[userUuid] || []
+  return userOrders[userUuid] || [];
 }
 
 // افزودن کاربر جدید (در یک پروژه واقعی، این تابع با دیتابیس کار می‌کند)
-export function addUser(user: Omit<User, "uuid" | "createdAt" | "updatedAt">): User {
+export function addUser(
+  user: Omit<User, "uuid" | "createdAt" | "updatedAt">
+): User {
   const newUser: User = {
     uuid: `user-${Date.now().toString()}`,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    role: "customer",
     ...user,
-  }
+    role: user.role || "customer",
+  };
 
-  users.push(newUser)
-  return newUser
+  users.push(newUser);
+  return newUser;
 }
 
 // برای سازگاری با کد قدیمی
 export function getUserById(id: string): User | undefined {
-  return getUserByUuid(id)
+  return getUserByUuid(id);
 }

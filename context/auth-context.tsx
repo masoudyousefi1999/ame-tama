@@ -9,12 +9,21 @@ import {
 } from "react";
 import { getUserByEmail, type User } from "@/lib/users";
 import { getMe } from "@/hooks/use-user";
+import { customFetch } from "@/lib/utils";
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   login: (
     email: string,
+    password: string
+  ) => Promise<{ success: boolean; message: string }>;
+  loginWithOtp: (
+    phone: string,
+    otp: string
+  ) => Promise<{ success: boolean; message: string }>;
+  loginWithPassword: (
+    identifier: string,
     password: string
   ) => Promise<{ success: boolean; message: string }>;
   register: (
@@ -34,6 +43,8 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
   login: async () => ({ success: false, message: "" }),
+  loginWithOtp: async () => ({ success: false, message: "" }),
+  loginWithPassword: async () => ({ success: false, message: "" }),
   register: async () => ({ success: false, message: "" }),
   logout: () => {},
   updateProfile: async () => ({ success: false, message: "" }),
@@ -46,47 +57,92 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const getUser = async () => {
-      const user = await getMe();
-
-      if (user && !user?.statusCode) {
-        setUser(user);
-      } else {
+      try {
+        const user = await getMe();
+        if (user && !user?.statusCode) {
+          setUser(user);
+        } else {
+          setUser(null);
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
         setUser(null);
+      } finally {
+        setIsLoading(false);
       }
     };
     getUser();
-
-    setIsLoading(false);
   }, []);
 
-  // ورود کاربر
-  const login = async (email: string, password: string) => {
+  // ورود کاربر با OTP
+  const loginWithOtp = async (phone: string, otp: string) => {
     try {
-      // در یک پروژه واقعی، این بخش با API سرور ارتباط برقرار می‌کند
-      // اما در اینجا از داده‌های نمونه استفاده می‌کنیم
-      const foundUser = getUserByEmail(email);
+      const res = await customFetch("/auth/register", {
+        method: "POST",
+        body: JSON.stringify({
+          phone,
+          otp,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-      if (!foundUser) {
-        return { success: false, message: "کاربری با این ایمیل یافت نشد" };
+      const result = await res.json();
+
+      if (res.ok && result && result.user) {
+        setUser(result.user);
+        return { success: true, message: "ورود موفقیت‌آمیز بود" };
+      } else {
+        return {
+          success: false,
+          message: result?.message || "کد تأیید وارد شده صحیح نیست",
+        };
       }
-
-      if (foundUser.password !== password) {
-        return { success: false, message: "رمز عبور اشتباه است" };
-      }
-
-      // حذف رمز عبور از اطلاعات کاربر قبل از ذخیره
-      const { password: _, ...userWithoutPassword } = foundUser;
-      setUser(userWithoutPassword as User);
-      localStorage.setItem(
-        "ame-tama-user",
-        JSON.stringify(userWithoutPassword)
-      );
-
-      return { success: true, message: "ورود موفقیت‌آمیز بود" };
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("OTP Login error:", error);
       return { success: false, message: "خطا در ورود به حساب کاربری" };
     }
+  };
+
+  // ورود کاربر با رمز عبور
+  const loginWithPassword = async (identifier: string, password: string) => {
+    try {
+      let body: any = { password };
+      if (identifier.includes("@")) {
+        body.email = identifier;
+      } else {
+        body.phone = identifier;
+      }
+
+      const res = await customFetch("/auth/register", {
+        method: "POST",
+        body: JSON.stringify(body),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const result = await res.json();
+
+      if (res.ok && result && result.user) {
+        setUser(result.user);
+        return { success: true, message: "ورود موفقیت‌آمیز بود" };
+      } else {
+        return {
+          success: false,
+          message: result?.message || "ایمیل/شماره تلفن یا رمز عبور اشتباه است",
+        };
+      }
+    } catch (error) {
+      console.error("Password Login error:", error);
+      return { success: false, message: "خطا در ورود به حساب کاربری" };
+    }
+  };
+
+  // ورود کاربر (legacy method for backward compatibility)
+  const login = async (email: string, password: string) => {
+    return loginWithPassword(email, password);
   };
 
   // ثبت‌نام کاربر جدید
@@ -123,9 +179,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // خروج از حساب کاربری
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await customFetch("/auth/logout", { method: "POST" });
+    } catch (error) {
+      // Ignore errors, just clear user state
+    }
     setUser(null);
-    localStorage.removeItem("ame-tama-user");
   };
 
   // به‌روزرسانی اطلاعات پروفایل
@@ -177,6 +237,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         isLoading,
         login,
+        loginWithOtp,
+        loginWithPassword,
         register,
         logout,
         updateProfile,

@@ -25,20 +25,11 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
 import OtpInput from "@/components/auth/otp-input";
-import { sendOtp, verifyOtp } from "@/hooks/use-otp";
+import { sendOtp } from "@/hooks/use-otp";
+import { useAuth } from "@/context/auth-context";
 
 type LoginMethod = "otp" | "password";
 type OtpStep = "phone" | "verify";
-
-// Test data for simulation
-const TEST_DATA = {
-  validPhones: ["09123456789", "09987654321"],
-  validOtp: "1234",
-  validCredentials: [
-    { identifier: "user@example.com", password: "123456" },
-    { identifier: "09123456789", password: "123456" },
-  ],
-};
 
 interface LoginModalProps {
   isOpen: boolean;
@@ -52,6 +43,7 @@ export default function LoginModal({
   onSuccess,
 }: LoginModalProps) {
   const router = useRouter();
+  const { loginWithOtp, loginWithPassword } = useAuth();
   const [loginMethod, setLoginMethod] = useState<LoginMethod>("otp");
   const [otpStep, setOtpStep] = useState<OtpStep>("phone");
   const [isLoading, setIsLoading] = useState(false);
@@ -141,14 +133,19 @@ export default function LoginModal({
 
     setIsLoading(true);
 
-    await sendOtp(phoneNumber);
-    setOtpStep("verify");
-    startCountdown();
-    setIsLoading(false);
-    toast({
-      title: "کد تأیید ارسال شد",
-      description: `کد تأیید به شماره ${phoneNumber} ارسال شد`,
-    });
+    try {
+      await sendOtp(phoneNumber);
+      setOtpStep("verify");
+      startCountdown();
+      toast({
+        title: "کد تأیید ارسال شد",
+        description: `کد تأیید به شماره ${phoneNumber} ارسال شد`,
+      });
+    } catch (error) {
+      setError("خطا در ارسال کد تأیید");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleResendOtp = async () => {
@@ -157,93 +154,113 @@ export default function LoginModal({
     setError("");
     setIsLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      await sendOtp(phoneNumber);
       startCountdown();
       toast({
         title: "کد تأیید مجدداً ارسال شد",
         description: `کد تأیید جدید به شماره ${phoneNumber} ارسال شد`,
       });
+    } catch (error) {
+      setError("خطا در ارسال مجدد کد تأیید");
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const handleVerifyOtp = async () => {
-    setError("");
-
-    if (!otpCode.trim()) {
-      setError("لطفاً کد تأیید را وارد کنید");
-      return;
-    }
-
-    if (otpCode.length !== 4) {
-      setError("کد تأیید باید ۴ رقم باشد");
+    if (!otpCode || otpCode.length !== 4) {
+      toast({
+        variant: "error",
+        title: "خطا",
+        description: "لطفاً کد ۴ رقمی را وارد کنید",
+      });
       return;
     }
 
     setIsLoading(true);
-
-    const loginResult = await verifyOtp(phoneNumber, otpCode);
-
-    if (loginResult) {
+    try {
+      const result = await loginWithOtp(phoneNumber, otpCode);
+      if (result.success) {
+        toast({
+          variant: "login",
+          title: " موفقیت‌آمیز",
+          description: "با موفقیت وارد حساب کاربری خود شدید",
+        });
+        // onSuccess?.();
+        // onClose();
+      } else {
+        toast({
+          variant: "error",
+          title: "خطا در ورود",
+          description:
+            typeof result.message === "string"
+              ? result.message
+              : (result.message && JSON.stringify(result.message)) ||
+                "کد وارد شده صحیح نیست",
+        });
+      }
+    } catch (error: any) {
       toast({
-        title: "ورود موفقیت‌آمیز",
-        description: "با موفقیت وارد حساب کاربری خود شدید",
+        variant: "error",
+        title: "خطا در ورود",
+        description:
+          typeof error?.message === "string"
+            ? error.message
+            : (error && JSON.stringify(error)) ||
+              "مشکلی در ورود به حساب کاربری رخ داد",
       });
-
-      onClose();
-      if (onSuccess) onSuccess();
-    } else {
-      setError("کد تأیید وارد شده صحیح نیست");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   };
 
   // Password Login handler
   const handlePasswordLogin = async () => {
-    setError("");
-
-    if (!identifier.trim()) {
-      setError("لطفاً ایمیل یا شماره تلفن خود را وارد کنید");
-      return;
-    }
-
-    if (!validateIdentifier(identifier)) {
-      setError("ایمیل یا شماره تلفن وارد شده معتبر نیست");
-      return;
-    }
-
-    if (!password.trim()) {
-      setError("لطفاً رمز عبور خود را وارد کنید");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("رمز عبور باید حداقل ۶ کاراکتر باشد");
+    if (!identifier || !password) {
+      toast({
+        variant: "error",
+        title: "خطا",
+        description: "لطفاً تمام فیلدها را پر کنید",
+      });
       return;
     }
 
     setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      const validCredential = TEST_DATA.validCredentials.find(
-        (cred) => cred.identifier === identifier && cred.password === password
-      );
-
-      if (validCredential) {
+    try {
+      const result = await loginWithPassword(identifier, password);
+      if (result.success) {
         toast({
+          variant: "login",
           title: "ورود موفقیت‌آمیز",
           description: "با موفقیت وارد حساب کاربری خود شدید",
         });
+        onSuccess?.();
         onClose();
-        if (onSuccess) onSuccess();
       } else {
-        setError("ایمیل/شماره تلفن یا رمز عبور اشتباه است");
+        toast({
+          variant: "error",
+          title: "خطا در ورود",
+          description:
+            typeof result.message === "string"
+              ? result.message
+              : (result.message && JSON.stringify(result.message)) ||
+                "اطلاعات وارد شده صحیح نیست",
+        });
       }
+    } catch (error: any) {
+      toast({
+        variant: "error",
+        title: "خطا در ورود",
+        description:
+          typeof error?.message === "string"
+            ? error.message
+            : (error && JSON.stringify(error)) ||
+              "مشکلی در ورود به حساب کاربری رخ داد",
+      });
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   const switchToOtpLogin = () => {
@@ -357,20 +374,27 @@ export default function LoginModal({
                     />
                   </div>
 
-                  <Button
-                    onClick={handleVerifyOtp}
-                    disabled={isLoading || otpCode.length !== 4}
-                    className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      handleVerifyOtp();
+                    }}
                   >
-                    {isLoading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2" />
-                        در حال تأیید...
-                      </>
-                    ) : (
-                      "تأیید و ورود"
-                    )}
-                  </Button>
+                    <Button
+                      type="submit"
+                      disabled={isLoading || otpCode.length !== 4}
+                      className="w-full rounded-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2" />
+                          در حال تأیید...
+                        </>
+                      ) : (
+                        "تأیید و ورود"
+                      )}
+                    </Button>
+                  </form>
 
                   <div className="flex flex-col gap-2">
                     <Button
@@ -406,7 +430,13 @@ export default function LoginModal({
 
           {/*  Password flow  */}
           {loginMethod === "password" && (
-            <div className="space-y-4">
+            <form
+              className="space-y-4"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handlePasswordLogin();
+              }}
+            >
               <div className="space-y-2">
                 <Label
                   htmlFor="identifier"
@@ -443,7 +473,7 @@ export default function LoginModal({
               </div>
 
               <Button
-                onClick={handlePasswordLogin}
+                type="submit"
                 disabled={isLoading}
                 className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
               >
@@ -456,7 +486,7 @@ export default function LoginModal({
                   "ورود"
                 )}
               </Button>
-            </div>
+            </form>
           )}
 
           {/*  switch method  */}

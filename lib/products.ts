@@ -48,6 +48,9 @@ export function getProductByUuid(uuid: string): IProductType | null {
 export function getProductById(id: number): IProductType | null {
   return null; // فرض می‌کنیم ID ها از 1 شروع می‌شوند
 }
+
+import { customFetch } from "./utils";
+
 export async function getProductBySlug(
   slug: string
 ): Promise<IProductType | null> {
@@ -69,41 +72,57 @@ export async function getProductBySlug(
 }
 
 export async function getProductByCategorySlug(
-  slug: string
-): Promise<IProductType | null> {
+  slug: string,
+  page: number = 1,
+  limit: number = 1
+): Promise<{ products: IProductType[]; totalCount: number }> {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/product/category/${slug}`
+    const res = await customFetch(
+      `/product/category/${slug}?page=${page}&limit=${limit}`,
+      { method: "GET" }
     );
-
-    const product = await res.json();
-
-    if (product) {
-      return product as IProductType;
-    }
-
-    return null;
+    const result = await res.json();
+    const { products, totalCount } = result;
+    return { products: products || [], totalCount: totalCount || 0 };
   } catch (error) {
-    return null;
+    return { products: [], totalCount: 0 };
   }
 }
 
 // دریافت محصولات مرتبط بر اساس دسته‌بندی
-export function getRelatedProducts(
-  categorySlug: string,
-  excludeUuid: string
-): IProductType[] {
-  return [];
+export async function getRelatedProducts(
+  productUuid: string,
+  page: number = 1,
+  limit: number = 8
+): Promise<{ products: IProductType[]; totalCount: number }> {
+  try {
+    const res = await customFetch(
+      `/product/similar/${productUuid}?page=${page}&limit=${limit}`,
+      { method: "GET" }
+    );
+    const result = await res.json();
+    const { products, totalCount } = result;
+    return { products: products || [], totalCount: totalCount || 0 };
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return { products: [], totalCount: 0 };
+  }
 }
 
-export async function getAllProducts(): Promise<IProductType[]> {
-  console.log("get products function is calling.....");
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/product`
-  );
-
-  const products = await res.json();
-  return products as IProductType[];
+export async function getAllProducts(
+  page: number = 1,
+  limit: number = 1
+): Promise<{ products: IProductType[]; totalCount: number }> {
+  try {
+    const res = await customFetch(`/product?page=${page}&limit=${limit}`, {
+      method: "GET",
+    });
+    const result = await res.json();
+    const { products, totalCount } = result;
+    return { products: products || [], totalCount: totalCount || 0 };
+  } catch (error) {
+    return { products: [], totalCount: 0 };
+  }
 }
 
 // دریافت محصولات جدید (محصولات با تاریخ ایجاد اخیر)

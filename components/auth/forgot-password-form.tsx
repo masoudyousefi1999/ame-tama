@@ -29,7 +29,7 @@ export default function ForgotPasswordForm({
       toast({
         title: "خطا",
         description: "لطفاً ایمیل خود را وارد کنید",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -49,14 +49,14 @@ export default function ForgotPasswordForm({
         toast({
           title: "خطا",
           description: result.message,
-          variant: "destructive",
+          variant: "error",
         });
       }
     } catch (error) {
       toast({
         title: "خطا",
         description: "مشکلی در بازیابی رمز عبور رخ داد",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

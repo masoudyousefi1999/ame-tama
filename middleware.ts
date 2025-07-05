@@ -12,7 +12,6 @@ export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl
 
   if (pathname.startsWith('/checkout/success/payments/zarinpal')) {
-    console.log('🔍 URL', request.nextUrl.pathname);
     const authority = searchParams.get('Authority')
     const status = searchParams.get('Status')
 
@@ -53,7 +52,6 @@ export async function middleware(request: NextRequest) {
 
     isAuthenticated = meRes.ok;
   } catch (error) {
-    console.log("error in /me => ", error);
     isAuthenticated = false;
   }
 
@@ -87,7 +85,6 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL("/login", request.url));
       }
     } catch (error) {
-      console.log("error in /me => ", error);
       return NextResponse.redirect(new URL("/login", request.url));
     }
   }

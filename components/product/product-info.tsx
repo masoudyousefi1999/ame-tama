@@ -14,11 +14,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/context/wishlist-context";
 import { IProductType } from "@/lib/products";
+import { PersianDate } from "@/components/ui/persian-date";
+import { useAuth } from "@/context/auth-context";
+import { useLoginModal } from "@/context/login-modal-context";
+import { toast } from "@/components/ui/use-toast";
 
 interface ProductInfoProps {
   product: IProductType;
@@ -30,6 +34,8 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const { addItem } = useCart();
   const router = useRouter();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
+  const { user } = useAuth();
+  const { openLoginModal } = useLoginModal();
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -42,26 +48,34 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   };
 
   const handleAddToCart = () => {
-    addItem(product.uuid, quantity);
-    setAddedToCart(true);
+    if (!user) {
+      toast({
+        variant: "info",
+        title: "ورود به حساب کاربری",
+        description:
+          "برای افزودن محصول به سبد خرید، ابتدا وارد حساب کاربری خود شوید",
+        duration: 2000,
+      });
+      openLoginModal();
+      return;
+    }
 
-    toast({
-      title: "محصول به سبد خرید اضافه شد",
-      description: `${quantity} عدد ${product.name} به سبد خرید شما اضافه شد.`,
-      action: (
-        <ToastAction
-          altText="مشاهده سبد خرید"
-          onClick={() => router.push("/cart")}
-        >
-          مشاهده سبد خرید
-        </ToastAction>
-      ),
-    });
-
-    // بعد از 2 ثانیه، وضعیت دکمه به حالت اولیه برمی‌گردد
-    setTimeout(() => {
-      setAddedToCart(false);
-    }, 2000);
+    try {
+      addItem(product.uuid, quantity);
+      toast({
+        variant: "cart",
+        title: "محصول به سبد خرید اضافه شد",
+        description: `${product.name} با موفقیت به سبد خرید شما اضافه شد`,
+        duration: 2000,
+      });
+    } catch (error) {
+      toast({
+        variant: "error",
+        title: "خطا",
+        description: "مشکلی در افزودن محصول به سبد خرید رخ داد",
+        duration: 2000,
+      });
+    }
   };
 
   // تعیین وضعیت موجودی
@@ -145,7 +159,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           label="سازنده"
           value={product.detail?.specifications?.manufacturer}
         />
-        <Fact label="تاریخ انتشار" value={product.createdAt} />
+        <Fact
+          label="تاریخ انتشار"
+          value={
+            (<PersianDate date={product.createdAt} format="numeric" />) as any
+          }
+        />
         <Fact label="مقیاس" value={product.detail?.specifications?.scale} />
         <Fact label="ارتفاع" value={product.detail?.specifications?.height} />
       </div>

@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Package, ShoppingCart, DollarSign } from "lucide-react";
+import { DollarSign, Package, ShoppingCart, Users } from "lucide-react";
 
 // This would typically fetch from your API
 async function getDashboardStats() {

@@ -7,7 +7,7 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/auth-context";
 import { IProductType } from "@/lib/products";
 
@@ -59,10 +59,11 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
   const addToWishlist = (product: WishlistProduct) => {
     if (!user) {
       toast({
+        variant: "info",
         title: "لطفا وارد شوید",
         description:
           "برای افزودن محصول به علاقه‌مندی‌ها، ابتدا وارد حساب کاربری خود شوید.",
-        variant: "destructive",
+        duration: 2000,
       });
       return;
     }
@@ -70,14 +71,18 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     if (!isInWishlist(product.uuid)) {
       setWishlist((prev) => [...prev, product]);
       toast({
+        variant: "wishlist",
         title: "به علاقه‌مندی‌ها اضافه شد",
         description: `${product.name} به لیست علاقه‌مندی‌های شما اضافه شد.`,
+        duration: 2000,
       });
     } else {
       toast({
+        variant: "info",
         title: "قبلاً اضافه شده",
         description:
           "این محصول قبلاً به لیست علاقه‌مندی‌های شما اضافه شده است.",
+        duration: 2000,
       });
     }
   };
@@ -89,8 +94,10 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
 
     if (product) {
       toast({
+        variant: "wishlist",
         title: "از علاقه‌مندی‌ها حذف شد",
         description: `${product.name} از لیست علاقه‌مندی‌های شما حذف شد.`,
+        duration: 2000,
       });
     }
   };

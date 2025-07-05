@@ -40,7 +40,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/auth-context";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -48,46 +48,32 @@ import * as z from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { BackButton } from "@/components/ui/back-button";
+import { customFetch } from "@/lib/utils";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
-// Sample address data - updated to match API schema
-const sampleAddresses = [
-  {
-    createdAt: "2023-01-15T10:35:00.000Z",
-    updatedAt: "2025-05-30T02:10:00.000Z",
-    uuid: "addr-58b1f289-be86-4344-8d07-3a55a01badbe",
-    province: "تهران",
-    city: "تهران",
-    address: "خیابان ولیعصر، بالاتر از میدان ونک",
-    postalCode: "1234567890",
-    houseNumber: "123",
-    floorNumber: "4",
-    // Additional fields for UI compatibility
-    id: 1,
-    title: "منزل",
-    recipient: "علی محمدی",
-    phone: "09123456789",
-    isDefault: true,
-    type: "home",
-  },
-  {
-    createdAt: "2023-02-20T14:50:00.000Z",
-    updatedAt: "2025-05-30T02:15:00.000Z",
-    uuid: "addr-7c877e90-bcc0-4fe6-8d5d-8fcae85f0066",
-    province: "تهران",
-    city: "تهران",
-    address: "خیابان شریعتی، نرسیده به میدان قدس",
-    postalCode: "9876543210",
-    houseNumber: "45",
-    floorNumber: "2",
-    // Additional fields for UI compatibility
-    id: 2,
-    title: "محل کار",
-    recipient: "علی محمدی",
-    phone: "09123456789",
-    isDefault: false,
-    type: "work",
-  },
-];
+// API Address interface
+interface ApiAddress {
+  createdAt: string;
+  updatedAt: string;
+  uuid: string;
+  province: string;
+  city: string;
+  address: string;
+  postalCode: string;
+  houseNumber: string;
+  floorNumber: string;
+  default: boolean;
+}
+
+// Extended address interface for UI compatibility
+interface Address extends ApiAddress {
+  id: number;
+  title: string;
+  recipient: string;
+  phone: string;
+  isDefault: boolean;
+  type: "home" | "work" | "other";
+}
 
 // Form schema
 const addressFormSchema = z.object({
@@ -119,15 +105,14 @@ export default function AddressesPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const { toast } = useToast();
-  const [addresses, setAddresses] = useState(sampleAddresses);
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [currentAddress, setCurrentAddress] = useState<
-    (typeof sampleAddresses)[0] | null
-  >(null);
+  const [currentAddress, setCurrentAddress] = useState<Address | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<AddressFormValues>({
-    //@ts-ignore
     resolver: zodResolver(addressFormSchema),
     defaultValues: {
       title: "",
@@ -142,9 +127,52 @@ export default function AddressesPage() {
     },
   });
 
+  // Fetch addresses from backend
+  const fetchAddresses = async () => {
+    try {
+      setIsLoadingAddresses(true);
+      const response = await customFetch("/address");
+      const data = await response.json();
+
+      if (response.ok && data.addresses) {
+        // Transform API addresses to UI format
+        const transformedAddresses: Address[] = data.addresses.map(
+          (apiAddress: ApiAddress, index: number) => ({
+            ...apiAddress,
+            id: index + 1,
+            title: apiAddress.default ? "آدرس پیش‌فرض" : `آدرس ${index + 1}`,
+            recipient: user?.firstName + " " + user?.lastName || "کاربر",
+            phone: user?.phone || "",
+            isDefault: apiAddress.default,
+            type: "home" as const,
+          })
+        );
+
+        setAddresses(transformedAddresses);
+      } else {
+        toast({
+          title: "خطا در دریافت آدرس‌ها",
+          description: "مشکلی در دریافت آدرس‌ها رخ داد",
+          variant: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+      toast({
+        title: "خطا در دریافت آدرس‌ها",
+        description: "مشکلی در ارتباط با سرور رخ داد",
+        variant: "error",
+      });
+    } finally {
+      setIsLoadingAddresses(false);
+    }
+  };
+
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/");
+    } else if (user) {
+      fetchAddresses();
     }
   }, [user, isLoading, router]);
 
@@ -169,7 +197,7 @@ export default function AddressesPage() {
     setIsDialogOpen(true);
   };
 
-  const openEditDialog = (address: (typeof sampleAddresses)[0]) => {
+  const openEditDialog = (address: Address) => {
     setIsEditing(true);
     setCurrentAddress(address);
     form.reset({
@@ -180,296 +208,489 @@ export default function AddressesPage() {
       province: address.province,
       city: address.city,
       address: address.address,
-      type: address.type as "home" | "work" | "other",
+      type: address.type,
       isDefault: address.isDefault,
     });
     setIsDialogOpen(true);
   };
 
-  const onSubmit = (data: AddressFormValues) => {
-    if (isEditing && currentAddress) {
-      // Update existing address
-      setAddresses(
-        addresses.map((addr) => {
-          if (addr.id === currentAddress.id) {
-            return {
-              ...addr,
-              ...data,
-            };
-          }
-          // If this address is set as default, remove default from others
-          if (data.isDefault && addr.id !== currentAddress.id) {
-            return { ...addr, isDefault: false };
-          }
-          return addr;
-        })
-      );
-      toast({
-        title: "آدرس ویرایش شد",
-        description: "آدرس با موفقیت ویرایش شد",
-      });
-    } else {
-      // Add new address
-      const newAddress = {
-        id:
-          addresses.length > 0
-            ? Math.max(...addresses.map((a) => a.id)) + 1
-            : 1,
-        ...data,
-      };
+  const onSubmit = async (data: AddressFormValues) => {
+    setIsSubmitting(true);
+    try {
+      if (isEditing && currentAddress) {
+        // Update existing address
+        const response = await customFetch(`/address/${currentAddress.uuid}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            province: data.province,
+            city: data.city,
+            address: data.address,
+            postalCode: data.postalCode,
+            houseNumber: data.houseNumber || "0",
+            floorNumber: data.floorNumber || "0",
+            default: data.isDefault,
+          }),
+        });
 
-      // If this address is set as default or it's the first address, remove default from others
-      if (data.isDefault || addresses.length === 0) {
-        setAddresses([
-          //@ts-ignore
-          newAddress,
-          ...addresses.map((addr) => ({ ...addr, isDefault: false })),
-        ]);
+        if (response.ok) {
+          toast({
+            title: "آدرس ویرایش شد",
+            description: "آدرس با موفقیت ویرایش شد",
+          });
+          fetchAddresses(); // Refresh addresses
+        } else {
+          throw new Error("Failed to update address");
+        }
       } else {
-        //@ts-ignore
-        setAddresses([newAddress, ...addresses]);
-      }
+        // Add new address
+        const response = await customFetch("/address", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            province: data.province,
+            city: data.city,
+            address: data.address,
+            postalCode: data.postalCode,
+            houseNumber: data.houseNumber || "0",
+            floorNumber: data.floorNumber || "0",
+            default: data.isDefault,
+          }),
+        });
 
+        if (response.ok) {
+          toast({
+            title: "آدرس اضافه شد",
+            description: "آدرس جدید با موفقیت اضافه شد",
+          });
+          fetchAddresses(); // Refresh addresses
+        } else {
+          throw new Error("Failed to create address");
+        }
+      }
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error("Error saving address:", error);
       toast({
-        title: "آدرس اضافه شد",
-        description: "آدرس جدید با موفقیت اضافه شد",
+        title: "خطا در ذخیره آدرس",
+        description: "مشکلی در ذخیره آدرس رخ داد",
+        variant: "error",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const deleteAddress = async (uuid: string) => {
+    try {
+      const response = await customFetch(`/address/${uuid}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        const addressToDelete = addresses.find((addr) => addr.uuid === uuid);
+        toast({
+          title: "آدرس حذف شد",
+          description: `آدرس "${addressToDelete?.title}" با موفقیت حذف شد`,
+        });
+        fetchAddresses(); // Refresh addresses
+      } else {
+        throw new Error("Failed to delete address");
+      }
+    } catch (error) {
+      console.error("Error deleting address:", error);
+      toast({
+        title: "خطا در حذف آدرس",
+        description: "مشکلی در حذف آدرس رخ داد",
+        variant: "error",
       });
     }
-    setIsDialogOpen(false);
   };
 
-  const deleteAddress = (id: number) => {
-    const addressToDelete = addresses.find((addr) => addr.id === id);
-    setAddresses(addresses.filter((addr) => addr.id !== id));
+  const setAsDefault = async (uuid: string) => {
+    try {
+      const response = await customFetch(`/address/${uuid}/default`, {
+        method: "PUT",
+      });
 
-    toast({
-      title: "آدرس حذف شد",
-      description: `آدرس "${addressToDelete?.title}" با موفقیت حذف شد`,
-    });
-
-    // If the deleted address was default and we have other addresses, set the first one as default
-    if (addressToDelete?.isDefault && addresses.length > 1) {
-      const remainingAddresses = addresses.filter((addr) => addr.id !== id);
-      setAddresses(
-        remainingAddresses.map((addr, index) => ({
-          ...addr,
-          isDefault: index === 0,
-        }))
-      );
+      if (response.ok) {
+        toast({
+          title: "آدرس پیش‌فرض تنظیم شد",
+          description: "آدرس با موفقیت به عنوان پیش‌فرض تنظیم شد",
+        });
+        fetchAddresses(); // Refresh addresses
+      } else {
+        throw new Error("Failed to set default address");
+      }
+    } catch (error) {
+      console.error("Error setting default address:", error);
+      toast({
+        title: "خطا در تنظیم آدرس پیش‌فرض",
+        description: "مشکلی در تنظیم آدرس پیش‌فرض رخ داد",
+        variant: "error",
+      });
     }
   };
 
-  const setAsDefault = (id: number) => {
-    setAddresses(
-      addresses.map((addr) => ({
-        ...addr,
-        isDefault: addr.id === id,
-      }))
+  if (isLoadingAddresses) {
+    return (
+      <div className="container py-8 mt-20">
+        <div className="flex justify-center items-center min-h-[50vh]">
+          <LoadingSpinner size="lg" />
+        </div>
+      </div>
     );
-
-    toast({
-      title: "آدرس پیش‌فرض تغییر کرد",
-      description: "آدرس انتخاب شده به عنوان آدرس پیش‌فرض تنظیم شد",
-    });
-  };
+  }
 
   return (
-    <div className="container py-8 mt-20">
-      {/* ---------------------------------------------------------------- */}
-      {/*  Top bar: back-button + breadcrumb                               */}
-      {/* ---------------------------------------------------------------- */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <BackButton href="/profile" label="بازگشت به پروفایل" />
-        <Breadcrumb
-          items={[
-            { label: "پروفایل", href: "/profile" },
-            {
-              label: "آدرس‌های من",
-              href: "/profile/addresses",
-              isCurrent: true,
-            },
-          ]}
-        />
+    <div className="container py-8 mt-20" dir="rtl">
+      <Breadcrumb
+        className="mb-6"
+        items={[
+          { label: "پروفایل", href: "/profile" },
+          { label: "آدرس‌ها", href: "/profile/addresses", isCurrent: true },
+        ]}
+      />
+
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h1 className="text-2xl font-bold">آدرس‌های من</h1>
+          <p className="text-muted-foreground mt-1">
+            آدرس‌های خود را مدیریت کنید
+          </p>
+        </div>
+        <Button onClick={openAddDialog} className="rounded-full">
+          <Plus className="ml-2 h-4 w-4" />
+          افزودن آدرس جدید
+        </Button>
       </div>
 
-      {/* ---------------------------------------------------------------- */}
-      {/*  Card wrapper                                                    */}
-      {/* ---------------------------------------------------------------- */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>آدرس‌های من</CardTitle>
-            <CardDescription>
-              آدرس‌های ثبت شده برای ارسال سفارش‌ها
-            </CardDescription>
-          </div>
-
-          {/* Add-address dialog trigger */}
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger asChild>
-              <Button
-                onClick={openAddDialog}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-              >
-                <Plus className="ml-2 h-4 w-4" />
-                افزودن آدرس جدید
-              </Button>
-            </DialogTrigger>
-
-            {/* -------- Dialog markup (unchanged except border colors) ------ */}
-            <DialogContent className="sm:max-w-[550px]">
-              <DialogHeader>
-                <DialogTitle>
-                  {isEditing ? "ویرایش آدرس" : "افزودن آدرس جدید"}
-                </DialogTitle>
-                <DialogDescription>
-                  {isEditing
-                    ? "اطلاعات آدرس را ویرایش کنید و سپس دکمه ذخیره را بزنید"
-                    : "اطلاعات آدرس جدید را وارد کنید"}
-                </DialogDescription>
-              </DialogHeader>
-
-              {/* --- form code omitted for brevity; keep previous refactor --- */}
-              {/* Key token changes inside form:                              */}
-              {/*  • border → border-border                                   */}
-              {/*  • checkbox border → border-border                          */}
-              {/*  • helper text → text-muted-foreground                      */}
-              {/* (See earlier full refactor of AddressesPage.tsx)            */}
-            </DialogContent>
-          </Dialog>
-        </CardHeader>
-
-        <CardContent>
-          {addresses.length > 0 ? (
-            /* ============================================================ */
-            /*  Address list                                                */
-            /* ============================================================ */
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {addresses.map((addr) => (
-                <div
-                  key={addr.id}
-                  className={`
-                  border border-border rounded-lg p-5 relative
-                  ${
-                    addr.isDefault
-                      ? "border-purple-500 bg-purple-50 dark:bg-purple-900/10"
-                      : ""
-                  }
-                `}
-                >
-                  {/* Default badge */}
-                  {addr.isDefault && (
-                    <div className="absolute top-3 left-3">
-                      <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-800/20 dark:text-purple-400">
+      {addresses.length === 0 ? (
+        <Card className="text-center py-12">
+          <CardContent>
+            <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold mb-2">هیچ آدرسی یافت نشد</h3>
+            <p className="text-muted-foreground mb-4">
+              برای شروع خرید، ابتدا یک آدرس اضافه کنید
+            </p>
+            <Button onClick={openAddDialog} className="rounded-full">
+              <Plus className="ml-2 h-4 w-4" />
+              افزودن آدرس جدید
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2">
+          {addresses.map((address) => (
+            <Card key={address.uuid} className="relative">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center">
+                    {address.type === "home" && (
+                      <Home className="ml-2 h-4 w-4" />
+                    )}
+                    {address.type === "work" && (
+                      <Briefcase className="ml-2 h-4 w-4" />
+                    )}
+                    {address.title}
+                  </CardTitle>
+                  <div className="flex items-center gap-2">
+                    {address.isDefault && (
+                      <Badge className="bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400">
                         <Check className="ml-1 h-3 w-3" />
                         پیش‌فرض
                       </Badge>
-                    </div>
-                  )}
-
-                  {/* Header row with icon */}
-                  <div className="flex items-start mb-3">
-                    <div
-                      className={`
-                      p-2 rounded-full mr-2
-                      ${
-                        addr.type === "home"
-                          ? "bg-chart-1/10 text-chart-1"
-                          : addr.type === "work"
-                          ? "bg-chart-2/10 text-chart-2"
-                          : "bg-muted text-muted-foreground"
-                      }
-                    `}
-                    >
-                      {addr.type === "home" ? (
-                        <Home className="h-5 w-5" />
-                      ) : addr.type === "work" ? (
-                        <Briefcase className="h-5 w-5" />
-                      ) : (
-                        <MapPin className="h-5 w-5" />
-                      )}
-                    </div>
-
-                    <div className="flex-1">
-                      <h3 className="font-medium text-lg">{addr.title}</h3>
-                      <p className="text-muted-foreground text-sm">
-                        {addr.recipient} | {addr.phone}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Details */}
-                  <div className="mb-3 text-sm text-muted-foreground space-y-1">
-                    <p>
-                      <span className="font-medium ml-1">استان:</span>
-                      {addr.province}،{" "}
-                      <span className="font-medium ml-1">شهر:</span>
-                      {addr.city}
-                    </p>
-                    <p>
-                      <span className="font-medium ml-1">کد پستی:</span>
-                      {addr.postalCode}
-                    </p>
-                    <p className="mt-2">{addr.address}</p>
-                  </div>
-
-                  {/* Action buttons */}
-                  <div className="flex justify-end space-x-2 space-x-reverse mt-4">
-                    {!addr.isDefault && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setAsDefault(addr.id)}
-                        className="text-purple-600 border-purple-200 hover:bg-purple-50 hover:text-purple-700 dark:border-purple-800 dark:hover:bg-purple-900/20"
-                      >
-                        <Check className="ml-1 h-4 w-4" />
-                        تنظیم به عنوان پیش‌فرض
-                      </Button>
                     )}
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openEditDialog(addr)}
-                    >
-                      <Edit2 className="ml-1 h-4 w-4" />
-                      ویرایش
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => deleteAddress(addr.id)}
-                      className="text-destructive border-destructive/20 hover:bg-destructive/10"
-                    >
-                      <Trash2 className="ml-1 h-4 w-4" />
-                      حذف
-                    </Button>
                   </div>
                 </div>
-              ))}
-            </div>
-          ) : (
-            /* ============================================================ */
-            /*  Empty state                                                 */
-            /* ============================================================ */
-            <div className="text-center py-12">
-              <MapPin className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-              <h3 className="text-lg font-medium mb-2">
-                هنوز آدرسی ثبت نکرده‌اید
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                برای ثبت سفارش نیاز به حداقل یک آدرس دارید
-              </p>
-              <Button
-                onClick={openAddDialog}
-                className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-              >
-                <Plus className="ml-2 h-4 w-4" />
-                افزودن آدرس جدید
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                <CardDescription>
+                  {address.recipient} • {address.phone}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2 text-sm">
+                  <p className="flex items-start">
+                    <MapPin className="ml-2 h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                    <span>
+                      {address.province}، {address.city}
+                    </span>
+                  </p>
+                  <p className="mr-6">{address.address}</p>
+                  <p className="mr-6">
+                    کد پستی: {address.postalCode} | پلاک: {address.houseNumber}{" "}
+                    | طبقه: {address.floorNumber}
+                  </p>
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => openEditDialog(address)}
+                    className="flex-1"
+                  >
+                    <Edit2 className="ml-2 h-3 w-3" />
+                    ویرایش
+                  </Button>
+                  {!address.isDefault && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setAsDefault(address.uuid)}
+                      className="flex-1"
+                    >
+                      <Check className="ml-2 h-3 w-3" />
+                      پیش‌فرض
+                    </Button>
+                  )}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => deleteAddress(address.uuid)}
+                    className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Add/Edit Address Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {isEditing ? "ویرایش آدرس" : "افزودن آدرس جدید"}
+            </DialogTitle>
+            <DialogDescription>اطلاعات آدرس خود را وارد کنید</DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>عنوان آدرس</FormLabel>
+                    <FormControl>
+                      <Input placeholder="مثل: منزل، محل کار" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="recipient"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>نام گیرنده</FormLabel>
+                    <FormControl>
+                      <Input placeholder="نام و نام خانوادگی" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="phone"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>شماره تماس</FormLabel>
+                    <FormControl>
+                      <Input placeholder="09123456789" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="province"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>استان</FormLabel>
+                      <FormControl>
+                        <Input placeholder="تهران" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>شهر</FormLabel>
+                      <FormControl>
+                        <Input placeholder="تهران" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>آدرس کامل</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="آدرس کامل خود را وارد کنید"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-3 gap-4">
+                <FormField
+                  control={form.control}
+                  name="postalCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>کد پستی</FormLabel>
+                      <FormControl>
+                        <Input placeholder="1234567890" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="houseNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>پلاک</FormLabel>
+                      <FormControl>
+                        <Input placeholder="123" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="floorNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>طبقه</FormLabel>
+                      <FormControl>
+                        <Input placeholder="2" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>نوع آدرس</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex flex-col space-y-1"
+                      >
+                        <FormItem className="flex items-center space-x-3 space-x-reverse">
+                          <FormControl>
+                            <RadioGroupItem value="home" />
+                          </FormControl>
+                          <FormLabel className="font-normal">منزل</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-x-reverse">
+                          <FormControl>
+                            <RadioGroupItem value="work" />
+                          </FormControl>
+                          <FormLabel className="font-normal">محل کار</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-3 space-x-reverse">
+                          <FormControl>
+                            <RadioGroupItem value="other" />
+                          </FormControl>
+                          <FormLabel className="font-normal">سایر</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="isDefault"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-x-reverse rounded-md border p-4">
+                    <FormControl>
+                      <input
+                        type="checkbox"
+                        checked={field.value}
+                        onChange={field.onChange}
+                        className="mt-1"
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>تنظیم به عنوان آدرس پیش‌فرض</FormLabel>
+                      <FormDescription>
+                        این آدرس به عنوان آدرس پیش‌فرض برای سفارشات آینده تنظیم
+                        می‌شود
+                      </FormDescription>
+                    </div>
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                  disabled={isSubmitting}
+                >
+                  انصراف
+                </Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <LoadingSpinner size="sm" />
+                  ) : isEditing ? (
+                    "ویرایش آدرس"
+                  ) : (
+                    "افزودن آدرس"
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

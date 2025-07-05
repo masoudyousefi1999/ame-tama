@@ -1,100 +1,216 @@
-"use client"
+"use client";
 
-import { useFormStatus } from "react-dom"
-import { submitContactForm, type ContactFormState } from "@/app/actions/contact"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { ReloadIcon } from "@radix-ui/react-icons"
-import { useActionState } from "react"
-
-const initialState: ContactFormState = {}
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { CheckCircle, Send, Loader2 } from "lucide-react";
+import { submitContactForm } from "@/app/actions/contact";
+import { cn } from "@/lib/utils";
 
 function SubmitButton() {
-  const { pending } = useFormStatus()
-
   return (
-    <Button type="submit" className="w-full" disabled={pending}>
-      {pending ? (
-        <>
-          <ReloadIcon className="ml-2 h-4 w-4 animate-spin" />
-          در حال ارسال...
-        </>
-      ) : (
-        "ارسال پیام"
-      )}
+    <Button
+      type="submit"
+      className="w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-200 hover:scale-105 group"
+    >
+      <Send className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+      ارسال پیام
     </Button>
-  )
+  );
 }
 
 export function ContactForm() {
-  const [state, formAction] = useActionState(submitContactForm, initialState)
+  const [state, setState] = useState<{
+    errors?: {
+      name?: string[];
+      email?: string[];
+      subject?: string[];
+      message?: string[];
+      _form?: string[];
+    };
+    success?: boolean;
+    message?: string;
+  }>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleSubmit = async (formData: FormData) => {
+    setIsSubmitting(true);
+    setState({});
+
+    try {
+      const result = await submitContactForm(state, formData);
+      setState(result);
+
+      if (result.success) {
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      }
+    } catch (error) {
+      setState({
+        errors: {
+          _form: ["خطا در ارسال پیام. لطفاً دوباره تلاش کنید."],
+        },
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    // Clear error when user starts typing
+    if (state.errors?.[field as keyof typeof state.errors]) {
+      setState((prev) => ({
+        ...prev,
+        errors: {
+          ...prev.errors,
+          [field]: undefined,
+        },
+      }));
+    }
+  };
+
+  const hasErrors = state.errors && Object.keys(state.errors).length > 0;
 
   return (
-    <form action={formAction} className="space-y-6">
-      {state.errors?._form && (
-        <Alert variant="destructive">
-          <AlertDescription>{state.errors._form}</AlertDescription>
-        </Alert>
-      )}
+    <div className="w-full max-w-md mx-auto">
+      <form action={handleSubmit} className="space-y-6">
+        {/* Success Message */}
+        {state.success && (
+          <Alert className="border-success bg-success/10 text-success animate-bounce-in">
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>{state.message}</AlertDescription>
+          </Alert>
+        )}
 
-      {state.success && (
-        <Alert className="bg-green-50 text-green-800 border-green-200">
-          <AlertDescription>{state.message}</AlertDescription>
-        </Alert>
-      )}
+        {/* Form Error */}
+        {state.errors?._form && (
+          <Alert variant="destructive" className="animate-shake">
+            <AlertDescription>{state.errors._form.join(", ")}</AlertDescription>
+          </Alert>
+        )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Name Field */}
         <div className="space-y-2">
-          <Label htmlFor="name">نام و نام خانوادگی</Label>
+          <Label htmlFor="name" className="text-sm font-medium">
+            نام و نام خانوادگی
+          </Label>
           <Input
             id="name"
             name="name"
-            placeholder="نام و نام خانوادگی خود را وارد کنید"
-            className={state.errors?.name ? "border-red-500" : ""}
+            type="text"
+            value={formData.name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
+            error={!!state.errors?.name}
+            className="transition-all duration-200"
+            placeholder="نام خود را وارد کنید"
+            required
           />
-          {state.errors?.name && <p className="text-sm text-red-500">{state.errors.name[0]}</p>}
+          {state.errors?.name && (
+            <p className="text-sm text-destructive animate-fade-in-up">
+              {state.errors.name.join(", ")}
+            </p>
+          )}
         </div>
 
+        {/* Email Field */}
         <div className="space-y-2">
-          <Label htmlFor="email">ایمیل</Label>
+          <Label htmlFor="email" className="text-sm font-medium">
+            ایمیل
+          </Label>
           <Input
             id="email"
             name="email"
             type="email"
-            placeholder="ایمیل خود را وارد کنید"
-            className={state.errors?.email ? "border-red-500" : ""}
+            value={formData.email}
+            onChange={(e) => handleInputChange("email", e.target.value)}
+            error={!!state.errors?.email}
+            className="transition-all duration-200"
+            placeholder="example@email.com"
+            required
           />
-          {state.errors?.email && <p className="text-sm text-red-500">{state.errors.email[0]}</p>}
+          {state.errors?.email && (
+            <p className="text-sm text-destructive animate-fade-in-up">
+              {state.errors.email.join(", ")}
+            </p>
+          )}
         </div>
-      </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="subject">موضوع</Label>
-        <Input
-          id="subject"
-          name="subject"
-          placeholder="موضوع پیام خود را وارد کنید"
-          className={state.errors?.subject ? "border-red-500" : ""}
-        />
-        {state.errors?.subject && <p className="text-sm text-red-500">{state.errors.subject[0]}</p>}
-      </div>
+        {/* Subject Field */}
+        <div className="space-y-2">
+          <Label htmlFor="subject" className="text-sm font-medium">
+            موضوع
+          </Label>
+          <Input
+            id="subject"
+            name="subject"
+            type="text"
+            value={formData.subject}
+            onChange={(e) => handleInputChange("subject", e.target.value)}
+            error={!!state.errors?.subject}
+            className="transition-all duration-200"
+            placeholder="موضوع پیام خود را وارد کنید"
+            required
+          />
+          {state.errors?.subject && (
+            <p className="text-sm text-destructive animate-fade-in-up">
+              {state.errors.subject.join(", ")}
+            </p>
+          )}
+        </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="message">پیام</Label>
-        <Textarea
-          id="message"
-          name="message"
-          rows={5}
-          placeholder="پیام خود را وارد کنید"
-          className={state.errors?.message ? "border-red-500" : ""}
-        />
-        {state.errors?.message && <p className="text-sm text-red-500">{state.errors.message[0]}</p>}
-      </div>
+        {/* Message Field */}
+        <div className="space-y-2">
+          <Label htmlFor="message" className="text-sm font-medium">
+            پیام
+          </Label>
+          <Textarea
+            id="message"
+            name="message"
+            value={formData.message}
+            onChange={(e) => handleInputChange("message", e.target.value)}
+            className={cn(
+              "min-h-[120px] resize-none transition-all duration-200",
+              state.errors?.message &&
+                "border-destructive focus-visible:ring-destructive form-error"
+            )}
+            placeholder="پیام خود را اینجا بنویسید..."
+            required
+          />
+          {state.errors?.message && (
+            <p className="text-sm text-destructive animate-fade-in-up">
+              {state.errors.message.join(", ")}
+            </p>
+          )}
+        </div>
 
-      <SubmitButton />
-    </form>
-  )
+        {/* Submit Button */}
+        <Button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-200 hover:scale-105 group disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {isSubmitting ? (
+            <>
+              <Loader2 className="h-4 w-4 ml-2 animate-spin" />
+              در حال ارسال...
+            </>
+          ) : (
+            <>
+              <Send className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
+              ارسال پیام
+            </>
+          )}
+        </Button>
+      </form>
+    </div>
+  );
 }

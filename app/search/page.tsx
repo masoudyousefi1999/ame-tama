@@ -1,25 +1,39 @@
-import { searchProducts } from "@/lib/search";
 import SearchPageClient from "@/components/search/search-page-client";
-import { getAllProducts } from "@/lib/products";
+import { productLimit } from "@/lib/product-limit";
+import { customFetch } from "@/lib/utils";
 
 export default async function SearchPage({
   searchParams,
 }: {
   searchParams: { q?: string; page?: string };
 }) {
-  let results = [];
-  let totalPages = 1;
   const query = searchParams.q || "";
   const page = Number.parseInt(searchParams.page || "1");
+  const limit = productLimit;
+  let results = [];
+  let totalCount = 0;
+  let totalPages = 1;
 
   if (query) {
     try {
-      const searchResults = await getAllProducts();
-      results = (searchResults as any)?.products || [];
-      totalPages = (searchResults as any)?.totalPages || 1;
+      const params = new URLSearchParams();
+      params.set("search", query);
+      params.set("page", String(page));
+      params.set("limit", String(limit));
+      const res = await customFetch(`/product/search?${params.toString()}`);
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        results = data;
+        totalCount = data.length;
+      } else {
+        results = data.products || [];
+        totalCount = data.totalCount || 0;
+      }
+      totalPages = Math.max(1, Math.ceil(totalCount / limit));
     } catch (error) {
       console.error("Error searching products:", error);
       results = [];
+      totalCount = 0;
       totalPages = 1;
     }
   }

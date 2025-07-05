@@ -1,7 +1,7 @@
 import type React from "react";
 import "@/app/globals.css";
+import "simplebar-react/dist/simplebar.min.css";
 import { Vazirmatn } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
@@ -15,6 +15,9 @@ import SplashScreen from "@/components/splash-screen";
 import PWAInstallPrompt from "@/components/pwa-install-prompt";
 import PageTransition from "@/components/page-transition";
 import dynamic from "next/dynamic";
+import { LoginModalProvider } from "@/context/login-modal-context";
+import { toast } from "@/components/ui/use-toast";
+import LoginToastEffect from "@/components/LoginToastEffect";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -78,15 +81,11 @@ export default function RootLayout({
         />
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange={true}
-        >
-          <SplashScreen>
-            <ViewportHeightFix />
-            <ScrollToTop />
+        <LoginToastEffect />
+        <SplashScreen>
+          <ViewportHeightFix />
+          <ScrollToTop />
+          <LoginModalProvider>
             <AuthProvider>
               <CartProvider>
                 <WishlistProvider>
@@ -105,8 +104,8 @@ export default function RootLayout({
                 </WishlistProvider>
               </CartProvider>
             </AuthProvider>
-          </SplashScreen>
-        </ThemeProvider>
+          </LoginModalProvider>
+        </SplashScreen>
       </body>
     </html>
   );

@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Upload, X, ImageIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -91,7 +91,7 @@ export function ProductForm({ product }: ProductFormProps) {
         toast({
           title: "خطا",
           description: "لطفاً فقط فایل‌های تصویری انتخاب کنید",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -100,7 +100,7 @@ export function ProductForm({ product }: ProductFormProps) {
         toast({
           title: "خطا",
           description: "حجم هر فایل نباید بیشتر از ۵ مگابایت باشد",
-          variant: "destructive",
+          variant: "error",
         });
         return;
       }
@@ -146,7 +146,7 @@ export function ProductForm({ product }: ProductFormProps) {
       toast({
         title: "خطا",
         description: "آپلود تصاویر با شکست مواجه شد",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsUploading(false);
@@ -190,7 +190,7 @@ export function ProductForm({ product }: ProductFormProps) {
       toast({
         title: "خطا",
         description: "لطفاً حداقل یک تصویر برای محصول انتخاب کنید",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -243,7 +243,7 @@ export function ProductForm({ product }: ProductFormProps) {
         description: `${
           product ? "به‌روزرسانی" : "ایجاد"
         } محصول با شکست مواجه شد`,
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);

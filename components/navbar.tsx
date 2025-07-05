@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTheme } from "next-themes";
 import {
   Menu,
   X,
@@ -39,6 +38,8 @@ import { toast } from "@/components/ui/use-toast";
 interface CategoryWithChildren extends ICategoryType {}
 
 export default function Navbar() {
+  const pathname = usePathname();
+
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
@@ -46,12 +47,9 @@ export default function Navbar() {
   const [activeSubcategory, setActiveSubcategory] = useState<number | null>(
     null
   );
-  const { theme, setTheme } = useTheme();
   const categoriesRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
-  const [mounted, setMounted] = useState(false);
-  const pathname = usePathname();
   const { user, logout } = useAuth();
 
   const [categoryTree, setCategoryTree] = useState<CategoryWithChildren[]>([]);
@@ -62,6 +60,10 @@ export default function Navbar() {
   const [mobileCategoryPath, setMobileCategoryPath] = useState<
     { id: string; name: string; slug: string }[]
   >([]);
+
+  const shouldRenderNavbar = !pathname.startsWith("/checkout/success");
+
+  const parentRef = useRef<HTMLDivElement>(null);
 
   // Fetch categories once
   useEffect(() => {
@@ -77,27 +79,26 @@ export default function Navbar() {
         toast({
           title: "خطا در بارگذاری دسته‌بندی‌ها",
           description: "مشکلی در بارگذاری دسته‌بندی‌ها رخ داد.",
-          variant: "destructive",
+          variant: "error",
         });
         setCategoryTree([]);
         setMobileCategories([]);
       }
     };
+    if (!shouldRenderNavbar) {
+      return; // This avoids rendering Navbar content
+    }
+
     fetchCategories();
   }, []);
-
-  // Mark as mounted for theme toggle
-  useEffect(() => setMounted(true), []);
-
-  // Close the mobile menu on route change
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
 
   // Handle scroll & outside clicks
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 10);
-    const onClick = (e: MouseEvent) => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (parentRef.current && !parentRef.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
       if (
         categoriesRef.current &&
         !categoriesRef.current.contains(e.target as Node)
@@ -106,23 +107,14 @@ export default function Navbar() {
         setActiveCategory(null);
         setActiveSubcategory(null);
       }
-      if (
-        isOpen &&
-        menuRef.current &&
-        hamburgerRef.current &&
-        !menuRef.current.contains(e.target as Node) &&
-        !hamburgerRef.current.contains(e.target as Node)
-      ) {
-        setIsOpen(false);
-      }
     };
     window.addEventListener("scroll", onScroll);
-    document.addEventListener("mousedown", onClick);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
       window.removeEventListener("scroll", onScroll);
-      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, []);
 
   // Prevent body scroll when menu is open
   useEffect(() => {
@@ -164,7 +156,7 @@ export default function Navbar() {
       toast({
         title: "خطا در دسته‌بندی",
         description: "مشکلی در بارگذاری زیردسته‌ها رخ داد.",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
@@ -192,7 +184,7 @@ export default function Navbar() {
       toast({
         title: "خطا در ناوبری",
         description: "مشکلی در بازگشت به سطح قبلی رخ داد.",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
@@ -206,25 +198,30 @@ export default function Navbar() {
       toast({
         title: "خطا در خروج",
         description: "مشکلی در خروج از حساب کاربری رخ داد.",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
 
+  if (!shouldRenderNavbar) {
+    return;
+  }
+
   return (
     <header
+      ref={parentRef}
       role="navigation"
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300 backdrop-blur-sm",
+        "fixed inset-x-0 top-0 z-50 transition-all duration-300 backdrop-blur-md",
         isScrolled
-          ? "bg-popover/90 shadow-md dark:bg-popover/90"
-          : "bg-background/10 dark:bg-transparent"
+          ? "bg-popover/90 border-b border-border glass"
+          : "bg-popover/80"
       )}
     >
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 z-10 relative">
-          <span className="text-xl md:text-2xl font-bold whitespace-nowrap text-primary drop-shadow-lg">
+          <span className="text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
             AME-TAMA
           </span>
         </Link>
@@ -233,7 +230,7 @@ export default function Navbar() {
         <nav className="hidden lg:flex items-center space-x-6">
           <Link
             href="/"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors"
+            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
           >
             خانه
           </Link>
@@ -244,7 +241,7 @@ export default function Navbar() {
               aria-expanded={isCategoriesOpen}
               aria-controls="category-menu"
               onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
-              className="flex items-center p-2 text-foreground hover:text-accent transition-colors"
+              className="flex items-center p-2 text-foreground hover:text-accent transition-colors nav-link"
             >
               دسته‌بندی‌ها
               <ChevronDown
@@ -261,13 +258,13 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-1 bg-popover dark:bg-popover rounded-lg shadow-lg py-2 min-w-[220px] z-50"
+                  className="absolute right-0 mt-1 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] z-50 dropdown-menu"
                 >
                   {categoryTree.map((cat) => (
                     <div key={cat.id} className="relative">
                       <div
                         onMouseEnter={() => setActiveCategory(cat.id as any)}
-                        className="flex justify-between items-center px-4 py-2 bg-popover hover:bg-muted dark:hover:bg-muted cursor-pointer transition-colors"
+                        className="flex justify-between items-center px-4 py-2 bg-popover hover:bg-muted cursor-pointer transition-colors"
                       >
                         <Link
                           href={`/category/figures/${cat.slug}`}
@@ -285,7 +282,7 @@ export default function Navbar() {
                         cat.children?.length > 0 && (
                           <div
                             onMouseLeave={() => setActiveSubcategory(null)}
-                            className="absolute right-full top-0 bg-popover dark:bg-popover rounded-lg shadow-lg py-2 min-w-[220px] mr-1"
+                            className="absolute right-full top-0 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] mr-1 dropdown-menu"
                           >
                             {cat.children.map((sub) => (
                               <div key={sub.id} className="relative">
@@ -293,7 +290,7 @@ export default function Navbar() {
                                   onMouseEnter={() =>
                                     setActiveSubcategory(sub.id)
                                   }
-                                  className="flex justify-between items-center px-4 py-2 bg-popover hover:bg-muted dark:hover:bg-muted cursor-pointer transition-colors"
+                                  className="flex justify-between items-center px-4 py-2 bg-popover hover:bg-muted cursor-pointer transition-colors"
                                 >
                                   <Link
                                     href={`/category/${sub.slug}`}
@@ -309,7 +306,7 @@ export default function Navbar() {
 
                                 {activeSubcategory === sub.id &&
                                   sub.children?.length > 0 && (
-                                    <div className="absolute right-full top-0 bg-popover dark:bg-popover rounded-lg shadow-lg py-2 min-w-[220px] mr-1">
+                                    <div className="absolute right-full top-0 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] mr-1 dropdown-menu">
                                       {sub.children.map((lvl3) => (
                                         <Link
                                           key={lvl3.id}
@@ -317,7 +314,7 @@ export default function Navbar() {
                                           onClick={() =>
                                             setIsCategoriesOpen(false)
                                           }
-                                          className="block px-4 py-2 whitespace-nowrap bg-popover hover:bg-muted dark:hover:bg-muted transition-colors text-foreground"
+                                          className="block px-4 py-2 whitespace-nowrap bg-popover hover:bg-muted transition-colors text-foreground"
                                         >
                                           {lvl3.name}
                                         </Link>
@@ -336,26 +333,26 @@ export default function Navbar() {
           </div>
 
           <Link
-            href="/category/figures"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors"
+            href="/shop"
+            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
           >
             فروشگاه
           </Link>
           <Link
             href="/about"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors"
+            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
           >
             درباره ما
           </Link>
           <Link
             href="/contact"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors"
+            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
           >
             تماس با ما
           </Link>
           <Link
             href="/faq"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors"
+            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
           >
             سوالات متداول
           </Link>
@@ -372,23 +369,6 @@ export default function Navbar() {
           <div className="hidden lg:block w-64">
             <SearchBar isScrolled={isScrolled} />
           </div>
-
-          {/* Theme Toggle */}
-          {mounted && (
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="تغییر تم"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="hidden lg:flex p-2 text-foreground hover:text-accent transition-colors"
-            >
-              {theme === "dark" ? (
-                <Sun className="h-5 w-5" />
-              ) : (
-                <Moon className="h-5 w-5" />
-              )}
-            </Button>
-          )}
 
           <UserMenu />
           <CartDropdown />
@@ -415,7 +395,7 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-foreground/50 dark:bg-foreground/80 z-40 lg:hidden"
+            className="fixed inset-0 bg-foreground/50 z-40 lg:hidden"
             onClick={() => setIsOpen(false)}
           >
             <motion.div
@@ -424,7 +404,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm bg-popover dark:bg-popover z-50"
+              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-50 overflow-y-auto bg-popover/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 overflow-y-auto min-h-screen">
@@ -433,15 +413,15 @@ export default function Navbar() {
                   <Link
                     href="/"
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <Home className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">خانه</span>
                   </Link>
                   <Link
-                    href="/category/figures"
+                    href="/shop"
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <ShoppingBag className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">فروشگاه</span>
@@ -449,7 +429,7 @@ export default function Navbar() {
                   <Link
                     href="/about"
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <Info className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">درباره ما</span>
@@ -457,7 +437,7 @@ export default function Navbar() {
                   <Link
                     href="/contact"
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <MessageSquare className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">تماس</span>
@@ -465,7 +445,7 @@ export default function Navbar() {
                   <Link
                     href="/faq"
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <HelpCircle className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">سوالات</span>
@@ -473,7 +453,7 @@ export default function Navbar() {
                   <Link
                     href="/search"
                     onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <Search className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">جستجو</span>
@@ -483,7 +463,7 @@ export default function Navbar() {
                     <Link
                       href="/profile"
                       onClick={() => setIsOpen(false)}
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                     >
                       <User className="h-6 w-6 text-foreground mb-2" />
                       <span className="text-xs text-foreground">پروفایل</span>
@@ -492,30 +472,10 @@ export default function Navbar() {
                   {user && (
                     <button
                       onClick={handleLogout}
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
+                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                     >
                       <LogOut className="h-6 w-6 text-foreground mb-2" />
                       <span className="text-xs text-foreground">خروج</span>
-                    </button>
-                  )}
-                  {mounted && (
-                    <button
-                      onClick={() =>
-                        setTheme(theme === "dark" ? "light" : "dark")
-                      }
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted dark:bg-card dark:hover:bg-muted transition-colors"
-                    >
-                      {theme === "dark" ? (
-                        <>
-                          <Sun className="h-6 w-6 text-foreground mb-2" />
-                          <span className="text-xs text-foreground">روشن</span>
-                        </>
-                      ) : (
-                        <>
-                          <Moon className="h-6 w-6 text-foreground mb-2" />
-                          <span className="text-xs text-foreground">تیره</span>
-                        </>
-                      )}
                     </button>
                   )}
                 </div>
@@ -565,7 +525,7 @@ export default function Navbar() {
                       <Link
                         href={`/category/${c.slug}`}
                         onClick={() => setIsOpen(false)}
-                        className="block p-2 bg-card dark:bg-card rounded-lg text-sm hover:bg-muted dark:hover:bg-muted transition-colors flex-1 text-foreground"
+                        className="block p-2 bg-card rounded-lg text-sm hover:bg-muted transition-colors flex-1 text-foreground"
                       >
                         {c.name}
                       </Link>
@@ -574,7 +534,7 @@ export default function Navbar() {
                           onClick={() =>
                             handleMobileCategoryClick(c.id, c.name, c.slug)
                           }
-                          className="p-2 ml-1 bg-card dark:bg-card rounded-lg hover:bg-muted dark:hover:bg-muted transition-colors"
+                          className="p-2 ml-1 bg-card rounded-lg hover:bg-muted transition-colors"
                         >
                           <ChevronLeft className="h-4 w-4 text-foreground" />
                         </button>

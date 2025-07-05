@@ -1,12 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import heroImage from "@/public/luffy-naruto.webp";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Button } from "./ui/button";
+import { ArrowRight } from "lucide-react";
 
 export default function HeroSection() {
   useEffect(() => {
@@ -30,19 +29,22 @@ export default function HeroSection() {
 
   return (
     <section className="relative flex h-[calc(var(--vh)*100)] w-full items-center justify-center overflow-hidden">
-      <div className="absolute inset-0 -z-10">
-        <Image
-          src={heroImage.src}
+      <div className="absolute inset-0 -z-100">
+        <img
+          src="/luffy-naruto.webp"
           alt="مجسمه‌های لوکس انیمه"
-          fill
-          priority
-          placeholder="blur"
-          blurDataURL="/placeholder.svg?height=400&width=500"
           className="object-cover object-center h-full w-full"
+          onError={(e) => {
+            // Fallback to placeholder if image fails to load
+            const target = e.target as HTMLImageElement;
+            target.src = "/placeholder.jpg";
+          }}
         />
+        {/* Enhanced fallback background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 opacity-60" />
       </div>
 
-      <div className="absolute inset-0 bg-black/20 dark:bg-black/40 z-10" />
+      <div className="absolute inset-0 bg-black/60 z-10" />
 
       <div className="relative z-10 flex w-full px-4 md:px-6">
         <div className="mx-auto max-w-2xl text-center space-y-6 p-8 md:p-12">
@@ -50,7 +52,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="  font-semi-bold text-3xl sm:text-4xl md:text-5xl leading-tight tracking-tight text-foreground drop-shadow-[0_8px_10px_rgba(0,0,0,0.7)]"
+            className="font-bold text-4xl sm:text-5xl md:text-6xl leading-tight tracking-tight text-foreground drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]"
           >
             مجسمه‌های لوکس انیمه
             <br />
@@ -60,7 +62,7 @@ export default function HeroSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="  text-foreground/90 text-base sm:text-lg md:text-xl leading-relaxed drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)] max-w-prose mx-auto"
+            className="text-foreground/95 text-lg sm:text-xl md:text-2xl leading-relaxed drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] max-w-prose mx-auto font-medium"
           >
             مجموعه‌ای از مجسمه‌های با کیفیت و دقیق ما را کشف کنید، جایی که هنر و
             اشتیاق در هر جزئیات ظریف به هم می‌رسند.
@@ -73,17 +75,17 @@ export default function HeroSection() {
             <Link href="/shop">
               <Button
                 size="lg"
-                className="inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground shadow-xl transition-transform duration-300 hover:scale-105 hover:bg-primary/90 focus-visible-ring"
+                className="inline-flex items-center gap-3 px-10 py-6 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-purple-500/25 text-lg font-semibold rounded-full btn-primary"
               >
                 مشاهده مجسمه‌های لوکس
-                <ArrowRight className="h-5 w-5 rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight className="h-6 w-6 rotate-180 transition-transform duration-300 group-hover:translate-x-1" />
               </Button>
             </Link>
           </motion.div>
         </div>
       </div>
 
-      <div className="absolute inset-x-0 bottom-0 h-32 z-20 pointer-events-none bg-gradient-to-t from-foreground/60 via-foreground/40 to-transparent dark:from-background/60 dark:via-background/40 dark:to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-32 z-20 pointer-events-none bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
 
       <motion.button
         onClick={scrollToProducts}
@@ -94,7 +96,7 @@ export default function HeroSection() {
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 animate-bounce text-foreground drop-shadow-lg sm:h-8 sm:w-8"
+          className="h-6 w-6 animate-bounce text-white drop-shadow-lg sm:h-8 sm:w-8"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

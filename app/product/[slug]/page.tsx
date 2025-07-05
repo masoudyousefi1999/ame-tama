@@ -27,10 +27,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       notFound();
     }
 
-    relatedProducts = await getRelatedProducts(
-      product.category.slug,
-      product.uuid
-    );
+    const relatedProductsResult = await getRelatedProducts(product.uuid, 1, 8);
+    relatedProducts = relatedProductsResult.products;
   } catch (error) {
     console.error("Error fetching product data:", error);
     notFound();

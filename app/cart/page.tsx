@@ -12,6 +12,7 @@ import {
   ExternalLink,
   ChevronUp,
   ChevronDown,
+  CheckCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,6 +24,14 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileCartItem } from "@/components/cart/mobile-cart-item";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useAuth } from "@/context/auth-context";
+import { customFetch } from "@/lib/utils";
+import { PreCheckoutModal } from "@/components/cart/pre-checkout-modal";
 
 export default function CartPage() {
   const router = useRouter();
@@ -36,12 +45,39 @@ export default function CartPage() {
     total,
     applyDiscount,
   } = useCart();
+  const { user, isLoading: userLoading } = useAuth();
+  const [showPreCheckout, setShowPreCheckout] = useState(false);
+  const [step, setStep] = useState(1);
+  const [userForm, setUserForm] = useState({
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
+    email: user?.email || "",
+    avatar: user?.avatar || "",
+  });
+  const [isUpdatingUser, setIsUpdatingUser] = useState(false);
+  const [addressList, setAddressList] = useState<any[]>([]);
+  const [selectedAddress, setSelectedAddress] = useState<string>("");
+  const [addressForm, setAddressForm] = useState({
+    province: "",
+    city: "",
+    address: "",
+    postalCode: "",
+    houseNumber: "",
+    floorNumber: "",
+  });
+  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
+  const [isCreatingAddress, setIsCreatingAddress] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
 
   const [discountCode, setDiscountCode] = useState("");
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [userStepConfirmed, setUserStepConfirmed] = useState<
+    null | "already" | "just"
+  >(null);
+  const [addressStepConfirmed, setAddressStepConfirmed] = useState(false);
 
   /* --------------------------------------------------------------------- */
   /*  Effects                                                              */
@@ -55,6 +91,26 @@ export default function CartPage() {
     if (!isMobile) setShowSummary(true);
   }, [isMobile]);
 
+  // Open modal on continue
+  const handlePreCheckout = () => {
+    setShowPreCheckout(true);
+  };
+
+  // Fetch addresses when step 2 is entered
+  useEffect(() => {
+    if (showPreCheckout && step === 2) {
+      setIsLoadingAddresses(true);
+      customFetch("/address", { method: "GET" })
+        .then((res) => res.json())
+        .then((data) => {
+          setAddressList(Array.isArray(data) ? data : []);
+          setShowAddressForm(!data || data.length === 0);
+        })
+        .catch(() => setAddressList([]))
+        .finally(() => setIsLoadingAddresses(false));
+    }
+  }, [showPreCheckout, step]);
+
   /* --------------------------------------------------------------------- */
   /*  Handlers                                                             */
   /* --------------------------------------------------------------------- */
@@ -63,7 +119,7 @@ export default function CartPage() {
       toast({
         title: "خطا",
         description: "لطفاً کد تخفیف را وارد کنید.",
-        variant: "destructive",
+        variant: "error",
       });
       return;
     }
@@ -79,14 +135,14 @@ export default function CartPage() {
           description: success
             ? `کد تخفیف ${discountCode} با موفقیت اعمال شد.`
             : "کد تخفیف نامعتبر است.",
-          variant: success ? undefined : "destructive",
+          variant: success ? "success" : "info",
         });
         success && setDiscountCode("");
       } catch {
         toast({
           title: "خطا در اعمال کد تخفیف",
           description: "مشکلی در اعمال کد تخفیف رخ داد.",
-          variant: "destructive",
+          variant: "error",
         });
       } finally {
         setIsApplyingDiscount(false);
@@ -107,7 +163,7 @@ export default function CartPage() {
       toast({
         title: "خطا در به‌روزرسانی سبد خرید",
         description: "مشکلی در به‌روزرسانی تعداد محصول رخ داد.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsUpdating(false);
@@ -125,9 +181,92 @@ export default function CartPage() {
       toast({
         title: "خطا در پاک کردن سبد خرید",
         description: "مشکلی در پاک کردن سبد خرید رخ داد.",
-        variant: "destructive",
+        variant: "error",
       });
     }
+  };
+
+  // User info update handler
+  const handleUserFormChange = (e: any) => {
+    setUserForm({ ...userForm, [e.target.name]: e.target.value });
+  };
+  const handleUpdateUser = async (e: any) => {
+    e.preventDefault();
+    setIsUpdatingUser(true);
+    try {
+      const res = await customFetch("/users/update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name: userForm.firstName,
+          last_name: userForm.lastName,
+          email: userForm.email,
+          avatar: userForm.avatar,
+        }),
+      });
+      if (!res.ok) throw new Error("خطا در بروزرسانی اطلاعات کاربر");
+      toast({ title: "اطلاعات با موفقیت بروزرسانی شد" });
+      setUserStepConfirmed("just");
+      setTimeout(() => {
+        setStep(2);
+        setUserStepConfirmed(null);
+      }, 1200);
+    } catch (err: any) {
+      toast({ title: "خطا", description: err.message, variant: "error" });
+    } finally {
+      setIsUpdatingUser(false);
+    }
+  };
+
+  // Address form handlers
+  const handleAddressFormChange = (e: any) => {
+    setAddressForm({ ...addressForm, [e.target.name]: e.target.value });
+  };
+  const handleCreateAddress = async (e: any) => {
+    e.preventDefault();
+    setIsCreatingAddress(true);
+    try {
+      const res = await customFetch("/address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(addressForm),
+      });
+      if (!res.ok) throw new Error("خطا در ثبت آدرس");
+      const data = await res.json();
+      setSelectedAddress(data.uuid);
+      setShowAddressForm(false);
+      // Refresh address list
+      setIsLoadingAddresses(true);
+      const res2 = await customFetch("/address", { method: "GET" });
+      const data2 = await res2.json();
+      setAddressList(Array.isArray(data2) ? data2 : []);
+      toast({ title: "آدرس با موفقیت ثبت شد" });
+      setAddressStepConfirmed(true);
+      setTimeout(() => {
+        setAddressStepConfirmed(false);
+        handlePreCheckoutComplete();
+      }, 1200);
+    } catch (err: any) {
+      toast({ title: "خطا", description: err.message, variant: "error" });
+    } finally {
+      setIsCreatingAddress(false);
+      setIsLoadingAddresses(false);
+    }
+  };
+
+  // Final step: go to checkout
+  const handlePreCheckoutComplete = () => {
+    setShowPreCheckout(false);
+    router.push("/checkout");
+  };
+
+  const handleSelectAddress = (uuid: string) => {
+    setSelectedAddress(uuid);
+    setAddressStepConfirmed(true);
+    setTimeout(() => {
+      setAddressStepConfirmed(false);
+      handlePreCheckoutComplete();
+    }, 1200);
   };
 
   /* --------------------------------------------------------------------- */
@@ -146,21 +285,84 @@ export default function CartPage() {
   /* --------------------------------------------------------------------- */
   if (items.length === 0) {
     return (
-      <div className="container py-16 mt-20" dir="rtl">
-        <div className="max-w-2xl mx-auto text-center py-16">
-          <ShoppingBag className="h-20 w-20 mx-auto text-muted-foreground/60 mb-6" />
-          <h1 className="text-2xl font-bold mb-4">سبد خرید شما خالی است</h1>
-          <p className="text-muted-foreground mb-8">
-            محصولی در سبد خرید شما وجود ندارد. برای مشاهده محصولات به فروشگاه
-            بروید.
-          </p>
-          <Button
-            className="rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-            onClick={() => router.push("/shop")}
-          >
-            <ShoppingBag className="ml-2 h-5 w-5" />
-            رفتن به فروشگاه
-          </Button>
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+        {/* Breadcrumb */}
+        <div className="container mx-auto px-4 md:px-6 mt-8">
+          <Breadcrumb
+            className="mb-6"
+            items={[{ label: "سبد خرید", href: "/cart", isCurrent: true }]}
+          />
+        </div>
+
+        {/* Hero Section */}
+        <section className="relative py-16 md:py-24 overflow-hidden">
+          {/* Animated background layers */}
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900" />
+
+          {/* Animated gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-500/30 via-gray-500/30 to-zinc-500/30 animate-pulse" />
+
+          {/* Floating orbs */}
+          <div
+            className="absolute top-20 left-20 w-32 h-32 bg-slate-400/20 rounded-full blur-xl animate-bounce"
+            style={{ animationDelay: "0s", animationDuration: "3s" }}
+          />
+          <div
+            className="absolute top-40 right-32 w-24 h-24 bg-gray-400/20 rounded-full blur-xl animate-bounce"
+            style={{ animationDelay: "1s", animationDuration: "4s" }}
+          />
+          <div
+            className="absolute bottom-20 left-1/3 w-28 h-28 bg-zinc-400/20 rounded-full blur-xl animate-bounce"
+            style={{ animationDelay: "2s", animationDuration: "3.5s" }}
+          />
+          <div
+            className="absolute bottom-32 right-20 w-20 h-20 bg-slate-400/20 rounded-full blur-xl animate-bounce"
+            style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
+          />
+
+          {/* Radial gradients for depth */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(148,163,184,0.4),transparent_40%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(156,163,175,0.4),transparent_40%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(161,161,170,0.3),transparent_50%)]" />
+
+          {/* Animated mesh gradient */}
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-500/10 to-transparent animate-pulse"
+            style={{ animationDuration: "6s" }}
+          />
+
+          {/* Top overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+          <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+            <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-white via-slate-200 to-gray-200 bg-clip-text text-transparent mb-6 drop-shadow-lg">
+              سبد خرید شما خالی است
+            </h1>
+            <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8 font-medium">
+              محصولی در سبد خرید شما وجود ندارد. برای مشاهده محصولات به فروشگاه
+              بروید.
+            </p>
+            <div className="flex items-center justify-center gap-4">
+              <ShoppingBag className="h-12 w-12 text-white/80" />
+              <div className="text-left">
+                <h2 className="text-xl font-bold text-white">0 محصول</h2>
+                <p className="text-white/80">در سبد خرید شما</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Main Content */}
+        <div className="container mx-auto px-4 md:px-6 mt-12">
+          <div className="max-w-2xl mx-auto text-center py-16">
+            <Button
+              className="rounded-full bg-gradient-to-r from-slate-500 to-gray-600 hover:from-slate-600 hover:to-gray-700"
+              onClick={() => router.push("/shop")}
+            >
+              <ShoppingBag className="ml-2 h-5 w-5" />
+              رفتن به فروشگاه
+            </Button>
+          </div>
         </div>
       </div>
     );
@@ -170,107 +372,141 @@ export default function CartPage() {
   /*  Main page                                                            */
   /* --------------------------------------------------------------------- */
   return (
-    <div className="container py-8 mt-20 pb-24 md:pb-8" dir="rtl">
-      <Breadcrumb
-        className="mb-6"
-        items={[{ label: "سبد خرید", href: "/cart", isCurrent: true }]}
-      />
-      <h1 className="text-2xl font-bold mb-8">سبد خرید</h1>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+      {/* Breadcrumb */}
+      <div className="container mx-auto px-4 md:px-6 mt-8">
+        <Breadcrumb
+          className="mb-6"
+          items={[{ label: "سبد خرید", href: "/cart", isCurrent: true }]}
+        />
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* ------------------------------------------------- */}
-        {/*  Cart items (table on desktop, cards on mobile)  */}
-        {/* ------------------------------------------------- */}
-        <div className="lg:col-span-2">
-          <div className="bg-card rounded-2xl shadow-sm overflow-hidden">
-            <div className="p-4 md:p-6 border-b border-border">
-              <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold">
-                  محصولات ({items.length})
-                </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleClearCart}
-                  className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
-                >
-                  <Trash2 className="h-4 w-4 ml-2" />
-                  حذف همه
-                </Button>
-              </div>
+      {/* Hero Section */}
+      <section className="relative py-16 md:py-24 overflow-hidden">
+        {/* Animated background layers */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900" />
+
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-slate-500/30 via-gray-500/30 to-zinc-500/30 animate-pulse" />
+
+        {/* Floating orbs */}
+        <div
+          className="absolute top-20 left-20 w-32 h-32 bg-slate-400/20 rounded-full blur-xl animate-bounce"
+          style={{ animationDelay: "0s", animationDuration: "3s" }}
+        />
+        <div
+          className="absolute top-40 right-32 w-24 h-24 bg-gray-400/20 rounded-full blur-xl animate-bounce"
+          style={{ animationDelay: "1s", animationDuration: "4s" }}
+        />
+        <div
+          className="absolute bottom-20 left-1/3 w-28 h-28 bg-zinc-400/20 rounded-full blur-xl animate-bounce"
+          style={{ animationDelay: "2s", animationDuration: "3.5s" }}
+        />
+        <div
+          className="absolute bottom-32 right-20 w-20 h-20 bg-slate-400/20 rounded-full blur-xl animate-bounce"
+          style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
+        />
+
+        {/* Radial gradients for depth */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(148,163,184,0.4),transparent_40%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(156,163,175,0.4),transparent_40%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(161,161,170,0.3),transparent_50%)]" />
+
+        {/* Animated mesh gradient */}
+        <div
+          className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-500/10 to-transparent animate-pulse"
+          style={{ animationDuration: "6s" }}
+        />
+
+        {/* Top overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+          <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-white via-slate-200 to-gray-200 bg-clip-text text-transparent mb-6 drop-shadow-lg">
+            سبد خرید
+          </h1>
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8 font-medium">
+            مدیریت محصولات انتخابی شما
+          </p>
+          <div className="flex items-center justify-center gap-4">
+            <ShoppingBag className="h-12 w-12 text-white/80" />
+            <div className="text-left">
+              <h2 className="text-xl font-bold text-white">
+                {items.length} محصول
+              </h2>
+              <p className="text-white/80">در سبد خرید شما</p>
             </div>
+          </div>
+        </div>
+      </section>
 
-            {/* ---------- Desktop table ---------- */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-muted">
-                  <tr className="text-xs uppercase tracking-wider">
-                    {["محصول", "قیمت", "تعداد", "مجموع", "عملیات"].map((th) => (
-                      <th
-                        key={th}
-                        className="px-6 py-3 text-right font-medium text-muted-foreground"
-                      >
-                        {th}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
+      {/* Main Content */}
+      <div
+        className="container mx-auto px-4 md:px-6 mt-12 pb-24 md:pb-8"
+        dir="rtl"
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* ------------------------------------------------- */}
+          {/*  Cart items (table on desktop, cards on mobile)  */}
+          {/* ------------------------------------------------- */}
+          <div className="lg:col-span-2">
+            <div className="bg-card rounded-2xl shadow-sm overflow-hidden">
+              <div className="p-4 md:p-6 border-b border-border">
+                <div className="flex justify-between items-center">
+                  <h2 className="text-lg font-semibold">
+                    محصولات ({items.length})
+                  </h2>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleClearCart}
+                    className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                  >
+                    <Trash2 className="h-4 w-4 ml-2" />
+                    حذف همه
+                  </Button>
+                </div>
+              </div>
 
-                <tbody className="divide-y divide-border">
-                  <AnimatePresence>
-                    {items.map((item) => (
-                      <motion.tr
-                        key={item.product.uuid}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="bg-card"
-                      >
-                        {/* Product */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            <div className="relative h-24 w-24 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                              <Image
-                                src={
-                                  item.product?.productMedia[0]?.url ??
-                                  "/placeholder.svg"
-                                }
-                                alt={item.product.name}
-                                fill
-                                className="object-cover"
-                                sizes="96px"
-                              />
-                            </div>
-                            <div className="mr-4">
-                              <div className="text-sm font-medium text-foreground">
-                                {item.product.name}
-                              </div>
-                              <Link
-                                href={`/product/${item.product.slug}`}
-                                className="mt-1 inline-flex items-center text-primary hover:underline text-xs"
-                              >
-                                جزییات محصول
-                                <ExternalLink className="h-3 w-3 mr-1" />
-                              </Link>
-                            </div>
+              {/* Desktop table */}
+              {!isMobile && (
+                <div className="hidden md:block">
+                  <div className="p-4 md:p-6">
+                    <div className="space-y-4">
+                      {items.map((item) => (
+                        <div
+                          key={item.product.uuid}
+                          className="flex items-center gap-4 p-4 border rounded-lg"
+                        >
+                          {/* Product image */}
+                          <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                            <Image
+                              src={
+                                item.product.productMedia[0]?.url ||
+                                "/placeholder.svg"
+                              }
+                              alt={item.product.name}
+                              fill
+                              className="object-cover"
+                              sizes="80px"
+                            />
                           </div>
-                        </td>
 
-                        {/* Price */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-foreground">
-                            {new Intl.NumberFormat("fa-IR").format(
-                              item.product.price
-                            )}{" "}
-                            تومان
+                          {/* Product info */}
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-medium truncate">
+                              {item.product.name}
+                            </h3>
+                            <p className="text-sm text-muted-foreground">
+                              {item.product.price.toLocaleString("fa-IR")} تومان
+                            </p>
                           </div>
-                        </td>
 
-                        {/* Quantity */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center border border-border rounded-full w-24">
-                            <button
-                              className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                          {/* Quantity controls */}
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="icon"
                               onClick={() =>
                                 handleQuantityChange(
                                   item.product.uuid,
@@ -281,14 +517,13 @@ export default function CartPage() {
                               disabled={isUpdating}
                             >
                               -
-                            </button>
-                            <span className="flex-1 text-center text-sm">
-                              {new Intl.NumberFormat("fa-IR").format(
-                                item.quantity
-                              )}
+                            </Button>
+                            <span className="w-12 text-center font-medium">
+                              {item.quantity}
                             </span>
-                            <button
-                              className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-foreground"
+                            <Button
+                              variant="outline"
+                              size="icon"
                               onClick={() =>
                                 handleQuantityChange(
                                   item.product.uuid,
@@ -299,201 +534,181 @@ export default function CartPage() {
                               disabled={isUpdating}
                             >
                               +
-                            </button>
+                            </Button>
                           </div>
-                        </td>
 
-                        {/* Total */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-foreground">
-                            {new Intl.NumberFormat("fa-IR").format(
-                              item.product.price * item.quantity
-                            )}{" "}
-                            تومان
+                          {/* Total price */}
+                          <div className="text-right min-w-[100px]">
+                            <p className="font-semibold">
+                              {(
+                                item.product.price * item.quantity
+                              ).toLocaleString("fa-IR")}{" "}
+                              تومان
+                            </p>
                           </div>
-                        </td>
 
-                        {/* Action */}
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <button
-                            aria-label="حذف محصول"
+                          {/* Remove button */}
+                          <Button
+                            variant="ghost"
+                            size="icon"
                             onClick={() =>
-                              updateQuantity(
+                              handleQuantityChange(
                                 item.product.uuid,
                                 item.quantity,
                                 "decrease"
                               )
                             }
-                            className="text-destructive hover:text-destructive/80"
+                            className="text-destructive hover:text-destructive/80 hover:bg-destructive/10"
+                            disabled={isUpdating}
                           >
-                            <Trash2 className="h-5 w-5" />
-                          </button>
-                        </td>
-                      </motion.tr>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile cards */}
+              {isMobile && (
+                <div className="grid grid-cols-1 gap-4 p-2">
+                  <AnimatePresence>
+                    {items.map((item, index) => (
+                      <motion.div
+                        key={item.product.uuid}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="h-full"
+                      >
+                        <MobileCartItem
+                          item={item}
+                          onUpdateQuantity={handleQuantityChange}
+                          isUpdating={isUpdating}
+                        />
+                      </motion.div>
                     ))}
                   </AnimatePresence>
-                </tbody>
-              </table>
-            </div>
-
-            {/* ---------- Mobile cards ---------- */}
-            <div className="md:hidden">
-              <AnimatePresence>
-                {items.map((item) => (
-                  <MobileCartItem
-                    key={item.product.uuid}
-                    item={item}
-                    onUpdateQuantity={handleQuantityChange}
-                    isUpdating={isUpdating}
-                  />
-                ))}
-              </AnimatePresence>
-              <p className="p-4 text-xs text-center text-muted-foreground">
-                برای حذف محصول، آن را به سمت چپ بکشید
-              </p>
-            </div>
-
-            {/* Continue shopping */}
-            <div className="p-6 border-t border-border">
-              <Link
-                href="/category/figures"
-                className="inline-flex items-center text-primary font-medium"
-              >
-                <ArrowLeft className="ml-2 h-4 w-4" />
-               افزودن محصولات بیشتر
-              </Link>
+                </div>
+              )}
             </div>
           </div>
-        </div>
 
-        {/* ------------------------------------------------- */}
-        {/*  Order summary                                   */}
-        {/* ------------------------------------------------- */}
-        <div className="lg:hidden mt-4 mb-2">
-          <Button
-            variant="outline"
-            onClick={() => setShowSummary(!showSummary)}
-            className="w-full flex justify-between items-center rounded-lg"
-          >
-            <span>خلاصه سفارش</span>
-            {showSummary ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
+          {/* ------------------------------------------------- */}
+          {/*  Order summary                                  */}
+          {/* ------------------------------------------------- */}
+          <div className="lg:col-span-1">
+            {/* Mobile summary toggle */}
+            {isMobile && (
+              <Button
+                variant="outline"
+                className="w-full mb-4"
+                onClick={() => setShowSummary(!showSummary)}
+              >
+                {showSummary ? (
+                  <>
+                    <ChevronUp className="h-4 w-4 ml-2" />
+                    مخفی کردن خلاصه سفارش
+                  </>
+                ) : (
+                  <>
+                    <ChevronDown className="h-4 w-4 ml-2" />
+                    نمایش خلاصه سفارش
+                  </>
+                )}
+              </Button>
             )}
-          </Button>
-        </div>
 
-        <AnimatePresence>
-          {(showSummary || !isMobile) && (
-            <motion.div
-              initial={isMobile ? { height: 0, opacity: 0 } : false}
-              animate={isMobile ? { height: "auto", opacity: 1 } : {}}
-              exit={isMobile ? { height: 0, opacity: 0 } : {}}
-              className="lg:col-span-1 overflow-hidden"
-            >
-              <div className="bg-card rounded-lg shadow-sm p-6 lg:sticky lg:top-24">
-                <h2 className="text-lg font-semibold mb-4">خلاصه سفارش</h2>
-
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">
-                      مجموع قیمت محصولات:
-                    </span>
-                    <span className="font-medium">
-                      {subtotal.toLocaleString("fa-IR")} تومان
-                    </span>
+            {/* Summary card */}
+            <AnimatePresence>
+              {showSummary && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  className="bg-card rounded-2xl shadow-sm overflow-hidden"
+                >
+                  <div className="p-4 md:p-6 border-b border-border">
+                    <h2 className="text-lg font-semibold">خلاصه سفارش</h2>
                   </div>
 
-                  {discount > 0 && (
-                    <div className="flex justify-between text-green-600 dark:text-green-400">
-                      <span>
-                        تخفیف ({discount}%):
-                      </span>
-                      <span className="font-medium">
-                        {((subtotal * discount) / 100).toLocaleString("fa-IR")}{" "}
-                        تومان
-                      </span>
+                  <div className="p-4 md:p-6 space-y-4">
+                    {/* Discount code */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">کد تخفیف</label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="کد تخفیف خود را وارد کنید"
+                          value={discountCode}
+                          onChange={(e) => setDiscountCode(e.target.value)}
+                          className="flex-1"
+                        />
+                        <Button
+                          onClick={handleApplyDiscount}
+                          disabled={isApplyingDiscount || !discountCode.trim()}
+                          size="sm"
+                        >
+                          {isApplyingDiscount ? (
+                            <RefreshCw className="h-4 w-4 animate-spin" />
+                          ) : (
+                            "اعمال"
+                          )}
+                        </Button>
+                      </div>
                     </div>
-                  )}
 
-                  <div className="border-t border-border pt-3 mt-3">
-                    <div className="flex justify-between font-semibold">
-                      <span>مبلغ قابل پرداخت:</span>
-                      <span>
-                        {total.toLocaleString("fa-IR")} تومان
-                      </span>
+                    {/* Price breakdown */}
+                    <div className="space-y-2 pt-4 border-t border-border">
+                      <div className="flex justify-between">
+                        <span>جمع کل:</span>
+                        <span>{subtotal.toLocaleString("fa-IR")} تومان</span>
+                      </div>
+                      {discount > 0 && (
+                        <div className="flex justify-between text-green-600">
+                          <span>تخفیف:</span>
+                          <span>-{discount.toLocaleString("fa-IR")} تومان</span>
+                        </div>
+                      )}
+                      <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">
+                        <span>مبلغ قابل پرداخت:</span>
+                        <span>{total.toLocaleString("fa-IR")} تومان</span>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {/* Discount code */}
-                <div className="mb-6">
-                  <label
-                    htmlFor="discount-code"
-                    className="block text-sm font-medium mb-2"
-                  >
-                    کد تخفیف:
-                  </label>
-                  <div className="flex gap-x-2 gap-x-reverse">
-                    <Input
-                      id="discount-code"
-                      type="text"
-                      placeholder="کد تخفیف خود را وارد کنید"
-                      value={discountCode}
-                      onChange={(e) => setDiscountCode(e.target.value)}
-                      className="rounded-full"
-                    />
+                    {/* Checkout button */}
+                    <Button
+                      className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+                      size="lg"
+                      onClick={handlePreCheckout}
+                    >
+                      ادامه خرید
+                    </Button>
+
+                    {/* Continue shopping */}
                     <Button
                       variant="outline"
-                      className="rounded-full"
-                      onClick={handleApplyDiscount}
-                      disabled={isApplyingDiscount}
+                      className="w-full"
+                      onClick={() => router.push("/shop")}
                     >
-                      {isApplyingDiscount ? (
-                        <RefreshCw className="h-4 w-4 animate-spin" />
-                      ) : (
-                        "اعمال"
-                      )}
+                      <ArrowLeft className="h-4 w-4 ml-2" />
+                      رفتن به فروشگاه
                     </Button>
                   </div>
-                </div>
-
-                <Button
-                  className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-                  onClick={() => router.push("/checkout")}
-                >
-                  ادامه فرآیند خرید
-                </Button>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* ------------------------------------------------- */}
-        {/*  Sticky checkout bar (mobile)                    */}
-        {/* ------------------------------------------------- */}
-        {isMobile && (
-          <motion.div
-            initial={{ y: 100 }}
-            animate={{ y: 0 }}
-            className="fixed bottom-0 left-0 right-0 bg-card shadow-lg border-t border-border p-4 z-40"
-          >
-            <div className="flex justify-between items-center mb-2">
-              <span className="text-sm">مجموع:</span>
-              <span className="font-bold">
-                {total.toLocaleString("fa-IR")} تومان
-              </span>
-            </div>
-            <Button
-              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-              onClick={() => router.push("/checkout")}
-            >
-              ادامه فرآیند خرید
-            </Button>
-          </motion.div>
-        )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
+
+      <PreCheckoutModal
+        open={showPreCheckout}
+        onOpenChange={setShowPreCheckout}
+        user={user}
+        onComplete={handlePreCheckoutComplete}
+      />
     </div>
   );
 }

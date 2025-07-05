@@ -65,7 +65,7 @@ export function AnimatedCharacter() {
   return (
     <div className="relative h-64 w-64 mx-auto">
       <motion.div
-        variants={characterVariants}
+        variants={characterVariants as any}
         animate={prefersReducedMotion ? "static" : "hover"}
         className="relative z-10"
       >
@@ -81,14 +81,14 @@ export function AnimatedCharacter() {
 
         {/* sweat drop */}
         <motion.div
-          variants={sweatDropVariants}
+          variants={sweatDropVariants as any}
           animate={prefersReducedMotion ? "static" : "animate"}
           className="absolute top-10 right-10 h-4 w-2 rounded-full bg-chart-2"
         />
 
         {/* question mark */}
         <motion.div
-          variants={questionMarkVariants}
+          variants={questionMarkVariants as any}
           animate={prefersReducedMotion ? "static" : "animate"}
           className="absolute top-0 left-10 text-2xl font-bold text-primary"
         >

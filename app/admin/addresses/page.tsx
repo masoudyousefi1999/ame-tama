@@ -1,7 +1,7 @@
-import Link from "next/link";
+import { AddressesTable } from "@/components/admin/addresses/addresses-table";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { AddressesTable } from "@/components/admin/addresses/addresses-table";
+import Link from "next/link";
 
 // This would fetch from your API
 async function getAddresses() {

@@ -1,3 +1,5 @@
+import { customFetch } from "./utils";
+
 // تعریف نوع دسته‌بندی با پشتیبانی از ساختار سلسله مراتبی
 export interface ICategoryType {
   createdAt: string;
@@ -13,10 +15,7 @@ export interface ICategoryType {
 
 // دریافت همه دسته‌بندی‌ها
 export async function getAllCategories(): Promise<ICategoryType[]> {
-  console.log("base url is => ",process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT)
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/category`
-  );
+  const res = await customFetch(`/category`);
 
   const categories = await res.json();
   return categories;

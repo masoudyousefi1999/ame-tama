@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Star } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 interface Product {
   uuid: string;
@@ -75,7 +75,7 @@ export function ProductsTable({ data }: ProductsTableProps) {
       toast({
         title: "خطا",
         description: "حذف محصول با شکست مواجه شد",
-        variant: "destructive",
+        variant: "error",
         className: "bg-red-600 text-white",
       });
     } finally {

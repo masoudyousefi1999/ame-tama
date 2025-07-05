@@ -20,6 +20,7 @@ import { useCart } from "@/context/cart-context";
 import { toast } from "@/components/ui/use-toast";
 import { getAllCategories, ICategoryType } from "@/lib/categories";
 import { ProductCard } from "../product/product-card";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface ProductGridProps {
   products: any[];
@@ -30,6 +31,7 @@ interface ProductGridProps {
 export default function ProductGrid({
   products,
   showFilters = false,
+  loading = false,
 }: ProductGridProps) {
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
   const [filteredProducts, setFilteredProducts] = useState(products);
@@ -48,6 +50,7 @@ export default function ProductGrid({
         setCategories(categories);
       }
     };
+    getCategories();
   }, []);
 
   // اعمال فیلترها و مرتب‌سازی
@@ -159,10 +162,27 @@ export default function ProductGrid({
     setSortBy("newest");
   };
 
+  // Loading skeleton component
+  const ProductSkeleton = () => (
+    <div className="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      <div className="h-64 md:h-72 lg:h-80 bg-muted product-skeleton" />
+      <div className="p-4 space-y-3">
+        <div className="h-4 bg-muted rounded product-skeleton" />
+        <div className="h-4 bg-muted rounded w-3/4 product-skeleton" />
+        <div className="h-6 bg-muted rounded w-1/2 product-skeleton" />
+      </div>
+    </div>
+  );
+
   // اگر محصولی وجود نداشت
-  if (filteredProducts.length === 0) {
+  if (!loading && filteredProducts.length === 0) {
     return (
-      <div className="py-16 text-center">
+      <motion.div
+        className="py-16 text-center"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="mx-auto mb-4 h-12 w-12 text-muted-foreground/40"
@@ -178,7 +198,7 @@ export default function ProductGrid({
           />
         </svg>
         <h3 className="mb-2 text-lg font-medium">محصولی یافت نشد</h3>
-        <p className="  text-muted-foreground">
+        <p className="text-muted-foreground">
           با معیارهای فیلتر فعلی محصولی یافت نشد. لطفاً فیلترها را تغییر دهید.
         </p>
         {showFilters && (
@@ -190,7 +210,7 @@ export default function ProductGrid({
             پاک کردن فیلترها
           </Button>
         )}
-      </div>
+      </motion.div>
     );
   }
 
@@ -199,7 +219,12 @@ export default function ProductGrid({
     <div dir="rtl" className="flex flex-col gap-10 md:flex-row md:gap-12">
       {/* ───────────────── DESKTOP SIDEBAR ───────────────── */}
       {showFilters && (
-        <div className="hidden w-64 md:block">
+        <motion.div
+          className="hidden w-64 md:block"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="sticky top-24 space-y-6 rounded-2xl bg-card p-6 shadow-lg ring-1 ring-border/30">
             {/* ─ Price range ─ */}
             <div>
@@ -314,14 +339,19 @@ export default function ProductGrid({
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
 
       {/* ───────────────── MAIN COLUMN ───────────────── */}
       <div className="flex-1">
         {/* Mobile top-bar */}
         {showFilters && (
-          <div className="mb-6 flex flex-wrap items-center justify-between">
+          <motion.div
+            className="mb-6 flex flex-wrap items-center justify-between"
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+          >
             <div className="flex items-center">
               <span className="ml-2 text-sm text-muted-foreground">
                 {filteredProducts.length} محصول
@@ -344,7 +374,6 @@ export default function ProductGrid({
                 </SheetTrigger>
 
                 {/* Mobile drawer content */}
-                {/* 👉 all classes inside the drawer mirror the desktop ones */}
                 <SheetContent side="right" className="w-[300px]">
                   <SheetHeader>
                     <SheetTitle>فیلترها</SheetTitle>
@@ -367,7 +396,7 @@ export default function ProductGrid({
                     cat && (
                       <Badge
                         key={cid}
-                        className="bg-purple-600 hover:bg-purple-700"
+                        className="bg-purple-600 hover:bg-purple-700 cursor-pointer transition-colors"
                         onClick={() => toggleCategory(cid)}
                       >
                         {cat.name}
@@ -383,7 +412,7 @@ export default function ProductGrid({
                     selectedFilters.includes(f) && (
                       <Badge
                         key={f}
-                        className="bg-purple-600 hover:bg-purple-700"
+                        className="bg-purple-600 hover:bg-purple-700 cursor-pointer transition-colors"
                         onClick={() => toggleFilter(f)}
                       >
                         {f === "new"
@@ -413,15 +442,48 @@ export default function ProductGrid({
                 )}
               </div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* Products grid */}
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((p, idx) => (
-            <ProductCard key={idx} product={p} />
-          ))}
-        </div>
+        <motion.div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" layout>
+          <AnimatePresence mode="wait">
+            {loading
+              ? // Loading skeletons
+                Array.from({ length: 6 }).map((_, index) => (
+                  <motion.div
+                    key={`skeleton-${index}`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: index * 0.1,
+                    }}
+                  >
+                    <ProductSkeleton />
+                  </motion.div>
+                ))
+              : // Actual products
+                filteredProducts.map((product, index) => (
+                  <motion.div
+                    key={product.uuid || index}
+                    layout
+                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -20, scale: 0.95 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: index * 0.1,
+                      ease: "easeOut",
+                    }}
+                    className="product-grid-item"
+                  >
+                    <ProductCard product={product} index={index} />
+                  </motion.div>
+                ))}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   );

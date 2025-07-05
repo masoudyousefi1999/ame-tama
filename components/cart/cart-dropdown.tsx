@@ -60,9 +60,10 @@ export default function CartDropdown() {
       updateQuantity(productUuid, quantity, type);
     } catch (error) {
       toast({
+        variant: "error",
         title: "خطا در به‌روزرسانی سبد خرید",
         description: "مشکلی در به‌روزرسانی تعداد محصول رخ داد.",
-        variant: "destructive",
+        duration: 2000,
       });
     }
   };
@@ -77,7 +78,7 @@ export default function CartDropdown() {
         aria-expanded={isOpen}
         aria-controls="cart-dropdown"
         onClick={toggleDropdown}
-        className="relative rounded-full"
+        className="relative rounded-full overflow-visible"
       >
         <ShoppingBag className="h-5 w-5" />
         <AnimatePresence>
@@ -86,7 +87,7 @@ export default function CartDropdown() {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-muted text-primary-foreground text-xs"
+              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs z-10 shadow"
             >
               {itemCount}
             </motion.span>
@@ -96,13 +97,23 @@ export default function CartDropdown() {
 
       {/* dropdown */}
       <div
+        dir="rtl"
         id="cart-dropdown"
         className={cn(
-          "absolute left-0 mt-2 w-80 md:w-96 rounded-lg shadow-lg z-50 bg-popover transition-all duration-300 origin-top",
+          // Responsive RTL: open from right, wide and comfortable
+          "absolute left-0 right-auto mt-2 sm:w-96 md:w-[28rem] sm:max-w-lg min-w-[20rem] rounded-2xl shadow-2xl z-50 overflow-hidden transition-all duration-300 origin-top px-2 sm:px-0",
+          // Visually appealing background
+          "bg-gradient-to-br from-gray-900/90 via-slate-900/80 to-indigo-900/90 backdrop-blur-xl border border-gray-700/60",
+          // Add animated overlays for anime/dark theme
+          "before:absolute before:inset-0 before:bg-gradient-to-tr before:from-purple-500/10 before:via-indigo-500/10 before:to-cyan-500/10 before:animate-pulse before:pointer-events-none",
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
             : "pointer-events-none opacity-0 scale-95 translate-y-2"
         )}
+        style={{
+          boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
+          maxWidth: "98vw",
+        }}
       >
         {/* header */}
         <div className="flex items-center justify-between p-4 border-b border-border">
@@ -269,7 +280,6 @@ export default function CartDropdown() {
               >
                 مشاهده سبد خرید
               </Link>
-              
             </div>
           </div>
         )}

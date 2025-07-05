@@ -21,7 +21,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { Edit, Trash2, Plus } from "lucide-react";
 import Image from "next/image";
 import { customFetch } from "@/lib/utils";
@@ -75,7 +75,7 @@ export function CategoriesTable({
           error instanceof Error
             ? error.message
             : "حذف دسته‌بندی با خطا مواجه شد",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsDeleting(false);

@@ -2,7 +2,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="container py-8 mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800">
+      <div className="container py-8 mt-20">
       {/* هدر فروشگاه */}
       <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-8">
         <Skeleton className="w-full h-full" />
@@ -40,6 +41,7 @@ export default function Loading() {
           ))}
         </div>
       </section>
+    </div>
     </div>
   );
 }

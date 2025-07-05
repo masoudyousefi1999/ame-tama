@@ -5,13 +5,13 @@ import { useState, useEffect, ComponentProps } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Loader2, LucideIcon } from "lucide-react";
+import { Search, Loader2, LucideIcon, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { searchProducts, type SearchResult } from "@/lib/search";
+import { customFetch } from "@/lib/utils";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { IProductType } from "@/lib/products";
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -21,11 +21,11 @@ interface SearchModalProps {
 }
 
 interface EmptyStateProps {
-  icon: LucideIcon; // lucide icon component
+  icon: LucideIcon;
   title: string;
   description: string;
-  className?: string; // optional extra classes
-  iconProps?: ComponentProps<LucideIcon>; // forward any icon props you might need
+  className?: string;
+  iconProps?: ComponentProps<LucideIcon>;
 }
 
 export function EmptyState({
@@ -42,7 +42,6 @@ export function EmptyState({
         className
       )}
     >
-      {/* icon */}
       <Icon
         {...iconProps}
         className={cn(
@@ -50,11 +49,7 @@ export function EmptyState({
           iconProps?.className
         )}
       />
-
-      {/* title */}
       <h3 className="mb-2 text-lg font-medium text-foreground">{title}</h3>
-
-      {/* description */}
       <p className="max-w-xs text-sm text-muted-foreground">{description}</p>
     </div>
   );
@@ -67,11 +62,12 @@ export default function SearchModal({
   onQueryChange,
 }: SearchModalProps) {
   const router = useRouter();
-  const [results, setResults] = useState<SearchResult[]>([]);
+  const [results, setResults] = useState<IProductType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [isNavigating, setIsNavigating] = useState(false);
 
+  // Load recent searches on mount
   useEffect(() => {
     const storedSearches = localStorage.getItem("ame-tama-recent-searches");
     if (storedSearches) {
@@ -83,32 +79,62 @@ export default function SearchModal({
     }
   }, []);
 
+  // Clear search when modal closes
   useEffect(() => {
-    if (!query) {
+    if (!isOpen) {
+      const timer = setTimeout(() => {
+        onQueryChange("");
+        setResults([]);
+        setIsNavigating(false);
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen, onQueryChange]);
+
+  // Search effect
+  useEffect(() => {
+    if (!query.trim()) {
       setResults([]);
       return;
     }
 
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       setIsLoading(true);
-      const searchResults = searchProducts(query);
-      setResults(searchResults as any);
-      setIsLoading(false);
+      try {
+        const params = new URLSearchParams();
+        params.set("search", query.trim());
+        const res = await customFetch(`/product/search?${params.toString()}`);
+        const data = await res.json();
+
+        let items: IProductType[] = [];
+        if (Array.isArray(data)) {
+          items = data;
+        } else if (data.products && Array.isArray(data.products)) {
+          items = data.products;
+        }
+
+        setResults(items);
+      } catch (error) {
+        console.error("Search error:", error);
+        setResults([]);
+      } finally {
+        setIsLoading(false);
+      }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [query, selectedCategory]);
+  }, [query]);
 
-  const uniqueCategories = Array.from(
-    new Set(results.map((item) => item.category))
-  );
+  // Handle search navigation
+  const handleSearchNavigation = (searchQuery: string) => {
+    if (!searchQuery.trim() || isNavigating) return;
 
-  const handleSearch = () => {
-    if (!query.trim()) return;
+    setIsNavigating(true);
 
+    // Save to recent searches
     const updatedSearches = [
-      query,
-      ...recentSearches.filter((s) => s !== query),
+      searchQuery.trim(),
+      ...recentSearches.filter((s) => s !== searchQuery.trim()),
     ].slice(0, 5);
     setRecentSearches(updatedSearches);
     localStorage.setItem(
@@ -116,92 +142,80 @@ export default function SearchModal({
       JSON.stringify(updatedSearches)
     );
 
-    router.push(
-      `/search?q=${encodeURIComponent(query)}${
-        selectedCategory
-          ? `&category=${encodeURIComponent(selectedCategory)}`
-          : ""
-      }`
-    );
-    onClose();
+    // Navigate to search page
+    const searchUrl = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
+
+    // Use window.location for reliable navigation on all devices
+    window.location.href = searchUrl;
   };
 
-  const selectRecentSearch = (search: string) => {
-    onQueryChange(search);
+  // Handle recent search selection
+  const handleRecentSearchClick = (searchTerm: string) => {
+    onQueryChange(searchTerm);
   };
 
-  const clearRecentSearches = () => {
+  // Clear recent searches
+  const handleClearRecentSearches = () => {
     setRecentSearches([]);
     localStorage.removeItem("ame-tama-recent-searches");
   };
 
-  const handleCategoryFilter = (category: string) => {
-    setSelectedCategory(selectedCategory === category ? null : category);
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
+  // Handle product click
   const handleProductClick = () => {
     onClose();
+  };
+
+  // Handle keyboard events
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && query.trim()) {
+      e.preventDefault();
+      handleSearchNavigation(query);
+    } else if (e.key === "Escape") {
+      onClose();
+    }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
-        className="sm:max-w-xl p-0 gap-0"
+        className="sm:max-w-xl p-0 gap-0 max-h-[90vh] overflow-hidden"
         onKeyDown={handleKeyDown}
       >
-        <DialogTitle className="sr-only">Search Products</DialogTitle>
+        <DialogTitle className="sr-only">جستجوی محصولات</DialogTitle>
 
-        {/* 🔍 Search input */}
-        <div className="p-4 border-b border">
-          <input
-            type="text"
-            value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            placeholder="جستجو کنید..."
-            title="search"
-            autoFocus
-            className="w-full p-3 rounded-md border focus:outline-none focus:ring-2 focus:ring-brand
-                     bg-background text-foreground"
-          />
+        {/* Search Header */}
+        <div className="p-4 border-b border-border bg-background sticky top-0 z-10">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => onQueryChange(e.target.value)}
+              placeholder="جستجو کنید..."
+              className="w-full pr-10 pl-4 py-3 rounded-lg border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
+              autoFocus
+              disabled={isNavigating}
+            />
+            {query && (
+              <button
+                onClick={() => onQueryChange("")}
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-muted rounded"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button>
+            )}
+          </div>
         </div>
 
-        {/* 🏷️ Filters */}
-        {uniqueCategories.length > 0 && (
-          <div className="p-4 border-b border overflow-x-auto">
-            <div className="flex gap-x-2 gap-x-reverse">
-              {uniqueCategories.map((category) => (
-                <Badge
-                  key={category}
-                  variant={
-                    selectedCategory === category ? "default" : "outline"
-                  }
-                  className={cn(
-                    "cursor-pointer",
-                    selectedCategory !== category && "hover:bg-muted"
-                  )}
-                  onClick={() => handleCategoryFilter(category)}
-                >
-                  {category}
-                </Badge>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* 📦 Results / states */}
-        <div className="max-h-[60vh] overflow-y-auto p-4">
+        {/* Search Results */}
+        <div className="flex-1 overflow-y-auto">
           {isLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-brand" />
+            <div className="flex justify-center items-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
             </div>
           ) : results.length > 0 ? (
-            <>
+            <div className="p-4">
+              {/* Results Header */}
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-medium text-muted-foreground">
                   {results.length} نتیجه برای «{query}»
@@ -209,32 +223,36 @@ export default function SearchModal({
                 <Button
                   variant="link"
                   size="sm"
-                  onClick={handleSearch}
-                  className="p-0 h-auto text-brand"
+                  onClick={() => handleSearchNavigation(query)}
+                  disabled={isNavigating}
+                  className="p-0 h-auto text-primary hover:text-primary/80"
                 >
                   مشاهده همه
                 </Button>
               </div>
 
-              <div className="space-y-2">
+              {/* Results List */}
+              <div className="space-y-3">
                 {results.slice(0, 5).map((item) => (
                   <Link
-                    key={item.id}
-                    href={`/product/${item.id}`}
-                    className="flex items-center p-2 rounded-lg hover:bg-muted transition-colors"
+                    key={item.uuid}
+                    href={`/product/${item.slug}`}
+                    className="flex items-center p-3 rounded-lg hover:bg-muted transition-colors border border-transparent hover:border-border"
                     onClick={handleProductClick}
                   >
-                    <div className="relative h-16 w-16 rounded-md overflow-hidden bg-muted flex-shrink-0">
+                    <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
                       <Image
-                        src={item.image || "/placeholder.svg"}
+                        src={item?.productMedia[0]?.url || "/placeholder.svg"}
                         alt={item.name}
                         fill
                         sizes="64px"
                         className="object-cover"
                       />
                     </div>
-                    <div className="mr-3 flex-1">
-                      <h4 className="text-sm font-medium">{item.name}</h4>
+                    <div className="mr-3 flex-1 min-w-0">
+                      <h4 className="text-sm font-medium text-foreground truncate">
+                        {item.name}
+                      </h4>
                       <p className="text-sm text-muted-foreground">
                         {item.price.toLocaleString("fa-IR")} تومان
                       </p>
@@ -242,16 +260,7 @@ export default function SearchModal({
                   </Link>
                 ))}
               </div>
-
-              {results.length > 5 && (
-                <Button
-                  onClick={handleSearch}
-                  className="w-full rounded-full bg-muted hover:bg-muted/70 text-foreground"
-                >
-                  مشاهده همه {results.length} نتیجه
-                </Button>
-              )}
-            </>
+            </div>
           ) : query ? (
             <EmptyState
               icon={Search}
@@ -259,7 +268,8 @@ export default function SearchModal({
               description={`هیچ محصولی با عبارت «${query}» یافت نشد. لطفاً عبارت دیگری را جستجو کنید.`}
             />
           ) : recentSearches.length > 0 ? (
-            <>
+            <div className="p-4">
+              {/* Recent Searches Header */}
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-sm font-medium text-muted-foreground">
                   جستجوهای اخیر
@@ -267,26 +277,29 @@ export default function SearchModal({
                 <Button
                   variant="link"
                   size="sm"
-                  onClick={clearRecentSearches}
-                  className="p-0 h-auto text-muted-foreground"
+                  onClick={handleClearRecentSearches}
+                  className="p-0 h-auto text-muted-foreground hover:text-foreground"
                 >
                   پاک کردن
                 </Button>
               </div>
 
+              {/* Recent Searches List */}
               <div className="space-y-2">
-                {recentSearches.map((s, idx) => (
+                {recentSearches.map((searchTerm, idx) => (
                   <button
                     key={idx}
-                    className="flex items-center w-full p-2 rounded-lg hover:bg-muted transition-colors text-right"
-                    onClick={() => selectRecentSearch(s)}
+                    className="flex items-center w-full p-3 rounded-lg hover:bg-muted transition-colors text-right"
+                    onClick={() => handleRecentSearchClick(searchTerm)}
                   >
-                    <Search className="h-4 w-4 text-muted-foreground ml-2" />
-                    <span className="text-sm">{s}</span>
+                    <Search className="h-4 w-4 text-muted-foreground ml-3" />
+                    <span className="text-sm text-foreground">
+                      {searchTerm}
+                    </span>
                   </button>
                 ))}
               </div>
-            </>
+            </div>
           ) : (
             <EmptyState
               icon={Search}
@@ -296,14 +309,19 @@ export default function SearchModal({
           )}
         </div>
 
-        {/* CTA */}
-        {query && (
-          <div className="p-4 border-t border">
+        {/* Search Button */}
+        {query.trim() && (
+          <div className="p-4 border-t border-border bg-background">
             <Button
-              onClick={handleSearch}
-              className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+              onClick={() => handleSearchNavigation(query)}
+              disabled={isNavigating}
+              className="w-full rounded-lg bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70"
             >
-              <Search className="ml-2 h-4 w-4" />
+              {isNavigating ? (
+                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Search className="ml-2 h-4 w-4" />
+              )}
               جستجوی «{query}»
             </Button>
           </div>

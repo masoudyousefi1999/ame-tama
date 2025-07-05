@@ -28,14 +28,17 @@ export default function CategoryProducts({
     try {
       addItem(product, 1);
       toast({
+        variant: "cart",
         title: "محصول به سبد خرید اضافه شد",
         description: `${product.name} به سبد خرید شما اضافه شد.`,
+        duration: 2000,
       });
     } catch (error) {
       toast({
+        variant: "error",
         title: "خطا در افزودن به سبد خرید",
         description: "مشکلی در افزودن محصول به سبد خرید رخ داد.",
-        variant: "destructive",
+        duration: 2000,
       });
     }
   };
@@ -47,14 +50,17 @@ export default function CategoryProducts({
 
     try {
       toast({
+        variant: "wishlist",
         title: "محصول به علاقه‌مندی‌ها اضافه شد",
         description: `${product.name} به لیست علاقه‌مندی‌های شما اضافه شد.`,
+        duration: 2000,
       });
     } catch (error) {
       toast({
+        variant: "error",
         title: "خطا در افزودن به علاقه‌مندی‌ها",
         description: "مشکلی در افزودن محصول به علاقه‌مندی‌ها رخ داد.",
-        variant: "destructive",
+        duration: 2000,
       });
     }
   };

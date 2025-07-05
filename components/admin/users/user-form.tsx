@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { customFetch } from "@/lib/utils";
 
 interface User {
@@ -73,7 +73,7 @@ export function UserForm({ user }: UserFormProps) {
       toast({
         title: "خطا",
         description: `${user ? "به‌روزرسانی" : "ایجاد"} کاربر با شکست مواجه شد`,
-        variant: "destructive",
+        variant: "error",
         className: "bg-red-600 text-white",
       });
     } finally {

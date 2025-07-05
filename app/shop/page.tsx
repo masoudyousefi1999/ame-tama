@@ -1,46 +1,35 @@
-import { getAllProducts, getProductByCategorySlug } from "@/lib/products";
-import { getAllCategories, ICategoryType } from "@/lib/categories";
+import { getAllProducts, IProductType } from "@/lib/products";
 import ShopPageClient from "@/components/shop/shop-page-client";
+import { productLimit } from "@/lib/product-limit";
 
 export default async function ShopPage({
   searchParams,
 }: {
-  searchParams: { category?: string; search?: string; page?: string };
+  searchParams: { search?: string; page?: string };
 }) {
-  let products = [];
-  let categories: ICategoryType[] = [];
-  let totalPages = 1;
+  const {page: currentPage, search} = await searchParams;
+
+  let products: IProductType[] = [];
+  let totalCount = 0;
+  const limit = productLimit;
+  const page = Number.parseInt(currentPage || "1");
 
   try {
-    const fetchedCategories = await getAllCategories();
-    categories = fetchedCategories || [];
-
-    const category = searchParams.category;
-
-    let fetchedProducts;
-    if (category) {
-      fetchedProducts = await getProductByCategorySlug(category);
-    } else {
-      fetchedProducts = await getAllProducts();
-    }
-
-    products = (fetchedProducts as any)?.products || [];
-    totalPages = (fetchedProducts as any)?.totalPages || 1;
+    const fetchedProducts = await getAllProducts(page, limit);
+    products = fetchedProducts.products || [];
+    totalCount = fetchedProducts.totalCount || 0;
   } catch (error) {
     console.error("Error fetching shop data:", error);
     products = [];
-    categories = [];
-    totalPages = 1;
+    totalCount = 0;
   }
 
   return (
     <ShopPageClient
       initialProducts={products}
-      categories={categories}
-      totalPages={totalPages}
-      currentPage={Number.parseInt(searchParams.page || "1")}
-      currentCategory={searchParams.category}
-      currentSearch={searchParams.search}
+      totalCount={totalCount}
+      currentPage={page}
+      limit={limit}
     />
   );
 }
