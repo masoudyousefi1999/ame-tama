@@ -127,13 +127,12 @@ export function PreCheckoutModal({
     setIsUpdatingUser(true);
     try {
       const res = await customFetch("/users/update", {
-        method: "POST",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           first_name: userForm.firstName,
           last_name: userForm.lastName,
           email: userForm.email,
-          avatar: userForm.avatar,
         }),
       });
       if (!res.ok) throw new Error("خطا در بروزرسانی اطلاعات کاربر");
@@ -268,13 +267,12 @@ export function PreCheckoutModal({
                     />
                   </div>
                   <div>
-                    <Label htmlFor="email">ایمیل</Label>
+                    <Label htmlFor="email">ایمیل (اختیاری)</Label>
                     <Input
                       id="email"
                       name="email"
                       value={userForm.email}
-                      readOnly
-                      disabled
+                      onChange={handleUserFormChange}
                     />
                   </div>
                   <Button

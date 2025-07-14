@@ -10,6 +10,7 @@ import {
 import { getUserByEmail, type User } from "@/lib/users";
 import { getMe } from "@/hooks/use-user";
 import { customFetch } from "@/lib/utils";
+import { useCart } from "@/context/cart-context";
 
 interface AuthContextType {
   user: User | null;
@@ -54,6 +55,7 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const getUser = async () => {
@@ -186,6 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Ignore errors, just clear user state
     }
     setUser(null);
+    clearCart(); // Clear the cart on logout
   };
 
   // به‌روزرسانی اطلاعات پروفایل

@@ -187,6 +187,7 @@ export default function LoginModal({
           title: " موفقیت‌آمیز",
           description: "با موفقیت وارد حساب کاربری خود شدید",
         });
+        window.location.reload(); // Force UI update after login
         // onSuccess?.();
         // onClose();
       } else {
@@ -235,6 +236,7 @@ export default function LoginModal({
           title: "ورود موفقیت‌آمیز",
           description: "با موفقیت وارد حساب کاربری خود شدید",
         });
+        window.location.reload(); // Force UI update after login
         onSuccess?.();
         onClose();
       } else {

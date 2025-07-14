@@ -10,9 +10,11 @@ import LoginModal from "@/components/auth/login-modal";
 import { useLoginModal } from "@/context/login-modal-context";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
+import { useCart } from "@/context/cart-context";
 
 export default function UserMenu() {
   const { user, logout } = useAuth();
+  const { clearCart } = useCart();
   const { isLoginModalOpen, openLoginModal, closeLoginModal } = useLoginModal();
   const [isOpen, setIsOpen] = useState(false);
   const parentRef = useRef<HTMLDivElement>(null);
@@ -44,6 +46,7 @@ export default function UserMenu() {
 
   const handleLogout = () => {
     logout();
+    clearCart(); // Clear cart on logout
     setIsOpen(false);
     toast({
       variant: "success",
@@ -96,7 +99,11 @@ export default function UserMenu() {
       >
         <div className="relative h-[36px] w-[36px]">
           <Image
-            src={user.avatar || "/placeholder.svg?height=40&width=40"}
+            src={
+              typeof user.avatar === "string" && user.avatar.trim() !== ""
+                ? user.avatar
+                : "/placeholder.svg?height=40&width=40"
+            }
             alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
             fill
             sizes="36px"
@@ -128,7 +135,11 @@ export default function UserMenu() {
         <div className="flex items-center gap-4 p-4 pb-2 bg-gradient-to-r from-indigo-900/30 via-purple-900/20 to-transparent">
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-primary shadow-lg">
             <Image
-              src={user.avatar || "/placeholder.svg?height=40&width=40"}
+              src={
+                typeof user.avatar === "string" && user.avatar.trim() !== ""
+                  ? user.avatar
+                  : "/placeholder.svg?height=40&width=40"
+              }
               alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
               fill
               sizes="48px"

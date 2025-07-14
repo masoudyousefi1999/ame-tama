@@ -47,37 +47,13 @@ export default function CartPage() {
   } = useCart();
   const { user, isLoading: userLoading } = useAuth();
   const [showPreCheckout, setShowPreCheckout] = useState(false);
-  const [step, setStep] = useState(1);
-  const [userForm, setUserForm] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
-    avatar: user?.avatar || "",
-  });
-  const [isUpdatingUser, setIsUpdatingUser] = useState(false);
-  const [addressList, setAddressList] = useState<any[]>([]);
-  const [selectedAddress, setSelectedAddress] = useState<string>("");
-  const [addressForm, setAddressForm] = useState({
-    province: "",
-    city: "",
-    address: "",
-    postalCode: "",
-    houseNumber: "",
-    floorNumber: "",
-  });
-  const [isLoadingAddresses, setIsLoadingAddresses] = useState(false);
-  const [isCreatingAddress, setIsCreatingAddress] = useState(false);
-  const [showAddressForm, setShowAddressForm] = useState(false);
+  // Removed: step, userForm, isUpdatingUser, addressList, selectedAddress, addressForm, isLoadingAddresses, isCreatingAddress, showAddressForm, userStepConfirmed, addressStepConfirmed
 
   const [discountCode, setDiscountCode] = useState("");
   const [isApplyingDiscount, setIsApplyingDiscount] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [userStepConfirmed, setUserStepConfirmed] = useState<
-    null | "already" | "just"
-  >(null);
-  const [addressStepConfirmed, setAddressStepConfirmed] = useState(false);
 
   /* --------------------------------------------------------------------- */
   /*  Effects                                                              */
@@ -96,20 +72,7 @@ export default function CartPage() {
     setShowPreCheckout(true);
   };
 
-  // Fetch addresses when step 2 is entered
-  useEffect(() => {
-    if (showPreCheckout && step === 2) {
-      setIsLoadingAddresses(true);
-      customFetch("/address", { method: "GET" })
-        .then((res) => res.json())
-        .then((data) => {
-          setAddressList(Array.isArray(data) ? data : []);
-          setShowAddressForm(!data || data.length === 0);
-        })
-        .catch(() => setAddressList([]))
-        .finally(() => setIsLoadingAddresses(false));
-    }
-  }, [showPreCheckout, step]);
+  // Removed: useEffect for fetching addresses when step 2 is entered
 
   /* --------------------------------------------------------------------- */
   /*  Handlers                                                             */
@@ -186,73 +149,7 @@ export default function CartPage() {
     }
   };
 
-  // User info update handler
-  const handleUserFormChange = (e: any) => {
-    setUserForm({ ...userForm, [e.target.name]: e.target.value });
-  };
-  const handleUpdateUser = async (e: any) => {
-    e.preventDefault();
-    setIsUpdatingUser(true);
-    try {
-      const res = await customFetch("/users/update", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          first_name: userForm.firstName,
-          last_name: userForm.lastName,
-          email: userForm.email,
-          avatar: userForm.avatar,
-        }),
-      });
-      if (!res.ok) throw new Error("خطا در بروزرسانی اطلاعات کاربر");
-      toast({ title: "اطلاعات با موفقیت بروزرسانی شد" });
-      setUserStepConfirmed("just");
-      setTimeout(() => {
-        setStep(2);
-        setUserStepConfirmed(null);
-      }, 1200);
-    } catch (err: any) {
-      toast({ title: "خطا", description: err.message, variant: "error" });
-    } finally {
-      setIsUpdatingUser(false);
-    }
-  };
-
-  // Address form handlers
-  const handleAddressFormChange = (e: any) => {
-    setAddressForm({ ...addressForm, [e.target.name]: e.target.value });
-  };
-  const handleCreateAddress = async (e: any) => {
-    e.preventDefault();
-    setIsCreatingAddress(true);
-    try {
-      const res = await customFetch("/address", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(addressForm),
-      });
-      if (!res.ok) throw new Error("خطا در ثبت آدرس");
-      const data = await res.json();
-      setSelectedAddress(data.uuid);
-      setShowAddressForm(false);
-      // Refresh address list
-      setIsLoadingAddresses(true);
-      const res2 = await customFetch("/address", { method: "GET" });
-      const data2 = await res2.json();
-      setAddressList(Array.isArray(data2) ? data2 : []);
-      toast({ title: "آدرس با موفقیت ثبت شد" });
-      setAddressStepConfirmed(true);
-      setTimeout(() => {
-        setAddressStepConfirmed(false);
-        handlePreCheckoutComplete();
-      }, 1200);
-    } catch (err: any) {
-      toast({ title: "خطا", description: err.message, variant: "error" });
-    } finally {
-      setIsCreatingAddress(false);
-      setIsLoadingAddresses(false);
-    }
-  };
+  // Removed: handleUserFormChange, handleUpdateUser, handleAddressFormChange, handleCreateAddress
 
   // Final step: go to checkout
   const handlePreCheckoutComplete = () => {
@@ -260,14 +157,7 @@ export default function CartPage() {
     router.push("/checkout");
   };
 
-  const handleSelectAddress = (uuid: string) => {
-    setSelectedAddress(uuid);
-    setAddressStepConfirmed(true);
-    setTimeout(() => {
-      setAddressStepConfirmed(false);
-      handlePreCheckoutComplete();
-    }, 1200);
-  };
+  // Removed: handleSelectAddress
 
   /* --------------------------------------------------------------------- */
   /*  Loading state                                                        */

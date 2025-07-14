@@ -11,7 +11,7 @@ import { getAllProducts, IProductType } from "@/lib/products";
 import { toast } from "@/components/ui/use-toast";
 import { ProductCard } from "@/components/product/product-card";
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts({ limit }: { limit?: number } = {}) {
   const { addItem } = useCart();
   const [products, setProducts] = useState<IProductType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,6 +96,9 @@ export default function FeaturedProducts() {
     );
   }
 
+  // Apply limit if provided
+  const displayedProducts = limit ? products.slice(0, limit) : products;
+
   return (
     <section id="featured-products" className="py-10">
       <div className="container mx-auto px-2 md:px-4">
@@ -112,8 +115,8 @@ export default function FeaturedProducts() {
 
         {/* ───── products grid ───── */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products && products.length > 0 ? (
-            products.map((product, index) => (
+          {displayedProducts && displayedProducts.length > 0 ? (
+            displayedProducts.map((product, index) => (
               <motion.div
                 key={product.uuid}
                 initial={{ opacity: 0, y: 20 }}

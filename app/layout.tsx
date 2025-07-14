@@ -11,8 +11,6 @@ import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
 import { SkipLink } from "@/components/ui/skip-link";
 import ViewportHeightFix from "@/components/viewport-height-fix";
-import SplashScreen from "@/components/splash-screen";
-import PWAInstallPrompt from "@/components/pwa-install-prompt";
 import PageTransition from "@/components/page-transition";
 import dynamic from "next/dynamic";
 import { LoginModalProvider } from "@/context/login-modal-context";
@@ -28,7 +26,7 @@ export const metadata = {
   title: "AME-TAMA | مجسمه‌های انیمه لوکس",
   description:
     "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
-  generator: "v0.dev",
+  generator: "masoudyousefi",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -82,30 +80,27 @@ export default function RootLayout({
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
         <LoginToastEffect />
-        <SplashScreen>
-          <ViewportHeightFix />
-          <ScrollToTop />
-          <LoginModalProvider>
-            <AuthProvider>
-              <CartProvider>
-                <WishlistProvider>
-                  <ImageProvider>
-                    <SkipLink href="#main-content" />
-                    <Navbar />
-                    <PageTransition>
-                      <main id="main-content" className="min-h-screen">
-                        {children}
-                      </main>
-                    </PageTransition>
-                    <Footer />
-                    <Toaster />
-                    <PWAInstallPrompt />
-                  </ImageProvider>
-                </WishlistProvider>
-              </CartProvider>
-            </AuthProvider>
-          </LoginModalProvider>
-        </SplashScreen>
+        <ViewportHeightFix />
+        <ScrollToTop />
+        <LoginModalProvider>
+          <AuthProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <ImageProvider>
+                  <SkipLink href="#main-content" />
+                  <Navbar />
+                  <PageTransition>
+                    <main id="main-content" className="min-h-screen">
+                      {children}
+                    </main>
+                  </PageTransition>
+                  <Footer />
+                  <Toaster />
+                </ImageProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </AuthProvider>
+        </LoginModalProvider>
       </body>
     </html>
   );

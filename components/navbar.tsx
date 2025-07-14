@@ -34,6 +34,7 @@ import {
 } from "@/lib/categories";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
+import { useCart } from "@/context/cart-context";
 
 interface CategoryWithChildren extends ICategoryType {}
 
@@ -51,6 +52,7 @@ export default function Navbar() {
   const menuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const { user, logout } = useAuth();
+  const { clearCart } = useCart();
 
   const [categoryTree, setCategoryTree] = useState<CategoryWithChildren[]>([]);
   const [mobileCategories, setMobileCategories] = useState<any[]>([]);
@@ -192,8 +194,10 @@ export default function Navbar() {
   const handleLogout = () => {
     try {
       logout();
+      clearCart(); // Clear cart on logout
       setIsOpen(false);
       toast({ title: "خروج موفقیت‌آمیز" });
+      window.location.reload(); // Force UI update after logout
     } catch {
       toast({
         title: "خطا در خروج",

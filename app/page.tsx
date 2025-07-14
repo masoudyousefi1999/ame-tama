@@ -1,5 +1,5 @@
 import HeroSection from "@/components/hero-section";
-import FeaturedProducts from "@/components/featured-products";
+import FeaturedProductsSection from "@/components/featured-products-section";
 import TestimonialSection from "@/components/testimonial-section";
 import CategoryShowcase from "@/components/shop/category-showcase";
 import {
@@ -33,23 +33,7 @@ export default async function Home() {
       <div className="section-separator"></div>
 
       {/* Featured Products with Wave Pattern */}
-      <section className="relative py-24 section-elevated section-glow mx-4 lg:mx-8">
-        <div className="absolute inset-0 bg-pattern-waves opacity-20" />
-        <BrandedIllustration variant="section" />
-        <div className="relative container mx-auto px-6 lg:px-8">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-8 section-title">
-              محصولات ویژه
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              جدیدترین و محبوب‌ترین مجسمه‌های انیمه را با کیفیت برتر تجربه کنید
-            </p>
-          </div>
-          <div className="px-4">
-            <FeaturedProducts />
-          </div>
-        </div>
-      </section>
+      <FeaturedProductsSection />
 
       {/* Section Separator */}
       <div className="section-separator"></div>
