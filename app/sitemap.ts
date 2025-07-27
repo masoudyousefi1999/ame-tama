@@ -3,7 +3,7 @@ import { getAllProducts } from "@/lib/products";
 import type { MetadataRoute } from "next";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://ametama.com";
+  const baseUrl = "https://ame-tama.com";
 
   // صفحات استاتیک
   const staticPages = [
@@ -23,8 +23,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // صفحات محصولات
-  const productItems = await getAllProducts(1, 100);
-  const { products } = productItems;
+  // #FIXME: fix this
+  const productItems = await getAllProducts(1, 20);
+  const productItem2 = await getAllProducts(2, 20);
+  const products1 = productItems.products;
+  const products2 = productItem2.products;
+
+  const products = [...products1, ...products2];
+  console.log("products are: ", products);
 
   const productPages = products.map((product) => ({
     url: `${baseUrl}/product/${encodeURIComponent(product.slug)}`,

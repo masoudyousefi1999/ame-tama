@@ -12,6 +12,7 @@ type Props = {
   };
 };
 
+const baseUrl = "https://ame-tama.com";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategoryBySlug(slug[slug.length - 1]);
@@ -23,8 +24,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${category.name} | AME-TAMA`,
-    description: category.description,
+    metadataBase: new URL(baseUrl),
+    title: `خرید فیگورهای انیمه ی ${category.name} | AME-TAMA`,
+    description: `خرید فیگور های انیمه ی ${category.name}`,
     openGraph: {
       images: [category.image],
     },

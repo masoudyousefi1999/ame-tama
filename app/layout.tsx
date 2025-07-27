@@ -14,8 +14,8 @@ import ViewportHeightFix from "@/components/viewport-height-fix";
 import PageTransition from "@/components/page-transition";
 import dynamic from "next/dynamic";
 import { LoginModalProvider } from "@/context/login-modal-context";
-import { toast } from "@/components/ui/use-toast";
 import LoginToastEffect from "@/components/LoginToastEffect";
+const baseUrl = "https://ame-tama.com";
 
 const vazirmatn = Vazirmatn({
   subsets: ["arabic"],
@@ -23,18 +23,32 @@ const vazirmatn = Vazirmatn({
 });
 
 export const metadata = {
-  title: "AME-TAMA | مجسمه‌های انیمه لوکس",
-  description:
-    "مجسمه‌های انیمه لوکس برای کلکسیونرهای مشتاق. مجموعه‌ای از مجسمه‌های با کیفیت و دقیق از سری‌های انیمه مورد علاقه شما را کشف کنید.",
-  generator: "masoudyousefi",
-  manifest: "/manifest.json",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "AME-TAMA",
+  metadataBase: new URL(baseUrl),
+  title: "AME-TAMA | آمه تاما",
+  description: "خرید اکشن فیگور های انیمه ای با بهترین قیمت و کیفیت",
+  icons: {
+    icon: "/favicon.ico",
   },
-  formatDetection: {
-    telephone: false,
+  openGraph: {
+    title: "AME-TAMA",
+    description: "خرید اکشن فیگور های انیمه ای با کیفیت و قیمت مناسب",
+    url: "https://ame-tama.com",
+    siteName: "AME-TAMA",
+    images: [
+      {
+        url: "/og-image.jpg", // این عکس باید داخل پوشه public باشه
+        width: 1200,
+        height: 630,
+        alt: "AME-TAMA فروشگاه فیگور انیمه‌ای",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AME-TAMA",
+    description: "خرید اکشن فیگور های انیمه ای با بهترین قیمت",
+    images: ["/og-image.jpg"],
   },
 };
 
@@ -50,33 +64,7 @@ export default function RootLayout({
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning className="h-full">
       <head>
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/icons/pwa-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="32x32"
-          href="/icons/pwa-icon.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="16x16"
-          href="/icons/pwa-icon.png"
-        />
-        <link rel="mask-icon" href="/icons/pwa-icon.png" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#ffffff" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#ffffff" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-        />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
         <LoginToastEffect />
