@@ -23,7 +23,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // صفحات محصولات
-  const productItems = await getAllProducts();
+  const productItems = await getAllProducts(1, 100);
   const { products } = productItems;
 
   const productPages = products.map((product) => ({
@@ -36,7 +36,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // صفحات دسته‌بندی
   const categories = await getAllCategories();
 
-  const categoryPages = categories.map((category) => ({
+  const rootCategories: any[] = [];
+  categories.forEach((item) => rootCategories.push(...item.children));
+
+  const categoryPages = rootCategories.map((category) => ({
     url: `${baseUrl}/category/figures/${encodeURIComponent(category.slug)}`,
     lastModified: new Date(category?.updatedAt ?? new Date()),
     changeFrequency: "weekly" as const,
