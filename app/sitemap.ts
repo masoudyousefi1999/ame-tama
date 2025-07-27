@@ -1,34 +1,47 @@
-import type { MetadataRoute } from "next"
+import { getAllCategories } from "@/lib/categories";
+import { getAllProducts } from "@/lib/products";
+import type { MetadataRoute } from "next";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  // const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ametama.com"
-  const baseUrl = "https://ametama.com"
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const baseUrl = "https://ametama.com";
 
   // صفحات استاتیک
-  const staticPages = ["", "/shop", "/about", "/contact", "/faq", "/cart", "/checkout", "/profile"].map((route) => ({
+  const staticPages = [
+    "",
+    "/shop",
+    "/about",
+    "/contact",
+    "/faq",
+    "/cart",
+    "/checkout",
+    "/profile",
+  ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "monthly" as const,
     priority: route === "" ? 1 : 0.8,
-  }))
+  }));
 
   // صفحات محصولات
-  // const products = getAllProducts()
-  // const productPages = products.map((product) => ({
-  //   url: `${baseUrl}/product/${product.id}`,
-  //   lastModified: new Date(),
-  //   changeFrequency: "weekly" as const,
-  //   priority: 0.8,
-  // }))
+  const productItems = await getAllProducts();
+  const { products } = productItems;
+
+  const productPages = products.map((product) => ({
+    url: `${baseUrl}/product/${encodeURIComponent(product.slug)}`,
+    lastModified: new Date(product?.updatedAt ?? new Date()),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
 
   // صفحات دسته‌بندی
-  // const categories = getAllCategories()
-  // const categoryPages = categories.map((category) => ({
-  //   url: `${baseUrl}/category/${category.slug}`,
-  //   lastModified: new Date(),
-  //   changeFrequency: "weekly" as const,
-  //   priority: 0.7,
-  // }))
+  const categories = await getAllCategories();
 
-  return [...staticPages]
+  const categoryPages = categories.map((category) => ({
+    url: `${baseUrl}/category/figures/${encodeURIComponent(category.slug)}`,
+    lastModified: new Date(category?.updatedAt ?? new Date()),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...productPages, ...categoryPages];
 }
