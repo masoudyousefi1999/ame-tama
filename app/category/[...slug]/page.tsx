@@ -37,7 +37,9 @@ export default async function CategoryRoute(props: {
   params: { slug: string[] };
   searchParams?: { page?: string };
 }) {
-  const { params, searchParams } = props;
+  const params = await props.params;
+  const searchParams = await props.searchParams;
+
   const lastSlug = params.slug[params.slug.length - 1];
   const page = Number.parseInt(searchParams?.page || "1");
   const limit = productLimit;

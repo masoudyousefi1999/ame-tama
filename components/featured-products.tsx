@@ -116,21 +116,15 @@ export default function FeaturedProducts({ limit }: { limit?: number } = {}) {
         {/* ───── products grid ───── */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {displayedProducts && displayedProducts.length > 0 ? (
-            displayedProducts.map((product, index) => (
-              <motion.div
-                key={product.uuid}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+            displayedProducts.map((product) => (
+              <div key={product.uuid}>
                 <ProductCard
                   product={product}
                   showAddToCart
                   showAddToWishlist
                   className="h-full"
                 />
-              </motion.div>
+              </div>
             ))
           ) : (
             <div className="col-span-full py-8 text-center">

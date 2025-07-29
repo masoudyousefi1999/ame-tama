@@ -24,16 +24,20 @@ export default function ProductTabs({ product }: ProductTabsProps) {
             درباره این محصول
           </h3>
 
-          <div className="rounded-xl p-5 shadow-sm border bg-muted">
-            <div
-              className="prose prose-lg max-w-none leading-relaxed text-justify dark:prose-invert"
-              dangerouslySetInnerHTML={{
-                __html:
-                  product?.detail?.description ??
-                  "<p>توضیحی برای این محصول ثبت نشده است.</p>",
-              }}
-            />
-          </div>
+          {product?.detail?.description ? (
+            <div className="rounded-xl p-5 shadow-sm border bg-muted">
+              <div
+                className="prose prose-lg max-w-none leading-relaxed text-justify dark:prose-invert"
+                dangerouslySetInnerHTML={{
+                  __html: product.detail.description,
+                }}
+              />
+            </div>
+          ) : (
+            <p className="py-8 text-center text-muted-foreground">
+              توضیحی برای این محصول ثبت نشده است.
+            </p>
+          )}
         </div>
       </TabsContent>
 
@@ -77,10 +81,9 @@ export default function ProductTabs({ product }: ProductTabsProps) {
             نظرات کاربران
           </h3>
 
-          <div className="space-y-6">
-            {
-              // @ts-ignore
-              (product.reviews ?? []).map((review) => (
+          {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
+            <div className="space-y-6">
+              {product.reviews.map((review) => (
                 <div
                   key={review.id}
                   className="pb-6 border-b last:border-0 border"
@@ -110,11 +113,15 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                     ))}
                   </div>
 
-                  <p className="  text-foreground">{review.comment}</p>
+                  <p className="text-foreground">{review.comment}</p>
                 </div>
-              ))
-            }
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="py-8 text-center text-muted-foreground">
+              هنوز نظری برای این محصول ثبت نشده است.
+            </p>
+          )}
         </div>
       </TabsContent>
     </Tabs>

@@ -197,10 +197,10 @@ export default function ShopPageClient({
         </span>
       </div>
     </div>
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
       {products && products.length > 0 ? (
         products.map((product) => (
-          <ProductCard product={product} key={product.uuid} />
+          <ProductCard product={product} key={product.uuid}  />
         ))
       ) : (
         <div className="col-span-full py-24 text-center flex flex-col items-center">

@@ -30,6 +30,7 @@ export interface IProductType {
   detail: ProductDetail;
   category: ProductCategory;
   productMedia: ProductMedia[];
+  reviews?: any[];
 }
 
 export interface ProductReview {

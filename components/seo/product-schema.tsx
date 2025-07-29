@@ -1,29 +1,35 @@
 import { getSiteUrl } from "@/lib/site-url";
+import { IProductType } from "@/lib/products";
 
 interface ProductSchemaProps {
-  product: {
-    uuid: string;
-    slug: string;
-    name: string;
-    price: number;
-    description?: string;
-    productMedia: { id: number; url: string; alt: string }[];
-    availability: "in-stock" | "low-stock" | "out-of-stock";
-    category: string;
-    manufacturer: string;
-    releaseDate: string;
-  };
+  product: IProductType;
 }
 
 export default function ProductSchema({ product }: ProductSchemaProps) {
-  // تبدیل وضعیت موجودی به فرمت استاندارد Schema.org
   const availabilityMap = {
-    "in-stock": "https://schema.org/InStock",
-    "low-stock": "https://schema.org/LimitedAvailability",
-    "out-of-stock": "https://schema.org/OutOfStock",
+    inStock: "https://schema.org/InStock",
+    limitedAvailability: "https://schema.org/LimitedAvailability",
+    outOfStock: "https://schema.org/OutOfStock",
   };
 
-  const schemaData = {
+  // حدس وضعیت موجودی بر اساس quantity
+  let availability: "inStock" | "outOfStock" | "limitedAvailability" =
+    "inStock";
+  if (product.quantity === 0) availability = "outOfStock";
+  else if (product.quantity > 0 && product.quantity < 3)
+    availability = "limitedAvailability";
+
+  // داده‌های aggregateRating
+  const aggregateRating =
+    product.rating && product.reviews && product.reviews.length > 0
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: product.rating.toFixed(1),
+          reviewCount: product.reviews.length,
+        }
+      : undefined;
+
+  const schemaData: any = {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
@@ -31,31 +37,33 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
       img.url.startsWith("http") ? img.url : getSiteUrl(img.url)
     ),
     description:
-      product.description ||
-      `مجسمه ${product.name} از سری محصولات ${product.category}`,
+      product.detail?.description ||
+      `فیگور ${product.name} از انیمه ی  ${product.category.name}`,
     sku: `AME-${product.uuid}`,
     mpn: `AME-${product.uuid}`,
     brand: {
       "@type": "Brand",
-      name: product.manufacturer,
+      name: product.category.name, // چون manufacturer نیست، از category اسم برند رو گرفتیم
     },
     offers: {
       "@type": "Offer",
       url: getSiteUrl(`product/${product.slug}`),
       priceCurrency: "IRR",
-      price: product.price * 10, // تبدیل تومان به ریال برای استاندارد بین‌المللی
+      price: product.price * 10, // تومان به ریال
       priceValidUntil: new Date(
         new Date().setFullYear(new Date().getFullYear() + 1)
       )
         .toISOString()
         .split("T")[0],
-      availability: availabilityMap[product?.availability] || "in-stock",
+      availability: availabilityMap[availability],
       seller: {
         "@type": "Organization",
         name: "AME-TAMA",
       },
     },
   };
+
+  if (aggregateRating) schemaData.aggregateRating = aggregateRating;
 
   return (
     <script

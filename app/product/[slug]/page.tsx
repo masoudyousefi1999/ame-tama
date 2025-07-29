@@ -63,7 +63,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
   }
 
   let product = null;
-  let relatedProducts = [];
+  // let relatedProducts = [];
 
   try {
     product = await getProductBySlug(slug);
@@ -72,8 +72,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       notFound();
     }
 
-    const relatedProductsResult = await getRelatedProducts(product.uuid, 1, 8);
-    relatedProducts = relatedProductsResult.products;
+    // const relatedProductsResult = await getRelatedProducts(product.uuid, 1, 4);
+    // relatedProducts = relatedProductsResult.products;
   } catch (error) {
     console.error("Error fetching product data:", error);
     notFound();
@@ -88,8 +88,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
         ogType="product"
         canonicalPath={`product/${product.slug}`}
       />
-      <ProductSchema product={product as any} />
-      <ProductPageClient product={product} relatedProducts={relatedProducts} />
+      <ProductSchema product={product} />
+      <ProductPageClient product={product}/>
     </>
   );
 }
