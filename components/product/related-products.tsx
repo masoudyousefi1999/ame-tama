@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight, ShoppingCart, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { getRelatedProducts, IProductType } from "@/lib/products";
 import { ProductCard } from "./product-card";
 
@@ -14,7 +11,6 @@ interface RelatedProductsProps {
 }
 
 export default function RelatedProducts({ uuid }: RelatedProductsProps) {
-  const [hoveredProduct, setHoveredProduct] = useState<string | null>(null);
   const [products, setProducts] = useState<IProductType[]>([]);
 
   useEffect(() => {

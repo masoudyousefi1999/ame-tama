@@ -9,10 +9,8 @@ import {
   ShoppingBag,
   ArrowLeft,
   RefreshCw,
-  ExternalLink,
   ChevronUp,
   ChevronDown,
-  CheckCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -24,13 +22,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileCartItem } from "@/components/cart/mobile-cart-item";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/context/auth-context";
-import { customFetch } from "@/lib/utils";
 import { PreCheckoutModal } from "@/components/cart/pre-checkout-modal";
 
 export default function CartPage() {
@@ -54,6 +46,9 @@ export default function CartPage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 
   /* --------------------------------------------------------------------- */
   /*  Effects                                                              */
@@ -388,7 +383,7 @@ export default function CartPage() {
                               {item.product.name}
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                              {item.product.price.toLocaleString("fa-IR")} تومان
+                              {formatPrice(item.product.price)}
                             </p>
                           </div>
 
@@ -430,10 +425,7 @@ export default function CartPage() {
                           {/* Total price */}
                           <div className="text-right min-w-[100px]">
                             <p className="font-semibold">
-                              {(
-                                item.product.price * item.quantity
-                              ).toLocaleString("fa-IR")}{" "}
-                              تومان
+                              {formatPrice(item.product.price * item.quantity)}
                             </p>
                           </div>
 
@@ -553,7 +545,7 @@ export default function CartPage() {
                     <div className="space-y-2 pt-4 border-t border-border">
                       <div className="flex justify-between">
                         <span>جمع کل:</span>
-                        <span>{subtotal.toLocaleString("fa-IR")} تومان</span>
+                        <span>{formatPrice(subtotal)}</span>
                       </div>
                       {discount > 0 && (
                         <div className="flex justify-between text-green-600">
@@ -563,7 +555,7 @@ export default function CartPage() {
                       )}
                       <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">
                         <span>مبلغ قابل پرداخت:</span>
-                        <span>{total.toLocaleString("fa-IR")} تومان</span>
+                        <span>{formatPrice(subtotal)}</span>
                       </div>
                     </div>
 

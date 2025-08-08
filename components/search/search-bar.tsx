@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import SearchModal from "@/components/search/search-modal";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 interface SearchBarProps {
   isScrolled?: boolean;
@@ -22,6 +22,7 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const isDesktop = useMediaQuery("(min-width: 768px)");
   const pathname = usePathname();
+  const router = useRouter();
 
   // Focus on search field when opened
   useEffect(() => {
@@ -59,11 +60,8 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
         searchContainerRef.current &&
         !searchContainerRef.current.contains(e.target as Node)
       ) {
-        // Don't close if clicking on the search toggle button
         const target = e.target as HTMLElement;
-        if (target.closest("[data-search-toggle]")) {
-          return;
-        }
+        if (target.closest("[data-search-toggle]")) return;
         setIsMobileSearchOpen(false);
       }
     };
@@ -72,7 +70,7 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
     return () => document.removeEventListener("mousedown", handleOutsideClick);
   }, [isMobileSearchOpen]);
 
-  // Open search modal when typing
+  // Handle typing into search field
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setQuery(value);
@@ -84,31 +82,35 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
     }
   };
 
-  // Clear search field
+  // Handle Enter key / form submission
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (query.trim()) {
+      router.push(`/search?q=${encodeURIComponent(query.trim())}`);
+      setIsOpen(false);
+      setIsMobileSearchOpen(false);
+    }
+  };
+
+  // Clear search
   const clearSearch = () => {
     setQuery("");
     setIsOpen(false);
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
+    searchInputRef.current?.focus();
   };
 
   // Toggle mobile search
   const toggleMobileSearch = () => {
     setIsMobileSearchOpen(!isMobileSearchOpen);
     if (!isMobileSearchOpen) {
-      setTimeout(() => {
-        if (searchInputRef.current) {
-          searchInputRef.current.focus();
-        }
-      }, 100);
+      setTimeout(() => searchInputRef.current?.focus(), 100);
     } else {
       setQuery("");
       setIsOpen(false);
     }
   };
 
-  // Handle cancel button click
+  // Cancel mobile search
   const handleCancel = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -117,7 +119,7 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
     setQuery("");
   };
 
-  // Show search button in mobile
+  // Show mobile icon button when closed
   if (!isDesktop && !isMobileSearchOpen) {
     return (
       <Button
@@ -135,20 +137,18 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
 
   return (
     <>
-      {/* ­­­­­­­­­­­­­­­ Search bar / bar on mobile */}
+      {/* Search Bar */}
       <div
         ref={searchContainerRef}
         className={cn(
           "relative flex items-center transition-all duration-300",
-          /* desktop width vs sticky mobile bar */
           isDesktop
             ? "w-full max-w-md"
             : "fixed inset-x-0 top-0 z-[100] p-3 shadow-md",
-          /* opaque backdrop on scroll / initial state */
           !isDesktop && "bg-background/95 backdrop-blur-sm"
         )}
       >
-        <div className="relative w-full">
+        <form onSubmit={handleSearchSubmit} className="relative w-full">
           <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
 
           <Input
@@ -160,8 +160,8 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
             dir="rtl"
             className={cn(
               "w-full pr-10 pl-10 rounded-full text-right",
-              "border" /* ← replaces border-gray-300 / dark:border-gray-700 */,
-              "bg-background/90" /* ← replaces bg-white/90 + dark:gray-800/90 */
+              "border",
+              "bg-background/90"
             )}
           />
 
@@ -176,9 +176,8 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
               <span className="sr-only">پاک کردن جستجو</span>
             </Button>
           )}
-        </div>
+        </form>
 
-        {/* mobile cancel */}
         {!isDesktop && (
           <Button
             variant="ghost"
@@ -191,7 +190,7 @@ export default function SearchBar({ isScrolled = false }: SearchBarProps) {
         )}
       </div>
 
-      {/* ­­­­­­­­­­­­­­­ Search modal */}
+      {/* Search Modal Results */}
       <SearchModal
         isOpen={isOpen}
         onClose={() => {

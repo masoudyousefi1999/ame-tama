@@ -8,9 +8,24 @@ const baseUrl = "https://ame-tama.com";
 export const generateMetadata = (): Metadata => {
   return {
     metadataBase: new URL(baseUrl),
-    title: "فروشگاه | خرید اکشن فیگور انیمه‌ای",
+    title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
     description:
-      "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما",
+      "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما. مجموعه کامل فیگورهای انیمه‌ای از برترین برندها",
+    keywords:
+      "فروشگاه فیگور انیمه, اکشن فیگور, خرید فیگور انیمه, AME-TAMA, مجسمه انیمه",
+    openGraph: {
+      title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
+      description:
+        "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما",
+      type: "website",
+      url: `${baseUrl}/shop`,
+      siteName: "AME-TAMA",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
+      description: "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت",
+    },
   };
 };
 

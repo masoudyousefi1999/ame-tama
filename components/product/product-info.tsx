@@ -37,6 +37,9 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const { user } = useAuth();
   const { openLoginModal } = useLoginModal();
 
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
+
   const decreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
@@ -117,14 +120,14 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* ────────── price ────────── */}
       <div className="flex items-center gap-x-3 rtl:gap-x-reverse">
         <span className="text-3xl font-bold text-foreground">
-          {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
+          {formatPrice(product.price)}
         </span>
 
-        {!!product.price && (
+        {/* {!!product.price && (
           <span className="text-lg line-through text-muted-foreground">
             {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
           </span>
-        )}
+        )} */}
       </div>
 
       {/* ─── stock + badges ─── */}

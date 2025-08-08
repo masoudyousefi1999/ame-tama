@@ -1,18 +1,24 @@
-import type { Product, BreadcrumbList, WebSite, Organization, WithContext } from "schema-dts"
-import Script from "next/script"
+import type {
+  Product,
+  BreadcrumbList,
+  WebSite,
+  Organization,
+  WithContext,
+} from "schema-dts";
+import Script from "next/script";
 
 interface SchemaOrgProps {
-  type: "product" | "website" | "organization" | "breadcrumb"
-  data: any
+  type: "product" | "website" | "organization" | "breadcrumb";
+  data: any;
 }
 
 export default function SchemaOrg({ type, data }: SchemaOrgProps) {
   // const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ame-tama.com";
-  const baseUrl = "https://ame-tama.com"
+  const baseUrl = "https://ame-tama.com";
 
   let schema: WithContext<any> = {
     "@context": "https://schema.org",
-  }
+  };
 
   switch (type) {
     case "product":
@@ -21,7 +27,9 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
         "@type": "Product",
         name: data.name,
         description: data.description,
-        image: data.images?.map((img: any) => `${baseUrl}${img.url}`) || [`${baseUrl}/placeholder.svg`],
+        image: data.images?.map((img: any) => `${baseUrl}${img.url}`) || [
+          `${baseUrl}/placeholder.svg`,
+        ],
         sku: `AME-${data.id}`,
         mpn: `AME-${data.id}`,
         brand: {
@@ -32,13 +40,13 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
           "@type": "Offer",
           url: `${baseUrl}/product/${data.id}`,
           priceCurrency: "IRR",
-          price: data.price * 10000, // تبدیل به ریال
+          price: data.price, // قیمت ریال از بک‌اند (بدون تبدیل)
           availability:
             data.availability === "in-stock"
               ? "https://schema.org/InStock"
               : data.availability === "low-stock"
-                ? "https://schema.org/LimitedAvailability"
-                : "https://schema.org/OutOfStock",
+              ? "https://schema.org/LimitedAvailability"
+              : "https://schema.org/OutOfStock",
           seller: {
             "@type": "Organization",
             name: "AME-TAMA",
@@ -67,8 +75,8 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
               reviewBody: review.comment,
             })),
           }),
-      } as WithContext<Product>
-      break
+      } as WithContext<Product>;
+      break;
 
     case "website":
       schema = {
@@ -76,30 +84,51 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
         "@type": "WebSite",
         name: "AME-TAMA",
         url: baseUrl,
+        description: "فروشگاه اکشن فیگور های انیمه ای",
+        inLanguage: "fa-IR",
         potentialAction: {
           "@type": "SearchAction",
           target: `${baseUrl}/search?q={search_term_string}`,
           "query-input": "required name=search_term_string",
         },
-      } as WithContext<WebSite>
-      break
+      } as WithContext<WebSite>;
+      break;
 
     case "organization":
       schema = {
         "@context": "https://schema.org",
         "@type": "Organization",
         name: "AME-TAMA",
+        alternateName: "آمه تاما",
         url: baseUrl,
-        logo: `${baseUrl}/logo.png`,
-        sameAs: ["https://www.instagram.com/ametama", "https://twitter.com/ametama"],
+        logo: `${baseUrl}/favicon.jpg`,
+        image: `${baseUrl}/favicon.jpg`,
+        description: "فروشگاه اکشن فیگور های انیمه ای",
+        sameAs: [
+          "https://www.instagram.com/_ame_tama",
+          "https://twitter.com/masoudyousefi99",
+          "https://t.me/masoudyousefi1999",
+        ],
         contactPoint: {
           "@type": "ContactPoint",
-          telephone: "+98-21-12345678",
+          telephone: "+98-937-511-6262",
           contactType: "customer service",
           availableLanguage: ["Persian", "English"],
+          areaServed: "IR",
         },
-      } as WithContext<Organization>
-      break
+        address: {
+          "@type": "PostalAddress",
+          addressCountry: "IR",
+          addressLocality: "شیراز",
+          addressRegion: "شیراز",
+        },
+        hasOfferCatalog: {
+          "@type": "OfferCatalog",
+          name: "فیگور های انیمه ای",
+          itemListElement: [],
+        },
+      } as WithContext<Organization>;
+      break;
 
     case "breadcrumb":
       schema = {
@@ -111,8 +140,8 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
           name: item.name,
           item: `${baseUrl}${item.path}`,
         })),
-      } as WithContext<BreadcrumbList>
-      break
+      } as WithContext<BreadcrumbList>;
+      break;
   }
 
   return (
@@ -121,5 +150,5 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
       type="application/ld+json"
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />
-  )
+  );
 }

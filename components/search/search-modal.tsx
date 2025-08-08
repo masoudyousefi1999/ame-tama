@@ -1,10 +1,9 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect, ComponentProps } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { Search, Loader2, LucideIcon, X } from "lucide-react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -25,7 +24,7 @@ interface EmptyStateProps {
   title: string;
   description: string;
   className?: string;
-  iconProps?: ComponentProps<LucideIcon>;
+  iconProps?: React.ComponentProps<LucideIcon>;
 }
 
 export function EmptyState({
@@ -160,11 +159,6 @@ export default function SearchModal({
     localStorage.removeItem("ame-tama-recent-searches");
   };
 
-  // Handle product click
-  const handleProductClick = () => {
-    onClose();
-  };
-
   // Handle keyboard events
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && query.trim()) {
@@ -234,30 +228,37 @@ export default function SearchModal({
               {/* Results List */}
               <div className="space-y-3">
                 {results.slice(0, 5).map((item) => (
-                  <Link
+                  <button
                     key={item.uuid}
-                    href={`/product/${item.slug}`}
-                    className="flex items-center p-3 rounded-lg hover:bg-muted transition-colors border border-transparent hover:border-border"
-                    onClick={handleProductClick}
+                    onClick={() => {
+                      if (isNavigating) return;
+                      setIsNavigating(true);
+                      router.push(`/product/${item.slug}`);
+                      setTimeout(() => onClose(), 200);
+                    }}
+                    className="w-full text-right"
+                    disabled={isNavigating}
                   >
-                    <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-                      <Image
-                        src={item?.productMedia[0]?.url || "/placeholder.svg"}
-                        alt={item.name}
-                        fill
-                        sizes="64px"
-                        className="object-cover"
-                      />
+                    <div className="flex items-center p-3 rounded-lg hover:bg-muted transition-colors border border-transparent hover:border-border">
+                      <div className="relative h-16 w-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                        <Image
+                          src={item?.productMedia[0]?.url || "/placeholder.svg"}
+                          alt={item.name}
+                          fill
+                          sizes="64px"
+                          className="object-cover"
+                        />
+                      </div>
+                      <div className="mr-3 flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-foreground truncate">
+                          {item.name}
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {item.price.toLocaleString("fa-IR")} تومان
+                        </p>
+                      </div>
                     </div>
-                    <div className="mr-3 flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-foreground truncate">
-                        {item.name}
-                      </h4>
-                      <p className="text-sm text-muted-foreground">
-                        {item.price.toLocaleString("fa-IR")} تومان
-                      </p>
-                    </div>
-                  </Link>
+                  </button>
                 ))}
               </div>
             </div>

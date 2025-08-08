@@ -22,21 +22,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: route === "" ? 1 : 0.8,
   }));
 
-  // صفحات محصولات
-  // #FIXME: fix this
-  const productItems = await getAllProducts(1, 20);
-  const productItem2 = await getAllProducts(2, 20);
-  const products1 = productItems.products;
-  const products2 = productItem2.products;
+  // صفحات محصولات - دریافت همه محصولات
+  let allProducts: any[] = [];
+  let page = 1;
+  const limit = 50; // افزایش تعداد محصولات در هر صفحه
 
-  const products = [...products1, ...products2];
-  console.log("products are: ", products);
+  while (true) {
+    const productItems = await getAllProducts(page, limit);
+    if (productItems.products.length === 0) break;
+    allProducts = [...allProducts, ...productItems.products];
+    page++;
 
-  const productPages = products.map((product) => ({
+    // محدود کردن تعداد صفحات برای جلوگیری از حلقه بی‌نهایت
+    if (page > 20) break;
+  }
+
+  console.log(`Total products found: ${allProducts.length}`);
+
+  const productPages = allProducts.map((product) => ({
     url: `${baseUrl}/product/${encodeURIComponent(product.slug)}`,
     lastModified: new Date(product?.updatedAt ?? new Date()),
     changeFrequency: "weekly" as const,
-    priority: 0.8,
+    priority: 0.9, // افزایش اولویت صفحات محصولات
   }));
 
   // صفحات دسته‌بندی
@@ -49,8 +56,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}/category/figures/${encodeURIComponent(category.slug)}`,
     lastModified: new Date(category?.updatedAt ?? new Date()),
     changeFrequency: "weekly" as const,
-    priority: 0.7,
+    priority: 0.8, // افزایش اولویت صفحات دسته‌بندی
   }));
 
-  return [...staticPages, ...productPages, ...categoryPages];
+  // اضافه کردن صفحات دسته‌بندی اصلی
+  const mainCategoryPages = categories.map((category) => ({
+    url: `${baseUrl}/category/${encodeURIComponent(category.slug)}`,
+    lastModified: new Date(category?.updatedAt ?? new Date()),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
+
+  return [
+    ...staticPages,
+    ...productPages,
+    ...categoryPages,
+    ...mainCategoryPages,
+  ];
 }

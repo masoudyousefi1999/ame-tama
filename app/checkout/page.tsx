@@ -14,6 +14,9 @@ import { cn, customFetch } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
 
+const formatPrice = (price: number) =>
+  new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
+
 const paymentMethods = [
   {
     id: "online",
@@ -137,7 +140,11 @@ export default function CheckoutPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left: customer + shipping/payment forms */}
         <div className="lg:col-span-2">
-          <form onSubmit={handleSubmit} id="checkout-form" className="pb-16 lg:pb-32">
+          <form
+            onSubmit={handleSubmit}
+            id="checkout-form"
+            className="pb-16 lg:pb-32"
+          >
             {/* personal info */}
             <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4">اطلاعات شخصی</h2>
@@ -261,9 +268,7 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <span className="font-medium">
-                      {m.price === 0
-                        ? "رایگان"
-                        : `${m.price.toLocaleString("fa-IR")} تومان`}
+                      {m.price === 0 ? "رایگان" : `${formatPrice(m.price)}`}
                     </span>
                   </div>
                 ))}
@@ -451,7 +456,7 @@ export default function CheckoutPage() {
                         {item.product.name}
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        {item.product.price.toLocaleString("fa-IR")} تومان
+                        {formatPrice(item.product.price)}
                       </p>
                     </div>
                   </div>
@@ -464,14 +469,14 @@ export default function CheckoutPage() {
                     مجموع قیمت محصولات:
                   </span>
                   <span className="font-medium">
-                    {subtotal.toLocaleString("fa-IR")} تومان
+                   {formatPrice(subtotal)}
                   </span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-400">
                     <span>تخفیف ({discount}%):</span>
                     <span className="font-medium">
-                      {((subtotal * discount) / 100).toLocaleString("fa-IR")}{" "}
+                      {formatPrice((subtotal * discount) / 100)}
                       تومان
                     </span>
                   </div>
@@ -481,13 +486,13 @@ export default function CheckoutPage() {
                   <span className="font-medium">
                     {shippingCost === 0
                       ? "رایگان"
-                      : `${shippingCost.toLocaleString("fa-IR")} تومان`}
+                      : `${formatPrice(shippingCost)}`}
                   </span>
                 </div>
                 <div className="border-t border-border pt-3 mt-3">
                   <div className="flex justify-between font-semibold">
                     <span>مبلغ قابل پرداخت:</span>
-                    <span>{finalTotal.toLocaleString("fa-IR")} تومان</span>
+                    <span>{formatPrice(finalTotal)}</span>
                   </div>
                 </div>
               </div>

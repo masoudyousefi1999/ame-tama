@@ -1,112 +1,95 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { memo, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import type { ICategoryType } from "@/lib/categories";
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+  productCount?: number;
+}
 
 interface CategoryShowcaseProps {
-  categories: ICategoryType[];
+  categories: Category[];
 }
+
+const CategoryCard = memo(({ category }: { category: Category }) => {
+  const isMobile = useIsMobile();
+
+  return (
+    <Link
+      href={`/category/${category.slug}`}
+      className={cn(
+        "group relative overflow-hidden rounded-2xl border border-border bg-card bg-opacity-50 transition-all duration-300",
+        // Reduce effects on mobile for better performance
+        isMobile
+          ? "shadow-md"
+          : "shadow-card hover:shadow-2xl hover:scale-[1.02]"
+      )}
+    >
+      <div className="relative aspect-[4/3] w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
+        {category.image && (
+          <img
+            src={category.image}
+            alt={category.name}
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+          />
+        )}
+        <div className="absolute inset-0 bg-black/40" />
+      </div>
+
+      <div className="p-4 md:p-6">
+        <h3 className="text-lg md:text-xl font-semibold text-card-foreground mb-2 group-hover:text-primary transition-colors">
+          {category.name}
+        </h3>
+        {category.description && (
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
+            {category.description}
+          </p>
+        )}
+        {category.productCount !== undefined && (
+          <p className="text-xs text-muted-foreground">
+            {category.productCount} محصول
+          </p>
+        )}
+      </div>
+    </Link>
+  );
+});
+
+CategoryCard.displayName = "CategoryCard";
 
 export default function CategoryShowcase({
   categories,
 }: CategoryShowcaseProps) {
+  const isMobile = useIsMobile();
+
+  // Memoize displayed categories to prevent unnecessary re-renders
+  const displayedCategories = useMemo(() => {
+    // Show fewer categories on mobile for better performance
+    return isMobile ? categories.slice(0, 4) : categories.slice(0, 6);
+  }, [categories, isMobile]);
+
+  if (!categories || categories.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">هیچ دسته‌بندی‌ای یافت نشد</p>
+      </div>
+    );
+  }
+
   return (
-    <section id="categories">
-      {/* ————— Header ————— */}
-      <div className="mb-8 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-6">
-        <div>
-          <h2 className="text-2xl font-bold leading-snug">
-            دسته‌بندی‌های&nbsp;انیمه
-          </h2>
-          <p className="mt-1 text-muted-foreground">
-            مجسمه‌های لوکس از سری‌های محبوب خود را کشف کنید
-          </p>
-        </div>
-
-        {/* CTA – hidden on <640px to avoid crowding */}
-        <Button
-          asChild
-          variant="outline"
-          className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
-        >
-          <Link href="/shop?tab=all" prefetch={false}>
-            مشاهده&nbsp;همه
-            <ArrowRight className="mr-1.5 h-4 w-4 -scale-x-100" />
-          </Link>
-        </Button>
-      </div>
-
-      {/* ————— Grid ————— */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {categories.map((cat, i) => (
-          <motion.article
-            key={cat.id}
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: i * 0.05 }}
-            viewport={{ once: true }}
-          >
-            <Link
-              href={`/category/${cat.slug}`}
-              className={cn(
-                "group relative block h-60 rounded-3xl overflow-hidden shadow-sm",
-                "ring-1 ring-gray-100 dark:ring-gray-800 hover:shadow-lg transition-shadow"
-              )}
-            >
-              {/* image */}
-              <Image
-                src={cat.image || "/placeholder.svg"}
-                alt={cat.name}
-                fill
-                priority={i < 3} /* LCP hint */
-                sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 33vw"
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
-              />
-
-              {/* overlay */}
-              <span
-                aria-hidden
-                className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-transparent"
-              />
-
-              {/* copy */}
-              <div className="absolute inset-0 flex flex-col justify-end p-6 text-white">
-                <h3 className="  font-semibold text-lg sm:text-xl tracking-tight group-hover:text-primary-200">
-                  {cat.name}
-                </h3>
-
-                {cat.description && (
-                  <p className="mt-1 line-clamp-2 text-xs leading-5 text-white/80">
-                    {cat.description}
-                  </p>
-                )}
-
-                <span className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary-200 group-hover:translate-x-0.5 transition-transform">
-                  مشاهده&nbsp;مجسمه‌ها
-                  <ArrowRight className="h-4 w-4 -scale-x-100" />
-                </span>
-              </div>
-            </Link>
-          </motion.article>
-        ))}
-      </div>
-
-      {/* mobile full-width CTA */}
-      <Button
-        asChild
-        variant="outline"
-        className="mt-6 w-full sm:hidden rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
-      >
-        <Link href="/shop?tab=all">
-          مشاهده&nbsp;همه&nbsp;دسته‌بندی‌ها
-          <ArrowRight className="mr-1.5 h-4 w-4 -scale-x-100" />
-        </Link>
-      </Button>
-    </section>
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      {displayedCategories.map((category) => (
+        <CategoryCard key={category.id} category={category} />
+      ))}
+    </div>
   );
 }

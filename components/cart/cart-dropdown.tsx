@@ -13,8 +13,11 @@ import { toast } from "@/components/ui/use-toast";
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { items, itemCount, subtotal, updateQuantity, total, recentlyAdded } =
+  const { items, itemCount, subtotal, updateQuantity, recentlyAdded } =
     useCart();
+
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 
   // Close the dropdown when clicking outside of it
   useEffect(() => {
@@ -146,12 +149,7 @@ export default function CartDropdown() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, x: -100 }}
                     transition={{ duration: 0.3 }}
-                    className={cn(
-                      "flex gap-x-4 p-3 rounded-lg",
-                      recentlyAdded === item.product.uuid
-                        ? "bg-primary/10 border border-primary/30 dark:border-primary/30"
-                        : "border border-transparent"
-                    )}
+                    className="flex gap-x-4 p-3 rounded-lg"
                   >
                     {/* image */}
                     <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
@@ -178,10 +176,7 @@ export default function CartDropdown() {
                       </Link>
 
                       <div className="mt-1 text-sm text-muted-foreground">
-                        {new Intl.NumberFormat("fa-IR").format(
-                          item.product.price
-                        )}{" "}
-                        تومان
+                        {formatPrice(item.product.price)}
                       </div>
 
                       {/* qty controls */}
@@ -229,10 +224,7 @@ export default function CartDropdown() {
 
                       <div className="mt-1 flex items-center justify-between">
                         <span className="text-sm font-medium">
-                          {new Intl.NumberFormat("fa-IR").format(
-                            item.product.price * item.quantity
-                          )}{" "}
-                          تومان
+                           {formatPrice( item.product.price * item.quantity)}
                         </span>
                         <motion.button
                           whileTap={{ scale: 0.9 }}
@@ -268,7 +260,8 @@ export default function CartDropdown() {
                 animate={{ scale: 1, opacity: 1 }}
                 className="font-semibold"
               >
-                {new Intl.NumberFormat("fa-IR").format(subtotal)} تومان
+                
+                {formatPrice(subtotal)}
               </motion.span>
             </div>
 
