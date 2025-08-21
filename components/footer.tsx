@@ -131,7 +131,7 @@ export default function Footer() {
               <Phone className="h-5 w-5 text-primary" />
               <div>
                 <p className="font-medium">تماس با ما</p>
-                <p className="text-sm text-muted-foreground">۰۹۱۲۳۴۵۶۷۸۹</p>
+                <p className="text-sm text-muted-foreground">۰۹۳۷۵۱۱۶۲۶۲</p>
               </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:items-start gap-2">
