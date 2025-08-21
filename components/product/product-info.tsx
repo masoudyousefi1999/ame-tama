@@ -250,6 +250,13 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           variant="outline"
           size="icon"
           className="h-12 w-12 rounded-full"
+          onClick={() => {
+            navigator.clipboard.writeText(window.location.href);
+            toast({
+              variant: "success",
+              title: "لینک با موفقیت کپی شد",
+            });
+          }}
         >
           <Share2 className="h-5 w-5" />
         </Button>

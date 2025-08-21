@@ -136,7 +136,7 @@ export default function Footer() {
                     href="tel:+989174120968"
                     className="text-sm text-muted-foreground hover:text-primary"
                   >
-                    09174120968
+                    09932607390
                   </a>
                   <a
                     href="tel:+989375116262"
@@ -160,9 +160,7 @@ export default function Footer() {
               <MapPin className="h-5 w-5 text-primary" />
               <div>
                 <p className="font-medium">آدرس</p>
-                <p className="text-sm text-muted-foreground">
-                    شیراز
-                </p>
+                <p className="text-sm text-muted-foreground">شیراز</p>
               </div>
             </div>
           </div>
