@@ -15,6 +15,7 @@ import { LoginModalProvider } from "@/context/login-modal-context";
 import LoginToastEffect from "@/components/LoginToastEffect";
 import localFont from "next/font/local";
 import SchemaOrg from "@/components/seo/schema-org";
+import Script from "next/script";
 
 const baseUrl = "https://ame-tama.com";
 
@@ -101,6 +102,15 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
         <meta name="theme-color" content="#6366f1" />
         <meta name="msapplication-TileColor" content="#6366f1" />
+        {process.env.NODE_ENV === "production" && (
+          <Script id="ms-clarity" strategy="afterInteractive">
+            {`(function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "sy8ocvwyz3");`}
+          </Script>
+        )}
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
         <LoginToastEffect />

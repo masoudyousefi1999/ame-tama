@@ -131,7 +131,20 @@ export default function Footer() {
               <Phone className="h-5 w-5 text-primary" />
               <div>
                 <p className="font-medium">تماس با ما</p>
-                <p className="text-sm text-muted-foreground">۰۹۳۷۵۱۱۶۲۶۲</p>
+                <div className="flex flex-col items-start mt-2">
+                  <a
+                    href="tel:+989174120968"
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    09174120968
+                  </a>
+                  <a
+                    href="tel:+989375116262"
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    09375116262
+                  </a>
+                </div>
               </div>
             </div>
             <div className="flex flex-col md:flex-row items-center md:items-start gap-2">
@@ -148,7 +161,7 @@ export default function Footer() {
               <div>
                 <p className="font-medium">آدرس</p>
                 <p className="text-sm text-muted-foreground">
-                  تهران، خیابان ولیعصر
+                    شیراز
                 </p>
               </div>
             </div>
