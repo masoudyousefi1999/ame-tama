@@ -59,7 +59,7 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
           variant="outline"
           className="hidden sm:inline-flex rounded-full border-primary/30 hover:bg-primary/5 dark:border-primary/50"
         >
-          <Link href="/shop?tab=featured">
+          <Link href="/shop?tab=featured" >
             مشاهده&nbsp;همه
             <ArrowRight className="mr-1.5 h-4 w-4 -scale-x-100" />
           </Link>

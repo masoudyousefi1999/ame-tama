@@ -166,7 +166,7 @@ export function ProductCard({
         onMouseEnter={() => !isMobile && setHovered(true)}
         onMouseLeave={() => !isMobile && setHovered(false)}
       >
-        <Link href={`/product/${product.slug}`} className="block">
+        <Link href={`/product/${product.slug}`} className="block" prefetch={false}>
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
             <Image

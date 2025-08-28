@@ -221,6 +221,7 @@ export default function ProfilePage() {
               <CardContent>
                 <nav className="space-y-2">
                   <Link
+                   prefetch={false}
                     href="/profile"
                     className="flex items-center p-2 rounded-lg bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400"
                   >
@@ -249,6 +250,7 @@ export default function ProfilePage() {
                       key={l.href}
                       href={l.href}
                       className="flex items-center p-2 rounded-lg hover:bg-muted transition-colors"
+                       prefetch={false}
                     >
                       <l.icon className="h-4 w-4 ml-2" />
                       {l.label}

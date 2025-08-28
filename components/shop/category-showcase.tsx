@@ -24,6 +24,7 @@ const CategoryCard = memo(({ category }: { category: Category }) => {
   return (
     <Link
       href={`/category/${category.slug}`}
+      prefetch={false}
       className={cn(
         "group relative overflow-hidden rounded-2xl border border-border bg-card bg-opacity-50 transition-all duration-300",
         // Reduce effects on mobile for better performance

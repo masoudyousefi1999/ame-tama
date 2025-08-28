@@ -280,7 +280,7 @@ export default function AboutPage() {
             برای ارسال سوالات، پیشنهادات یا انتقادات خود، می‌توانید از طریق صفحه
             تماس با ما اقدام کنید.
           </p>
-          <Link href="/contact">
+          <Link href="/contact"  prefetch={false}>
             <Button size="lg" className="px-8">
               تماس با ما
             </Button>

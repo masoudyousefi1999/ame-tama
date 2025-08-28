@@ -151,6 +151,7 @@ export default function CategoryPage({
             {subcategories.map((subcat) => (
               <Link
                 key={subcat.id}
+                prefetch={false}
                 href={`/category/figures/${subcat.slug}`}
                 className="group relative aspect-square w-32 flex-none snap-start overflow-hidden rounded-3xl transition-all duration-300 hover:scale-105 hover:rotate-2 sm:w-36 md:w-full"
               >

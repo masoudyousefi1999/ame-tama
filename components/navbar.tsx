@@ -224,7 +224,7 @@ export default function Navbar() {
     >
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4">
         {/* Logo */}
-        <Link href="/" className="flex-shrink-0 z-10 relative">
+        <Link href="/" className="flex-shrink-0 z-10 relative" prefetch={false}>
           <span className="text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
             AME-TAMA
           </span>
@@ -235,6 +235,7 @@ export default function Navbar() {
           <Link
             href="/"
             className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            prefetch={false}
           >
             خانه
           </Link>
@@ -274,6 +275,7 @@ export default function Navbar() {
                           href={`/category/figures/${cat.slug}`}
                           onClick={() => setIsCategoriesOpen(false)}
                           className="block flex-1 text-foreground transition-colors"
+                          prefetch={false}
                         >
                           {cat.name}
                         </Link>
@@ -300,6 +302,7 @@ export default function Navbar() {
                                     href={`/category/${sub.slug}`}
                                     onClick={() => setIsCategoriesOpen(false)}
                                     className="block flex-1 text-foreground transition-colors"
+                                    prefetch={false}
                                   >
                                     {sub.name}
                                   </Link>
@@ -318,6 +321,7 @@ export default function Navbar() {
                                           onClick={() =>
                                             setIsCategoriesOpen(false)
                                           }
+                                          prefetch={false}
                                           className="block px-4 py-2 whitespace-nowrap bg-popover hover:bg-muted transition-colors text-foreground"
                                         >
                                           {lvl3.name}
@@ -345,18 +349,21 @@ export default function Navbar() {
           <Link
             href="/about"
             className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            prefetch={false}
           >
             درباره ما
           </Link>
           <Link
             href="/contact"
             className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            prefetch={false}
           >
             تماس با ما
           </Link>
           <Link
             href="/faq"
             className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            prefetch={false}
           >
             سوالات متداول
           </Link>
@@ -417,6 +424,7 @@ export default function Navbar() {
                   <Link
                     href="/"
                     onClick={() => setIsOpen(false)}
+                    prefetch={false}
                     className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <Home className="h-6 w-6 text-foreground mb-2" />
@@ -433,6 +441,7 @@ export default function Navbar() {
                   <Link
                     href="/about"
                     onClick={() => setIsOpen(false)}
+                    prefetch={false}
                     className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <Info className="h-6 w-6 text-foreground mb-2" />
@@ -441,6 +450,7 @@ export default function Navbar() {
                   <Link
                     href="/contact"
                     onClick={() => setIsOpen(false)}
+                    prefetch={false}
                     className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <MessageSquare className="h-6 w-6 text-foreground mb-2" />
@@ -449,6 +459,7 @@ export default function Navbar() {
                   <Link
                     href="/faq"
                     onClick={() => setIsOpen(false)}
+                    prefetch={false}
                     className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <HelpCircle className="h-6 w-6 text-foreground mb-2" />
@@ -457,6 +468,7 @@ export default function Navbar() {
                   <Link
                     href="/search"
                     onClick={() => setIsOpen(false)}
+                    prefetch={false}
                     className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                   >
                     <Search className="h-6 w-6 text-foreground mb-2" />
@@ -467,6 +479,7 @@ export default function Navbar() {
                     <Link
                       href="/profile"
                       onClick={() => setIsOpen(false)}
+                      prefetch={false}
                       className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                     >
                       <User className="h-6 w-6 text-foreground mb-2" />
@@ -502,6 +515,7 @@ export default function Navbar() {
                           )}
                           <Link
                             href={`/category/${cat.slug}`}
+                            prefetch={false}
                             onClick={() => setIsOpen(false)}
                             className={cn(
                               "text-sm transition-colors",
@@ -528,6 +542,7 @@ export default function Navbar() {
                     <div key={c.id} className="flex items-center">
                       <Link
                         href={`/category/${c.slug}`}
+                        prefetch={false}
                         onClick={() => setIsOpen(false)}
                         className="block p-2 bg-card rounded-lg text-sm hover:bg-muted transition-colors flex-1 text-foreground"
                       >

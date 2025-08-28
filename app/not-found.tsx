@@ -60,7 +60,7 @@ export default function NotFound() {
           { href: "/faq", icon: HelpCircleIcon, label: "سوالات متداول" },
         ].map((link) => (
           <Button asChild variant="outline" key={link.href} className="gap-2">
-            <Link href={link.href}>
+            <Link href={link.href}  prefetch={false}>
               <link.icon className="h-4 w-4" />
               {link.label}
             </Link>
@@ -76,7 +76,7 @@ export default function NotFound() {
         className="mt-12"
       >
         <Button asChild variant="link" className="gap-1 text-muted-foreground">
-          <Link href="/contact">
+          <Link href="/contact"  prefetch={false}>
             تماس با پشتیبانی
             <ArrowRightIcon className="h-4 w-4" />
           </Link>

@@ -171,6 +171,7 @@ export default function CartDropdown() {
                         href={`/product/${item.product.slug}`}
                         onClick={() => setIsOpen(false)}
                         className="line-clamp-1 text-sm font-medium hover:text-primary transition-colors"
+                        prefetch={false}
                       >
                         {item.product.name}
                       </Link>
@@ -224,7 +225,7 @@ export default function CartDropdown() {
 
                       <div className="mt-1 flex items-center justify-between">
                         <span className="text-sm font-medium">
-                           {formatPrice( item.product.price * item.quantity)}
+                          {formatPrice(item.product.price * item.quantity)}
                         </span>
                         <motion.button
                           whileTap={{ scale: 0.9 }}
@@ -260,7 +261,6 @@ export default function CartDropdown() {
                 animate={{ scale: 1, opacity: 1 }}
                 className="font-semibold"
               >
-                
                 {formatPrice(subtotal)}
               </motion.span>
             </div>

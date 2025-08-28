@@ -64,6 +64,7 @@ export default function Breadcrumb({
               <Link
                 href={item.path}
                 className="hover:text-brand transition-colors"
+                prefetch={false}
               >
                 {item.name}
               </Link>

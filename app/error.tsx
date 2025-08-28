@@ -90,7 +90,7 @@ export default function Error({
           بازگشت
         </Button>
         <Button asChild variant="outline" className="gap-2">
-          <Link href="/">
+          <Link href="/" prefetch={false}>
             <HomeIcon className="h-4 w-4" />
             صفحه اصلی
           </Link>
@@ -105,7 +105,7 @@ export default function Error({
         className="mt-12"
       >
         <Button asChild variant="link" className="gap-1 text-muted-foreground">
-          <Link href="/contact">
+          <Link href="/contact"  prefetch={false}>
             گزارش مشکل به پشتیبانی
             <ArrowRightIcon className="h-4 w-4" />
           </Link>

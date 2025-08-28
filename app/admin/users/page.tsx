@@ -45,7 +45,7 @@ export default async function UsersPage({
           asChild
           className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full"
         >
-          <Link href="/admin/users/new">
+          <Link href="/admin/users/new"  prefetch={false}>
             <Plus className="ml-2 h-4 w-4" />
             افزودن کاربر
           </Link>

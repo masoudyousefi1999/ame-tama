@@ -142,6 +142,7 @@ export function AdminHeader() {
                 <div className="p-2 text-center">
                   <Link
                     href="/admin/notifications"
+                    prefetch={false}
                     className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300"
                   >
                     مشاهده همه اعلان‌ها

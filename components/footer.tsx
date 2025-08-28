@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* ─────────────────── Brand / about ─────────────────── */}
           <div className="text-right">
-            <Link href="/" className="inline-block mb-6 group">
+            <Link href="/" className="inline-block mb-6 group"  prefetch={false}>
               <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">
                 AME-TAMA
               </span>

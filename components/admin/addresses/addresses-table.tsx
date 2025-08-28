@@ -136,7 +136,7 @@ export function AddressesTable({ addresses }: AddressesTableProps) {
                       asChild
                       className="hover:bg-gray-100 dark:hover:bg-gray-600"
                     >
-                      <Link href={`/admin/addresses/${address.id}/edit`}>
+                      <Link href={`/admin/addresses/${address.id}/edit`}  prefetch={false}>
                         <Edit className="h-4 w-4" />
                       </Link>
                     </Button>

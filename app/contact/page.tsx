@@ -254,6 +254,7 @@ export default function ContactPage() {
                       href={soc.href}
                       target="_blank"
                       rel="noopener noreferrer"
+                       prefetch={false}
                     >
                       <Button
                         variant="outline"

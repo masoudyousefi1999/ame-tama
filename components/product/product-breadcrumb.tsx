@@ -23,6 +23,7 @@ export default function ProductBreadcrumb({
         <li>
           <Link
             href="/"
+            prefetch={false}
             className="transition-colors text-muted-foreground hover:text-primary"
           >
             <Home className="h-4 w-4" />
@@ -38,6 +39,7 @@ export default function ProductBreadcrumb({
         <li>
           <Link
             href={`/category/${category.slug}`}
+            prefetch={false}
             className="  transition-colors text-muted-foreground hover:text-primary"
           >
             {category.name}

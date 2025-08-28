@@ -72,7 +72,7 @@ export default function GlobalError({
             </Button>
 
             <Button asChild variant="outline" className="gap-2">
-              <Link href="/">
+              <Link href="/"  prefetch={false}>
                 <HomeIcon className="h-4 w-4" />
                 صفحه اصلی
               </Link>
@@ -86,7 +86,7 @@ export default function GlobalError({
               variant="link"
               className="gap-1 text-muted-foreground"
             >
-              <Link href="/contact">
+              <Link href="/contact"  prefetch={false}>
                 گزارش مشکل به پشتیبانی
                 <ArrowRightIcon className="h-4 w-4" />
               </Link>

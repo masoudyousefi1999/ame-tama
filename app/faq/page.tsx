@@ -139,7 +139,7 @@ export default function FAQPage() {
             size="lg"
             className="rounded-full bg-gradient-to-r from-violet-500 to-purple-600 hover:from-violet-600 hover:to-purple-700"
           >
-            <Link href="/contact">تماس با ما</Link>
+            <Link href="/contact"  prefetch={false}>تماس با ما</Link>
           </Button>
         </section>
       </main>

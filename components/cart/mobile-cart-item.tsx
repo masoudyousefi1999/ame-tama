@@ -96,6 +96,7 @@ export function MobileCartItem({
               href={`/product/${item.product.slug}`}
               onClick={(e) => isSwiping && e.preventDefault()}
               className="mt-1 inline-flex items-center text-xs text-primary hover:text-primary/80 transition-colors"
+               prefetch={false}
             >
               جزییات محصول
               <ExternalLink className="mr-1 h-3 w-3" />
