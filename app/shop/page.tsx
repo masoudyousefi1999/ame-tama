@@ -51,12 +51,25 @@ export default async function ShopPage({
     totalCount = 0;
   }
 
+  // Preload first product image for LCP optimization
+  const firstProductImage = products[0]?.productMedia?.[0]?.url;
+
   return (
-    <ShopPageClient
-      initialProducts={products}
-      totalCount={totalCount}
-      currentPage={page}
-      limit={limit}
-    />
+    <>
+      {firstProductImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={firstProductImage}
+          type="image/webp"
+        />
+      )}
+      <ShopPageClient
+        initialProducts={products}
+        totalCount={totalCount}
+        currentPage={page}
+        limit={limit}
+      />
+    </>
   );
 }

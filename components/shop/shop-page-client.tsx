@@ -11,7 +11,6 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { optimizeForMobile } from "@/lib/performance-monitor";
 
 const MemoizedProductCard = memo(ProductCard);
 
@@ -40,9 +39,9 @@ export default function ShopPageClient({
   const router = useRouter();
   const isMobile = useIsMobile();
 
-  // Initialize mobile optimizations
+  // Initialize mobile optimizations - only on mount
   useEffect(() => {
-    optimizeForMobile();
+    // Mobile optimizations can be added here if needed
   }, []);
 
   // Memoize expensive calculations
@@ -89,19 +88,14 @@ export default function ShopPageClient({
     }
   }, [loading, hasMore, page, limit, products.length, initialTotalCount]);
 
-  // Optimized intersection observer with throttling
+  // Optimized intersection observer
   useEffect(() => {
     if (!hasMore || loading || !loader.current) return;
 
-    let timeoutId: NodeJS.Timeout;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          // Throttle the fetch to prevent rapid calls
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => {
-            fetchMore();
-          }, 100);
+          fetchMore();
         }
       },
       {
@@ -115,7 +109,6 @@ export default function ShopPageClient({
 
     return () => {
       if (currentLoader) observer.unobserve(currentLoader);
-      clearTimeout(timeoutId);
     };
   }, [fetchMore, hasMore, loading]);
 
@@ -143,26 +136,14 @@ export default function ShopPageClient({
         {/* Simplified background for mobile */}
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900" />
 
-        {/* Reduced animated elements on mobile */}
+        {/* Reduced animated elements for better performance */}
         {!isMobile && (
           <>
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 animate-pulse" />
-            <div
-              className="absolute top-20 left-20 w-32 h-32 bg-cyan-400/20 rounded-full blur-xl animate-bounce"
-              style={{ animationDelay: "0s", animationDuration: "3s" }}
-            />
-            <div
-              className="absolute top-40 right-32 w-24 h-24 bg-blue-400/20 rounded-full blur-xl animate-bounce"
-              style={{ animationDelay: "1s", animationDuration: "4s" }}
-            />
-            <div
-              className="absolute bottom-20 left-1/3 w-28 h-28 bg-purple-400/20 rounded-full blur-xl animate-bounce"
-              style={{ animationDelay: "2s", animationDuration: "3.5s" }}
-            />
-            <div
-              className="absolute bottom-32 right-20 w-20 h-20 bg-pink-400/20 rounded-full blur-xl animate-bounce"
-              style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
-            />
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20" />
+            <div className="absolute top-20 left-20 w-32 h-32 bg-cyan-400/20 rounded-full blur-xl" />
+            <div className="absolute top-40 right-32 w-24 h-24 bg-blue-400/20 rounded-full blur-xl" />
+            <div className="absolute bottom-20 left-1/3 w-28 h-28 bg-purple-400/20 rounded-full blur-xl" />
+            <div className="absolute bottom-32 right-20 w-20 h-20 bg-pink-400/20 rounded-full blur-xl" />
           </>
         )}
 
@@ -230,8 +211,12 @@ export default function ShopPageClient({
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {products && products.length > 0 ? (
-            products.map((product) => (
-              <MemoizedProductCard product={product} key={product.uuid} />
+            products.map((product, index) => (
+              <MemoizedProductCard
+                product={product}
+                key={product.uuid}
+                eagerLoad={index === 0} // Eager load first product for LCP
+              />
             ))
           ) : (
             <div className="col-span-full py-16 md:py-24 text-center flex flex-col items-center">

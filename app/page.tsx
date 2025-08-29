@@ -8,7 +8,6 @@ import {
 } from "@/components/home/HomeClientWrappers";
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
-import { optimizeForMobile } from "@/lib/performance-monitor";
 
 export default async function Home() {
   const [allCategories, products] = await Promise.all([
@@ -52,7 +51,7 @@ export default async function Home() {
             </p>
           </div>
           <div className="px-4">
-            <CategoryShowcase categories={categories} />
+            <CategoryShowcase categories={categories as any} />
           </div>
         </div>
       </section>

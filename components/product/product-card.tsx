@@ -20,6 +20,7 @@ export interface ProductCardProps {
   showAddToCart?: boolean;
   showAddToWishlist?: boolean;
   className?: string;
+  eagerLoad?: boolean; // For LCP optimization
 }
 
 export function ProductCard({
@@ -27,6 +28,7 @@ export function ProductCard({
   showAddToCart = true,
   showAddToWishlist = true,
   className,
+  eagerLoad = false,
 }: ProductCardProps) {
   const [hovered, setHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -166,7 +168,11 @@ export function ProductCard({
         onMouseEnter={() => !isMobile && setHovered(true)}
         onMouseLeave={() => !isMobile && setHovered(false)}
       >
-        <Link href={`/product/${product.slug}`} className="block" prefetch={false}>
+        <Link
+          href={`/product/${product.slug}`}
+          className="block"
+          prefetch={false}
+        >
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
             <Image
@@ -175,7 +181,8 @@ export function ProductCard({
               quality={isMobile ? 60 : 70}
               width={400}
               height={400}
-              loading="lazy"
+              loading={eagerLoad ? "eager" : "lazy"}
+              priority={eagerLoad}
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               className={cn(
                 "object-cover w-full h-full transition-transform duration-500 ease-out",
