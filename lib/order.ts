@@ -3,7 +3,7 @@ import { customFetch } from "./utils";
 export async function getUserOrder() {
   try {
     const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
     const res = await fetch(`${baseUrl}/api/orders`, {
       method: "GET",
       credentials: "include", // Include cookies
@@ -33,7 +33,7 @@ export async function increaseOrderItem({
 }) {
   try {
     const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
     const res = await fetch(`${baseUrl}/api/orders/increase`, {
       method: "POST",
       credentials: "include", // Include cookies
@@ -67,7 +67,7 @@ export async function decreaseOrderItem({
 }) {
   try {
     const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
     const res = await fetch(`${baseUrl}/api/orders/decrease`, {
       method: "POST",
       credentials: "include", // Include cookies

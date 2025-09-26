@@ -139,7 +139,7 @@ export default function OrdersPage() {
     try {
       setIsLoadingOrders(true);
       const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
       const url =
         status && status !== "all"
           ? `${baseUrl}/api/orders?status=${status}`

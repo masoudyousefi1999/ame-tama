@@ -132,7 +132,7 @@ export default function AddressesPage() {
     try {
       setIsLoadingAddresses(true);
       const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
       const response = await fetch(`${baseUrl}/api/addresses`, {
         credentials: "include", // Include cookies
       });
@@ -224,7 +224,7 @@ export default function AddressesPage() {
       if (isEditing && currentAddress) {
         // Update existing address
         const baseUrl =
-          process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+          process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
         const response = await fetch(
           `${baseUrl}/api/addresses/${currentAddress.uuid}`,
           {
@@ -257,7 +257,7 @@ export default function AddressesPage() {
       } else {
         // Add new address
         const baseUrl =
-          process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+          process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
         const response = await fetch(`${baseUrl}/api/addresses`, {
           method: "POST",
           credentials: "include", // Include cookies
@@ -301,7 +301,7 @@ export default function AddressesPage() {
   const deleteAddress = async (uuid: string) => {
     try {
       const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
       const response = await fetch(`${baseUrl}/api/addresses/${uuid}`, {
         method: "DELETE",
         credentials: "include", // Include cookies
@@ -330,7 +330,7 @@ export default function AddressesPage() {
   const setAsDefault = async (uuid: string) => {
     try {
       const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
       const response = await fetch(`${baseUrl}/api/addresses/${uuid}/default`, {
         method: "POST",
         credentials: "include", // Include cookies

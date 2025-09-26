@@ -71,7 +71,7 @@ export default function Navbar() {
     const fetchCategories = async () => {
       try {
         const baseUrl =
-          process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+          process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
         const response = await fetch(`${baseUrl}/api/categories`, {
           credentials: "include", // Include cookies in the request
         });

@@ -3,7 +3,7 @@ import { customFetch } from "@/lib/utils";
 export async function getMe() {
   try {
     const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
     const res = await fetch(`${baseUrl}/api/user/me`, {
       method: "GET",
       credentials: "include", // Include cookies in the request

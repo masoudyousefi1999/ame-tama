@@ -93,7 +93,7 @@ export default function ProfilePage() {
         setIsLoadingOrders(true);
         try {
           const baseUrl =
-            process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+            process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
           const response = await fetch(`${baseUrl}/api/orders`, {
             credentials: "include", // Include cookies
           });
