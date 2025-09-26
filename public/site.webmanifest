@@ -1,41 +1,21 @@
 {
-  "name": "AME-TAMA | آمه تاما",
+  "name": "AME-TAMA - فروشگاه مجسمه‌های انیمه",
   "short_name": "AME-TAMA",
-  "description": "فروشگاه اکشن فیگور های انیمه ای",
+  "description": "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما",
   "start_url": "/",
-  "scope": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "theme_color": "#6366f1",
-  "background_color": "#0f172a",
-  "lang": "fa-IR",
-  "dir": "rtl",
+  "background_color": "#1a1a1a",
+  "theme_color": "#0ea5e9",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
+      "src": "/favicon.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "type": "image/png"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/favicon.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "/favicon.ico",
-      "sizes": "32x32",
-      "type": "image/x-icon"
-    }
-  ],
-  "categories": ["shopping", "entertainment"],
-  "screenshots": [
-    {
-      "src": "/favicon.jpg",
-      "sizes": "1200x630",
-      "type": "image/jpeg",
-      "form_factor": "wide"
+      "type": "image/png"
     }
   ]
 }

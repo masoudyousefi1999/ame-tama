@@ -159,10 +159,8 @@ export function ProductCard({
       <div
         className={cn(
           "group relative transition-all duration-300 rounded-2xl border border-border bg-card bg-opacity-50",
-          // Reduce backdrop-blur on mobile for better performance
-          isMobile
-            ? "shadow-card"
-            : "backdrop-blur-md shadow-card hover:shadow-2xl hover:scale-[1.02]",
+          // Reduce backdrop-blur and transforms for better performance
+          isMobile ? "shadow-card" : "shadow-card hover:shadow-xl",
           className
         )}
         onMouseEnter={() => !isMobile && setHovered(true)}
@@ -178,16 +176,17 @@ export function ProductCard({
             <Image
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
-              quality={isMobile ? 60 : 70}
-              width={400}
-              height={400}
+              quality={isMobile ? 60 : 75}
+              width={600}
+              height={600}
               loading={eagerLoad ? "eager" : "lazy"}
               priority={eagerLoad}
+              fetchPriority={eagerLoad ? "high" : "auto"}
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               className={cn(
-                "object-cover w-full h-full transition-transform duration-500 ease-out",
-                // Reduce hover effects on mobile
-                !isMobile && "group-hover:scale-105 group-hover:brightness-110",
+                "object-cover w-full h-full transition-opacity duration-500 ease-out",
+                // Subtle hover without extra scale/brightness to avoid repaints
+                !isMobile && hovered && "opacity-95",
                 imageLoaded ? "opacity-100" : "opacity-0"
               )}
               onLoad={() => setImageLoaded(true)}
@@ -226,7 +225,7 @@ export function ProductCard({
           <div
             className={cn(
               "p-3 md:p-4 space-y-2 md:space-y-3 rounded-b-2xl transition-colors duration-300",
-              isMobile ? "bg-card/80" : "bg-card/60 backdrop-blur-xl"
+              isMobile ? "bg-card/80" : "bg-card/70"
             )}
           >
             <h3 className="text-sm md:text-base font-semibold leading-relaxed text-card-foreground line-clamp-2 group-hover:text-primary transition-colors">
@@ -287,6 +286,7 @@ export function ProductCard({
       showAddToCart,
       isInStock,
       formatPrice,
+      hovered,
       handleWishlistToggle,
       handleAddToCart,
     ]

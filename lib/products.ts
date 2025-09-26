@@ -112,13 +112,15 @@ export async function getRelatedProducts(
 
 export async function getAllProducts(
   page: number = 1,
-  limit: number = 1
+  limit: number = 1,
+  init?: Parameters<typeof customFetch>[1]
 ): Promise<{ products: IProductType[]; totalCount: number }> {
   try {
     const res = await customFetch(`/product?page=${page}&limit=${limit}`, {
       method: "GET",
+      ...init,
     });
-    const result = await res.json();
+    const result = await res.json();git
     const { products, totalCount } = result;
     return { products: products || [], totalCount: totalCount || 0 };
   } catch (error) {

@@ -3,6 +3,8 @@ import ShopPageClient from "@/components/shop/shop-page-client";
 import { productLimit } from "@/lib/product-limit";
 import { Metadata } from "next";
 
+export const revalidate = 120;
+
 const baseUrl = "https://ame-tama.com";
 
 export const generateMetadata = (): Metadata => {
@@ -13,6 +15,12 @@ export const generateMetadata = (): Metadata => {
       "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما. مجموعه کامل فیگورهای انیمه‌ای از برترین برندها",
     keywords:
       "فروشگاه فیگور انیمه, اکشن فیگور, خرید فیگور انیمه, AME-TAMA, مجسمه انیمه",
+    manifest: "/site.webmanifest",
+    icons: {
+      icon: "/favicon.ico",
+      shortcut: "/favicon.ico",
+      apple: "/apple-touch-icon.png",
+    },
     openGraph: {
       title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
       description:
@@ -42,7 +50,9 @@ export default async function ShopPage({
   const page = Number.parseInt(currentPage || "1");
 
   try {
-    const fetchedProducts = await getAllProducts(page, limit);
+    const fetchedProducts = await getAllProducts(page, limit, {
+      next: { revalidate, tags: ["products", "shop"] },
+    });
     products = fetchedProducts.products || [];
     totalCount = fetchedProducts.totalCount || 0;
   } catch (error) {
@@ -51,16 +61,39 @@ export default async function ShopPage({
     totalCount = 0;
   }
 
-  // Preload first product image for LCP optimization
+  // Preload first few product images for LCP optimization
   const firstProductImage = products[0]?.productMedia?.[0]?.url;
+  const secondProductImage = products[1]?.productMedia?.[0]?.url;
+  const thirdProductImage = products[2]?.productMedia?.[0]?.url;
 
   return (
     <>
+      {/* Preconnect to image CDN for faster LCP */}
+      <link rel="preconnect" href="https://ame-tama.storage.c2.liara.space" />
+      <link rel="dns-prefetch" href="https://ame-tama.storage.c2.liara.space" />
+
       {firstProductImage && (
         <link
           rel="preload"
           as="image"
           href={firstProductImage}
+          type="image/webp"
+          fetchPriority="high"
+        />
+      )}
+      {secondProductImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={secondProductImage}
+          type="image/webp"
+        />
+      )}
+      {thirdProductImage && (
+        <link
+          rel="preload"
+          as="image"
+          href={thirdProductImage}
           type="image/webp"
         />
       )}

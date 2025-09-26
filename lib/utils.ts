@@ -5,8 +5,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Extend to support Next.js caching options on the server
+// next: { revalidate, tags } and cache are forwarded to fetch
+// cookies can be forwarded when running on the server
+
 type CustomFetchOptions = RequestInit & {
   cookies?: string;
+  next?: {
+    revalidate?: number;
+    tags?: string[];
+  };
 };
 
 export async function customFetch(
@@ -30,5 +38,7 @@ export async function customFetch(
     credentials: "include",
     ...init,
     headers,
+    // Ensure Next.js caching options pass through
+    next: init?.next,
   });
 }
