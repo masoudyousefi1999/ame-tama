@@ -2,11 +2,8 @@ import { customFetch } from "@/lib/utils";
 
 export async function getMe() {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const res = await fetch(`${baseUrl}/api/user/me`, {
+    const res = await customFetch("/auth/me", {
       method: "GET",
-      credentials: "include", // Include cookies in the request
       headers: {
         "Content-Type": "application/json",
       },

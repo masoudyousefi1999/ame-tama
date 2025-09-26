@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Search, Filter, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { searchProducts, type SearchResult } from "@/lib/search";
 import { useCart } from "@/context/cart-context";
+import { formatPriceDivided } from "@/lib/format-price";
 import { toast } from "@/components/ui/use-toast";
 import {
   Card,
@@ -55,6 +56,7 @@ const sortOptions = [
 ];
 
 export default function SearchResults() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const initialCategory = searchParams.get("category") || "";
@@ -71,34 +73,34 @@ export default function SearchResults() {
   // جستجوی محصولات
   useEffect(() => {
     setIsLoading(true);
-    const searchResults = searchProducts(
+    searchProducts(
       query,
       selectedCategories.length > 0 ? selectedCategories : null
-    );
+    ).then((searchResults) => {
+      // مرتب‌سازی نتایج
+      const sortedResults = [...searchResults];
+      switch (sortBy) {
+        case "price-asc":
+          sortedResults.sort((a, b) => a.price - b.price);
+          break;
+        case "price-desc":
+          sortedResults.sort((a, b) => b.price - a.price);
+          break;
+        case "newest":
+          sortedResults.sort(
+            (a, b) =>
+              new Date(b.releaseDate).getTime() -
+              new Date(a.releaseDate).getTime()
+          );
+          break;
+        default:
+          // مرتب‌سازی بر اساس ارتباط (پیش‌فرض)
+          break;
+      }
 
-    // مرتب‌سازی نتایج
-    const sortedResults = [...searchResults];
-    switch (sortBy) {
-      case "price-asc":
-        sortedResults.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        sortedResults.sort((a, b) => b.price - a.price);
-        break;
-      case "newest":
-        sortedResults.sort(
-          (a, b) =>
-            new Date(b.releaseDate).getTime() -
-            new Date(a.releaseDate).getTime()
-        );
-        break;
-      default:
-        // مرتب‌سازی بر اساس ارتباط (پیش‌فرض)
-        break;
-    }
-
-    setResults(sortedResults);
-    setIsLoading(false);
+      setResults(sortedResults);
+      setIsLoading(false);
+    });
   }, [query, selectedCategories, sortBy]);
 
   // تغییر وضعیت انتخاب دسته‌بندی
@@ -117,6 +119,11 @@ export default function SearchResults() {
       title: "محصول به سبد خرید اضافه شد",
       description: `${product.name} به سبد خرید شما اضافه شد.`,
     });
+  };
+
+  // Navigate to product page
+  const handleProductClick = (product: SearchResult) => {
+    router.push(`/product/${product.slug}`);
   };
 
   return (
@@ -259,10 +266,11 @@ export default function SearchResults() {
               {results.map((p) => (
                 <Card
                   key={p.id}
-                  className="bg-background shadow-md rounded-lg overflow-hidden"
+                  className="bg-background shadow-md rounded-lg overflow-hidden cursor-pointer hover:shadow-lg transition-shadow active:scale-[0.98] touch-manipulation"
+                  onClick={() => handleProductClick(p)}
                 >
                   <CardHeader>
-                    <CardTitle className="text-lg font-semibold">
+                    <CardTitle className="text-lg font-semibold hover:text-primary transition-colors">
                       {p.name}
                     </CardTitle>
                   </CardHeader>
@@ -277,13 +285,16 @@ export default function SearchResults() {
                       تاریخ انتشار: {formatPersianDate(p.releaseDate)}
                     </span>
                     <p className="text-xl font-bold mt-2">
-                      {p.price.toLocaleString()} تومان
+                      {formatPriceDivided(p.price)}
                     </p>
                   </CardContent>
                   <CardFooter>
                     <Button
                       className="w-full"
-                      onClick={() => handleAddToCart(p)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent card click
+                        handleAddToCart(p);
+                      }}
                     >
                       افزودن به سبد خرید
                     </Button>

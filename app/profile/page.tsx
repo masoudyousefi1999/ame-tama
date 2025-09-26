@@ -27,52 +27,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { Badge } from "@/components/ui/badge";
 import { customFetch } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-
-const OrderStatusBadge = ({ status }: { status: string }) => {
-  switch (status) {
-    case "delivered":
-      return (
-        <Badge className="bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400">
-          <CheckCircle className="ml-1 h-3 w-3" />
-          تحویل شده
-        </Badge>
-      );
-    case "processing":
-      return (
-        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400">
-          <Clock className="ml-1 h-3 w-3" />
-          در حال پردازش
-        </Badge>
-      );
-    case "shipped":
-      return (
-        <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-800/20 dark:text-purple-400">
-          <Truck className="ml-1 h-3 w-3" />
-          ارسال شده
-        </Badge>
-      );
-    case "cancelled":
-      return (
-        <Badge className="bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/20 dark:text-red-400">
-          <AlertCircle className="ml-1 h-3 w-3" />
-          لغو شده
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="outline">
-          <Clock className="ml-1 h-3 w-3" />
-          نامشخص
-        </Badge>
-      );
-  }
-};
-
-const formatPrice = (price: number) =>
-  new Intl.NumberFormat("fa-IR").format(price) + " تومان";
+import { OrderStatusBadge } from "@/components/order/order-status-badge";
+import { formatPriceRaw } from "@/lib/format-price";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -92,11 +50,7 @@ export default function ProfilePage() {
       (async () => {
         setIsLoadingOrders(true);
         try {
-          const baseUrl =
-            process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-          const response = await fetch(`${baseUrl}/api/orders`, {
-            credentials: "include", // Include cookies
-          });
+          const response = await customFetch("/order/history");
           const data = await response.json();
           if (response.ok && data.orders) {
             const transformed = data.orders.map((order: any) => ({
@@ -329,7 +283,7 @@ export default function ProfilePage() {
                                   مبلغ کل
                                 </p>
                                 <p className="text-lg font-semibold">
-                                  {formatPrice(order.total)}
+                                  {formatPriceRaw(order.total)}
                                 </p>
                               </div>
                               <div className="text-center">

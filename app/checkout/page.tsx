@@ -13,9 +13,7 @@ import { useCart } from "@/context/cart-context";
 import { cn, customFetch } from "@/lib/utils";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
-
-const formatPrice = (price: number) =>
-  new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
+import { formatPriceDivided } from "@/lib/format-price";
 
 const paymentMethods = [
   {
@@ -84,6 +82,13 @@ export default function CheckoutPage() {
   async function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault();
     setIsSubmitting(true);
+
+    // Show processing toast
+    toast({
+      title: "در حال پردازش...",
+      description: "لطفاً صبر کنید، در حال اتصال به درگاه پرداخت",
+    });
+
     try {
       // Call payment API
       const paymentRes = await customFetch("/payment", {
@@ -100,6 +105,12 @@ export default function CheckoutPage() {
       if (!paymentRes.ok) throw new Error("خطا در شروع پرداخت");
       const paymentData = await paymentRes.json();
       if (paymentData.url) {
+        // Show success toast before redirect
+        toast({
+          title: "در حال انتقال به درگاه پرداخت...",
+          description: "لطفاً صبر کنید، در حال انتقال به صفحه پرداخت",
+        });
+
         clearCart();
         window.location.href = paymentData.url;
       } else {
@@ -268,7 +279,9 @@ export default function CheckoutPage() {
                       </div>
                     </div>
                     <span className="font-medium">
-                      {m.price === 0 ? "رایگان" : `${formatPrice(m.price)}`}
+                      {m.price === 0
+                        ? "رایگان"
+                        : `${formatPriceDivided(m.price)}`}
                     </span>
                   </div>
                 ))}
@@ -318,6 +331,7 @@ export default function CheckoutPage() {
                 ))}
               </RadioGroup>
             </section>
+
             {/* order notes */}
             <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
               <h2 className="text-lg font-semibold mb-4">
@@ -456,7 +470,7 @@ export default function CheckoutPage() {
                         {item.product.name}
                       </h4>
                       <p className="text-sm text-muted-foreground">
-                        {formatPrice(item.product.price)}
+                        {formatPriceDivided(item.product.price)}
                       </p>
                     </div>
                   </div>
@@ -469,14 +483,14 @@ export default function CheckoutPage() {
                     مجموع قیمت محصولات:
                   </span>
                   <span className="font-medium">
-                   {formatPrice(subtotal)}
+                    {formatPriceDivided(subtotal)}
                   </span>
                 </div>
                 {discount > 0 && (
                   <div className="flex justify-between text-green-400">
                     <span>تخفیف ({discount}%):</span>
                     <span className="font-medium">
-                      {formatPrice((subtotal * discount) / 100)}
+                      {formatPriceDivided((subtotal * discount) / 100)}
                       تومان
                     </span>
                   </div>
@@ -486,13 +500,13 @@ export default function CheckoutPage() {
                   <span className="font-medium">
                     {shippingCost === 0
                       ? "رایگان"
-                      : `${formatPrice(shippingCost)}`}
+                      : `${formatPriceDivided(shippingCost)}`}
                   </span>
                 </div>
                 <div className="border-t border-border pt-3 mt-3">
                   <div className="flex justify-between font-semibold">
                     <span>مبلغ قابل پرداخت:</span>
-                    <span>{formatPrice(finalTotal)}</span>
+                    <span>{formatPriceDivided(finalTotal)}</span>
                   </div>
                 </div>
               </div>

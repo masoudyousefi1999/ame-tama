@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Package, Truck, Clock, CheckCircle, AlertCircle } from "lucide-react";
+import { Package, Clock, Truck, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,6 +28,8 @@ import { ProductCard } from "@/components/product/product-card";
 import { toast } from "@/components/ui/use-toast";
 import { customFetch } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { OrderStatusBadge } from "@/components/order/order-status-badge";
+import { formatPriceDivided } from "@/lib/format-price";
 
 // API Order interfaces
 interface ApiOrderItem {
@@ -80,52 +82,6 @@ interface Order extends ApiOrder {
 
 // Orders will be fetched from the backend API
 
-// Status badge component
-const OrderStatusBadge = ({ status }: { status: string }) => {
-  switch (status) {
-    case "delivered":
-      return (
-        <Badge className="bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400">
-          <CheckCircle className="ml-1 h-3 w-3" />
-          تحویل شده
-        </Badge>
-      );
-    case "processing":
-      return (
-        <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400">
-          <Clock className="ml-1 h-3 w-3" />
-          در حال پردازش
-        </Badge>
-      );
-    case "shipped":
-      return (
-        <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-200 dark:bg-purple-800/20 dark:text-purple-400">
-          <Truck className="ml-1 h-3 w-3" />
-          ارسال شده
-        </Badge>
-      );
-    case "cancelled":
-      return (
-        <Badge className="bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/20 dark:text-red-400">
-          <AlertCircle className="ml-1 h-3 w-3" />
-          لغو شده
-        </Badge>
-      );
-    default:
-      return (
-        <Badge variant="outline">
-          <Clock className="ml-1 h-3 w-3" />
-          نامشخص
-        </Badge>
-      );
-  }
-};
-
-// Format price
-const formatPrice = (price: number) => {
-  return new Intl.NumberFormat("fa-IR").format(price) + " تومان";
-};
-
 export default function OrdersPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
@@ -134,20 +90,15 @@ export default function OrdersPage() {
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
 
-  // Fetch orders from Next.js API route
+  // Fetch orders from backend
   const fetchOrders = async (status?: string) => {
     try {
       setIsLoadingOrders(true);
-      const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
       const url =
         status && status !== "all"
-          ? `${baseUrl}/api/orders?status=${status}`
-          : `${baseUrl}/api/orders`;
-
-      const response = await fetch(url, {
-        credentials: "include", // Include cookies
-      });
+          ? `/order/history?status=${status}`
+          : "/order/history";
+      const response = await customFetch(url);
       const data = await response.json();
 
       if (response.ok && data.orders) {
@@ -355,7 +306,7 @@ export default function OrdersPage() {
                             مبلغ کل
                           </p>
                           <p className="text-lg font-semibold">
-                            {formatPrice(order.total)}
+                            {formatPriceDivided(order.total)}
                           </p>
                         </div>
                         <div className="text-center">
@@ -458,7 +409,7 @@ export default function OrdersPage() {
                         وضعیت:{" "}
                         <OrderStatusBadge status={selectedOrder.status} />
                       </p>
-                      <p>مبلغ کل: {formatPrice(selectedOrder.total)}</p>
+                      <p>مبلغ کل: {formatPriceDivided(selectedOrder.total)}</p>
                     </div>
                   </div>
                   <div>
@@ -482,7 +433,8 @@ export default function OrdersPage() {
                               {item.product.name}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {item.quantity} عدد × {formatPrice(item.price)}
+                              {item.quantity} عدد ×{" "}
+                              {formatPriceDivided(item.price)}
                             </p>
                           </div>
                         </div>

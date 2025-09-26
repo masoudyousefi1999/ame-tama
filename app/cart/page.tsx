@@ -24,6 +24,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useAuth } from "@/context/auth-context";
 import { PreCheckoutModal } from "@/components/cart/pre-checkout-modal";
+import { formatPriceDivided } from "@/lib/format-price";
 
 export default function CartPage() {
   const router = useRouter();
@@ -46,9 +47,6 @@ export default function CartPage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 
   /* --------------------------------------------------------------------- */
   /*  Effects                                                              */
@@ -383,7 +381,7 @@ export default function CartPage() {
                               {item.product.name}
                             </h3>
                             <p className="text-sm text-muted-foreground">
-                              {formatPrice(item.product.price)}
+                              {formatPriceDivided(item.product.price)}
                             </p>
                           </div>
 
@@ -425,7 +423,9 @@ export default function CartPage() {
                           {/* Total price */}
                           <div className="text-right min-w-[100px]">
                             <p className="font-semibold">
-                              {formatPrice(item.product.price * item.quantity)}
+                              {formatPriceDivided(
+                                item.product.price * item.quantity
+                              )}
                             </p>
                           </div>
 
@@ -545,7 +545,7 @@ export default function CartPage() {
                     <div className="space-y-2 pt-4 border-t border-border">
                       <div className="flex justify-between">
                         <span>جمع کل:</span>
-                        <span>{formatPrice(subtotal)}</span>
+                        <span>{formatPriceDivided(subtotal)}</span>
                       </div>
                       {discount > 0 && (
                         <div className="flex justify-between text-green-600">
@@ -555,7 +555,7 @@ export default function CartPage() {
                       )}
                       <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">
                         <span>مبلغ قابل پرداخت:</span>
-                        <span>{formatPrice(subtotal)}</span>
+                        <span>{formatPriceDivided(subtotal)}</span>
                       </div>
                     </div>
 

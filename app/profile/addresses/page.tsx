@@ -93,10 +93,12 @@ const addressFormSchema = z.object({
   province: z.string().min(2, { message: "استان را وارد کنید" }),
   city: z.string().min(2, { message: "شهر را وارد کنید" }),
   address: z.string().min(10, { message: "آدرس باید حداقل 10 کاراکتر باشد" }),
+  houseNumber: z.string().optional(),
+  floorNumber: z.string().optional(),
   type: z.enum(["home", "work", "other"], {
     message: "نوع آدرس را انتخاب کنید",
   }),
-  isDefault: z.boolean().default(false),
+  isDefault: z.boolean(),
 });
 
 type AddressFormValues = z.infer<typeof addressFormSchema>;
@@ -122,20 +124,18 @@ export default function AddressesPage() {
       province: "",
       city: "",
       address: "",
+      houseNumber: "",
+      floorNumber: "",
       type: "home",
       isDefault: false,
     },
   });
 
-  // Fetch addresses from Next.js API route
+  // Fetch addresses from backend
   const fetchAddresses = async () => {
     try {
       setIsLoadingAddresses(true);
-      const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-      const response = await fetch(`${baseUrl}/api/addresses`, {
-        credentials: "include", // Include cookies
-      });
+      const response = await customFetch("/address");
       const data = await response.json();
 
       if (response.ok && data.addresses) {
@@ -195,6 +195,8 @@ export default function AddressesPage() {
       province: "",
       city: "",
       address: "",
+      houseNumber: "",
+      floorNumber: "",
       type: "home",
       isDefault: false,
     });
@@ -212,6 +214,8 @@ export default function AddressesPage() {
       province: address.province,
       city: address.city,
       address: address.address,
+      houseNumber: address.houseNumber || "",
+      floorNumber: address.floorNumber || "",
       type: address.type,
       isDefault: address.isDefault,
     });
@@ -223,27 +227,21 @@ export default function AddressesPage() {
     try {
       if (isEditing && currentAddress) {
         // Update existing address
-        const baseUrl =
-          process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-        const response = await fetch(
-          `${baseUrl}/api/addresses/${currentAddress.uuid}`,
-          {
-            method: "PUT",
-            credentials: "include", // Include cookies
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              province: data.province,
-              city: data.city,
-              address: data.address,
-              postalCode: data.postalCode,
-              houseNumber: data.houseNumber || "0",
-              floorNumber: data.floorNumber || "0",
-              default: data.isDefault,
-            }),
-          }
-        );
+        const response = await customFetch(`/address/${currentAddress.uuid}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            province: data.province,
+            city: data.city,
+            address: data.address,
+            postalCode: data.postalCode,
+            houseNumber: data.houseNumber || "0",
+            floorNumber: data.floorNumber || "0",
+            default: data.isDefault,
+          }),
+        });
 
         if (response.ok) {
           toast({
@@ -256,11 +254,8 @@ export default function AddressesPage() {
         }
       } else {
         // Add new address
-        const baseUrl =
-          process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-        const response = await fetch(`${baseUrl}/api/addresses`, {
+        const response = await customFetch("/address", {
           method: "POST",
-          credentials: "include", // Include cookies
           headers: {
             "Content-Type": "application/json",
           },
@@ -300,11 +295,8 @@ export default function AddressesPage() {
 
   const deleteAddress = async (uuid: string) => {
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-      const response = await fetch(`${baseUrl}/api/addresses/${uuid}`, {
+      const response = await customFetch(`/address/${uuid}`, {
         method: "DELETE",
-        credentials: "include", // Include cookies
       });
 
       if (response.ok) {
@@ -329,11 +321,8 @@ export default function AddressesPage() {
 
   const setAsDefault = async (uuid: string) => {
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-      const response = await fetch(`${baseUrl}/api/addresses/${uuid}/default`, {
-        method: "POST",
-        credentials: "include", // Include cookies
+      const response = await customFetch(`/address/${uuid}/default`, {
+        method: "PUT",
       });
 
       if (response.ok) {

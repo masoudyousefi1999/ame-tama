@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Eye } from "lucide-react";
+import { OrderStatusBadge } from "@/components/order/order-status-badge";
 
 interface Order {
   id: string;
@@ -25,22 +26,6 @@ interface Order {
 interface OrdersTableProps {
   orders: Order[];
 }
-
-const statusStyles = {
-  pending:
-    "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300",
-  shipped: "bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-300",
-  delivered:
-    "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300",
-  cancelled: "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300",
-};
-
-const statusTranslations = {
-  pending: "در انتظار",
-  shipped: "ارسال شده",
-  delivered: "تحویل داده شده",
-  cancelled: "لغو شده",
-};
 
 export function OrdersTable({ orders }: OrdersTableProps) {
   return (
@@ -95,16 +80,7 @@ export function OrdersTable({ orders }: OrdersTableProps) {
                   ${order.finalPrice.toLocaleString("fa-IR")}
                 </TableCell>
                 <TableCell>
-                  <Badge
-                    className={`${
-                      statusStyles[order.status as keyof typeof statusStyles] ||
-                      "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300"
-                    }`}
-                  >
-                    {statusTranslations[
-                      order.status as keyof typeof statusTranslations
-                    ] || order.status}
-                  </Badge>
+                  <OrderStatusBadge status={order.status} />
                 </TableCell>
                 <TableCell className="text-gray-600 dark:text-gray-400">
                   {new Date(order.createdAt).toLocaleDateString("fa-IR")}

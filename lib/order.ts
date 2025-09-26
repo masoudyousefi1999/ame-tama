@@ -2,11 +2,8 @@ import { customFetch } from "./utils";
 
 export async function getUserOrder() {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const res = await fetch(`${baseUrl}/api/orders`, {
+    const res = await customFetch("/order", {
       method: "GET",
-      credentials: "include", // Include cookies
       headers: {
         "Content-Type": "application/json",
       },
@@ -32,11 +29,8 @@ export async function increaseOrderItem({
   quantity: number;
 }) {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const res = await fetch(`${baseUrl}/api/orders/increase`, {
+    const res = await customFetch("/order/increase", {
       method: "POST",
-      credentials: "include", // Include cookies
       headers: {
         "Content-Type": "application/json",
       },
@@ -66,11 +60,8 @@ export async function decreaseOrderItem({
   quantity: number;
 }) {
   try {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const res = await fetch(`${baseUrl}/api/orders/decrease`, {
+    const res = await customFetch("/order/decrease", {
       method: "POST",
-      credentials: "include", // Include cookies
       headers: {
         "Content-Type": "application/json",
       },

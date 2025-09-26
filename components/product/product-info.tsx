@@ -23,6 +23,7 @@ import { PersianDate } from "@/components/ui/persian-date";
 import { useAuth } from "@/context/auth-context";
 import { useLoginModal } from "@/context/login-modal-context";
 import { toast } from "@/components/ui/use-toast";
+import { formatPriceDivided } from "@/lib/format-price";
 
 interface ProductInfoProps {
   product: IProductType;
@@ -36,9 +37,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const { user } = useAuth();
   const { openLoginModal } = useLoginModal();
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -86,33 +84,33 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     if (product.quantity === 0) {
       return {
         text: "ناموجود",
-        color: "text-red-500",
-        bgColor: "bg-red-50",
-        borderColor: "border-red-200",
+        color: "text-red-600 dark:text-red-400",
+        bgColor: "bg-red-50 dark:bg-red-950/30",
+        borderColor: "border-red-200 dark:border-red-800",
         icon: "❌",
       };
     } else if (product.quantity > 0 && product.quantity < 3) {
       return {
-        text: `⚡ تنها ${product.quantity} عدد باقی مانده`,
-        color: "text-amber-600",
-        bgColor: "bg-amber-50",
-        borderColor: "border-amber-200",
+        text: `تنها ${product.quantity} عدد باقی مانده`,
+        color: "text-amber-600 dark:text-amber-400",
+        bgColor: "bg-amber-50 dark:bg-amber-950/30",
+        borderColor: "border-amber-200 dark:border-amber-800",
         icon: "⚡",
       };
     } else if (product.quantity >= 3 && product.quantity < 10) {
       return {
-        text: "✅ موجود در انبار",
-        color: "text-green-600",
-        bgColor: "bg-green-50",
-        borderColor: "border-green-200",
+        text: "موجود در انبار",
+        color: "text-emerald-600 dark:text-emerald-400",
+        bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+        borderColor: "border-emerald-200 dark:border-emerald-800",
         icon: "✅",
       };
     } else {
       return {
-        text: "✅ موجود در انبار",
-        color: "text-green-600",
-        bgColor: "bg-green-50",
-        borderColor: "border-green-200",
+        text: "موجود در انبار",
+        color: "text-emerald-600 dark:text-emerald-400",
+        bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
+        borderColor: "border-emerald-200 dark:border-emerald-800",
         icon: "✅",
       };
     }
@@ -146,7 +144,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       {/* ────────── price ────────── */}
       <div className="flex items-center gap-x-3 rtl:gap-x-reverse">
         <span className="text-3xl font-bold text-foreground">
-          {formatPrice(product.price)}
+          {formatPriceDivided(product.price)}
         </span>
 
         {/* {!!product.price && (
@@ -160,27 +158,22 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       <div className="flex items-center gap-x-2 rtl:gap-x-reverse">
         <div
           className={cn(
-            "px-3 py-1 rounded-full border text-sm font-medium",
+            "px-3 py-1.5 rounded-full border text-sm font-medium shadow-sm transition-all duration-200 hover:shadow-md",
             stockStatus.bgColor,
             stockStatus.color,
             stockStatus.borderColor
           )}
         >
-          {stockStatus.text}
+          <span className="flex items-center gap-1.5">
+            <span className="text-xs">{stockStatus.icon}</span>
+            {stockStatus.text}
+          </span>
         </div>
 
         <div className="mr-4 flex gap-x-2 rtl:gap-x-reverse">
           {(product.createdAt as any) > new Date() && (
             <Badge variant="default" className="text-2xs">
               جدید
-            </Badge>
-          )}
-          {product.quantity >= 3 && product.quantity < 10 && (
-            <Badge
-              variant="secondary"
-              className="text-2xs bg-blue-100 text-blue-800 border-blue-200"
-            >
-              محبوب
             </Badge>
           )}
         </div>

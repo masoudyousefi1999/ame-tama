@@ -2,10 +2,15 @@
 
 import { Animated404 } from "@/components/404/animated-404";
 import { AnimatedCharacter } from "@/components/404/animated-character";
-import { HomeIcon, ShoppingBagIcon, HelpCircleIcon, ArrowRightIcon } from "lucide-react";
+import {
+  HomeIcon,
+  ShoppingBagIcon,
+  HelpCircleIcon,
+  ArrowRightIcon,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import SearchBar from "@/components/search/search-bar";
+import UnifiedSearch from "@/components/search/unified-search";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
@@ -42,7 +47,7 @@ export default function NotFound() {
         <Card>
           <CardContent className="pt-6">
             <h2 className="text-lg font-semibold mb-4">جستجوی محصولات</h2>
-            <SearchBar />
+            <UnifiedSearch />
           </CardContent>
         </Card>
       </motion.div>
@@ -60,7 +65,7 @@ export default function NotFound() {
           { href: "/faq", icon: HelpCircleIcon, label: "سوالات متداول" },
         ].map((link) => (
           <Button asChild variant="outline" key={link.href} className="gap-2">
-            <Link href={link.href}  prefetch={false}>
+            <Link href={link.href} prefetch={false}>
               <link.icon className="h-4 w-4" />
               {link.label}
             </Link>
@@ -76,7 +81,7 @@ export default function NotFound() {
         className="mt-12"
       >
         <Button asChild variant="link" className="gap-1 text-muted-foreground">
-          <Link href="/contact"  prefetch={false}>
+          <Link href="/contact" prefetch={false}>
             تماس با پشتیبانی
             <ArrowRightIcon className="h-4 w-4" />
           </Link>

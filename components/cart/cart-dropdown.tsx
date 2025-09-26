@@ -9,15 +9,13 @@ import { useCart } from "@/context/cart-context";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
+import { formatPriceDivided } from "@/lib/format-price";
 
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { items, itemCount, subtotal, updateQuantity, recentlyAdded } =
     useCart();
-
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 
   // Close the dropdown when clicking outside of it
   useEffect(() => {
@@ -177,7 +175,7 @@ export default function CartDropdown() {
                       </Link>
 
                       <div className="mt-1 text-sm text-muted-foreground">
-                        {formatPrice(item.product.price)}
+                        {formatPriceDivided(item.product.price)}
                       </div>
 
                       {/* qty controls */}
@@ -225,7 +223,9 @@ export default function CartDropdown() {
 
                       <div className="mt-1 flex items-center justify-between">
                         <span className="text-sm font-medium">
-                          {formatPrice(item.product.price * item.quantity)}
+                          {formatPriceDivided(
+                            item.product.price * item.quantity
+                          )}
                         </span>
                         <motion.button
                           whileTap={{ scale: 0.9 }}
@@ -261,7 +261,7 @@ export default function CartDropdown() {
                 animate={{ scale: 1, opacity: 1 }}
                 className="font-semibold"
               >
-                {formatPrice(subtotal)}
+                {formatPriceDivided(subtotal)}
               </motion.span>
             </div>
 

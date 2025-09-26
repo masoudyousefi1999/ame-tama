@@ -25,7 +25,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import CartDropdown from "@/components/cart/cart-dropdown";
 import UserMenu from "@/components/auth/user-menu";
-import SearchBar from "@/components/search/search-bar";
+import UnifiedSearch from "@/components/search/unified-search";
 import {
   getRootCategories,
   getSubcategories,
@@ -384,12 +384,12 @@ export default function Navbar() {
         <div className="flex items-center space-x-2 flex-shrink-0">
           {/* Mobile Search */}
           <div className="lg:hidden flex-1 max-w-[200px]">
-            <SearchBar isScrolled={isScrolled} />
+            <UnifiedSearch />
           </div>
 
           {/* Desktop Search */}
           <div className="hidden lg:block w-64">
-            <SearchBar isScrolled={isScrolled} />
+            <UnifiedSearch />
           </div>
 
           <UserMenu />

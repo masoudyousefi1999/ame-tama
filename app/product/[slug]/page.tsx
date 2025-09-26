@@ -4,6 +4,7 @@ import { getProductBySlug } from "@/lib/products";
 import ProductPageClient from "@/components/product/product-page-client";
 import MetaTags from "@/components/seo/meta-tags";
 import ProductSchema from "@/components/seo/product-schema";
+import { formatPriceDivided } from "@/lib/format-price";
 
 export const revalidate = 300; // 5 minutes cache for product pages
 
@@ -30,9 +31,6 @@ export async function generateMetadata({
     };
   }
 
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
-
   const imageUrl = product.productMedia[0]?.url || "/placeholder.svg";
 
   // تعیین وضعیت موجودی
@@ -43,15 +41,15 @@ export async function generateMetadata({
 
   return {
     title: `${product.name} | AME-TAMA`,
-    description: `خرید اکشن فیگور ${product.name} با قیمت ${formatPrice(
+    description: `خرید اکشن فیگور ${product.name} با قیمت ${formatPriceDivided(
       product.price
     )}`,
     keywords: `فیگور انیمه, اکشن فیگور, ${product.name}, ${product.category.name}, AME-TAMA`,
     openGraph: {
       title: `${product.name} | AME-TAMA`,
-      description: `خرید اکشن فیگور ${product.name} با قیمت ${formatPrice(
-        product.price
-      )}`,
+      description: `خرید اکشن فیگور ${
+        product.name
+      } با قیمت ${formatPriceDivided(product.price)}`,
       type: "website",
       images: [
         {
@@ -65,9 +63,9 @@ export async function generateMetadata({
     twitter: {
       card: "summary_large_image",
       title: `${product.name} | AME-TAMA`,
-      description: `خرید اکشن فیگور ${product.name} با قیمت ${formatPrice(
-        product.price
-      )}`,
+      description: `خرید اکشن فیگور ${
+        product.name
+      } با قیمت ${formatPriceDivided(product.price)}`,
       images: [imageUrl],
     },
     other: {
@@ -94,9 +92,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
     notFound();
   }
 
-  const formatPrice = (price: number) =>
-    new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
-
   let product = null;
 
   try {
@@ -122,9 +117,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
     <>
       <MetaTags
         title={`${product.name} | AME-TAMA`}
-        description={`خرید اکشن فیگور ${product.name} با قیمت ${formatPrice(
-          product.price
-        )}`}
+        description={`خرید اکشن فیگور ${
+          product.name
+        } با قیمت ${formatPriceDivided(product.price)}`}
         keywords={`فیگور انیمه, اکشن فیگور, ${product.name}, ${product.category.name}, AME-TAMA`}
         ogImage={product?.productMedia[0]?.url || "/placeholder.svg"}
         ogType="product"

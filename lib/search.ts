@@ -3,6 +3,8 @@ import { getAllProducts } from "@/lib/products";
 // نوع داده نتیجه جستجو
 export interface SearchResult {
   id: number;
+  uuid: string;
+  slug: string;
   name: string;
   price: number;
   image: string;
@@ -21,6 +23,8 @@ export async function searchProducts(
   if (!query && !categories?.length) {
     return (getAllProducts() as any).map((product: any) => ({
       id: product.id,
+      uuid: product.uuid,
+      slug: product.slug,
       name: product.name,
       price: product.price,
       image: product.images?.[0]?.url || "/placeholder.svg",
@@ -75,7 +79,9 @@ export async function searchProducts(
       return false;
     })
     .map((product) => ({
+      id: product.id,
       uuid: product.uuid,
+      slug: product.slug,
       name: product.name,
       price: product.price,
       image: product?.productMedia[0]?.url || "/placeholder.svg",

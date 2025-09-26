@@ -14,6 +14,7 @@ import { IProductType } from "@/lib/products";
 import { useAuth } from "@/context/auth-context";
 import { useLoginModal } from "@/context/login-modal-context";
 import { useCart } from "@/context/cart-context";
+import { formatPriceDivided } from "@/lib/format-price";
 
 export interface ProductCardProps {
   product: IProductType;
@@ -47,13 +48,6 @@ export function ProductCard({
   useEffect(() => {
     if (isMobile) setHovered(true);
   }, [isMobile]);
-
-  // Memoize expensive calculations
-  const formatPrice = useCallback(
-    (price: number) =>
-      new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان",
-    []
-  );
 
   const isInStock = useMemo(
     () => product.quantity && product.quantity > 0,
@@ -232,7 +226,7 @@ export function ProductCard({
               {product.quantity > 0 && product.quantity < 3 && (
                 <Badge
                   variant="secondary"
-                  className="text-xs shadow-md bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200"
+                  className="text-xs shadow-md bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-950/50 transition-colors"
                 >
                   ⚡ تنها {product.quantity} عدد باقی مانده
                 </Badge>
@@ -272,7 +266,7 @@ export function ProductCard({
 
             <div className="flex items-center justify-between">
               <p className="text-base md:text-lg font-bold text-primary">
-                {formatPrice(product.price)}
+                {formatPriceDivided(product.price)}
               </p>
               {showAddToCart && (
                 <Button
@@ -304,7 +298,7 @@ export function ProductCard({
       showAddToWishlist,
       showAddToCart,
       isInStock,
-      formatPrice,
+      formatPriceDivided,
       hovered,
       handleWishlistToggle,
       handleAddToCart,

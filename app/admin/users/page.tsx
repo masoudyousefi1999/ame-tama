@@ -5,9 +5,12 @@ import { IUser, UsersTable } from "@/components/admin/users/users-table";
 import { customFetch } from "@/lib/utils";
 import { headers } from "next/headers";
 
-async function getUsers(searchParams: { page?: string; limit?: string }) {
-  const page = Number.parseInt(searchParams.page || "1");
-  const limit = Number.parseInt(searchParams.limit || "10");
+async function getUsers(
+  searchParams: Promise<{ page?: string; limit?: string }>
+) {
+  const params = await searchParams;
+  const page = Number.parseInt(params.page || "1");
+  const limit = Number.parseInt(params.limit || "10");
 
   const cookie = (await headers()).get("cookie");
 
@@ -24,7 +27,7 @@ async function getUsers(searchParams: { page?: string; limit?: string }) {
 export default async function UsersPage({
   searchParams,
 }: {
-  searchParams: { page?: string; limit?: string };
+  searchParams: Promise<{ page?: string; limit?: string }>;
 }) {
   const users = (await getUsers(searchParams)) as IUser[];
 
@@ -45,7 +48,7 @@ export default async function UsersPage({
           asChild
           className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full"
         >
-          <Link href="/admin/users/new"  prefetch={false}>
+          <Link href="/admin/users/new" prefetch={false}>
             <Plus className="ml-2 h-4 w-4" />
             افزودن کاربر
           </Link>

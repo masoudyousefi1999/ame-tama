@@ -145,8 +145,8 @@ export function ProductsTable({ data }: ProductsTableProps) {
                     variant={product.quantity > 0 ? "default" : "destructive"}
                     className={`${
                       product.quantity > 0
-                        ? "bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300"
-                        : "bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300"
+                        ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
+                        : "bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"
                     }`}
                   >
                     {product.quantity.toLocaleString("fa-IR")} موجود

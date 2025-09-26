@@ -10,9 +10,10 @@ async function getProducts(searchParams: {
   limit?: string;
   search?: string;
 }) {
-  const page = Number.parseInt(searchParams.page || "1");
-  const limit = Number.parseInt(searchParams.limit || "10");
-  const search = searchParams.search || "";
+  const {page : pageParam , limit : limitParam , search : searchParam} = await searchParams;
+  const page = Number.parseInt(pageParam || "1");
+  const limit = Number.parseInt(limitParam || "10");
+  const search = searchParam || "";
 
   // Simulate API call - replace with actual API call
   return {
