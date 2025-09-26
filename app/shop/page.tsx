@@ -15,12 +15,6 @@ export const generateMetadata = (): Metadata => {
       "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما. مجموعه کامل فیگورهای انیمه‌ای از برترین برندها",
     keywords:
       "فروشگاه فیگور انیمه, اکشن فیگور, خرید فیگور انیمه, AME-TAMA, مجسمه انیمه",
-    manifest: "/site.webmanifest",
-    icons: {
-      icon: "/favicon.ico",
-      shortcut: "/favicon.ico",
-      apple: "/apple-touch-icon.png",
-    },
     openGraph: {
       title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
       description:

@@ -120,10 +120,17 @@ export async function getAllProducts(
       method: "GET",
       ...init,
     });
-    const result = await res.json();git
-    const { products, totalCount } = result;
-    return { products: products || [], totalCount: totalCount || 0 };
+    const result = await res.json();
+
+    // Handle both array response and object response from backend
+    if (Array.isArray(result)) {
+      return { products: result, totalCount: result.length };
+    } else {
+      const { products, totalCount } = result;
+      return { products: products || [], totalCount: totalCount || 0 };
+    }
   } catch (error) {
+    console.error("Error fetching products:", error);
     return { products: [], totalCount: 0 };
   }
 }
