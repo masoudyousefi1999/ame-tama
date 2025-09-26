@@ -92,7 +92,11 @@ export default function ProfilePage() {
       (async () => {
         setIsLoadingOrders(true);
         try {
-          const response = await customFetch("/order/history");
+          const baseUrl =
+            process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+          const response = await fetch(`${baseUrl}/api/orders`, {
+            credentials: "include", // Include cookies
+          });
           const data = await response.json();
           if (response.ok && data.orders) {
             const transformed = data.orders.map((order: any) => ({
@@ -221,7 +225,7 @@ export default function ProfilePage() {
               <CardContent>
                 <nav className="space-y-2">
                   <Link
-                   prefetch={false}
+                    prefetch={false}
                     href="/profile"
                     className="flex items-center p-2 rounded-lg bg-purple-50 dark:bg-purple-900/10 text-purple-600 dark:text-purple-400"
                   >
@@ -250,7 +254,7 @@ export default function ProfilePage() {
                       key={l.href}
                       href={l.href}
                       className="flex items-center p-2 rounded-lg hover:bg-muted transition-colors"
-                       prefetch={false}
+                      prefetch={false}
                     >
                       <l.icon className="h-4 w-4 ml-2" />
                       {l.label}

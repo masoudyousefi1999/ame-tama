@@ -37,7 +37,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (page > 20) break;
   }
 
-  console.log(`Total products found: ${allProducts.length}`);
 
   const productPages = allProducts.map((product) => ({
     url: `${baseUrl}/product/${encodeURIComponent(product.slug)}`,

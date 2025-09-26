@@ -9,13 +9,20 @@ import {
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
 
+export const revalidate = 300; // 5 minutes cache for homepage
+
 export default async function Home() {
-  const [allCategories, products] = await Promise.all([
-    getAllCategories(),
-    getAllProducts(1, 8),
+  const [allCategories, productsResult] = await Promise.all([
+    getAllCategories({
+      next: { revalidate: 600, tags: ["categories"] }, // 10 minutes cache
+    }),
+    getAllProducts(1, 8, {
+      next: { revalidate: 300, tags: ["products", "homepage"] }, // 5 minutes cache
+    }),
   ]);
 
   const categories = allCategories?.[0]?.children ?? [];
+  const products = productsResult.products || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
@@ -34,7 +41,7 @@ export default async function Home() {
       <div className="section-separator" />
 
       {/* Featured Products */}
-      <FeaturedProductsSection />
+      <FeaturedProductsSection initialProducts={products} />
 
       <div className="section-separator" />
 

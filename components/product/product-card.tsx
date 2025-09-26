@@ -157,10 +157,13 @@ export function ProductCard({
   const cardContent = useMemo(
     () => (
       <div
+        data-product-card
         className={cn(
-          "group relative transition-all duration-300 rounded-2xl border border-border bg-card bg-opacity-50",
+          "group relative transition-all duration-300 rounded-2xl border border-border bg-card bg-opacity-50 cursor-pointer",
           // Reduce backdrop-blur and transforms for better performance
-          isMobile ? "shadow-card" : "shadow-card hover:shadow-xl",
+          isMobile
+            ? "shadow-card"
+            : "shadow-card hover:shadow-xl hover:scale-[1.01]",
           className
         )}
         onMouseEnter={() => !isMobile && setHovered(true)}
@@ -170,6 +173,19 @@ export function ProductCard({
           href={`/product/${product.slug}`}
           className="block"
           prefetch={false}
+          onClick={(e) => {
+            // Add visual feedback for instant response
+            const card = e.currentTarget.closest(
+              "[data-product-card]"
+            ) as HTMLElement;
+            if (card) {
+              card.style.transform = "scale(0.98)";
+              card.style.transition = "transform 0.1s ease-out";
+              setTimeout(() => {
+                card.style.transform = "scale(1)";
+              }, 100);
+            }
+          }}
         >
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
@@ -214,8 +230,11 @@ export function ProductCard({
                 </Badge>
               )}
               {product.quantity > 0 && product.quantity < 3 && (
-                <Badge variant="destructive" className="text-xs shadow-md">
-                  موجودی محدود
+                <Badge
+                  variant="secondary"
+                  className="text-xs shadow-md bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200"
+                >
+                  ⚡ تنها {product.quantity} عدد باقی مانده
                 </Badge>
               )}
             </div>

@@ -14,8 +14,13 @@ export interface ICategoryType {
 }
 
 // دریافت همه دسته‌بندی‌ها
-export async function getAllCategories(): Promise<ICategoryType[]> {
-  const res = await customFetch(`/category`);
+export async function getAllCategories(
+  init?: Parameters<typeof customFetch>[1]
+): Promise<ICategoryType[]> {
+  const res = await customFetch(`/category`, {
+    method: "GET",
+    ...init,
+  });
 
   const categories = await res.json();
   return categories;

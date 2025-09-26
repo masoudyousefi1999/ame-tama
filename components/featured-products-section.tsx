@@ -2,8 +2,15 @@
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import FeaturedProducts from "./featured-products";
+import { IProductType } from "@/lib/products";
 
-export default function FeaturedProductsSection() {
+interface FeaturedProductsSectionProps {
+  initialProducts?: IProductType[];
+}
+
+export default function FeaturedProductsSection({
+  initialProducts,
+}: FeaturedProductsSectionProps) {
   const isMobile = useIsMobile();
 
   return (
@@ -18,7 +25,10 @@ export default function FeaturedProductsSection() {
           </p>
         </div>
         <div className="px-4">
-          <FeaturedProducts {...(isMobile ? { limit: 4 } : {})} />
+          <FeaturedProducts
+            initialProducts={initialProducts}
+            {...(isMobile ? { limit: 4 } : {})}
+          />
         </div>
       </div>
     </section>

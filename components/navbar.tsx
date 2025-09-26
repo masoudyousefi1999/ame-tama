@@ -27,7 +27,6 @@ import CartDropdown from "@/components/cart/cart-dropdown";
 import UserMenu from "@/components/auth/user-menu";
 import SearchBar from "@/components/search/search-bar";
 import {
-  getAllCategories,
   getRootCategories,
   getSubcategories,
   type ICategoryType,
@@ -71,9 +70,21 @@ export default function Navbar() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categories = await getAllCategories();
+        const baseUrl =
+          process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        const response = await fetch(`${baseUrl}/api/categories`, {
+          credentials: "include", // Include cookies in the request
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch categories");
+        }
+
+        const categories = await response.json();
         const rootCategories: any[] = [];
-        categories.forEach((item) => rootCategories.push(...item.children));
+        categories.forEach((item: any) =>
+          rootCategories.push(...item.children)
+        );
         setCategoryTree(rootCategories);
         setMobileCategories(rootCategories);
       } catch (error) {

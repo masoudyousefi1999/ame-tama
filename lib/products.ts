@@ -53,20 +53,35 @@ export function getProductById(id: number): IProductType | null {
 import { customFetch } from "./utils";
 
 export async function getProductBySlug(
-  slug: string
+  slug: string,
+  init?: Parameters<typeof customFetch>[1]
 ): Promise<IProductType | null> {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/product/${slug}`
-    );
+    // Use regular fetch to call Next.js API route (not customFetch to avoid NestJS backend)
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+    const res = await fetch(`${baseUrl}/api/product/${slug}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      ...init,
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) {
+        return null;
+      }
+      throw new Error(`Failed to fetch product: ${res.status}`);
+    }
 
     const product = await res.json();
 
-    if (product) {
-      return product as IProductType;
+    if (product && product.error) {
+      return null;
     }
 
-    return null;
+    return product as IProductType;
   } catch (error) {
     return null;
   }
@@ -99,7 +114,13 @@ export async function getRelatedProducts(
   try {
     const res = await customFetch(
       `/product/similar/${productUuid}?page=${page}&limit=${limit}`,
-      { method: "GET" }
+      {
+        method: "GET",
+        next: {
+          revalidate: 300, // 5 minutes cache
+          tags: [`related-${productUuid}`],
+        },
+      }
     );
     const result = await res.json();
     const { products, totalCount } = result;

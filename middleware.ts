@@ -9,22 +9,21 @@ function getAccessTokenFromCookie(cookieHeader: string): string | null {
 }
 
 export async function middleware(request: NextRequest) {
-  const { pathname, searchParams } = request.nextUrl
+  const { pathname, searchParams } = request.nextUrl;
 
-  if (pathname.startsWith('/checkout/success/payments/zarinpal')) {
-    const authority = searchParams.get('Authority')
-    const status = searchParams.get('Status')
+  if (pathname.startsWith("/checkout/success/payments/zarinpal")) {
+    const authority = searchParams.get("Authority");
+    const status = searchParams.get("Status");
 
     // Create new redirect URL with parameters added
-    const redirectUrl = new URL('/checkout/success', request.url)
-    if (authority) redirectUrl.searchParams.set('Authority', authority)
-    if (status) redirectUrl.searchParams.set('Status', status)
+    const redirectUrl = new URL("/checkout/success", request.url);
+    if (authority) redirectUrl.searchParams.set("Authority", authority);
+    if (status) redirectUrl.searchParams.set("Status", status);
 
-    return NextResponse.redirect(redirectUrl)
+    return NextResponse.redirect(redirectUrl);
   }
 
   const cookieHeader = request.headers.get("cookie") || "";
-
 
   // Get the ACCESS_TOKEN from the cookie header
   const accessToken = getAccessTokenFromCookie(cookieHeader);
@@ -67,17 +66,14 @@ export async function middleware(request: NextRequest) {
     }
 
     try {
-      const adminRes = await fetch(
-        "https://api.ame-tama.com/auth/is-admin",
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const adminRes = await fetch("https://api.ame-tama.com/auth/is-admin", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       const isAdmin = await adminRes.json();
 
@@ -93,5 +89,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/login",'/checkout/success/:path*'],
+  matcher: ["/admin/:path*", "/login", "/checkout/success/:path*"],
 };

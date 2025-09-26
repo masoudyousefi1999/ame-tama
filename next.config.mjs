@@ -20,6 +20,8 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 600, 800],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 31536000, // 1 year cache for images
+    unoptimized: false,
+    loader: "default",
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
@@ -27,7 +29,17 @@ const nextConfig = {
   compress: true,
   // Optimize bundle
   experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion"],
+    optimizePackageImports: [
+      "lucide-react",
+      "framer-motion",
+      "@radix-ui/react-dialog",
+      "@radix-ui/react-dropdown-menu",
+      "@radix-ui/react-toast",
+      "@radix-ui/react-tabs",
+      "@radix-ui/react-select",
+      "@radix-ui/react-separator",
+      "@radix-ui/react-slot",
+    ],
   },
   eslint: {
     ignoreDuringBuilds: true,

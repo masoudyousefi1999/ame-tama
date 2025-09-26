@@ -82,17 +82,43 @@ export default function ProductInfo({ product }: ProductInfoProps) {
   };
 
   // تعیین وضعیت موجودی
-  const availabilityText = {
-    "in-stock": "موجود در انبار",
-    "low-stock": "تنها چند عدد باقی مانده",
-    "out-of-stock": "ناموجود",
+  const getStockStatus = () => {
+    if (product.quantity === 0) {
+      return {
+        text: "ناموجود",
+        color: "text-red-500",
+        bgColor: "bg-red-50",
+        borderColor: "border-red-200",
+        icon: "❌",
+      };
+    } else if (product.quantity > 0 && product.quantity < 3) {
+      return {
+        text: `⚡ تنها ${product.quantity} عدد باقی مانده`,
+        color: "text-amber-600",
+        bgColor: "bg-amber-50",
+        borderColor: "border-amber-200",
+        icon: "⚡",
+      };
+    } else if (product.quantity >= 3 && product.quantity < 10) {
+      return {
+        text: "✅ موجود در انبار",
+        color: "text-green-600",
+        bgColor: "bg-green-50",
+        borderColor: "border-green-200",
+        icon: "✅",
+      };
+    } else {
+      return {
+        text: "✅ موجود در انبار",
+        color: "text-green-600",
+        bgColor: "bg-green-50",
+        borderColor: "border-green-200",
+        icon: "✅",
+      };
+    }
   };
 
-  const availabilityColor = {
-    "in-stock": "text-green-500",
-    "low-stock": "text-amber-500",
-    "out-of-stock": "text-red-500",
-  };
+  const stockStatus = getStockStatus();
 
   return (
     <div className="space-y-6">
@@ -132,11 +158,16 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       {/* ─── stock + badges ─── */}
       <div className="flex items-center gap-x-2 rtl:gap-x-reverse">
-        <span
-          className={cn("text-sm font-medium", availabilityColor["in-stock"])}
+        <div
+          className={cn(
+            "px-3 py-1 rounded-full border text-sm font-medium",
+            stockStatus.bgColor,
+            stockStatus.color,
+            stockStatus.borderColor
+          )}
         >
-          {availabilityText["in-stock"]}
-        </span>
+          {stockStatus.text}
+        </div>
 
         <div className="mr-4 flex gap-x-2 rtl:gap-x-reverse">
           {(product.createdAt as any) > new Date() && (
@@ -144,9 +175,12 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               جدید
             </Badge>
           )}
-          {product.quantity < 10 && (
-            <Badge variant="destructive" className="text-2xs">
-              نسخه محدود
+          {product.quantity >= 3 && product.quantity < 10 && (
+            <Badge
+              variant="secondary"
+              className="text-2xs bg-blue-100 text-blue-800 border-blue-200"
+            >
+              محبوب
             </Badge>
           )}
         </div>

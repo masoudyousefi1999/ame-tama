@@ -127,11 +127,15 @@ export default function AddressesPage() {
     },
   });
 
-  // Fetch addresses from backend
+  // Fetch addresses from Next.js API route
   const fetchAddresses = async () => {
     try {
       setIsLoadingAddresses(true);
-      const response = await customFetch("/address");
+      const baseUrl =
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      const response = await fetch(`${baseUrl}/api/addresses`, {
+        credentials: "include", // Include cookies
+      });
       const data = await response.json();
 
       if (response.ok && data.addresses) {
@@ -219,21 +223,27 @@ export default function AddressesPage() {
     try {
       if (isEditing && currentAddress) {
         // Update existing address
-        const response = await customFetch(`/address/${currentAddress.uuid}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            province: data.province,
-            city: data.city,
-            address: data.address,
-            postalCode: data.postalCode,
-            houseNumber: data.houseNumber || "0",
-            floorNumber: data.floorNumber || "0",
-            default: data.isDefault,
-          }),
-        });
+        const baseUrl =
+          process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        const response = await fetch(
+          `${baseUrl}/api/addresses/${currentAddress.uuid}`,
+          {
+            method: "PUT",
+            credentials: "include", // Include cookies
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              province: data.province,
+              city: data.city,
+              address: data.address,
+              postalCode: data.postalCode,
+              houseNumber: data.houseNumber || "0",
+              floorNumber: data.floorNumber || "0",
+              default: data.isDefault,
+            }),
+          }
+        );
 
         if (response.ok) {
           toast({
@@ -246,8 +256,11 @@ export default function AddressesPage() {
         }
       } else {
         // Add new address
-        const response = await customFetch("/address", {
+        const baseUrl =
+          process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+        const response = await fetch(`${baseUrl}/api/addresses`, {
           method: "POST",
+          credentials: "include", // Include cookies
           headers: {
             "Content-Type": "application/json",
           },
@@ -287,8 +300,11 @@ export default function AddressesPage() {
 
   const deleteAddress = async (uuid: string) => {
     try {
-      const response = await customFetch(`/address/${uuid}`, {
+      const baseUrl =
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      const response = await fetch(`${baseUrl}/api/addresses/${uuid}`, {
         method: "DELETE",
+        credentials: "include", // Include cookies
       });
 
       if (response.ok) {
@@ -313,8 +329,11 @@ export default function AddressesPage() {
 
   const setAsDefault = async (uuid: string) => {
     try {
-      const response = await customFetch(`/address/${uuid}/default`, {
-        method: "PUT",
+      const baseUrl =
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+      const response = await fetch(`${baseUrl}/api/addresses/${uuid}/default`, {
+        method: "POST",
+        credentials: "include", // Include cookies
       });
 
       if (response.ok) {

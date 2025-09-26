@@ -2,8 +2,11 @@ import { customFetch } from "./utils";
 
 export async function getUserOrder() {
   try {
-    const res = await customFetch("/order", {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/orders`, {
       method: "GET",
+      credentials: "include", // Include cookies
       headers: {
         "Content-Type": "application/json",
       },
@@ -29,8 +32,11 @@ export async function increaseOrderItem({
   quantity: number;
 }) {
   try {
-    const res = await customFetch("/order/increase", {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/orders/increase`, {
       method: "POST",
+      credentials: "include", // Include cookies
       headers: {
         "Content-Type": "application/json",
       },
@@ -60,8 +66,11 @@ export async function decreaseOrderItem({
   quantity: number;
 }) {
   try {
-    const res = await customFetch("/order/decrease", {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
+    const res = await fetch(`${baseUrl}/api/orders/decrease`, {
       method: "POST",
+      credentials: "include", // Include cookies
       headers: {
         "Content-Type": "application/json",
       },

@@ -134,15 +134,20 @@ export default function OrdersPage() {
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
 
-  // Fetch orders from backend
+  // Fetch orders from Next.js API route
   const fetchOrders = async (status?: string) => {
     try {
       setIsLoadingOrders(true);
+      const baseUrl =
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "http://localhost:3000";
       const url =
         status && status !== "all"
-          ? `/order/history?status=${status}`
-          : "/order/history";
-      const response = await customFetch(url);
+          ? `${baseUrl}/api/orders?status=${status}`
+          : `${baseUrl}/api/orders`;
+
+      const response = await fetch(url, {
+        credentials: "include", // Include cookies
+      });
       const data = await response.json();
 
       if (response.ok && data.orders) {

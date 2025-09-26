@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useEffect, useState, useCallback, memo, useMemo } from "react";
+import { useEffect, useState, useCallback, memo, useMemo, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
@@ -23,42 +23,102 @@ const ProductCard = dynamic(
 // 🚀 Memoize grid wrapper
 const MemoizedProductCard = memo(ProductCard);
 
-export default function FeaturedProducts({ limit }: { limit?: number } = {}) {
+// Cache for featured products
+const featuredProductsCache = new Map<string, IProductType[]>();
+const pendingFeaturedRequests = new Map<string, Promise<any>>();
+
+interface FeaturedProductsProps {
+  limit?: number;
+  initialProducts?: IProductType[];
+}
+
+export default function FeaturedProducts({
+  limit,
+  initialProducts,
+}: FeaturedProductsProps = {}) {
   const { addItem } = useCart();
-  const [products, setProducts] = useState<IProductType[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<IProductType[]>(
+    initialProducts || []
+  );
+  const [loading, setLoading] = useState(!initialProducts);
   const isMobile = useIsMobile();
+  const hasFetched = useRef(!!initialProducts);
 
   useEffect(() => {
+    // If we have initial products, use them and don't fetch
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts);
+      setLoading(false);
+      return;
+    }
+
+    // Prevent duplicate calls
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
     let isMounted = true;
+    const cacheKey = `featured-${limit || "default"}`;
 
     (async () => {
       try {
-        const result = (await getAllProducts(2, 6)) as any;
+        // Check cache first
+        if (featuredProductsCache.has(cacheKey)) {
+          if (isMounted) {
+            setProducts(featuredProductsCache.get(cacheKey)!);
+            setLoading(false);
+          }
+          return;
+        }
+
+        // Check if request is already pending
+        if (pendingFeaturedRequests.has(cacheKey)) {
+          try {
+            const result = await pendingFeaturedRequests.get(cacheKey)!;
+            if (isMounted) {
+              setProducts(result.products || []);
+              featuredProductsCache.set(cacheKey, result.products || []);
+            }
+          } catch (error) {
+            console.error("Error fetching featured products:", error);
+          } finally {
+            if (isMounted) setLoading(false);
+          }
+          return;
+        }
+
+        // Make new request
+        const requestPromise = getAllProducts(2, 6);
+        pendingFeaturedRequests.set(cacheKey, requestPromise);
+
+        const result = await requestPromise;
         const { products } = result;
 
         if (isMounted) {
           setProducts(products || []);
+          featuredProductsCache.set(cacheKey, products || []);
         }
       } catch (error) {
         console.error("Error fetching products:", error);
-        toast({
-          variant: "error",
-          title: "خطا در بارگذاری محصولات",
-          description:
-            "امکان بارگذاری محصولات وجود ندارد. لطفاً دوباره تلاش کنید.",
-          duration: 2000,
-        });
-        setProducts([]);
+        if (isMounted) {
+          toast({
+            variant: "error",
+            title: "خطا در بارگذاری محصولات",
+            description:
+              "امکان بارگذاری محصولات وجود ندارد. لطفاً دوباره تلاش کنید.",
+            duration: 2000,
+          });
+          setProducts([]);
+        }
       } finally {
         if (isMounted) setLoading(false);
+        pendingFeaturedRequests.delete(cacheKey);
       }
     })();
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [limit, initialProducts]);
 
   const addProductToCart = useCallback(
     (product: any, event: React.MouseEvent) => {

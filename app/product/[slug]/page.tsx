@@ -5,10 +5,12 @@ import ProductPageClient from "@/components/product/product-page-client";
 import MetaTags from "@/components/seo/meta-tags";
 import ProductSchema from "@/components/seo/product-schema";
 
+export const revalidate = 300; // 5 minutes cache for product pages
+
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
 
@@ -18,7 +20,9 @@ export async function generateMetadata({
     };
   }
 
-  const product = await getProductBySlug(slug);
+  const product = await getProductBySlug(slug, {
+    next: { revalidate, tags: ["products", `product-${slug}`] },
+  });
 
   if (!product) {
     return {
@@ -73,16 +77,14 @@ export async function generateMetadata({
       "product:category": product.category.name,
       "product:availability": availability,
       "product:condition": "new",
-      "product:price:amount": product.price, // قیمت ریال از بک‌اند (بدون تبدیل)
+      "product:price:amount": product.price,
       "product:price:currency": "IRR",
     },
   };
 }
 
 interface ProductPageProps {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
@@ -91,21 +93,20 @@ export default async function ProductPage({ params }: ProductPageProps) {
   if (!slug) {
     notFound();
   }
+
   const formatPrice = (price: number) =>
     new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 
   let product = null;
-  // let relatedProducts = [];
 
   try {
-    product = await getProductBySlug(slug);
+    product = await getProductBySlug(slug, {
+      next: { revalidate, tags: ["products", `product-${slug}`] },
+    });
 
     if (!product) {
       notFound();
     }
-
-    // const relatedProductsResult = await getRelatedProducts(product.uuid, 1, 4);
-    // relatedProducts = relatedProductsResult.products;
   } catch (error) {
     console.error("Error fetching product data:", error);
     notFound();
@@ -128,7 +129,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         ogImage={product?.productMedia[0]?.url || "/placeholder.svg"}
         ogType="product"
         canonicalPath={`product/${product.slug}`}
-        price={product.price} // قیمت ریال از بک‌اند (بدون تبدیل)
+        price={product.price}
         currency="IRR"
         productId={product.uuid}
         sku={`AME-${product.uuid}`}
