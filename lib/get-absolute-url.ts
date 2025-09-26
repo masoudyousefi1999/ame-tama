@@ -5,7 +5,7 @@
  */
 export function getAbsoluteUrl(path: string): string {
   // Use the environment variable, or fallback to a default for development
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ame-tama.com"
 
   // Ensure path starts with a slash
   const normalizedPath = path.startsWith("/") ? path : `/${path}`
