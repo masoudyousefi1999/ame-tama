@@ -37,7 +37,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (page > 20) break;
   }
 
-
   const productPages = allProducts.map((product) => ({
     url: `${baseUrl}/product/${encodeURIComponent(product.slug)}`,
     lastModified: new Date(product?.updatedAt ?? new Date()),
@@ -51,11 +50,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rootCategories: any[] = [];
   categories.forEach((item) => rootCategories.push(...item.children));
 
+  // صفحات دسته‌بندی با ساختار عمیق مثل AnimeTools.ir
   const categoryPages = rootCategories.map((category) => ({
-    url: `${baseUrl}/category/figures/${encodeURIComponent(category.slug)}`,
+    url: `${baseUrl}/category/${encodeURIComponent(category.slug)}`,
     lastModified: new Date(category?.updatedAt ?? new Date()),
     changeFrequency: "weekly" as const,
-    priority: 0.8, // افزایش اولویت صفحات دسته‌بندی
+    priority: 0.9, // افزایش اولویت برای دسته‌بندی‌های محصولات
   }));
 
   // اضافه کردن صفحات دسته‌بندی اصلی
@@ -63,7 +63,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}/category/${encodeURIComponent(category.slug)}`,
     lastModified: new Date(category?.updatedAt ?? new Date()),
     changeFrequency: "weekly" as const,
-    priority: 0.8,
+    priority: 0.9,
+  }));
+
+  // اضافه کردن صفحات جستجو برای کلمات کلیدی مهم
+  const searchPages = [
+    "لوفی",
+    "ناروتو",
+    "وان پیس",
+    "دراگون بال",
+    "حمله به تایتان",
+    "بلیچ",
+    "اکشن فیگور",
+    "فیگور انیمه",
+  ].map((keyword) => ({
+    url: `${baseUrl}/search?q=${encodeURIComponent(keyword)}`,
+    lastModified: new Date(),
+    changeFrequency: "daily" as const,
+    priority: 0.7,
   }));
 
   return [
@@ -71,5 +88,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...productPages,
     ...categoryPages,
     ...mainCategoryPages,
+    ...searchPages,
   ];
 }

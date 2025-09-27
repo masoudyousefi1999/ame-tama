@@ -54,9 +54,30 @@ export default function MetaTags({
       <meta property="og:description" content={description} />
       <meta property="og:type" content={ogType} />
       <meta property="og:image" content={fullOgImageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={title} />
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content="AME-TAMA | مجسمه‌های انیمه لوکس" />
       <meta property="og:locale" content="fa_IR" />
+
+      {/* متاتگ‌های اضافی برای محصولات */}
+      {ogType === "product" && (
+        <>
+          <meta
+            property="product:price:amount"
+            content={price?.toString() || ""}
+          />
+          <meta property="product:price:currency" content={currency} />
+          <meta
+            property="product:availability"
+            content={availability || "in stock"}
+          />
+          <meta property="product:condition" content={condition} />
+          <meta property="product:brand" content={brand || ""} />
+          <meta property="product:category" content={category || ""} />
+        </>
+      )}
 
       {/* متاتگ‌های Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -90,6 +111,41 @@ export default function MetaTags({
       {/* متاتگ‌های اضافی برای Torob.com */}
       <meta name="robots" content="index, follow" />
       <meta name="googlebot" content="index, follow" />
+
+      {/* متاتگ‌های اضافی برای Google Shopping */}
+      <meta
+        name="google-site-verification"
+        content="your-google-verification-code"
+      />
+      <meta name="format-detection" content="telephone=no" />
+
+      {/* متاتگ‌های اضافی برای تصاویر */}
+      <meta name="image" content={fullOgImageUrl} />
+      <meta name="twitter:image:alt" content={title} />
+
+      {/* متاتگ‌های اضافی برای محصولات */}
+      {ogType === "product" && (
+        <>
+          <meta name="product:retailer_item_id" content={productId || ""} />
+          <meta name="product:retailer" content="AME-TAMA" />
+          <meta name="product:retailer_part_no" content={sku || ""} />
+          <meta name="product:color" content="متنوع" />
+          <meta name="product:size" content="استاندارد" />
+          <meta name="product:material" content="PVC" />
+          <meta name="product:pattern" content="انیمه" />
+          <meta name="product:age_group" content="all" />
+          <meta name="product:gender" content="unisex" />
+          <meta
+            name="product:availability"
+            content={availability || "in stock"}
+          />
+          <meta name="product:condition" content={condition} />
+          <meta name="product:price:amount" content={price?.toString() || ""} />
+          <meta name="product:price:currency" content={currency} />
+          <meta name="product:brand" content={brand || ""} />
+          <meta name="product:category" content={category || ""} />
+        </>
+      )}
 
       {/* متاتگ‌های ساختاریافته برای محصولات */}
       {ogType === "product" && (

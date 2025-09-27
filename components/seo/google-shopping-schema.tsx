@@ -1,38 +1,26 @@
 import { getSiteUrl } from "@/lib/site-url";
 import { IProductType } from "@/lib/products";
 
-interface ProductSchemaProps {
+interface GoogleShoppingSchemaProps {
   product: IProductType;
 }
 
-export default function ProductSchema({ product }: ProductSchemaProps) {
-  const availabilityMap = {
-    inStock: "https://schema.org/InStock",
-    limitedAvailability: "https://schema.org/LimitedAvailability",
-    outOfStock: "https://schema.org/OutOfStock",
-  };
-
-  // حدس وضعیت موجودی بر اساس quantity
-  let availability: "inStock" | "outOfStock" | "limitedAvailability" =
-    "inStock";
-  if (product.quantity === 0) availability = "outOfStock";
+export default function GoogleShoppingSchema({
+  product,
+}: GoogleShoppingSchemaProps) {
+  // تعیین وضعیت موجودی
+  let availability: "in stock" | "out of stock" | "limited" = "in stock";
+  if (product.quantity === 0) availability = "out of stock";
   else if (product.quantity > 0 && product.quantity < 3)
-    availability = "limitedAvailability";
+    availability = "limited";
 
-  // داده‌های aggregateRating
-  const aggregateRating =
-    product.rating && product.reviews && product.reviews.length > 0
-      ? {
-          "@type": "AggregateRating",
-          ratingValue: product.rating.toFixed(1),
-          reviewCount: product.reviews.length,
-        }
-      : undefined;
-
-  const schemaData: any = {
+  const schemaData = {
     "@context": "https://schema.org/",
     "@type": "Product",
     name: product.name,
+    description:
+      product.detail?.description ||
+      `فیگور ${product.name} از انیمه ${product.category.name}`,
     image:
       product.productMedia.length > 0
         ? {
@@ -52,41 +40,36 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
             height: 1200,
             alt: `${product.name} - فیگور انیمه`,
           },
-    description:
-      product.detail?.description ||
-      `فیگور ${product.name} از انیمه ی  ${product.category.name}`,
     sku: `AME-${product.uuid}`,
     mpn: `AME-${product.uuid}`,
     gtin: `AME-${product.uuid}`,
     brand: {
       "@type": "Brand",
-      name: product.category.name, // چون manufacturer نیست، از category اسم برند رو گرفتیم
+      name: product.category.name,
     },
     category: product.category.name,
-    // اضافه کردن اطلاعات بیشتر برای Google Shopping
-    productID: product.uuid,
-    gtin8: `AME-${product.uuid}`,
-    gtin12: `AME-${product.uuid}`,
-    gtin13: `AME-${product.uuid}`,
-    gtin14: `AME-${product.uuid}`,
     offers: {
       "@type": "Offer",
       url: getSiteUrl(`product/${product.slug}`),
       priceCurrency: "IRR",
-      price: product.price, // قیمت ریال از بک‌اند (بدون تبدیل)
+      price: product.price,
       priceValidUntil: new Date(
         new Date().setFullYear(new Date().getFullYear() + 1)
       )
         .toISOString()
         .split("T")[0],
-      availability: availabilityMap[availability],
+      availability:
+        availability === "in stock"
+          ? "https://schema.org/InStock"
+          : availability === "limited"
+          ? "https://schema.org/LimitedAvailability"
+          : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "AME-TAMA",
         url: "https://ame-tama.com",
       },
       condition: "https://schema.org/NewCondition",
-      // اضافه کردن اطلاعات بیشتر برای Google Shopping
       itemCondition: "https://schema.org/NewCondition",
       shippingDetails: {
         "@type": "OfferShippingDetails",
@@ -120,13 +103,31 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
         returnFees: "https://schema.org/FreeReturn",
       },
     },
-    // اطلاعات اضافی برای موتورهای جستجو
-    identifier: {
-      "@type": "PropertyValue",
-      name: "Product ID",
-      value: product.uuid,
+    // اطلاعات اضافی برای Google Shopping
+    productID: product.uuid,
+    gtin8: `AME-${product.uuid}`,
+    gtin12: `AME-${product.uuid}`,
+    gtin13: `AME-${product.uuid}`,
+    gtin14: `AME-${product.uuid}`,
+    // اطلاعات بیشتر برای تصاویر
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": getSiteUrl(`product/${product.slug}`),
     },
-    // اطلاعات موجودی
+    // اطلاعات بیشتر برای موتورهای جستجو
+    potentialAction: {
+      "@type": "BuyAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: getSiteUrl(`product/${product.slug}`),
+      },
+      object: {
+        "@type": "Offer",
+        price: product.price,
+        priceCurrency: "IRR",
+      },
+    },
+    // اطلاعات اضافی برای Google Shopping
     additionalProperty: [
       {
         "@type": "PropertyValue",
@@ -148,52 +149,22 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
         name: "شخصیت",
         value: product.detail?.character || "نامشخص",
       },
+      {
+        "@type": "PropertyValue",
+        name: "جنس",
+        value: "PVC",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "ارتفاع",
+        value: product.detail?.specifications?.height || "متغیر",
+      },
+      {
+        "@type": "PropertyValue",
+        name: "وزن",
+        value: product.detail?.specifications?.weight || "متغیر",
+      },
     ],
-    // Always include review array for Google
-    review:
-      Array.isArray(product.reviews) && product.reviews.length > 0
-        ? product.reviews.map((review: any) => ({
-            "@type": "Review",
-            author: review.user,
-            datePublished: review.date,
-            reviewBody: review.text,
-            reviewRating: {
-              "@type": "Rating",
-              ratingValue: review.rating,
-              bestRating: 5,
-              worstRating: 1,
-            },
-          }))
-        : [],
-  };
-
-  if (aggregateRating) schemaData.aggregateRating = aggregateRating;
-
-  // اضافه کردن اطلاعات بیشتر برای Google Shopping
-  schemaData.isRelatedTo = {
-    "@type": "Product",
-    name: product.category.name,
-    description: `دسته‌بندی ${product.category.name}`,
-  };
-
-  // اضافه کردن اطلاعات بیشتر برای تصاویر
-  schemaData.mainEntityOfPage = {
-    "@type": "WebPage",
-    "@id": getSiteUrl(`product/${product.slug}`),
-  };
-
-  // اضافه کردن اطلاعات بیشتر برای موتورهای جستجو
-  schemaData.potentialAction = {
-    "@type": "BuyAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: getSiteUrl(`product/${product.slug}`),
-    },
-    object: {
-      "@type": "Offer",
-      price: product.price,
-      priceCurrency: "IRR",
-    },
   };
 
   // اضافه کردن اطلاعات مشخصات فنی اگر موجود باشد

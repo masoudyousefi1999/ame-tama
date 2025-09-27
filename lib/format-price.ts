@@ -32,3 +32,4 @@ export const formatPriceRaw = (price: number): string => {
 export const formatPriceDivided = (price: number): string => {
   return new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 };
+

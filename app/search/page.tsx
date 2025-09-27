@@ -5,11 +5,10 @@ import { customFetch } from "@/lib/utils";
 export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: { q?: string; page?: string };
 }) {
-  const params = await searchParams;
-  const query = params.q || "";
-  const page = Number.parseInt(params.page || "1");
+  const query = searchParams.q || "";
+  const page = Number.parseInt(searchParams.page || "1");
   const limit = productLimit;
   let results = [];
   let totalCount = 0;

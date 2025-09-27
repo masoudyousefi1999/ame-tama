@@ -4,6 +4,7 @@ import CategoryPage from "@/components/category/category-page";
 import type { Metadata } from "next";
 import { getProductByCategorySlug } from "@/lib/products";
 import { productLimit } from "@/lib/product-limit";
+import CategorySchema from "@/components/seo/category-schema";
 
 // ✅ Use correct server function prop type
 type Props = {
@@ -23,23 +24,51 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  // ساخت URL کامل برای دسته‌بندی
+  const categoryUrl = `${baseUrl}/category/${slug.join("/")}`;
+
+  // ساخت breadcrumb path
+  const breadcrumbPath = slug.map((segment, index) => {
+    const path = slug.slice(0, index + 1).join("/");
+    return {
+      name: segment.replace(/-/g, " "),
+      path: `/category/${path}`,
+    };
+  });
+
   return {
     metadataBase: new URL(baseUrl),
-    title: `خرید فیگورهای انیمه ی ${category.name} | AME-TAMA`,
-    description: `خرید فیگور های انیمه ی ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
-    keywords: `فیگور انیمه, اکشن فیگور, ${category.name}, AME-TAMA, خرید فیگور`,
+    title: `خرید فیگورهای انیمه ${category.name} | AME-TAMA - فروشگاه اکشن فیگور`,
+    description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA. مجموعه کامل اکشن فیگورهای انیمه ای با تضمین اصالت`,
+    keywords: `فیگور انیمه, اکشن فیگور, ${category.name}, AME-TAMA, خرید فیگور, فیگور انیمه ای, مجسمه انیمه, کلکسیون انیمه`,
     openGraph: {
-      title: `خرید فیگورهای انیمه ی ${category.name} | AME-TAMA`,
-      description: `خرید فیگور های انیمه ی ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
+      title: `خرید فیگورهای انیمه ${category.name} | AME-TAMA`,
+      description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
       type: "website",
       images: [category.image],
-      url: `${baseUrl}/category/${category.slug}`,
+      url: categoryUrl,
+      locale: "fa_IR",
+      siteName: "AME-TAMA",
     },
     twitter: {
       card: "summary_large_image",
-      title: `خرید فیگورهای انیمه ی ${category.name} | AME-TAMA`,
-      description: `خرید فیگور های انیمه ی ${category.name} با بهترین قیمت و کیفیت`,
+      title: `خرید فیگورهای انیمه ${category.name} | AME-TAMA`,
+      description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت`,
       images: [category.image],
+    },
+    alternates: {
+      canonical: categoryUrl,
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-video-preview": -1,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+      },
     },
   };
 }
@@ -63,16 +92,32 @@ export default async function CategoryRoute(props: {
   );
   if (!Array.isArray(products)) notFound();
 
+  // ساخت breadcrumb path برای schema
+  const breadcrumbPath = params.slug.map((segment, index) => {
+    const path = params.slug.slice(0, index + 1).join("/");
+    return {
+      name: segment.replace(/-/g, " "),
+      path: `/category/${path}`,
+    };
+  });
+
   return (
-    <CategoryPage
-      category={category}
-      subcategories={category.children}
-      sort={"newest"}
-      filter={undefined}
-      page={page}
-      products={products}
-      totalCount={totalCount}
-      limit={limit}
-    />
+    <>
+      <CategorySchema
+        category={category}
+        products={products}
+        breadcrumbPath={breadcrumbPath}
+      />
+      <CategoryPage
+        category={category}
+        subcategories={category.children}
+        sort={"newest"}
+        filter={undefined}
+        page={page}
+        products={products}
+        totalCount={totalCount}
+        limit={limit}
+      />
+    </>
   );
 }

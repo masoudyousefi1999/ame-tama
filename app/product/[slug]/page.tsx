@@ -4,6 +4,7 @@ import { getProductBySlug } from "@/lib/products";
 import ProductPageClient from "@/components/product/product-page-client";
 import MetaTags from "@/components/seo/meta-tags";
 import ProductSchema from "@/components/seo/product-schema";
+import GoogleShoppingSchema from "@/components/seo/google-shopping-schema";
 import { formatPriceDivided } from "@/lib/format-price";
 
 export const revalidate = 300; // 5 minutes cache for product pages
@@ -40,11 +41,13 @@ export async function generateMetadata({
     availability = "limited";
 
   return {
-    title: `${product.name} | AME-TAMA`,
+    title: `خرید فیگور ${product.name} | AME-TAMA - فروشگاه اکشن فیگور`,
     description: `خرید اکشن فیگور ${product.name} با قیمت ${formatPriceDivided(
       product.price
-    )}`,
-    keywords: `فیگور انیمه, اکشن فیگور, ${product.name}, ${product.category.name}, AME-TAMA`,
+    )} در فروشگاه AME-TAMA. فیگور انیمه ${
+      product.category.name
+    } با کیفیت بالا و تضمین اصالت`,
+    keywords: `فیگور انیمه, اکشن فیگور, ${product.name}, ${product.category.name}, AME-TAMA, خرید فیگور, فیگور انیمه ای, مجسمه انیمه, کلکسیون انیمه`,
     openGraph: {
       title: `${product.name} | AME-TAMA`,
       description: `خرید اکشن فیگور ${
@@ -134,6 +137,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         condition="new"
       />
       <ProductSchema product={product} />
+      <GoogleShoppingSchema product={product} />
       <ProductPageClient product={product} />
     </>
   );
