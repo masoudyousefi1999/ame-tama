@@ -29,6 +29,8 @@ const ToastViewport = React.forwardRef<
       "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
       className
     )}
+    aria-live="polite"
+    aria-atomic="false"
     {...props}
   />
 ));
@@ -72,6 +74,8 @@ const Toast = React.forwardRef<
     <ToastPrimitives.Root
       ref={ref}
       className={cn(toastVariants({ variant }), className)}
+      role="alert"
+      aria-live="polite"
       {...props}
     />
   );
@@ -104,6 +108,7 @@ const ToastClose = React.forwardRef<
       className
     )}
     toast-close=""
+    aria-label="بستن اعلان"
     {...props}
   >
     <X className="h-4 w-4" />

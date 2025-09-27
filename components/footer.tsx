@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* ─────────────────── Brand / about ─────────────────── */}
           <div className="text-right">
-            <Link href="/" className="inline-block mb-6 group"  prefetch={false}>
+            <Link href="/" className="inline-block mb-6 group" prefetch={false}>
               <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">
                 AME-TAMA
               </span>
@@ -70,7 +70,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-muted-foreground transition-all duration-200 hover:text-primary hover:translate-x-1 block"
+                    className="text-muted-foreground transition-all duration-200 hover:text-primary hover:translate-x-1 block py-2 px-1 min-h-[44px] flex items-center"
                   >
                     {link.name}
                   </Link>
@@ -93,7 +93,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.href}
-                    className="text-muted-foreground transition-all duration-200 hover:text-primary hover:translate-x-1 block"
+                    className="text-muted-foreground transition-all duration-200 hover:text-primary hover:translate-x-1 block py-2 px-1 min-h-[44px] flex items-center"
                   >
                     {link.name}
                   </Link>

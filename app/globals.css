@@ -178,6 +178,74 @@ body {
 @tailwind components;
 @tailwind utilities;
 
+/* Performance optimizations */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Prevent layout shifts for decorative elements */
+.absolute {
+  contain: layout size style;
+}
+
+/* Optimize SVG rendering */
+svg {
+  shape-rendering: optimizeSpeed;
+  text-rendering: optimizeSpeed;
+}
+
+/* Prevent layout shifts during font loading */
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("/fonts/vazir.ttf") format("truetype");
+  font-display: swap;
+}
+
+/* Critical layout stability */
+.hero-section {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Prevent layout shifts for images */
+img {
+  height: auto;
+  max-width: 100%;
+}
+
+/* Optimize container queries */
+.container {
+  contain: layout;
+}
+
+/* Prevent layout shifts for dynamic content */
+.dynamic-content {
+  min-height: 1px;
+  contain: layout;
+}
+
 @layer base {
   :root {
     --background: 230 25% 10%;
@@ -309,11 +377,6 @@ body {
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite linear;
-  background-size: 1000px 100%;
 }
 
 .animate-fade-in-up {
@@ -448,26 +511,6 @@ body {
     right: 0;
     left: auto;
   }
-}
-
-.persian-nums {
-  font-feature-settings: "tnum" 1;
-}
-
-.persian-text {
-  line-height: 1.8;
-  text-align: justify;
-  text-justify: inter-word;
-}
-
-.rtl-fix {
-  direction: rtl;
-  text-align: right;
-}
-
-.animate-shimmer {
-  animation: shimmer 2s infinite linear;
-  background-size: 1000px 100%;
 }
 
 /* Custom scrollbar for the whole app */

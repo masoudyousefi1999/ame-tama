@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
   try {
     const meRes = await fetch("https://api.ame-tama.com/auth/me", {
       method: "GET",
-      credentials: "include",
+      credentials: "same-origin", // Use same-origin instead of include to avoid third-party cookies
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
@@ -68,7 +68,7 @@ export async function middleware(request: NextRequest) {
     try {
       const adminRes = await fetch("https://api.ame-tama.com/auth/is-admin", {
         method: "POST",
-        credentials: "include",
+        credentials: "same-origin", // Use same-origin instead of include to avoid third-party cookies
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,

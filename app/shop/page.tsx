@@ -66,6 +66,32 @@ export default async function ShopPage({
       <link rel="preconnect" href="https://ame-tama.storage.c2.liara.space" />
       <link rel="dns-prefetch" href="https://ame-tama.storage.c2.liara.space" />
 
+      {/* Add timeout and retry configuration */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            // Add image retry logic
+            window.addEventListener('load', function() {
+              const images = document.querySelectorAll('img[src*="ame-tama.storage.c2.liara.space"]');
+              images.forEach(img => {
+                let retryCount = 0;
+                const maxRetries = 2;
+                
+                img.addEventListener('error', function() {
+                  if (retryCount < maxRetries) {
+                    retryCount++;
+                    console.log('Retrying image load:', img.src);
+                    setTimeout(() => {
+                      img.src = img.src + '?retry=' + retryCount;
+                    }, 1000 * retryCount);
+                  }
+                });
+              });
+            });
+          `,
+        }}
+      />
+
       {firstProductImage && (
         <link
           rel="preload"

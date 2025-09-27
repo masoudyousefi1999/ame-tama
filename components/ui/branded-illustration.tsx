@@ -29,9 +29,24 @@ export function BrandedIllustration({
   if (variant === "hero") {
     return (
       <div className={cn(baseClasses, "inset-0", className)}>
-        {/* Simplified anime character silhouettes */}
-        <div className="absolute top-10 left-10 w-32 h-32">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
+        {/* Simplified anime character silhouettes with fixed dimensions to prevent CLS */}
+        <div
+          className="absolute top-10 left-10 w-32 h-32"
+          style={{
+            contain: "layout size style paint",
+            willChange: "auto",
+            transform: "translate3d(0, 0, 0)",
+            backfaceVisibility: "hidden",
+            perspective: "1000px",
+            position: "fixed",
+            zIndex: -1,
+          }}
+        >
+          <svg
+            viewBox="0 0 100 100"
+            className="w-full h-full"
+            style={{ display: "block" }}
+          >
             <path
               d="M50 20c-8 0-15 7-15 15s7 15 15 15 15-7 15-15-7-15-15-15zm0 25c-5 0-10-5-10-10s5-10 10-10 10 5 10 10-5 10-10 10z"
               fill="currentColor"
@@ -45,8 +60,23 @@ export function BrandedIllustration({
           </svg>
         </div>
 
-        <div className="absolute top-20 right-20 w-24 h-24">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
+        <div
+          className="absolute top-20 right-20 w-24 h-24"
+          style={{
+            contain: "layout size style paint",
+            willChange: "auto",
+            transform: "translate3d(0, 0, 0)",
+            backfaceVisibility: "hidden",
+            perspective: "1000px",
+            position: "fixed",
+            zIndex: -1,
+          }}
+        >
+          <svg
+            viewBox="0 0 100 100"
+            className="w-full h-full"
+            style={{ display: "block" }}
+          >
             <circle
               cx="50"
               cy="50"

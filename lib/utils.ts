@@ -35,7 +35,7 @@ export async function customFetch(
   }
 
   return fetch(url, {
-    credentials: "include",
+    credentials: "same-origin", // Use same-origin instead of include to avoid third-party cookies
     ...init,
     headers,
     // Ensure Next.js caching options pass through

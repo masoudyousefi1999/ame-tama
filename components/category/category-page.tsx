@@ -228,10 +228,15 @@ export default function CategoryPage({
 
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
+            <label htmlFor="mobile-sort" className="sr-only">
+              مرتب‌سازی
+            </label>
             <select
+              id="mobile-sort"
               value={sort}
               onChange={(e) => handleSortChange(e.target.value)}
               className="text-sm text-foreground bg-transparent border-none focus:ring-0"
+              aria-label="مرتب‌سازی محصولات"
             >
               <option value="newest">جدیدترین</option>
               <option value="price-asc">قیمت: کم به زیاد</option>
@@ -246,10 +251,15 @@ export default function CategoryPage({
           <div className="mb-6 hidden justify-end lg:flex">
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">مرتب‌سازی:</span>
+              <label htmlFor="desktop-sort" className="sr-only">
+                مرتب‌سازی
+              </label>
               <select
+                id="desktop-sort"
                 value={sort}
                 onChange={(e) => handleSortChange(e.target.value)}
                 className="text-sm text-foreground bg-transparent border-none focus:ring-0"
+                aria-label="مرتب‌سازی محصولات"
               >
                 <option value="newest">جدیدترین</option>
                 <option value="price-asc">قیمت: کم به زیاد</option>

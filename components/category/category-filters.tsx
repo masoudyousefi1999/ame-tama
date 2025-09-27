@@ -80,7 +80,7 @@ export default function CategoryFilters({
               <Link
                 key={subcat.id}
                 href={`/category/${subcat.slug}`}
-                className="block rounded-lg bg-muted p-2 text-sm transition-colors hover:bg-muted/80"
+                className="block rounded-lg bg-muted p-3 text-sm transition-colors hover:bg-muted/80 min-h-[44px] flex items-center"
                 prefetch={false}
               >
                 {subcat.name}

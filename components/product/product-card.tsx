@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
-import Image from "next/image";
 import Link from "next/link";
+import { OptimizedImage } from "@/components/ui/optimized-image";
 import { ShoppingCart, Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -183,10 +183,10 @@ export function ProductCard({
         >
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
-            <Image
+            <OptimizedImage
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
-              quality={isMobile ? 60 : 75}
+              quality={isMobile ? 30 : 40}
               width={600}
               height={600}
               loading={eagerLoad ? "eager" : "lazy"}
@@ -194,23 +194,26 @@ export function ProductCard({
               fetchPriority={eagerLoad ? "high" : "auto"}
               sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
               className={cn(
-                "object-cover w-full h-full transition-opacity duration-500 ease-out",
+                "object-cover w-full h-full",
                 // Subtle hover without extra scale/brightness to avoid repaints
-                !isMobile && hovered && "opacity-95",
-                imageLoaded ? "opacity-100" : "opacity-0"
+                !isMobile && hovered && "opacity-95"
               )}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxAPwCdABmX/9k="
             />
-            {!imageLoaded && !imageError && (
-              <div className="absolute inset-0 bg-muted animate-pulse" />
-            )}
 
             {/* علاقه‌مندی */}
             {showAddToWishlist && (
               <button
                 onClick={handleWishlistToggle}
                 className="absolute top-2 left-2 z-20 flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-primary/80 text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow transition-all duration-300"
+                aria-label={
+                  isInWishlist(product.uuid)
+                    ? `حذف ${product.name} از علاقه‌مندی‌ها`
+                    : `افزودن ${product.name} به علاقه‌مندی‌ها`
+                }
               >
                 <Heart className="h-4 w-4 md:h-5 md:w-5" />
               </button>
@@ -224,10 +227,7 @@ export function ProductCard({
                 </Badge>
               )}
               {product.quantity > 0 && product.quantity < 3 && (
-                <Badge
-                  variant="secondary"
-                  className="text-xs shadow-md bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-950/50 transition-colors"
-                >
+                <Badge variant="warning" className="text-xs shadow-md">
                   ⚡ تنها {product.quantity} عدد باقی مانده
                 </Badge>
               )}

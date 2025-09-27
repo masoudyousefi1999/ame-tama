@@ -98,14 +98,73 @@ export default function RootLayout({
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        {/* Resource hints for better performance */}
+        <link rel="preconnect" href="https://ame-tama.storage.c2.liara.space" />
+        <link rel="dns-prefetch" href="https://api.ame-tama.com" />
+        <link
+          rel="preload"
+          href="/luffy-naruto.webp"
+          as="image"
+          type="image/webp"
+        />
+        {/* Critical resource hints */}
+        <link rel="preload" href="/placeholder.svg" as="image" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        {/* Additional performance hints */}
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://www.clarity.ms" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        {/* Performance optimization */}
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="theme-color" content="#1e1b4b" />
+        {/* Font optimization */}
+        <link
+          rel="preload"
+          href="/fonts/vazir.ttf"
+          as="font"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        {/* Critical CSS for LCP */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+            .hero-section {
+              min-height: 100vh;
+              min-height: 100dvh;
+              background-image: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #1e3a8a 100%);
+            }
+            .hero-section img {
+              object-fit: cover;
+              object-position: center;
+            }
+          `,
+          }}
+        />
         {process.env.NODE_ENV === "production" && (
-          <Script id="ms-clarity" strategy="afterInteractive">
-            {`(function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "sy8ocvwyz3");`}
-          </Script>
+          <>
+            <Script id="ms-clarity" strategy="afterInteractive">
+              {`(function(c,l,a,r,i,t,y){
+                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+              })(window, document, "clarity", "script", "sy8ocvwyz3");`}
+            </Script>
+            {/* Google Analytics */}
+            <Script
+              src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"
+              strategy="afterInteractive"
+            />
+            <Script id="google-analytics" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'GA_MEASUREMENT_ID');
+              `}
+            </Script>
+          </>
         )}
       </head>
       <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>

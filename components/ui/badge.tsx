@@ -14,7 +14,13 @@ const badgeVariants = cva(
           "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
           "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
+        outline: "text-foreground border-border",
+        // اضافه کردن variant های جدید برای بهبود contrast
+        success:
+          "border-transparent bg-green-600 text-white hover:bg-green-700",
+        warning:
+          "border-transparent bg-amber-700 text-white hover:bg-amber-800",
+        info: "border-transparent bg-blue-600 text-white hover:bg-blue-700",
       },
     },
     defaultVariants: {

@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   Menu,
   X,
-  Moon,
-  Sun,
   ChevronDown,
   ChevronRight,
   Home,
@@ -225,7 +223,6 @@ export default function Navbar() {
   return (
     <header
       ref={parentRef}
-      role="navigation"
       className={cn(
         "fixed inset-x-0 top-0 z-50 transition-all duration-300 backdrop-blur-md",
         isScrolled
@@ -242,7 +239,11 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center space-x-6">
+        <nav
+          className="hidden lg:flex items-center space-x-6"
+          role="navigation"
+          aria-label="منوی اصلی"
+        >
           <Link
             href="/"
             className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
@@ -556,6 +557,7 @@ export default function Navbar() {
                         prefetch={false}
                         onClick={() => setIsOpen(false)}
                         className="block p-2 bg-card rounded-lg text-sm hover:bg-muted transition-colors flex-1 text-foreground"
+                        aria-label="جستجو در منو"
                       >
                         {c.name}
                       </Link>
@@ -565,6 +567,7 @@ export default function Navbar() {
                             handleMobileCategoryClick(c.id, c.name, c.slug)
                           }
                           className="p-2 ml-1 bg-card rounded-lg hover:bg-muted transition-colors"
+                          aria-label="نمایش زیردسته‌ها"
                         >
                           <ChevronLeft className="h-4 w-4 text-foreground" />
                         </button>

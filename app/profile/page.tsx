@@ -208,6 +208,7 @@ export default function ProfilePage() {
                       key={l.href}
                       href={l.href}
                       className="flex items-center p-2 rounded-lg hover:bg-muted transition-colors"
+                      aria-label="تنظیمات پروفایل"
                       prefetch={false}
                     >
                       <l.icon className="h-4 w-4 ml-2" />
@@ -218,6 +219,7 @@ export default function ProfilePage() {
                   <button
                     onClick={logout}
                     className="flex items-center w-full text-right p-2 rounded-lg hover:bg-muted transition-colors text-destructive"
+                    aria-label="خروج از حساب کاربری"
                   >
                     <LogOut className="h-4 w-4 ml-2" />
                     خروج از حساب کاربری

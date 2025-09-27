@@ -24,7 +24,7 @@ export default function ProductBreadcrumb({
           <Link
             href="/"
             prefetch={false}
-            className="transition-colors text-muted-foreground hover:text-primary"
+            className="transition-colors text-muted-foreground hover:text-primary py-2 px-1 min-h-[44px] flex items-center"
           >
             <Home className="h-4 w-4" />
             <span className="sr-only">خانه</span>
@@ -40,7 +40,7 @@ export default function ProductBreadcrumb({
           <Link
             href={`/category/${category.slug}`}
             prefetch={false}
-            className="  transition-colors text-muted-foreground hover:text-primary"
+            className="transition-colors text-muted-foreground hover:text-primary py-2 px-1 min-h-[44px] flex items-center"
           >
             {category.name}
           </Link>

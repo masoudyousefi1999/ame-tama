@@ -15,7 +15,6 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
 import { useToast } from "@/components/ui/use-toast";
-import { ToastAction } from "@/components/ui/toast";
 import { useRouter } from "next/navigation";
 import { useWishlist } from "@/context/wishlist-context";
 import { IProductType } from "@/lib/products";
@@ -211,6 +210,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             className="h-10 w-10 rounded-full"
             onClick={decreaseQuantity}
             disabled={quantity <= 1}
+            aria-label="کاهش تعداد"
           >
             <Minus className="h-4 w-4" />
           </Button>
@@ -224,6 +224,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             size="icon"
             className="h-10 w-10 rounded-full"
             onClick={increaseQuantity}
+            aria-label="افزایش تعداد"
           >
             <Plus className="h-4 w-4" />
           </Button>
@@ -264,6 +265,11 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               ? removeFromWishlist(product.uuid)
               : addToWishlist(product)
           }
+          aria-label={
+            isInWishlist(product.uuid)
+              ? `حذف ${product.name} از علاقه‌مندی‌ها`
+              : `افزودن ${product.name} به علاقه‌مندی‌ها`
+          }
         >
           <Heart
             className={cn(
@@ -284,6 +290,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               title: "لینک با موفقیت کپی شد",
             });
           }}
+          aria-label="اشتراک‌گذاری محصول"
         >
           <Share2 className="h-5 w-5" />
         </Button>

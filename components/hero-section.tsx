@@ -34,7 +34,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative flex h-[calc(var(--vh)*100)] w-full items-center justify-center overflow-hidden">
+    <section className="hero-section relative flex h-[calc(var(--vh)*100)] w-full items-center justify-center overflow-hidden">
       <div className="absolute inset-0 -z-100">
         <Image
           src="/luffy-naruto.webp"
@@ -42,14 +42,16 @@ export default function HeroSection() {
           fill
           priority
           loading="eager"
+          fetchPriority="high"
           sizes="100vw"
-          quality={isMobile ? 75 : 85}
+          quality={isMobile ? 30 : 40}
           style={{
             objectFit: "cover",
             objectPosition: "center",
-            background: "#22223b",
+            backgroundColor: "#22223b",
           }}
-          placeholder="empty"
+          placeholder="blur"
+          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
         />
         {/* Optimized fallback background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 opacity-60" />

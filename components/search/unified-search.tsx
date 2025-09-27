@@ -209,6 +209,7 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
         <button
           onClick={handleSearchClick}
           className="p-2 rounded-lg hover:bg-muted transition-colors"
+          aria-label="جستجو"
           type="button"
         >
           <Search className="h-5 w-5 text-muted-foreground" />

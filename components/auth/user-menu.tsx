@@ -67,6 +67,7 @@ export default function UserMenu() {
           size="sm"
           onClick={openLoginModal}
           className="hidden md:flex"
+          aria-label="ورود / ثبت‌نام"
         >
           <User className="h-5 w-5" />
         </Button>
@@ -157,8 +158,8 @@ export default function UserMenu() {
           </div>
         </div>
         <div className="my-2 border-t border-gray-700/60" />
-        <ul className="py-1" role="none">
-          <li>
+        <ul className="py-1" role="menu" aria-label="منوی کاربری">
+          <li role="none">
             <Link
               href="/profile"
               className="flex items-center px-4 py-2 text-sm text-white hover:bg-indigo-800/40 rounded-xl transition-colors duration-150 cursor-pointer"
@@ -169,7 +170,7 @@ export default function UserMenu() {
               پروفایل من
             </Link>
           </li>
-          <li>
+          <li role="none">
             <Link
               href="/profile/orders"
               className="flex items-center px-4 py-2 text-sm text-white hover:bg-indigo-800/40 rounded-xl transition-colors duration-150 cursor-pointer"
@@ -180,7 +181,7 @@ export default function UserMenu() {
               سفارش‌های من
             </Link>
           </li>
-          <li>
+          <li role="none">
             <Link
               href="/profile/wishlist"
               className="flex items-center px-4 py-2 text-sm text-white hover:bg-indigo-800/40 rounded-xl transition-colors duration-150 cursor-pointer"
@@ -191,7 +192,7 @@ export default function UserMenu() {
               علاقه‌مندی‌ها
             </Link>
           </li>
-          <li>
+          <li role="none">
             <Link
               href="/profile/settings"
               className="flex items-center px-4 py-2 text-sm text-white hover:bg-indigo-800/40 rounded-xl transition-colors duration-150 cursor-pointer"
@@ -208,6 +209,7 @@ export default function UserMenu() {
           onClick={handleLogout}
           className="flex items-center w-full px-4 py-2 text-sm text-red-400 hover:bg-red-900/30 rounded-xl transition-colors duration-150 cursor-pointer"
           role="menuitem"
+          aria-label="خروج از حساب کاربری"
         >
           <LogOut className="ml-2 h-4 w-4 text-red-300" />
           خروج از حساب کاربری

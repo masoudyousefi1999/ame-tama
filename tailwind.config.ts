@@ -98,12 +98,7 @@ const config: Config = {
   plugins: [
     require("tailwindcss-animate"),
     ({ addUtilities }: any) => {
-      addUtilities({
-        ".focus-ring": {
-          "@apply outline-none ring-2 ring-offset-2 ring-primary": {},
-        },
-        ".text-balance": { "text-wrap": "balance" },
-      });
+      addUtilities({});
     },
   ],
 };

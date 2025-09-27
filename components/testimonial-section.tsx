@@ -136,9 +136,9 @@ export default function TestimonialSection() {
                     />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground">
+                    <h3 className="font-semibold text-foreground">
                       {testimonial.name}
-                    </h4>
+                    </h3>
                     <p className="text-sm text-muted-foreground">
                       {testimonial.role}
                     </p>
@@ -181,9 +181,9 @@ export default function TestimonialSection() {
                   onClick={() => setCurrentIndex(index)}
                   aria-label={`رفتن به نظر ${index + 1}`}
                   className={cn(
-                    "h-2 w-2 rounded-full transition-all duration-300",
+                    "h-4 w-4 rounded-full transition-all duration-300 min-w-[44px] min-h-[44px] p-2",
                     index === currentIndex
-                      ? "bg-primary w-6"
+                      ? "bg-primary w-10"
                       : "bg-muted-foreground/40"
                   )}
                 />

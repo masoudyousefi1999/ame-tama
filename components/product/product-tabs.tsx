@@ -20,9 +20,9 @@ export default function ProductTabs({ product }: ProductTabsProps) {
       {/* -------- توضیحات -------- */}
       <TabsContent value="description" className="mt-4">
         <div className="rounded-2xl p-6 shadow-sm bg-background">
-          <h3 className="mb-6 text-2xl font-bold text-foreground">
+          <h2 className="mb-6 text-2xl font-bold text-foreground">
             درباره این محصول
-          </h3>
+          </h2>
 
           {product?.detail?.description ? (
             <div className="rounded-xl p-5 shadow-sm border bg-muted">
