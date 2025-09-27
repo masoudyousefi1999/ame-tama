@@ -12,14 +12,32 @@ import { getAllProducts } from "@/lib/products";
 export const revalidate = 300; // 5 minutes cache for homepage
 
 export default async function Home() {
-  const [allCategories, productsResult] = await Promise.all([
-    getAllCategories({
-      next: { revalidate: 600, tags: ["categories"] }, // 10 minutes cache
-    }),
-    getAllProducts(1, 8, {
-      next: { revalidate: 300, tags: ["products", "homepage"] }, // 5 minutes cache
-    }),
-  ]);
+  let allCategories: any[] = [];
+  let productsResult: any = { products: [] };
+  
+  // Skip API calls during build time if API is not available
+  const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL;
+  
+  if (!isBuildTime) {
+    try {
+      const [categoriesData, productsData] = await Promise.all([
+        getAllCategories({
+          next: { revalidate: 600, tags: ["categories"] }, // 10 minutes cache
+        }),
+        getAllProducts(1, 8, {
+          next: { revalidate: 300, tags: ["products", "homepage"] }, // 5 minutes cache
+        }),
+      ]);
+      
+      allCategories = categoriesData || [];
+      productsResult = productsData || { products: [] };
+    } catch (error) {
+      console.warn("Failed to fetch data for homepage:", error);
+      // Use empty arrays as fallback
+    }
+  } else {
+    console.log("Skipping API calls during build time");
+  }
 
   const categories = allCategories?.[0]?.children ?? [];
   const products = productsResult.products || [];

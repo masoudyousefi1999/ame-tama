@@ -5,6 +5,9 @@ import type { MetadataRoute } from "next";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ame-tama.com";
+    
+    // Skip API calls during build time if API is not available
+    const isBuildTime = process.env.NODE_ENV === 'production' && !process.env.VERCEL_URL;
 
     // صفحات استاتیک
     const staticPages = [
@@ -23,19 +26,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: route === "" ? 1 : 0.8,
     }));
 
-    // صفحات محصولات - دریافت همه محصولات
+    // صفحات محصولات - دریافت همه محصولات با error handling
     let allProducts: any[] = [];
-    let page = 1;
-    const limit = 50; // افزایش تعداد محصولات در هر صفحه
+    
+    if (!isBuildTime) {
+      let page = 1;
+      const limit = 50; // افزایش تعداد محصولات در هر صفحه
 
-    while (true) {
-      const productItems = await getAllProducts(page, limit);
-      if (productItems.products.length === 0) break;
-      allProducts = [...allProducts, ...productItems.products];
-      page++;
+      try {
+        while (true) {
+          const productItems = await getAllProducts(page, limit);
+          if (!productItems || !productItems.products || productItems.products.length === 0) break;
+          allProducts = [...allProducts, ...productItems.products];
+          page++;
 
-      // محدود کردن تعداد صفحات برای جلوگیری از حلقه بی‌نهایت
-      if (page > 20) break;
+          // محدود کردن تعداد صفحات برای جلوگیری از حلقه بی‌نهایت
+          if (page > 20) break;
+        }
+      } catch (error) {
+        console.warn("Failed to fetch products for sitemap:", error);
+        // Continue with empty products array
+      }
+    } else {
+      console.log("Skipping product fetch during build time");
     }
 
     const productPages = allProducts.map((product) => ({
@@ -45,11 +58,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9, // افزایش اولویت صفحات محصولات
     }));
 
-    // صفحات دسته‌بندی
-    const categories = await getAllCategories();
-
-    const rootCategories: any[] = [];
-    categories.forEach((item) => rootCategories.push(...item.children));
+    // صفحات دسته‌بندی با error handling
+    let categories: any[] = [];
+    let rootCategories: any[] = [];
+    
+    if (!isBuildTime) {
+      try {
+        categories = await getAllCategories();
+        if (categories && categories.length > 0) {
+          categories.forEach((item) => {
+            if (item.children && item.children.length > 0) {
+              rootCategories.push(...item.children);
+            }
+          });
+        }
+      } catch (error) {
+        console.warn("Failed to fetch categories for sitemap:", error);
+        // Continue with empty categories array
+      }
+    } else {
+      console.log("Skipping category fetch during build time");
+    }
 
     // صفحات دسته‌بندی با ساختار عمیق مثل AnimeTools.ir
     const categoryPages = rootCategories.map((category) => ({
