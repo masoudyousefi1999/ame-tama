@@ -205,11 +205,6 @@ body {
   }
 }
 
-/* Prevent layout shifts for decorative elements */
-.absolute {
-  contain: layout size style;
-}
-
 /* Optimize SVG rendering */
 svg {
   shape-rendering: optimizeSpeed;

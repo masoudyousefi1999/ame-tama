@@ -2,8 +2,10 @@
 
 import { memo, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useImagePreload } from "@/components/ui/smart-preload";
 
 interface Category {
   id: string;
@@ -21,6 +23,9 @@ interface CategoryShowcaseProps {
 const CategoryCard = memo(({ category }: { category: Category }) => {
   const isMobile = useIsMobile();
 
+  // Preload category image when component mounts
+  useImagePreload(category.image || "", !!category.image, 200);
+
   return (
     <Link
       href={`/category/${category.slug}`}
@@ -35,13 +40,22 @@ const CategoryCard = memo(({ category }: { category: Category }) => {
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20" />
-        {category.image && (
-          <img
+        {category.image ? (
+          <Image
             src={category.image}
             alt={category.name}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
+            quality={85}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
           />
+        ) : (
+          <div className="h-full w-full bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center">
+            <span className="text-4xl opacity-50">📦</span>
+          </div>
         )}
         <div className="absolute inset-0 bg-black/40" />
       </div>

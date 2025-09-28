@@ -1,4 +1,5 @@
 import { customFetch } from "@/lib/utils";
+import { handleApiError, shouldLogError } from "@/lib/error-handler";
 
 export async function getMe() {
   try {
@@ -10,6 +11,14 @@ export async function getMe() {
     });
 
     if (!res.ok) {
+      // Handle expected errors silently
+      const error = handleApiError({
+        status: res.status,
+        message: res.statusText,
+      });
+      if (shouldLogError(error)) {
+        console.error("Unexpected error in getMe:", error);
+      }
       return null;
     }
 
@@ -20,6 +29,11 @@ export async function getMe() {
 
     return null;
   } catch (error) {
+    // Handle network errors silently
+    const apiError = handleApiError(error);
+    if (shouldLogError(apiError)) {
+      console.error("Unexpected error in getMe:", apiError);
+    }
     return null;
   }
 }

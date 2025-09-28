@@ -5,9 +5,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useImagePreload } from "./ui/smart-preload";
 
 export default function HeroSection() {
   const isMobile = useIsMobile();
+
+  // Preload hero image only when component mounts (not in layout)
+  useImagePreload("/luffy-naruto.webp", true, 0);
 
   // Optimized VH update with throttling
   const updateVH = useCallback(() => {

@@ -13,6 +13,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { toast } from "@/components/ui/use-toast";
 
 // تعریف نوع محصول در سبد خرید
 export interface CartItem {
@@ -39,6 +40,8 @@ interface CartContextType {
   total: number;
   applyDiscount: (code: string) => boolean;
   recentlyAdded: string | null;
+  isLoading: boolean;
+  isInitialized: boolean;
 }
 
 // ایجاد context با مقدار پیش‌فرض
@@ -53,6 +56,8 @@ const CartContext = createContext<CartContextType>({
   total: 0,
   applyDiscount: () => false,
   recentlyAdded: null,
+  isLoading: false,
+  isInitialized: false,
 });
 
 // کدهای تخفیف معتبر (در یک پروژه واقعی، این داده‌ها از سرور دریافت می‌شوند)
@@ -67,27 +72,59 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [discount, setDiscount] = useState<number>(0);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [recentlyAdded, setRecentlyAdded] = useState<string | null>(null);
 
   // بارگذاری سبد خرید از localStorage در هنگام اولین رندر
   useEffect(() => {
-    let userCart;
+    let isMounted = true;
+
     const getOrder = async () => {
-      userCart = await getUserOrder();
-      setItems(userCart?.items || []);
+      try {
+        setIsLoading(true);
+        // Check localStorage first for immediate UI feedback
+        const cachedCart = localStorage.getItem("ame-tama-cart");
+        if (cachedCart && isMounted) {
+          try {
+            const parsedCart = JSON.parse(cachedCart);
+            setItems(parsedCart.items || []);
+            setDiscount(parsedCart.discount || 0);
+          } catch (error) {
+            // Silent error handling for localStorage parsing issues
+            localStorage.removeItem("ame-tama-cart");
+          }
+        }
+
+        // Then fetch fresh data from server
+        const userCart = await getUserOrder();
+        if (isMounted) {
+          const cartData = {
+            items: userCart?.items || [],
+            discount: 0,
+          };
+          setItems(cartData.items);
+          setDiscount(cartData.discount);
+          localStorage.setItem("ame-tama-cart", JSON.stringify(cartData));
+          setIsInitialized(true);
+        }
+      } catch (error) {
+        // Silent error handling - 401/403 are expected for unauthenticated users
+        if (isMounted) {
+          setItems([]);
+          setIsInitialized(true);
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     };
+
     getOrder();
 
-    // if (storedDiscount) {
-    //   try {
-    //     setDiscount(JSON.parse(storedDiscount));
-    //   } catch (error) {
-    //     console.error("Error parsing discount from localStorage:", error);
-    //     setDiscount(0);
-    //   }
-    // }
-
-    setIsInitialized(true);
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -122,22 +159,64 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   // افزودن محصول به سبد خرید
   const addItem = async (productUuid: string, quantity: number) => {
-    await increaseOrderItem({
-      productId: productUuid,
-      quantity,
-    });
-    const updatedCart = await getUserOrder();
-    setItems(updatedCart?.items || []);
-    setRecentlyAdded(productUuid);
+    try {
+      setIsLoading(true);
+      await increaseOrderItem({
+        productId: productUuid,
+        quantity,
+      });
+      const updatedCart = await getUserOrder();
+      const newItems = updatedCart?.items || [];
+      setItems(newItems);
+      setRecentlyAdded(productUuid);
+
+      // Update localStorage
+      const cartData = {
+        items: newItems,
+        discount,
+      };
+      localStorage.setItem("ame-tama-cart", JSON.stringify(cartData));
+    } catch (error) {
+      // Silent error handling - show user-friendly error via toast instead
+      toast({
+        variant: "error",
+        title: "خطا در افزودن محصول",
+        description: "مشکلی در افزودن محصول به سبد خرید رخ داد.",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const decreaseItem = async (productUuid: string, quantity: number) => {
-    await decreaseOrderItem({
-      productId: productUuid,
-      quantity,
-    });
-    const updatedCart = await getUserOrder();
-    setItems(updatedCart?.items || []);
+    try {
+      setIsLoading(true);
+      await decreaseOrderItem({
+        productId: productUuid,
+        quantity,
+      });
+      const updatedCart = await getUserOrder();
+      const newItems = updatedCart?.items || [];
+      setItems(newItems);
+
+      // Update localStorage
+      const cartData = {
+        items: newItems,
+        discount,
+      };
+      localStorage.setItem("ame-tama-cart", JSON.stringify(cartData));
+    } catch (error) {
+      // Silent error handling - show user-friendly error via toast instead
+      toast({
+        variant: "error",
+        title: "خطا در به‌روزرسانی سبد خرید",
+        description: "مشکلی در به‌روزرسانی تعداد محصول رخ داد.",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // به‌روزرسانی تعداد محصول در سبد خرید
@@ -157,6 +236,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCart = () => {
     setItems([]);
     setDiscount(0);
+    localStorage.removeItem("ame-tama-cart");
   };
 
   // اعمال کد تخفیف
@@ -186,6 +266,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         total,
         applyDiscount,
         recentlyAdded,
+        isLoading,
+        isInitialized,
       }}
     >
       {children}

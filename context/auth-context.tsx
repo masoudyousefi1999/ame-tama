@@ -55,25 +55,55 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialized, setIsInitialized] = useState(false);
   const { clearCart } = useCart();
 
   useEffect(() => {
+    let isMounted = true;
+
     const getUser = async () => {
       try {
+        // Check localStorage first for immediate UI feedback
+        const cachedUser = localStorage.getItem("ame-tama-user");
+        if (cachedUser && isMounted) {
+          try {
+            const parsedUser = JSON.parse(cachedUser);
+            setUser(parsedUser);
+            setIsLoading(false);
+          } catch (error) {
+            // Silent error handling for localStorage parsing issues
+            localStorage.removeItem("ame-tama-user");
+          }
+        }
+
+        // Then fetch fresh data from server
         const user = await getMe();
-        if (user && !user?.statusCode) {
-          setUser(user);
-        } else {
-          setUser(null);
+        if (isMounted) {
+          if (user && !user?.statusCode) {
+            setUser(user);
+            localStorage.setItem("ame-tama-user", JSON.stringify(user));
+          } else {
+            setUser(null);
+            localStorage.removeItem("ame-tama-user");
+          }
+          setIsLoading(false);
+          setIsInitialized(true);
         }
       } catch (error) {
-        console.error("Error fetching user:", error);
-        setUser(null);
-      } finally {
-        setIsLoading(false);
+        // Silent error handling - 401/403 are expected for unauthenticated users
+        if (isMounted) {
+          setUser(null);
+          setIsLoading(false);
+          setIsInitialized(true);
+        }
       }
     };
+
     getUser();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // ورود کاربر با OTP

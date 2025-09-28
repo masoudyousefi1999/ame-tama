@@ -11,9 +11,10 @@ import { useLoginModal } from "@/context/login-modal-context";
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function UserMenu() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading } = useAuth();
   const { clearCart } = useCart();
   const { isLoginModalOpen, openLoginModal, closeLoginModal } = useLoginModal();
   const [isOpen, setIsOpen] = useState(false);
@@ -58,6 +59,14 @@ export default function UserMenu() {
   const handleLoginSuccess = () => {
     // Auth context will update and this component will re-render
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center">
+        <LoadingSpinner size="sm" />
+      </div>
+    );
+  }
 
   if (!user) {
     return (

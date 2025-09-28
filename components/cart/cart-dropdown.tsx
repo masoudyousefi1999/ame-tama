@@ -10,12 +10,20 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
 import { formatPriceDivided } from "@/lib/format-price";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export default function CartDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { items, itemCount, subtotal, updateQuantity, recentlyAdded } =
-    useCart();
+  const {
+    items,
+    itemCount,
+    subtotal,
+    updateQuantity,
+    recentlyAdded,
+    isLoading,
+    isInitialized,
+  } = useCart();
 
   // Close the dropdown when clicking outside of it
   useEffect(() => {
@@ -70,7 +78,7 @@ export default function CartDropdown() {
   };
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <div ref={dropdownRef} className="relative overflow-visible">
       {/* cart trigger */}
       <Button
         variant="ghost"
@@ -102,7 +110,7 @@ export default function CartDropdown() {
         id="cart-dropdown"
         className={cn(
           // Responsive RTL: open from right, wide and comfortable
-          "absolute left-0 right-auto mt-2 sm:w-96 md:w-[28rem] sm:max-w-lg min-w-[20rem] rounded-2xl shadow-2xl z-50 overflow-hidden transition-all duration-300 origin-top px-2 sm:px-0",
+          "absolute left-0 right-auto top-full mt-2 sm:w-96 md:w-[28rem] sm:max-w-lg min-w-[20rem] rounded-2xl shadow-2xl z-[70] overflow-hidden transition-all duration-300 origin-top px-2 sm:px-0",
           // Visually appealing background
           "bg-gradient-to-br from-gray-900/90 via-slate-900/80 to-indigo-900/90 backdrop-blur-xl border border-gray-700/60",
           // Add animated overlays for anime/dark theme
@@ -132,7 +140,14 @@ export default function CartDropdown() {
 
         {/* content */}
         <div className="max-h-80 overflow-y-auto p-4">
-          {items?.length === 0 ? (
+          {!isInitialized || isLoading ? (
+            <div className="py-8 text-center">
+              <LoadingSpinner size="lg" className="mx-auto mb-3" />
+              <p className="text-muted-foreground">
+                در حال بارگذاری سبد خرید...
+              </p>
+            </div>
+          ) : items?.length === 0 ? (
             <div className="py-8 text-center">
               <ShoppingBag className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
               <p className="text-muted-foreground">سبد خرید شما خالی است</p>
@@ -182,7 +197,7 @@ export default function CartDropdown() {
                       <div className="mt-1 flex items-center">
                         <motion.button
                           whileTap={{ scale: 0.9 }}
-                          disabled={item.quantity <= 1}
+                          disabled={item.quantity <= 1 || isLoading}
                           onClick={() =>
                             handleQuantityUpdate(
                               item.product.uuid,
@@ -191,9 +206,13 @@ export default function CartDropdown() {
                             )
                           }
                           aria-label="کاهش تعداد"
-                          className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground"
+                          className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
                         >
-                          <Minus className="h-3 w-3" />
+                          {isLoading ? (
+                            <LoadingSpinner size="sm" />
+                          ) : (
+                            <Minus className="h-3 w-3" />
+                          )}
                         </motion.button>
 
                         <motion.span
@@ -207,6 +226,7 @@ export default function CartDropdown() {
 
                         <motion.button
                           whileTap={{ scale: 0.9 }}
+                          disabled={isLoading}
                           onClick={() =>
                             handleQuantityUpdate(
                               item.product.uuid,
@@ -215,9 +235,13 @@ export default function CartDropdown() {
                             )
                           }
                           aria-label="افزایش تعداد"
-                          className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground"
+                          className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
                         >
-                          <Plus className="h-3 w-3" />
+                          {isLoading ? (
+                            <LoadingSpinner size="sm" />
+                          ) : (
+                            <Plus className="h-3 w-3" />
+                          )}
                         </motion.button>
                       </div>
 

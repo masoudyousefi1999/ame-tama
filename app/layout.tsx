@@ -101,14 +101,14 @@ export default function RootLayout({
         {/* Resource hints for better performance */}
         <link rel="preconnect" href="https://ame-tama.storage.c2.liara.space" />
         <link rel="dns-prefetch" href="https://api.ame-tama.com" />
+        {/* Only preload critical images that are used immediately */}
         <link
           rel="preload"
           href="/luffy-naruto.webp"
           as="image"
           type="image/webp"
+          media="(min-width: 768px)"
         />
-        {/* Critical resource hints */}
-        <link rel="preload" href="/placeholder.svg" as="image" />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
         <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
         {/* Additional performance hints */}

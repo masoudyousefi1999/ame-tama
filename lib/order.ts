@@ -1,4 +1,5 @@
 import { customFetch } from "./utils";
+import { handleApiError, shouldLogError } from "./error-handler";
 
 export async function getUserOrder() {
   try {
@@ -9,6 +10,18 @@ export async function getUserOrder() {
       },
     });
 
+    if (!res.ok) {
+      // Handle expected errors silently
+      const error = handleApiError({
+        status: res.status,
+        message: res.statusText,
+      });
+      if (shouldLogError(error)) {
+        console.error("Unexpected error in getUserOrder:", error);
+      }
+      return;
+    }
+
     const order = await res.json();
 
     if (order) {
@@ -17,6 +30,11 @@ export async function getUserOrder() {
 
     return;
   } catch (error) {
+    // Handle network errors silently
+    const apiError = handleApiError(error);
+    if (shouldLogError(apiError)) {
+      console.error("Unexpected error in getUserOrder:", apiError);
+    }
     return;
   }
 }
@@ -40,6 +58,18 @@ export async function increaseOrderItem({
       }),
     });
 
+    if (!res.ok) {
+      // Handle expected errors silently
+      const error = handleApiError({
+        status: res.status,
+        message: res.statusText,
+      });
+      if (shouldLogError(error)) {
+        console.error("Unexpected error in increaseOrderItem:", error);
+      }
+      return;
+    }
+
     const order = await res.json();
 
     if (order) {
@@ -48,6 +78,11 @@ export async function increaseOrderItem({
 
     return;
   } catch (error) {
+    // Handle network errors silently
+    const apiError = handleApiError(error);
+    if (shouldLogError(apiError)) {
+      console.error("Unexpected error in increaseOrderItem:", apiError);
+    }
     return;
   }
 }
@@ -71,6 +106,18 @@ export async function decreaseOrderItem({
       }),
     });
 
+    if (!res.ok) {
+      // Handle expected errors silently
+      const error = handleApiError({
+        status: res.status,
+        message: res.statusText,
+      });
+      if (shouldLogError(error)) {
+        console.error("Unexpected error in decreaseOrderItem:", error);
+      }
+      return;
+    }
+
     const order = await res.json();
 
     if (order) {
@@ -79,6 +126,11 @@ export async function decreaseOrderItem({
 
     return;
   } catch (error) {
+    // Handle network errors silently
+    const apiError = handleApiError(error);
+    if (shouldLogError(apiError)) {
+      console.error("Unexpected error in decreaseOrderItem:", apiError);
+    }
     return;
   }
 }

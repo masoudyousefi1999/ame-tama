@@ -224,13 +224,13 @@ export default function Navbar() {
     <header
       ref={parentRef}
       className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300 backdrop-blur-md",
+        "fixed inset-x-0 top-0 z-40 transition-all duration-300 backdrop-blur-md",
         isScrolled
           ? "bg-popover/90 border-b border-border glass"
           : "bg-popover/80"
       )}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4">
+      <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4 overflow-visible">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 z-10 relative" prefetch={false}>
           <span className="text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
@@ -275,7 +275,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-1 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] z-50 dropdown-menu"
+                  className="absolute right-0 mt-1 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] z-[60] dropdown-menu"
                 >
                   {categoryTree.map((cat) => (
                     <div key={cat.id} className="relative">
@@ -382,7 +382,7 @@ export default function Navbar() {
         </nav>
 
         {/* Actions & Hamburger */}
-        <div className="flex items-center space-x-2 flex-shrink-0">
+        <div className="flex items-center space-x-2 flex-shrink-0 overflow-visible">
           {/* Mobile Search */}
           <div className="lg:hidden flex-1 max-w-[200px]">
             <UnifiedSearch />
@@ -418,7 +418,7 @@ export default function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-foreground/50 z-40 lg:hidden"
+            className="fixed inset-0 bg-foreground/50 z-[45] lg:hidden"
             onClick={() => setIsOpen(false)}
           >
             <motion.div
@@ -427,7 +427,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-50 overflow-y-auto bg-popover/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none"
+              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-[50] overflow-y-auto bg-popover/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 overflow-y-auto min-h-screen">
