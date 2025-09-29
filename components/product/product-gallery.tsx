@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { ResponsiveImage } from "@/components/ui/responsive-image";
 
 interface ProductGalleryProps {
   images: { url: string }[];
@@ -85,10 +86,15 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
             onDragEnd={handleDragEnd}
             className="absolute inset-0 h-full w-full"
           >
-            <img
+            <ResponsiveImage
               src={images[currentIndex]?.url || "/placeholder.svg"}
               alt={`${alt} - تصویر ${currentIndex + 1}`}
-              className="h-full w-full object-contain"
+              fill
+              aspectRatio="square"
+              loadingStrategy="progressive"
+              desktopQuality={90}
+              mobileQuality={80}
+              className="object-contain"
             />
           </motion.div>
         </AnimatePresence>
@@ -159,10 +165,15 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                   : "ring-1 ring-border hover:scale-[1.03]"
               )}
             >
-              <img
+              <ResponsiveImage
                 src={image.url || "/placeholder.svg"}
                 alt={`${alt} - تصویر کوچک ${i + 1}`}
-                className="h-full w-full object-cover"
+                fill
+                aspectRatio="square"
+                loadingStrategy="lazy"
+                desktopQuality={80}
+                mobileQuality={70}
+                className="object-cover"
               />
               {i === currentIndex && (
                 <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />

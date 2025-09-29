@@ -186,7 +186,7 @@ export function ProductCard({
             <OptimizedImage
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
-              quality={isMobile ? 30 : 40}
+              quality={isMobile ? 70 : 80}
               width={600}
               height={600}
               loading={eagerLoad ? "eager" : "lazy"}

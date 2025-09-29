@@ -35,23 +35,14 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     name: product.name,
     image:
       product.productMedia.length > 0
-        ? {
-            "@type": "ImageObject",
-            url: product.productMedia[0].url.startsWith("http")
-              ? product.productMedia[0].url
-              : getSiteUrl(product.productMedia[0].url),
-            width: 1200,
-            height: 1200,
-            alt: `${product.name} - فیگور انیمه`,
-            caption: `فیگور ${product.name} از انیمه ${product.category.name}`,
-          }
-        : {
-            "@type": "ImageObject",
-            url: getSiteUrl("/placeholder.svg"),
-            width: 1200,
-            height: 1200,
-            alt: `${product.name} - فیگور انیمه`,
-          },
+        ? product.productMedia.map((m) =>
+            m.url
+              ? m.url.startsWith("http")
+                ? m.url
+                : getSiteUrl(m.url)
+              : getSiteUrl("/placeholder.svg")
+          )
+        : [getSiteUrl("/placeholder.svg")],
     description:
       product.detail?.description ||
       `فیگور ${product.name} از انیمه ی  ${product.category.name}`,

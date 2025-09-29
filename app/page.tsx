@@ -17,11 +17,6 @@ export default async function Home() {
   let allCategories: any[] = [];
   let productsResult: any = { products: [] };
 
-  // Skip API calls during build time if API is not available
-  const isBuildTime =
-    process.env.NODE_ENV === "production" && !process.env.VERCEL_URL;
-
-  if (!isBuildTime) {
     try {
       const [categoriesData, productsData] = await Promise.all([
         getAllCategories({
@@ -38,9 +33,6 @@ export default async function Home() {
       console.warn("Failed to fetch data for homepage:", error);
       // Use empty arrays as fallback
     }
-  } else {
-    console.log("Skipping API calls during build time");
-  }
 
   const categories = allCategories?.[0]?.children ?? [];
   const products = productsResult.products || [];
@@ -48,7 +40,7 @@ export default async function Home() {
   // Extract category images for preloading
   const categoryImages = categories
     .slice(0, 6) // Only preload first 6 categories
-    .map((cat) => cat.image)
+    .map((cat: any) => cat.image)
     .filter(Boolean);
 
   return (
