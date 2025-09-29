@@ -9,7 +9,15 @@ export default function robots(): MetadataRoute.Robots {
         {
           userAgent: "*",
           allow: "/",
-          disallow: ["/checkout/", "/profile/", "/api/", "/admin/"],
+          disallow: [
+            "/checkout/",
+            "/profile/",
+            "/api/",
+            "/admin/",
+            "/cart/",
+            "/checkout/success/",
+            "/login/",
+          ],
         },
       ],
       sitemap: [`${baseUrl}/sitemap.xml`, `${baseUrl}/sitemap-images.xml`],
@@ -21,7 +29,15 @@ export default function robots(): MetadataRoute.Robots {
         {
           userAgent: "*",
           allow: "/",
-          disallow: ["/checkout/", "/profile/", "/api/", "/admin/"],
+          disallow: [
+            "/checkout/",
+            "/profile/",
+            "/api/",
+            "/admin/",
+            "/cart/",
+            "/checkout/success/",
+            "/login/",
+          ],
         },
       ],
       sitemap: [
