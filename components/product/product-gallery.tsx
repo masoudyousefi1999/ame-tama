@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ResponsiveImage } from "@/components/ui/responsive-image";
+import { CustomImage } from "@/components/ui/custom-image";
 
 interface ProductGalleryProps {
   images: { url: string }[];
@@ -86,15 +86,16 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
             onDragEnd={handleDragEnd}
             className="absolute inset-0 h-full w-full"
           >
-            <ResponsiveImage
+            <CustomImage
               src={images[currentIndex]?.url || "/placeholder.svg"}
               alt={`${alt} - تصویر ${currentIndex + 1}`}
               fill
-              aspectRatio="square"
-              loadingStrategy="progressive"
-              desktopQuality={90}
-              mobileQuality={80}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              quality={85}
               className="object-contain"
+              priority={currentIndex === 0}
+              fetchPriority={currentIndex === 0 ? "high" : "auto"}
+              loading={currentIndex === 0 ? "eager" : "lazy"}
             />
           </motion.div>
         </AnimatePresence>
@@ -165,15 +166,14 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                   : "ring-1 ring-border hover:scale-[1.03]"
               )}
             >
-              <ResponsiveImage
+              <CustomImage
                 src={image.url || "/placeholder.svg"}
                 alt={`${alt} - تصویر کوچک ${i + 1}`}
                 fill
-                aspectRatio="square"
-                loadingStrategy="lazy"
-                desktopQuality={80}
-                mobileQuality={70}
+                sizes="64px"
+                quality={75}
                 className="object-cover"
+                loading="lazy"
               />
               {i === currentIndex && (
                 <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />

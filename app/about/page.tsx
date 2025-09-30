@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui/card";
@@ -280,7 +280,7 @@ export default function AboutPage() {
             برای ارسال سوالات، پیشنهادات یا انتقادات خود، می‌توانید از طریق صفحه
             تماس با ما اقدام کنید.
           </p>
-          <Link href="/contact"  prefetch={false}>
+          <Link href="/contact" prefetch={false}>
             <Button size="lg" className="px-8">
               تماس با ما
             </Button>

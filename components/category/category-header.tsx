@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import type { ICategoryType } from "@/lib/categories";
 

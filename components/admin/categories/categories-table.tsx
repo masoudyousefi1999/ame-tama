@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Edit, Trash2, Plus } from "lucide-react";
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import { customFetch } from "@/lib/utils";
 
 interface Category {

@@ -10,17 +10,6 @@ import { CheckCircle, Send, Loader2 } from "lucide-react";
 import { submitContactForm } from "@/app/actions/contact";
 import { cn } from "@/lib/utils";
 
-function SubmitButton() {
-  return (
-    <Button
-      type="submit"
-      className="w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-200 hover:scale-105 group"
-    >
-      <Send className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform duration-200" />
-      ارسال پیام
-    </Button>
-  );
-}
 
 export function ContactForm() {
   const [state, setState] = useState<{
@@ -77,8 +66,6 @@ export function ContactForm() {
       }));
     }
   };
-
-  const hasErrors = state.errors && Object.keys(state.errors).length > 0;
 
   return (
     <div className="w-full max-w-md mx-auto">

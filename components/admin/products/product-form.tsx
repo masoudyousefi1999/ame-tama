@@ -18,7 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Upload, X, ImageIcon } from "lucide-react";
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 
 interface ProductMedia {
   mediaId: string;

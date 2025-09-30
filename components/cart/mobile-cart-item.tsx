@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import Link from "next/link";
 import { Trash2, ExternalLink } from "lucide-react";
 import { motion, useAnimation } from "framer-motion";

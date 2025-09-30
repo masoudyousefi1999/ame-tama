@@ -3,7 +3,7 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import { User, Lock, Bell, Moon, Sun, Upload, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

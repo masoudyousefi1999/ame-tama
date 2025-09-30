@@ -240,8 +240,6 @@ export default function ShopPageClient({
           />
         )}
       </section>
-
-      <GoToTopButton />
     </div>
   );
 }

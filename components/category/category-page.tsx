@@ -12,7 +12,7 @@ import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { customFetch } from "@/lib/utils";
 import Link from "next/link";
 import { IProductType } from "@/lib/products";
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import CategoryHeader from "./category-header";
 import { productLimit } from "@/lib/product-limit";
 import { GoToTopButton } from "@/components/go-to-top-button";
@@ -278,7 +278,6 @@ export default function CategoryPage({
           <div ref={loader} />
         </div>
       </div>
-      <GoToTopButton />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
 import { useState, useRef, useEffect } from "react";
 import { User, LogOut, Settings, Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";

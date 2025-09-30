@@ -117,6 +117,32 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
   const stockStatus = getStockStatus();
 
+  const handleShare = async () => {
+    try {
+      const shareUrl = window.location.href;
+      const shareTitle = product.name;
+      const shareText = `مشاهده ${product.name} در AME-TAMA`;
+
+      if (navigator.share) {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+        return;
+      }
+
+      await navigator.clipboard.writeText(shareUrl);
+      toast({ variant: "success", title: "لینک با موفقیت کپی شد" });
+    } catch (err) {
+      // Fallback: try copy if share failed (or user cancelled share silently)
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast({ variant: "success", title: "لینک با موفقیت کپی شد" });
+      } catch {}
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* ────────── title ────────── */}
@@ -283,13 +309,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           variant="outline"
           size="icon"
           className="h-12 w-12 rounded-full"
-          onClick={() => {
-            navigator.clipboard.writeText(window.location.href);
-            toast({
-              variant: "success",
-              title: "لینک با موفقیت کپی شد",
-            });
-          }}
+          onClick={handleShare}
           aria-label="اشتراک‌گذاری محصول"
         >
           <Share2 className="h-5 w-5" />

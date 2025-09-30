@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image, { type ImageProps } from "next/image";
+import { CustomImage as Image } from "@/components/ui/custom-image";
+import type { ImageProps } from "next/image";
 import { cn } from "@/lib/utils";
 
 interface CategoryImageProps extends Omit<ImageProps, "src" | "alt"> {

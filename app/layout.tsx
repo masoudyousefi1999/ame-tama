@@ -9,7 +9,6 @@ import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
 import { SkipLink } from "@/components/ui/skip-link";
 import ViewportHeightFix from "@/components/viewport-height-fix";
-import PageTransition from "@/components/page-transition";
 import dynamic from "next/dynamic";
 import { LoginModalProvider } from "@/context/login-modal-context";
 import LoginToastEffect from "@/components/LoginToastEffect";
@@ -178,11 +177,9 @@ export default function RootLayout({
                 <ImageProvider>
                   <SkipLink href="#main-content" />
                   <Navbar />
-                  <PageTransition>
-                    <main id="main-content" className="min-h-screen">
-                      {children}
-                    </main>
-                  </PageTransition>
+                  <main id="main-content" className="min-h-screen">
+                    {children}
+                  </main>
                   <Footer />
                   <Toaster />
                 </ImageProvider>

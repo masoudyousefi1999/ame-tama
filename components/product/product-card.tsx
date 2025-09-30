@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { OptimizedImage } from "@/components/ui/optimized-image";
+import { CustomImage } from "@/components/ui/custom-image";
 import { ShoppingCart, Heart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -183,16 +183,15 @@ export function ProductCard({
         >
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
-            <OptimizedImage
+            <CustomImage
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
               quality={isMobile ? 70 : 80}
-              width={600}
-              height={600}
+              fill
               loading={eagerLoad ? "eager" : "lazy"}
               priority={eagerLoad}
               fetchPriority={eagerLoad ? "high" : "auto"}
-              sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className={cn(
                 "object-cover w-full h-full",
                 // Subtle hover without extra scale/brightness to avoid repaints

@@ -10,7 +10,6 @@ import { ProductCard } from "../product/product-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
-import { GoToTopButton } from "@/components/go-to-top-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 
@@ -236,8 +235,6 @@ export default function SearchPageClient({
           </div>
         )}
       </section>
-
-      <GoToTopButton />
     </div>
   );
 }

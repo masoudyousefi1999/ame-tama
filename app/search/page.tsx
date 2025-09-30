@@ -7,8 +7,10 @@ export default async function SearchPage({
 }: {
   searchParams: { q?: string; page?: string };
 }) {
-  const query = searchParams.q || "";
-  const page = Number.parseInt(searchParams.page || "1");
+  const { q: QParam, page: pageParam } = await searchParams;
+
+  const query = QParam || "";
+  const page = Number.parseInt(pageParam || "1");
   const limit = productLimit;
   let results = [];
   let totalCount = 0;
