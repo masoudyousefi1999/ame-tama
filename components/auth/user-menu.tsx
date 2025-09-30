@@ -137,8 +137,8 @@ export default function UserMenu() {
         style={{
           boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.37)",
           maxWidth: "95vw",
-          left: 0, // Force alignment to the right side
-          right: "auto", // Ensures that the dropdown starts from the right side of the icon
+          left: "auto", // Force alignment to the right side
+          right: 0, // Ensures that the dropdown starts from the right side of the icon
         }}
       >
         {/* user info */}

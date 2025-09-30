@@ -9,7 +9,7 @@ import {
   ChevronDown,
   ChevronRight,
   Home,
-  ShoppingBag,
+  Store,
   Info,
   MessageSquare,
   HelpCircle,
@@ -354,9 +354,10 @@ export default function Navbar() {
 
           <Link
             href="/shop"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            className="whitespace-nowrap inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition nav-link shadow-sm transform-gpu active:scale-95 duration-150"
           >
-            فروشگاه
+            <Store className="h-4 w-4" />
+            <span>فروشگاه</span>
           </Link>
           <Link
             href="/about"
@@ -393,8 +394,20 @@ export default function Navbar() {
             <UnifiedSearch />
           </div>
 
-          <UserMenu />
+          {/* Show user menu only on desktop; move user-related links to hamburger on mobile */}
+          <div className="hidden lg:block">
+            <UserMenu />
+          </div>
           <CartDropdown />
+
+          {/* Prominent Shop button on mobile */}
+          <Link
+            href="/shop"
+            className="lg:hidden inline-flex items-center gap-1 rounded-md px-3 py-2 bg-primary text-primary-foreground hover:opacity-90 transition transform-gpu active:scale-95 duration-150"
+          >
+            <Store className="h-5 w-5" />
+            <span className="text-sm">فروشگاه</span>
+          </Link>
 
           {/* Mobile Hamburger */}
           <Button
@@ -442,14 +455,9 @@ export default function Navbar() {
                     <Home className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">خانه</span>
                   </Link>
-                  <Link
-                    href="/shop"
-                    onClick={() => setIsOpen(false)}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <ShoppingBag className="h-6 w-6 text-foreground mb-2" />
-                    <span className="text-xs text-foreground">فروشگاه</span>
-                  </Link>
+                  <div className="col-span-3 flex items-center justify-center p-3 rounded-lg bg-card">
+                    <UserMenu />
+                  </div>
                   <Link
                     href="/about"
                     onClick={() => setIsOpen(false)}
@@ -486,27 +494,6 @@ export default function Navbar() {
                     <Search className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">جستجو</span>
                   </Link>
-
-                  {user && (
-                    <Link
-                      href="/profile"
-                      onClick={() => setIsOpen(false)}
-                      prefetch={false}
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                    >
-                      <User className="h-6 w-6 text-foreground mb-2" />
-                      <span className="text-xs text-foreground">پروفایل</span>
-                    </Link>
-                  )}
-                  {user && (
-                    <button
-                      onClick={handleLogout}
-                      className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                    >
-                      <LogOut className="h-6 w-6 text-foreground mb-2" />
-                      <span className="text-xs text-foreground">خروج</span>
-                    </button>
-                  )}
                 </div>
 
                 {/* Mobile category path */}
