@@ -186,7 +186,7 @@ export function ProductCard({
             <CustomImage
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
-              quality={isMobile ? 70 : 80}
+              quality={isMobile ? 60 : 70}
               fill
               loading={eagerLoad ? "eager" : "lazy"}
               priority={eagerLoad}
@@ -199,8 +199,7 @@ export function ProductCard({
               )}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxAPwCdABmX/9k="
+              enableBlur
             />
 
             {/* علاقه‌مندی */}

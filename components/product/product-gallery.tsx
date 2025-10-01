@@ -91,11 +91,12 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
               alt={`${alt} - تصویر ${currentIndex + 1}`}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              quality={85}
+              quality={75}
               className="object-contain"
               priority={currentIndex === 0}
               fetchPriority={currentIndex === 0 ? "high" : "auto"}
               loading={currentIndex === 0 ? "eager" : "lazy"}
+              enableBlur
             />
           </motion.div>
         </AnimatePresence>
@@ -174,6 +175,7 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                 quality={75}
                 className="object-cover"
                 loading="lazy"
+                enableBlur
               />
               {i === currentIndex && (
                 <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />

@@ -8,6 +8,8 @@ export interface CustomImageProps extends Omit<ImageProps, "loader"> {
   fallbackSrc?: string;
   maxRetries?: number;
   retryDelayMs?: number;
+  enableBlur?: boolean;
+  blurDataURL?: string;
 }
 
 export function CustomImage({
@@ -15,6 +17,8 @@ export function CustomImage({
   fallbackSrc,
   maxRetries = 2,
   retryDelayMs = 500,
+  enableBlur,
+  blurDataURL,
   quality,
   width,
   height,
@@ -44,6 +48,19 @@ export function CustomImage({
     }
   }, [attempt, maxRetries, retryDelayMs, src, currentSrc]);
 
+  const defaultBlur =
+    "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48ZmlsdGVyIGlkPSdiJyB4PScwJyB5PScwJyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJz48ZmVHYXVzc2lhbkJsdXIgc3REZXZpYXRpb249JzIuNScvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnIGZpbHRlcj0ndXJsKCNiKScvPjwvc3ZnPiI=";
+
+  const imageProps: Partial<ImageProps> = {};
+  const placeholderProvided = (rest as any).placeholder !== undefined;
+  if (!placeholderProvided && enableBlur) {
+    (imageProps as any).placeholder = "blur";
+    (imageProps as any).blurDataURL = blurDataURL || defaultBlur;
+  } else if ((rest as any).placeholder === "blur") {
+    (imageProps as any).placeholder = "blur";
+    (imageProps as any).blurDataURL = (rest as any).blurDataURL || defaultBlur;
+  }
+
   if (failed) {
     return (
       <Image
@@ -51,6 +68,7 @@ export function CustomImage({
         quality={quality}
         width={width}
         height={height}
+        {...imageProps}
         {...rest}
       />
     );
@@ -64,6 +82,7 @@ export function CustomImage({
       width={width}
       height={height}
       onError={handleError}
+      {...imageProps}
       {...rest}
     />
   );

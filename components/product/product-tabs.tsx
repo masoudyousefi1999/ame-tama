@@ -26,6 +26,8 @@ export default function ProductTabs({ product }: ProductTabsProps) {
   const [loading, setLoading] = useState<boolean>(false);
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [text, setText] = useState<string>("");
+  const [pendingComment, setPendingComment] = useState<string>("");
+  const [tabValue, setTabValue] = useState<string>("description");
   const maxLength = 600;
 
   const formatDate = (iso: string) =>
@@ -51,6 +53,41 @@ export default function ProductTabs({ product }: ProductTabsProps) {
     };
   }, [product?.uuid]);
 
+  // If there is a saved intent, pre-select the reviews tab (even before user loads)
+  useEffect(() => {
+    try {
+      const intent = localStorage.getItem(
+        `pending-comment-intent-${product?.uuid}`
+      );
+      if (intent) setTabValue("reviews");
+    } catch {}
+  }, [product?.uuid]);
+
+  // Check for pending comment on mount and after login
+  useEffect(() => {
+    const storedComment = (() => {
+      try {
+        return localStorage.getItem(`pending-comment-${product?.uuid}`);
+      } catch {
+        return null;
+      }
+    })();
+    if (storedComment && user) {
+      setTabValue("reviews");
+      setPendingComment(storedComment);
+      setText(storedComment);
+
+      // Auto-submit if user has complete info, otherwise show user info modal
+      if (user.firstName && user.lastName) {
+        setTimeout(() => {
+          submitCommentCore();
+        }, 100);
+      } else {
+        setShowUserInfoModal(true);
+      }
+    }
+  }, [user, product?.uuid]);
+
   async function submitCommentCore() {
     const uuidOk = /^[0-9a-fA-F-]{36}$/.test(product?.uuid || "");
     const textOk = text.trim().length >= 3;
@@ -63,6 +100,11 @@ export default function ProductTabs({ product }: ProductTabsProps) {
       });
       if (created) {
         setText("");
+        // Clear any pending draft and intent after successful submission
+        try {
+          localStorage.removeItem(`pending-comment-${product?.uuid}`);
+          localStorage.removeItem(`pending-comment-intent-${product?.uuid}`);
+        } catch {}
         toast({
           variant: "success",
           title: "نظر شما ثبت شد",
@@ -89,6 +131,11 @@ export default function ProductTabs({ product }: ProductTabsProps) {
   async function handleSubmit(e?: React.FormEvent) {
     e?.preventDefault();
     if (!user) {
+      // Store comment and intent in localStorage before opening login modal
+      try {
+        localStorage.setItem(`pending-comment-${product?.uuid}`, text);
+        localStorage.setItem(`pending-comment-intent-${product?.uuid}`, "1");
+      } catch {}
       openLoginModal();
       return;
     }
@@ -107,13 +154,32 @@ export default function ProductTabs({ product }: ProductTabsProps) {
     // Immediately create the comment after user info is completed
     void submitCommentCore();
   };
+
+  // Auto-scroll to comments section when pending comment is processed
+  useEffect(() => {
+    if (pendingComment) {
+      const commentsSection =
+        document.querySelector('[data-tab="reviews-content"]') ||
+        document.querySelector('[data-tab="reviews"]');
+      if (commentsSection) {
+        commentsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [pendingComment]);
   return (
-    <Tabs defaultValue="description" className="mb-16" dir="rtl">
+    <Tabs
+      value={tabValue}
+      onValueChange={setTabValue}
+      className="mb-16"
+      dir="rtl"
+    >
       {/* -------- tab bar -------- */}
       <TabsList className="grid w-full max-w-md grid-cols-3 mx-auto mb-8">
         <TabsTrigger value="description">توضیحات</TabsTrigger>
         <TabsTrigger value="specifications">مشخصات</TabsTrigger>
-        <TabsTrigger value="reviews">نظرات</TabsTrigger>
+        <TabsTrigger value="reviews" data-tab="reviews">
+          نظرات
+        </TabsTrigger>
       </TabsList>
 
       {/* -------- توضیحات -------- */}
@@ -174,7 +240,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
       </TabsContent>
 
       {/* -------- نظرات (Comments) -------- */}
-      <TabsContent value="reviews" className="mt-4">
+      <TabsContent value="reviews" className="mt-4" data-tab="reviews-content">
         <div className="rounded-2xl p-6 shadow-sm bg-background">
           <h3 className="mb-6 text-xl font-bold text-foreground">
             نظرات کاربران
@@ -261,12 +327,15 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                 >
                   <div className="flex items-start gap-3">
                     <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground font-bold">
-                      {(c.user?.firstName + ' ' + c.user?.lastName || "? ").trim().slice(0, 1)}
+                      {(c.user?.firstName + " " + c.user?.lastName || "? ")
+                        .trim()
+                        .slice(0, 1)}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">
                         <h4 className="font-semibold">
-                          {c.user?.firstName + ' ' + c.user?.lastName || "کاربر"}
+                          {c.user?.firstName + " " + c.user?.lastName ||
+                            "کاربر"}
                         </h4>
                         <span className="text-xs text-muted-foreground">
                           {formatDate(c.createdAt)}
