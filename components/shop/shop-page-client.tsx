@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { customFetch } from "@/lib/utils";
 import { ProductCard } from "../product/product-card";
-import { GoToTopButton } from "@/components/go-to-top-button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { useRouter } from "next/navigation";

@@ -62,10 +62,6 @@ export default async function ShopPage({
 
   return (
     <>
-      {/* Preconnect to image CDN for faster LCP */}
-      <link rel="preconnect" href="https://ame-tama.storage.c2.liara.space" />
-      <link rel="dns-prefetch" href="https://ame-tama.storage.c2.liara.space" />
-
       {/* Add timeout and retry configuration */}
       <script
         dangerouslySetInnerHTML={{

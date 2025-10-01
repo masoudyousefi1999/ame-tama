@@ -2,10 +2,6 @@ import HeroSection from "@/components/hero-section";
 import FeaturedProductsSection from "@/components/featured-products-section";
 import TestimonialSection from "@/components/testimonial-section";
 import CategoryShowcase from "@/components/shop/category-showcase";
-import {
-  HomeBrandedIllustration,
-  HomeFloatingElements,
-} from "@/components/home/HomeClientWrappers";
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
 import { ConditionalPreload } from "@/components/ui/conditional-preload";
@@ -17,22 +13,22 @@ export default async function Home() {
   let allCategories: any[] = [];
   let productsResult: any = { products: [] };
 
-    try {
-      const [categoriesData, productsData] = await Promise.all([
-        getAllCategories({
-          next: { revalidate: 600, tags: ["categories"] }, // 10 minutes cache
-        }),
-        getAllProducts(1, 8, {
-          next: { revalidate: 300, tags: ["products", "homepage"] }, // 5 minutes cache
-        }),
-      ]);
+  try {
+    const [categoriesData, productsData] = await Promise.all([
+      getAllCategories({
+        next: { revalidate: 600, tags: ["categories"] }, // 10 minutes cache
+      }),
+      getAllProducts(1, 8, {
+        next: { revalidate: 300, tags: ["products", "homepage"] }, // 5 minutes cache
+      }),
+    ]);
 
-      allCategories = categoriesData || [];
-      productsResult = productsData || { products: [] };
-    } catch (error) {
-      console.warn("Failed to fetch data for homepage:", error);
-      // Use empty arrays as fallback
-    }
+    allCategories = categoriesData || [];
+    productsResult = productsData || { products: [] };
+  } catch (error) {
+    console.warn("Failed to fetch data for homepage:", error);
+    // Use empty arrays as fallback
+  }
 
   const categories = allCategories?.[0]?.children ?? [];
   const products = productsResult.products || [];
@@ -54,14 +50,9 @@ export default async function Home() {
 
       {/* Preload category images for better performance */}
       <SmartPreload images={categoryImages} priority={false} delay={1000} />
-
-      {/* Global floating elements - only rendered ONCE */}
-      <HomeFloatingElements />
-
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 bg-pattern-dots opacity-20 pointer-events-none" />
-        <HomeBrandedIllustration variant="hero" />
         <div className="relative z-10">
           <HeroSection />
         </div>
