@@ -1,13 +1,112 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { IProductType } from "@/lib/products";
-import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import {
+  createComment,
+  getCommentsByProductId,
+  type ProductComment,
+} from "@/lib/comments";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/use-toast";
+import { useAuth } from "@/context/auth-context";
+import { useLoginModal } from "@/context/login-modal-context";
+import { CommentUserInfoModal } from "@/components/product/comment-user-info-modal";
 
 interface ProductTabsProps {
   product: IProductType;
 }
 
 export default function ProductTabs({ product }: ProductTabsProps) {
+  const { user } = useAuth();
+  const { openLoginModal } = useLoginModal();
+  const [showUserInfoModal, setShowUserInfoModal] = useState(false);
+  const [comments, setComments] = useState<ProductComment[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
+  const [text, setText] = useState<string>("");
+  const maxLength = 600;
+
+  const formatDate = (iso: string) =>
+    new Date(iso).toLocaleString("fa-IR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+  useEffect(() => {
+    let ignore = false;
+    async function load() {
+      setLoading(true);
+      const list = await getCommentsByProductId(product.uuid);
+      if (!ignore) setComments(list);
+      setLoading(false);
+    }
+    if (product?.uuid) load();
+    return () => {
+      ignore = true;
+    };
+  }, [product?.uuid]);
+
+  async function submitCommentCore() {
+    const uuidOk = /^[0-9a-fA-F-]{36}$/.test(product?.uuid || "");
+    const textOk = text.trim().length >= 3;
+    if (!uuidOk || !textOk) return;
+    setSubmitting(true);
+    try {
+      const created = await createComment({
+        productId: product.uuid,
+        text: text.trim(),
+      });
+      if (created) {
+        setText("");
+        toast({
+          variant: "success",
+          title: "نظر شما ثبت شد",
+          description: "نظر پس از تایید مدیر منتشر خواهد شد.",
+        });
+      } else {
+        toast({
+          variant: "error",
+          title: "خطا در ثبت نظر",
+          description: "لطفاً دوباره تلاش کنید.",
+        });
+      }
+    } catch (err: any) {
+      toast({
+        variant: "error",
+        title: "خطا در ثبت نظر",
+        description: err?.message || "مشکلی رخ داد.",
+      });
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleSubmit(e?: React.FormEvent) {
+    e?.preventDefault();
+    if (!user) {
+      openLoginModal();
+      return;
+    }
+
+    // Check if user has firstName and lastName
+    if (!user.firstName || !user.lastName) {
+      setShowUserInfoModal(true);
+      return;
+    }
+
+    await submitCommentCore();
+  }
+
+  const handleUserInfoComplete = () => {
+    setShowUserInfoModal(false);
+    // Immediately create the comment after user info is completed
+    void submitCommentCore();
+  };
   return (
     <Tabs defaultValue="description" className="mb-16" dir="rtl">
       {/* -------- tab bar -------- */}
@@ -74,46 +173,110 @@ export default function ProductTabs({ product }: ProductTabsProps) {
         </div>
       </TabsContent>
 
-      {/* -------- نظرات -------- */}
+      {/* -------- نظرات (Comments) -------- */}
       <TabsContent value="reviews" className="mt-4">
         <div className="rounded-2xl p-6 shadow-sm bg-background">
           <h3 className="mb-6 text-xl font-bold text-foreground">
             نظرات کاربران
           </h3>
 
-          {Array.isArray(product.reviews) && product.reviews.length > 0 ? (
-            <div className="space-y-6">
-              {product.reviews.map((review) => (
+          {/* Submit comment */}
+          <form onSubmit={handleSubmit} className="mb-6 space-y-2">
+            <div className="rounded-xl border bg-muted/40 focus-within:ring-2 focus-within:ring-primary/40 transition">
+              <Textarea
+                value={text}
+                onChange={(e) => setText(e.target.value.slice(0, maxLength))}
+                placeholder="نظر خود را بنویسید..."
+                rows={4}
+                className="border-0 bg-transparent focus-visible:ring-0"
+              />
+              <div className="flex items-center justify-between px-3 pb-2 text-xs text-muted-foreground">
+                <span>
+                  {text.trim().length
+                    ? "نظر شما آماده ارسال است."
+                    : "نظر محترمانه و مرتبط با محصول ثبت کنید."}
+                </span>
+                <span>
+                  {text.length}/{maxLength}
+                </span>
+              </div>
+            </div>
+            {!/^[0-9a-fA-F-]{36}$/.test(product?.uuid || "") && (
+              <p className="text-xs text-destructive">
+                شناسه محصول نامعتبر است.
+              </p>
+            )}
+            {text.trim().length > 0 && text.trim().length < 3 && (
+              <p className="text-xs text-destructive">
+                متن نظر حداقل ۳ کاراکتر باشد.
+              </p>
+            )}
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setText("")}
+                disabled={submitting || text.length === 0}
+                className="rounded-full"
+              >
+                پاک کردن
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  submitting ||
+                  !/^[0-9a-fA-F-]{36}$/.test(product?.uuid || "") ||
+                  text.trim().length < 3
+                }
+                className="rounded-full"
+              >
+                {submitting ? "در حال ارسال..." : "ارسال نظر"}
+              </Button>
+            </div>
+          </form>
+
+          {/* Comments list */}
+          {loading ? (
+            <div className="space-y-4 py-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={i} className="flex gap-3">
+                  <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+                  <div className="flex-1 space-y-2">
+                    <div className="h-3 w-1/3 bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-2/3 bg-muted rounded animate-pulse" />
+                    <div className="h-3 w-1/2 bg-muted rounded animate-pulse" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : comments.length > 0 ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between text-sm text-muted-foreground">
+                <span>مجموع نظرات: {comments.length}</span>
+              </div>
+              {comments.map((c) => (
                 <div
-                  key={review.id}
-                  className="pb-6 border-b last:border-0 border"
+                  key={c.uuid}
+                  className="rounded-xl border bg-card p-4 shadow-sm"
                 >
-                  <div className="mb-2 flex justify-between">
-                    <h4 className="font-semibold">{review.user}</h4>
-                    <span className="text-sm text-muted-foreground">
-                      {review.date}
-                    </span>
+                  <div className="flex items-start gap-3">
+                    <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground font-bold">
+                      {(c.user?.firstName + ' ' + c.user?.lastName || "? ").trim().slice(0, 1)}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-semibold">
+                          {c.user?.firstName + ' ' + c.user?.lastName || "کاربر"}
+                        </h4>
+                        <span className="text-xs text-muted-foreground">
+                          {formatDate(c.createdAt)}
+                        </span>
+                      </div>
+                      <p className="mt-2 leading-7 text-foreground whitespace-pre-line">
+                        {c.text}
+                      </p>
+                    </div>
                   </div>
-
-                  {/* rating */}
-                  <div className="mb-3 flex">
-                    {[...Array(5)].map((_, i) => (
-                      <svg
-                        key={i}
-                        className={cn(
-                          "ml-1 h-4 w-4",
-                          i < review.rating
-                            ? "fill-amber-400 text-amber-400"
-                            : "text-muted-foreground"
-                        )}
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-                      </svg>
-                    ))}
-                  </div>
-
-                  <p className="text-foreground">{review.comment}</p>
                 </div>
               ))}
             </div>
@@ -124,6 +287,13 @@ export default function ProductTabs({ product }: ProductTabsProps) {
           )}
         </div>
       </TabsContent>
+
+      <CommentUserInfoModal
+        open={showUserInfoModal}
+        onOpenChange={setShowUserInfoModal}
+        user={user}
+        onComplete={handleUserInfoComplete}
+      />
     </Tabs>
   );
 }
