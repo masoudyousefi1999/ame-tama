@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -16,7 +16,82 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const constraintsRef = useRef<HTMLDivElement>(null);
+
+  // Preload next few images for instant navigation
+  useEffect(() => {
+    if (images.length <= 1) return;
+
+    const preloadNextImages = () => {
+      // Preload next 2 images for instant navigation
+      const nextImages = [
+        images[(currentIndex + 1) % images.length],
+        images[(currentIndex + 2) % images.length],
+      ].filter(Boolean);
+
+      nextImages.forEach((image) => {
+        if (image?.url) {
+          // Check if already preloaded to avoid duplicates
+          const existingLink = document.querySelector(
+            `link[href="${image.url}"]`
+          );
+          if (!existingLink) {
+            const link = document.createElement("link");
+            link.rel = "preload";
+            link.href = image.url;
+            link.as = "image";
+            link.type = "image/webp";
+            link.setAttribute("fetchpriority", "low");
+            document.head.appendChild(link);
+          }
+        }
+      });
+    };
+
+    // Preload after a short delay to not interfere with first image
+    const timer = setTimeout(preloadNextImages, 100);
+    return () => clearTimeout(timer);
+  }, [currentIndex, images]);
+
+  // Preload all images when gallery becomes visible (intersection observer)
+  useEffect(() => {
+    if (images.length <= 1) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            // Gallery is visible, preload remaining images
+            images.slice(2).forEach((image) => {
+              if (image?.url) {
+                const existingLink = document.querySelector(
+                  `link[href="${image.url}"]`
+                );
+                if (!existingLink) {
+                  const link = document.createElement("link");
+                  link.rel = "preload";
+                  link.href = image.url;
+                  link.as = "image";
+                  link.type = "image/webp";
+                  link.setAttribute("fetchpriority", "low");
+                  document.head.appendChild(link);
+                }
+              }
+            });
+            observer.disconnect();
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    if (constraintsRef.current) {
+      observer.observe(constraintsRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, [images]);
 
   const slideVariants = {
     enter: (dir: number) => ({
@@ -62,6 +137,11 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   const handleThumbnailClick = (index: number) => {
     setDirection(index > currentIndex ? 1 : -1);
     setCurrentIndex(index);
+    setImageLoaded(false);
+  };
+
+  const handleImageLoad = () => {
+    setImageLoaded(true);
   };
 
   return (
@@ -91,12 +171,18 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
               alt={`${alt} - تصویر ${currentIndex + 1}`}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              quality={75}
-              className="object-contain"
+              quality={currentIndex === 0 ? 90 : 75}
+              className={cn(
+                "object-contain transition-opacity duration-300",
+                imageLoaded ? "opacity-100" : "opacity-0"
+              )}
               priority={currentIndex === 0}
               fetchPriority={currentIndex === 0 ? "high" : "auto"}
               loading={currentIndex === 0 ? "eager" : "lazy"}
               enableBlur
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+              onLoad={handleImageLoad}
             />
           </motion.div>
         </AnimatePresence>
@@ -172,9 +258,10 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                 alt={`${alt} - تصویر کوچک ${i + 1}`}
                 fill
                 sizes="64px"
-                quality={75}
+                quality={i < 3 ? 85 : 60}
                 className="object-cover"
-                loading="lazy"
+                loading={i < 3 ? "eager" : "lazy"}
+                priority={i === 0}
                 enableBlur
               />
               {i === currentIndex && (

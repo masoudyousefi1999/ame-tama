@@ -27,17 +27,25 @@ export function CustomImage({
   const [currentSrc, setCurrentSrc] = React.useState<string>(src);
   const [attempt, setAttempt] = React.useState<number>(0);
   const [failed, setFailed] = React.useState<boolean>(false);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
     setCurrentSrc(src);
     setAttempt(0);
     setFailed(false);
+
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
   }, [src]);
 
   const handleError = React.useCallback(() => {
     if (attempt < maxRetries) {
       const delay = retryDelayMs * Math.pow(2, attempt);
-      window.setTimeout(() => {
+
+      // Set a timeout for mobile devices to prevent hanging
+      timeoutRef.current = setTimeout(() => {
         setAttempt((a) => a + 1);
         const cacheBuster = `cb=${Date.now()}-${attempt + 1}`;
         const join = currentSrc.includes("?") ? "&" : "?";
@@ -47,6 +55,21 @@ export function CustomImage({
       setFailed(true);
     }
   }, [attempt, maxRetries, retryDelayMs, src, currentSrc]);
+
+  const handleLoad = React.useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  }, []);
+
+  // Cleanup timeout on unmount
+  React.useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   const defaultBlur =
     "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48ZmlsdGVyIGlkPSdiJyB4PScwJyB5PScwJyB3aWR0aD0nMTAwJScgaGVpZ2h0PScxMDAlJz48ZmVHYXVzc2lhbkJsdXIgc3REZXZpYXRpb249JzIuNScvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPScxMDAlJyBoZWlnaHQ9JzEwMCUnIGZpbGw9JyNlZWUnIGZpbHRlcj0ndXJsKCNiKScvPjwvc3ZnPiI=";
@@ -70,6 +93,7 @@ export function CustomImage({
         height={height}
         {...imageProps}
         {...rest}
+        onLoad={handleLoad}
       />
     );
   }
@@ -82,6 +106,7 @@ export function CustomImage({
       width={width}
       height={height}
       onError={handleError}
+      onLoad={handleLoad}
       {...imageProps}
       {...rest}
     />

@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState } from "react";
+import { useState, useMemo, memo } from "react";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/components/ui/use-toast";
 import { ProductCard } from "@/components/product/product-card";
@@ -12,6 +12,9 @@ interface CategoryProductsProps {
   products: IProductType[];
   viewMode: "grid" | "list";
 }
+
+// Memoized ProductCard for better performance
+const MemoizedProductCard = memo(ProductCard);
 
 export default function CategoryProducts({
   products,
@@ -65,9 +68,9 @@ export default function CategoryProducts({
     }
   };
 
-  // اگر محصولی وجود نداشت
-  if (products.length === 0) {
-    return (
+  // Memoize empty state
+  const emptyState = useMemo(
+    () => (
       <div className="py-16 text-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -84,11 +87,17 @@ export default function CategoryProducts({
           />
         </svg>
         <h3 className="mb-2 text-lg font-medium">محصولی یافت نشد</h3>
-        <p className="  text-muted-foreground">
+        <p className="text-muted-foreground">
           با معیارهای فیلتر فعلی محصولی یافت نشد. لطفاً فیلترها را تغییر دهید.
         </p>
       </div>
-    );
+    ),
+    []
+  );
+
+  // اگر محصولی وجود نداشت
+  if (products.length === 0) {
+    return emptyState;
   }
 
   /* ---------- list view ---------- */
@@ -100,7 +109,7 @@ export default function CategoryProducts({
             key={product.uuid}
             className="rounded-lg bg-card shadow-sm transition-shadow hover:shadow-md"
           >
-            <ProductCard
+            <MemoizedProductCard
               product={product}
               variant="wishlist"
               className="border-0 shadow-none"
@@ -116,12 +125,13 @@ export default function CategoryProducts({
   /* ---------- grid view (default) ---------- */
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {products.map((product) => (
-        <ProductCard
+      {products.map((product, index) => (
+        <MemoizedProductCard
           key={product.uuid}
           product={product}
           showAddToCart
           showAddToWishlist
+          eagerLoad={index < 6} // Eager load first 6 products
         />
       ))}
     </div>

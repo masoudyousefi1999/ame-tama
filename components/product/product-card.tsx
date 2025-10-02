@@ -186,20 +186,23 @@ export function ProductCard({
             <CustomImage
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
-              quality={isMobile ? 60 : 70}
+              quality={isMobile ? 50 : 70}
               fill
               loading={eagerLoad ? "eager" : "lazy"}
               priority={eagerLoad}
               fetchPriority={eagerLoad ? "high" : "auto"}
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className={cn(
-                "object-cover w-full h-full",
+                "object-cover w-full h-full transition-opacity duration-300",
                 // Subtle hover without extra scale/brightness to avoid repaints
                 !isMobile && hovered && "opacity-95"
               )}
               onLoad={() => setImageLoaded(true)}
               onError={() => setImageError(true)}
               enableBlur
+              fallbackSrc="/placeholder.svg"
+              maxRetries={isMobile ? 1 : 2}
+              retryDelayMs={isMobile ? 1000 : 500}
             />
 
             {/* علاقه‌مندی */}

@@ -4,8 +4,6 @@ import TestimonialSection from "@/components/testimonial-section";
 import CategoryShowcase from "@/components/shop/category-showcase";
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
-import { ConditionalPreload } from "@/components/ui/conditional-preload";
-import { SmartPreload } from "@/components/ui/smart-preload";
 
 export const revalidate = 300; // 5 minutes cache for homepage
 
@@ -33,23 +31,31 @@ export default async function Home() {
   const categories = allCategories?.[0]?.children ?? [];
   const products = productsResult.products || [];
 
-  // Extract category images for preloading
-  const categoryImages = categories
-    .slice(0, 6) // Only preload first 6 categories
-    .map((cat: any) => cat.image)
-    .filter(Boolean);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
-      {/* Conditional preload for hero image */}
-      <ConditionalPreload
-        src="/luffy-naruto.webp"
-        condition={true}
-        priority={true}
+      {/* Cleanup script for unused preloads */}
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            // Clean up unused preloads after page load
+            window.addEventListener('load', function() {
+              setTimeout(() => {
+                const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
+                preloadLinks.forEach((link) => {
+                  const href = link.getAttribute('href');
+                  if (href) {
+                    const imgElements = document.querySelectorAll(\`img[src="\${href}"]\`);
+                    if (imgElements.length === 0) {
+                      link.remove();
+                      console.log('Removed unused preload:', href);
+                    }
+                  }
+                });
+              }, 1000);
+            });
+          `,
+        }}
       />
-
-      {/* Preload category images for better performance */}
-      <SmartPreload images={categoryImages} priority={false} delay={1000} />
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 bg-pattern-dots opacity-20 pointer-events-none" />

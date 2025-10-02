@@ -5,13 +5,11 @@ import { CustomImage as Image } from "@/components/ui/custom-image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { useImagePreload } from "./ui/smart-preload";
 
 export default function HeroSection() {
   const isMobile = useIsMobile();
 
-  // Preload hero image only when component mounts (not in layout)
-  useImagePreload("/luffy-naruto.webp", true, 0);
+  // Hero image is loaded with priority in the Image component below
 
   // Optimized VH update with throttling
   const updateVH = useCallback(() => {
@@ -48,7 +46,7 @@ export default function HeroSection() {
           loading="eager"
           fetchPriority="high"
           sizes="100vw"
-          quality={isMobile ? 30 : 40}
+          quality={isMobile ? 25 : 40}
           style={{
             objectFit: "cover",
             objectPosition: "center",
@@ -56,6 +54,12 @@ export default function HeroSection() {
           }}
           placeholder="blur"
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          onError={() => {
+            // Fallback for mobile devices with poor connectivity
+            console.warn(
+              "Hero image failed to load, using fallback background"
+            );
+          }}
         />
         {/* Optimized fallback background gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 opacity-60" />

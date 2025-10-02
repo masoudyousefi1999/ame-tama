@@ -21,37 +21,18 @@ export default function CategoryHeader({ category }: CategoryHeaderProps) {
         {/* Animated background layers */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900" />
 
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/30 via-teal-500/30 to-cyan-500/30 animate-pulse" />
+        {/* Simplified gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-cyan-500/20" />
 
-        {/* Floating orbs */}
-        <div
-          className="absolute top-20 left-20 w-32 h-32 bg-emerald-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "0s", animationDuration: "3s" }}
-        />
-        <div
-          className="absolute top-40 right-32 w-24 h-24 bg-teal-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "1s", animationDuration: "4s" }}
-        />
-        <div
-          className="absolute bottom-20 left-1/3 w-28 h-28 bg-cyan-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "2s", animationDuration: "3.5s" }}
-        />
-        <div
-          className="absolute bottom-32 right-20 w-20 h-20 bg-emerald-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
-        />
+        {/* Static decorative elements */}
+        <div className="absolute top-20 left-20 w-32 h-32 bg-emerald-400/10 rounded-full blur-xl" />
+        <div className="absolute top-40 right-32 w-24 h-24 bg-teal-400/10 rounded-full blur-xl" />
+        <div className="absolute bottom-20 left-1/3 w-28 h-28 bg-cyan-400/10 rounded-full blur-xl" />
+        <div className="absolute bottom-32 right-20 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl" />
 
-        {/* Radial gradients for depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(16,185,129,0.4),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(20,184,166,0.4),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(6,182,212,0.3),transparent_50%)]" />
-
-        {/* Animated mesh gradient */}
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-transparent via-emerald-500/10 to-transparent animate-pulse"
-          style={{ animationDuration: "6s" }}
-        />
+        {/* Simplified radial gradients */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(16,185,129,0.2),transparent_40%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(20,184,166,0.2),transparent_40%)]" />
 
         {/* Background Image with Overlay */}
         <div className="absolute inset-0">
@@ -60,8 +41,12 @@ export default function CategoryHeader({ category }: CategoryHeaderProps) {
             alt={category.name}
             fill
             priority
-            quality={80}
-            className="object-cover brightness-75 saturate-110 transition-transform duration-700 group-hover:scale-105 group-hover:translate-y-2"
+            quality={85}
+            loading="eager"
+            fetchPriority="high"
+            className="object-cover brightness-75 saturate-110"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
           />
           {/* Soft Gradient for Legibility */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />

@@ -83,13 +83,14 @@ export default async function CategoryRoute(props: {
   const lastSlug = params.slug[params.slug.length - 1];
   const page = Number.parseInt(searchParams?.page || "1");
   const limit = productLimit;
-  const category = await getCategoryBySlug(lastSlug);
+
+  // Parallel data fetching for better performance
+  const [category, { products, totalCount }] = await Promise.all([
+    getCategoryBySlug(lastSlug),
+    getProductByCategorySlug(lastSlug, page, limit),
+  ]);
+
   if (!category) notFound();
-  const { products, totalCount } = await getProductByCategorySlug(
-    lastSlug,
-    page,
-    limit
-  );
   if (!Array.isArray(products)) notFound();
 
   // ساخت breadcrumb path برای schema

@@ -16,11 +16,29 @@ export function ConditionalPreload({
   priority = false,
 }: ConditionalPreloadProps) {
   const preloadedRef = useRef(false);
+  const linkRef = useRef<HTMLLinkElement | null>(null);
 
   useEffect(() => {
     if (!condition || !src || preloadedRef.current) return;
 
+    // Check if we're on mobile and adjust behavior
+    const isMobile = window.innerWidth < 768;
+    const connection = (navigator as any).connection;
+    const isSlowConnection =
+      connection &&
+      (connection.effectiveType === "slow-2g" ||
+        connection.effectiveType === "2g");
+
+    // Skip preloading on mobile with slow connections unless it's priority
+    if (isMobile && isSlowConnection && !priority) {
+      return;
+    }
+
     const preloadImage = () => {
+      // Check if link already exists to avoid duplicates
+      const existingLink = document.querySelector(`link[href="${src}"]`);
+      if (existingLink) return;
+
       const link = document.createElement("link");
       link.rel = "preload";
       link.href = src;
@@ -37,12 +55,15 @@ export function ConditionalPreload({
         link.type = "image/jpeg";
       }
 
-      // Add fetchpriority for critical images
+      // Add fetchpriority for critical images, but be conservative on mobile
       if (priority) {
-        link.setAttribute("fetchpriority", "high");
+        link.setAttribute("fetchpriority", isMobile ? "auto" : "high");
+      } else if (isMobile) {
+        link.setAttribute("fetchpriority", "low");
       }
 
       document.head.appendChild(link);
+      linkRef.current = link;
       preloadedRef.current = true;
     };
 
@@ -51,15 +72,25 @@ export function ConditionalPreload({
       return () => {
         clearTimeout(timer);
         // Clean up the preload link if component unmounts
-        const existingLink = document.querySelector(`link[href="${src}"]`);
-        if (existingLink) {
-          existingLink.remove();
+        if (linkRef.current) {
+          linkRef.current.remove();
+          linkRef.current = null;
         }
       };
     } else {
       preloadImage();
     }
   }, [src, condition, delay, priority]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (linkRef.current) {
+        linkRef.current.remove();
+        linkRef.current = null;
+      }
+    };
+  }, []);
 
   return null;
 }

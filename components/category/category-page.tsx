@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { Filter, SlidersHorizontal, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -69,24 +69,29 @@ export default function CategoryPage({
     };
   }, [loader, hasMore, loading]);
 
-  const handlePriceRangeChange = (range: [number, number]) => {
+  const handlePriceRangeChange = useCallback((range: [number, number]) => {
     setPriceRange(range);
-  };
+  }, []);
 
-  const handleFilterChange = (filters: string[]) => {
+  const handleFilterChange = useCallback((filters: string[]) => {
     setSelectedFilters(filters);
-  };
+  }, []);
 
-  const handleSortChange = (newSort: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    newSort !== "newest" ? params.set("sort", newSort) : params.delete("sort");
-    const newUrl = params.toString()
-      ? `${pathname}?${params.toString()}`
-      : pathname;
-    router.replace(newUrl);
-  };
+  const handleSortChange = useCallback(
+    (newSort: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      newSort !== "newest"
+        ? params.set("sort", newSort)
+        : params.delete("sort");
+      const newUrl = params.toString()
+        ? `${pathname}?${params.toString()}`
+        : pathname;
+      router.replace(newUrl);
+    },
+    [searchParams, pathname, router]
+  );
 
-  const fetchMore = async () => {
+  const fetchMore = useCallback(async () => {
     setLoading(true);
     try {
       const nextPage = page + 1;
@@ -112,69 +117,75 @@ export default function CategoryPage({
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, category.slug]);
+
+  // Memoize breadcrumb items
+  const breadcrumbItems = useMemo(() => {
+    return category.name === "figures"
+      ? [{ label: "اکشن فیگور", href: `/category/`, isCurrent: true }]
+      : [
+          { label: "اکشن فیگور", href: `/category/figures` },
+          {
+            label: category.name,
+            href: `/category/figures/${category.slug}`,
+            isCurrent: true,
+          },
+        ];
+  }, [category.name, category.slug]);
+
+  // Memoize subcategories section
+  const subcategoriesSection = useMemo(() => {
+    if (subcategories.length === 0) return null;
+
+    return (
+      <section className="mb-14">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-2xl font-extrabold text-transparent tracking-tight">
+            زیردسته‌های&nbsp;{category.name}
+          </h2>
+          <span className="text-xs text-muted-foreground lg:hidden">
+            ← پیمایش افقی →
+          </span>
+        </div>
+        <div className="scrollbar-thin scrollbar-thumb-border dark:scrollbar-thumb-border flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-8 md:overflow-visible lg:grid-cols-4 xl:grid-cols-5">
+          {subcategories.map((subcat) => (
+            <Link
+              key={subcat.id}
+              prefetch={false}
+              href={`/category/figures/${subcat.slug}`}
+              className="group relative aspect-square w-32 flex-none snap-start overflow-hidden rounded-3xl transition-all duration-300 hover:scale-105 hover:rotate-2 sm:w-36 md:w-full"
+            >
+              <Image
+                src={subcat.image ?? "/placeholder.jpg"}
+                alt={subcat.name}
+                fill
+                sizes="(max-width:640px) 8rem, (max-width:768px) 9rem, 18vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-1"
+                loading="lazy"
+                quality={75}
+              />
+              <div className="absolute inset-0 flex items-end justify-center pb-4">
+                <span className="font-sans text-xs font-semibold tracking-wide text-accent sm:text-sm md:text-base drop-shadow-lg">
+                  {subcat.name}
+                </span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+    );
+  }, [subcategories, category.name]);
 
   return (
     <div className="container mx-auto mt-16 px-4 py-8 md:mt-24">
       {/* breadcrumb */}
-      <Breadcrumb
-        items={
-          category.name === "figures"
-            ? [{ label: "اکشن فیگور", href: `/category/`, isCurrent: true }]
-            : [
-                { label: "اکشن فیگور", href: `/category/figures` },
-                {
-                  label: category.name,
-                  href: `/category/figures/${category.slug}`,
-                  isCurrent: true,
-                },
-              ]
-        }
-        className="mb-4"
-      />
+      <Breadcrumb items={breadcrumbItems} className="mb-4" />
 
       {/* hero header */}
       <CategoryHeader category={category} />
 
       {/* sub-categories */}
-      {subcategories.length > 0 && (
-        <section className="mb-14">
-          <div className="mb-5 flex items-center justify-between">
-            <h2 className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-2xl font-extrabold text-transparent tracking-tight">
-              زیردسته‌های&nbsp;{category.name}
-            </h2>
-            <span className="text-xs text-muted-foreground lg:hidden">
-              ← پیمایش افقی →
-            </span>
-          </div>
-          <div className="scrollbar-thin scrollbar-thumb-border dark:scrollbar-thumb-border flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-8 md:overflow-visible lg:grid-cols-4 xl:grid-cols-5">
-            {subcategories.map((subcat) => (
-              <Link
-                key={subcat.id}
-                prefetch={false}
-                href={`/category/figures/${subcat.slug}`}
-                className="group relative aspect-square w-32 flex-none snap-start overflow-hidden rounded-3xl transition-all duration-300 hover:scale-105 hover:rotate-2 sm:w-36 md:w-full"
-              >
-                {/* Subcategory Image */}
-                <Image
-                  src={subcat.image ?? "/placeholder.jpg"}
-                  alt={subcat.name}
-                  fill
-                  sizes="(max-width:640px) 8rem, (max-width:768px) 9rem, 18vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-1"
-                />
-
-                {/* Text Overlay */}
-                <div className="absolute inset-0 flex items-end justify-center pb-4">
-                  <span className="font-sans text-xs font-semibold tracking-wide text-accent sm:text-sm md:text-base drop-shadow-lg">
-                    {subcat.name}
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
+      {subcategoriesSection}
 
       <div className="flex flex-col gap-8 lg:flex-row">
         {/* desktop filters */}

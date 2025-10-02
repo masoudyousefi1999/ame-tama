@@ -55,10 +55,7 @@ export default async function ShopPage({
     totalCount = 0;
   }
 
-  // Preload first few product images for LCP optimization
-  const firstProductImage = products[0]?.productMedia?.[0]?.url;
-  const secondProductImage = products[1]?.productMedia?.[0]?.url;
-  const thirdProductImage = products[2]?.productMedia?.[0]?.url;
+  // Products will load with proper priority in ProductCard components
 
   return (
     <>
@@ -83,36 +80,26 @@ export default async function ShopPage({
                   }
                 });
               });
+              
+              // Clean up any unused preloads
+              setTimeout(() => {
+                const preloadLinks = document.querySelectorAll('link[rel="preload"][as="image"]');
+                preloadLinks.forEach((link) => {
+                  const href = link.getAttribute('href');
+                  if (href) {
+                    const imgElements = document.querySelectorAll(\`img[src="\${href}"]\`);
+                    if (imgElements.length === 0) {
+                      link.remove();
+                      console.log('Removed unused preload:', href);
+                    }
+                  }
+                });
+              }, 1000);
             });
           `,
         }}
       />
 
-      {firstProductImage && (
-        <link
-          rel="preload"
-          as="image"
-          href={firstProductImage}
-          type="image/webp"
-          fetchPriority="high"
-        />
-      )}
-      {secondProductImage && (
-        <link
-          rel="preload"
-          as="image"
-          href={secondProductImage}
-          type="image/webp"
-        />
-      )}
-      {thirdProductImage && (
-        <link
-          rel="preload"
-          as="image"
-          href={thirdProductImage}
-          type="image/webp"
-        />
-      )}
       <ShopPageClient
         initialProducts={products}
         totalCount={totalCount}
