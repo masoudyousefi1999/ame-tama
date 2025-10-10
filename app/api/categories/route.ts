@@ -6,7 +6,6 @@ export async function GET(request: NextRequest) {
     const response = await customFetch("/category", {
       method: "GET",
       next: {
-        revalidate: 600, // 10 minutes cache
         tags: ["categories"],
       },
     });

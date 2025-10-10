@@ -5,8 +5,6 @@ import CategoryShowcase from "@/components/shop/category-showcase";
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
 
-export const revalidate = 300; // 5 minutes cache for homepage
-
 export default async function Home() {
   let allCategories: any[] = [];
   let productsResult: any = { products: [] };
@@ -14,10 +12,10 @@ export default async function Home() {
   try {
     const [categoriesData, productsData] = await Promise.all([
       getAllCategories({
-        next: { revalidate: 600, tags: ["categories"] }, // 10 minutes cache
+        next: { tags: ["categories"] }, // 10 minutes cache
       }),
       getAllProducts(1, 8, {
-        next: { revalidate: 300, tags: ["products", "homepage"] }, // 5 minutes cache
+        next: { tags: ["products", "homepage"] }, // 5 minutes cache
       }),
     ]);
 

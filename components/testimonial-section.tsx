@@ -35,7 +35,6 @@ export default function TestimonialSection() {
               "Content-Type": "application/json",
             },
             next: {
-              revalidate: 120,
               tags: ["testimonials"],
             },
           }

@@ -3,7 +3,6 @@ import ShopPageClient from "@/components/shop/shop-page-client";
 import { productLimit } from "@/lib/product-limit";
 import { Metadata } from "next";
 
-export const revalidate = 120;
 
 const baseUrl = "https://ame-tama.com";
 
@@ -45,7 +44,7 @@ export default async function ShopPage({
 
   try {
     const fetchedProducts = await getAllProducts(page, limit, {
-      next: { revalidate, tags: ["products", "shop"] },
+      next: { tags: ["products", "shop"] },
     });
     products = fetchedProducts.products || [];
     totalCount = fetchedProducts.totalCount || 0;

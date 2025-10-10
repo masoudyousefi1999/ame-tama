@@ -64,14 +64,11 @@ const nextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 600, 800],
     formats: ["image/webp", "image/avif"],
     minimumCacheTTL: 30, // Shorter cache for mobile to allow faster fallback
-    unoptimized: false,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
-    // Mobile-friendly image loading configuration
-    domains: [],
     path: "/_next/image",
-    loaderFile: "",
+    unoptimized: true,
   },
   // Enable compression
   compress: true,

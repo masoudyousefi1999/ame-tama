@@ -16,7 +16,7 @@ export async function getCommentsByProductId(
       `/comment/${productId}`,
       {
         method: "GET",
-        next: { revalidate: 120, tags: ["comments", `comments-${productId}`] },
+        next: { tags: ["comments", `comments-${productId}`] },
       } as any
     );
     if (!res.ok) return [];

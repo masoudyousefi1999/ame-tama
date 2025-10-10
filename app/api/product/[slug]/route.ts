@@ -19,7 +19,6 @@ export async function GET(
     const response = await customFetch(`/product/${slug}`, {
       method: "GET",
       next: {
-        revalidate: 300, // 5 minutes cache
         tags: [`product-${slug}`],
       },
     });

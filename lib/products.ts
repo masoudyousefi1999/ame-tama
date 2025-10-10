@@ -117,7 +117,6 @@ export async function getRelatedProducts(
       {
         method: "GET",
         next: {
-          revalidate: 300, // 5 minutes cache
           tags: [`related-${productUuid}`],
         },
       }

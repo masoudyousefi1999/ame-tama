@@ -7,8 +7,6 @@ import ProductSchema from "@/components/seo/product-schema";
 import GoogleShoppingSchema from "@/components/seo/google-shopping-schema";
 import { formatPriceDivided } from "@/lib/format-price";
 
-export const revalidate = 300; // 5 minutes cache for product pages
-
 export async function generateMetadata({
   params,
 }: {
@@ -23,7 +21,7 @@ export async function generateMetadata({
   }
 
   const product = await getProductBySlug(slug, {
-    next: { revalidate, tags: ["products", `product-${slug}`] },
+    next: { tags: ["products", `product-${slug}`] },
   });
 
   if (!product) {
@@ -99,7 +97,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   try {
     product = await getProductBySlug(slug, {
-      next: { revalidate, tags: ["products", `product-${slug}`] },
+      next: { tags: ["products", `product-${slug}`] },
     });
 
     if (!product) {

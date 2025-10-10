@@ -15,7 +15,6 @@ export async function GET() {
           "application/xml,text/xml,application/xhtml+xml,application/rss+xml;q=0.9,*/*;q=0.8",
       },
       // Cache on the edge for 12h and allow stale while revalidating
-      next: { revalidate: 43200 },
     });
 
     if (!res.ok) {
