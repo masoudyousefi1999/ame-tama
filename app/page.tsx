@@ -45,7 +45,6 @@ export default async function Home() {
                     const imgElements = document.querySelectorAll(\`img[src="\${href}"]\`);
                     if (imgElements.length === 0) {
                       link.remove();
-                      console.log('Removed unused preload:', href);
                     }
                   }
                 });
