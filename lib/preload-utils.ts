@@ -27,7 +27,6 @@ export function cleanupUnusedPreloads(timeoutMs: number = 5000) {
 
         if (stillExists && stillUnused) {
           link.remove();
-          console.log(`Removed unused preload for: ${href}`);
         }
       }, timeoutMs);
     }

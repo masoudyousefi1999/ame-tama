@@ -72,7 +72,6 @@ export default async function ShopPage({
                 img.addEventListener('error', function() {
                   if (retryCount < maxRetries) {
                     retryCount++;
-                    console.log('Retrying image load:', img.src);
                     setTimeout(() => {
                       img.src = img.src + '?retry=' + retryCount;
                     }, 1000 * retryCount);
