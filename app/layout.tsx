@@ -42,7 +42,7 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "AME-TAMA",
+    title: "AME-TAMA | آمه تاما",
     description: "خرید اکشن فیگور های انیمه ای با کیفیت و قیمت مناسب",
     url: "https://ame-tama.com",
     siteName: "AME-TAMA",
@@ -59,7 +59,7 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AME-TAMA",
+    title: "AME-TAMA | آمه تاما",
     description: "خرید اکشن فیگور های انیمه ای با بهترین قیمت",
     images: ["/favicon.jpg"],
     creator: "@masoudyousefi99",

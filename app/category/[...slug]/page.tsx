@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     metadataBase: new URL(baseUrl),
-    title: `خرید فیگورهای انیمه ${category.name} | AME-TAMA - فروشگاه اکشن فیگور`,
+    title:  `خرید فیگورهای انیمه ${category.name} | AME-TAMA`,
     description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA. مجموعه کامل اکشن فیگورهای انیمه ای با تضمین اصالت`,
     keywords: `فیگور انیمه, اکشن فیگور, ${category.name}, AME-TAMA, خرید فیگور, فیگور انیمه ای, مجسمه انیمه, کلکسیون انیمه`,
     openGraph: {

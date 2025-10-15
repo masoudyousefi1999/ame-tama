@@ -47,7 +47,7 @@ export async function generateMetadata({
     } با کیفیت بالا و تضمین اصالت`,
     keywords: `فیگور انیمه, اکشن فیگور, ${product.name}, ${product.category.name}, AME-TAMA, خرید فیگور, فیگور انیمه ای, مجسمه انیمه, کلکسیون انیمه`,
     openGraph: {
-      title: `${product.name} | AME-TAMA`,
+      title: `خرید فیگور ${product.name} | AME-TAMA - فروشگاه اکشن فیگور`,
       description: `خرید اکشن فیگور ${
         product.name
       } با قیمت ${formatPriceDivided(product.price)}`,
@@ -63,7 +63,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${product.name} | AME-TAMA`,
+      title: `خرید فیگور ${product.name} | AME-TAMA - فروشگاه اکشن فیگور`,
       description: `خرید اکشن فیگور ${
         product.name
       } با قیمت ${formatPriceDivided(product.price)}`,
