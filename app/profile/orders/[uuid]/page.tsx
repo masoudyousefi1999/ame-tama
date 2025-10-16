@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Package, Clock, ArrowRight, Truck } from "lucide-react";
+import { Package, Clock, ArrowRight, Truck, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -51,6 +51,29 @@ export default function OrderDetailPage() {
   const { user, isLoading } = useAuth();
   const [order, setOrder] = useState<Order | null>(null);
   const [isLoadingOrder, setIsLoadingOrder] = useState(true);
+
+  // Copy tracking link to clipboard
+  const copyTrackingLink = async () => {
+    if (!order?.trackingCode) return;
+    
+    const trackingUrl = `https://tracking.post.ir/?id=${order.trackingCode}`;
+    
+    try {
+      await navigator.clipboard.writeText(trackingUrl);
+      toast({
+        title: "لینک کپی شد",
+        description: "لینک رهگیری مرسوله به کلیپ‌بورد کپی شد",
+        variant: "default",
+      });
+    } catch (error) {
+      console.error("Failed to copy link:", error);
+      toast({
+        title: "خطا در کپی کردن",
+        description: "نمی‌توان لینک را کپی کرد",
+        variant: "error",
+      });
+    }
+  };
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -166,12 +189,12 @@ export default function OrderDetailPage() {
           </div>
 
           {/* Tracking Code Section */}
-          <div className="bg-gray-800/80 rounded-2xl p-6 mb-6 border border-gray-700">
-            <div className="flex items-start gap-4">
-              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-3 rounded-xl">
+          <div className="bg-gray-800/80 rounded-2xl p-4 sm:p-6 mb-6 border border-gray-700">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-4">
+              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-3 rounded-xl self-start sm:self-auto">
                 <Truck className="h-6 w-6 text-white" />
               </div>
-              <div className="flex-1">
+              <div className="flex-1 min-w-0">
                 <h3 className="text-lg font-bold text-white mb-2">
                   رهگیری مرسوله پستی
                 </h3>
@@ -180,12 +203,21 @@ export default function OrderDetailPage() {
                     <p className="text-sm text-gray-400 mb-4">
                       برای پیگیری وضعیت ارسال مرسوله خود، روی دکمه زیر کلیک کنید
                     </p>
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                      <div className="bg-gray-700/50 rounded-lg px-4 py-2 border border-gray-600">
-                        <span className="text-xs text-gray-400 block mb-1">
-                          کد رهگیری:
-                        </span>
-                        <span className="text-white font-mono font-semibold">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                      <div className="bg-gray-700/50 rounded-lg px-4 py-3 border border-gray-600 flex-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-xs text-gray-400">
+                            کد رهگیری:
+                          </span>
+                          <button
+                            onClick={copyTrackingLink}
+                            className="text-gray-400 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-600/50"
+                            title="کپی لینک رهگیری"
+                          >
+                            <Copy className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <span className="text-white font-mono font-semibold break-all">
                           {order.trackingCode}
                         </span>
                       </div>
@@ -193,25 +225,28 @@ export default function OrderDetailPage() {
                         href={`https://tracking.post.ir/?id=${order.trackingCode}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-2.5 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl whitespace-nowrap"
                       >
                         <Truck className="h-4 w-4" />
-                        رهگیری مرسوله در سایت پست
+                        <span className="hidden sm:inline">
+                          رهگیری مرسوله در سایت پست
+                        </span>
+                        <span className="sm:hidden">رهگیری در پست</span>
                       </a>
                     </div>
                   </>
                 ) : (
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-start gap-3">
                     <div className="bg-gray-700/50 rounded-lg px-4 py-3 border border-gray-600 flex-1">
-                      <div className="flex items-center gap-3">
-                        <div className="bg-yellow-500/20 p-2 rounded-lg">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                        <div className="bg-yellow-500/20 p-2 rounded-lg self-start">
                           <Clock className="h-5 w-5 text-yellow-400" />
                         </div>
-                        <div>
+                        <div className="flex-1 min-w-0">
                           <p className="text-white font-medium">
                             هنوز مرسوله ارسال نشده است
                           </p>
-                          <p className="text-sm text-gray-400">
+                          <p className="text-sm text-gray-400 mt-1">
                             به محض ارسال، کد رهگیری قابل نمایش خواهد بود
                           </p>
                         </div>
@@ -233,7 +268,7 @@ export default function OrderDetailPage() {
               {order.items.map((item, index) => (
                 <div
                   key={index}
-                  className="group flex items-center gap-4 p-4 bg-gray-700/50 hover:bg-gray-700/80 rounded-xl transition-all duration-200 cursor-pointer border border-transparent hover:border-orange-500"
+                  className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-700/50 hover:bg-gray-700/80 rounded-xl transition-all duration-200 cursor-pointer border border-transparent hover:border-orange-500"
                   onClick={() => router.push(`/product/${item.product.slug}`)}
                 >
                   {/* Product Image */}
@@ -253,14 +288,14 @@ export default function OrderDetailPage() {
                     <h4 className="text-base font-semibold mb-2 line-clamp-2 text-white group-hover:text-orange-400 transition-colors">
                       {item.product.name}
                     </h4>
-                    <div className="flex items-center gap-3 text-sm text-gray-400">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-400">
                       <span className="flex items-center gap-1">
                         <span className="font-medium text-white">
                           {item.quantity}
                         </span>
                         عدد
                       </span>
-                      <span className="text-gray-600">•</span>
+                      <span className="text-gray-600 hidden sm:inline">•</span>
                       <span className="font-semibold text-white">
                         {formatPriceDivided(item.price)}
                       </span>
@@ -268,8 +303,13 @@ export default function OrderDetailPage() {
                   </div>
 
                   {/* Total Price for Item */}
-                  <div className="text-right">
-                    <p className="text-xs text-gray-400 mb-1">جمع</p>
+                  <div className="flex justify-between sm:block sm:text-right mt-2 sm:mt-0">
+                    <span className="text-xs text-gray-400 sm:hidden">
+                      جمع:
+                    </span>
+                    <p className="text-xs text-gray-400 mb-1 hidden sm:block">
+                      جمع
+                    </p>
                     <p className="text-base font-bold text-white">
                       {formatPriceDivided(item.price * item.quantity)}
                     </p>
@@ -280,13 +320,13 @@ export default function OrderDetailPage() {
               {/* Price Summary */}
               <div className="mt-6 pt-6 border-t border-gray-700">
                 <div className="bg-gray-700/50 rounded-xl p-5 border border-gray-600">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
                     <span className="text-gray-400 text-sm">تعداد اقلام:</span>
                     <span className="text-white font-semibold">
                       {order.items.length} محصول
                     </span>
                   </div>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <span className="text-white font-bold text-lg">
                       مبلغ کل سفارش:
                     </span>

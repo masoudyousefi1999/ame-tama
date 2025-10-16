@@ -95,7 +95,7 @@ export function OrderDetailModal({
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsEditModalOpen(true)}
-                className="hover:bg-gray-700 text-gray-300"
+                className="bg-orange-500/20 hover:bg-orange-500/30 text-orange-300 hover:text-orange-200 border border-orange-500/30 hover:border-orange-500/50"
               >
                 <Edit3 className="h-4 w-4 ml-2" />
                 ویرایش

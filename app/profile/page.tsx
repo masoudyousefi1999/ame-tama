@@ -8,11 +8,6 @@ import {
   MapPin,
   ShoppingBag,
   LogOut,
-  Package,
-  Truck,
-  Clock,
-  CheckCircle,
-  AlertCircle,
 } from "lucide-react";
 
 import { useAuth } from "@/context/auth-context";
@@ -29,8 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { customFetch } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { OrderStatusBadge } from "@/components/order/order-status-badge";
-import { formatPriceRaw } from "@/lib/format-price";
+import { OrderCard } from "@/components/order/order-card";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -262,87 +256,11 @@ export default function ProfilePage() {
                   <>
                     <div className="space-y-6">
                       {orders.slice(0, 3).map((order) => (
-                        <Card key={order.id} className="overflow-hidden">
-                          <CardHeader className="bg-muted/50">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                              <div>
-                                <CardTitle className="text-lg">
-                                  سفارش #{order.id.slice(0, 8)}
-                                </CardTitle>
-                                <CardDescription>
-                                  {order.date} • {order.items.length} محصول
-                                </CardDescription>
-                              </div>
-                              <div className="flex items-center gap-4">
-                                <OrderStatusBadge status={order.status} />
-                              </div>
-                            </div>
-                          </CardHeader>
-                          <CardContent className="p-6">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-                              <div className="text-center">
-                                <p className="text-sm text-muted-foreground">
-                                  مبلغ کل
-                                </p>
-                                <p className="text-lg font-semibold">
-                                  {formatPriceRaw(order.total)}
-                                </p>
-                              </div>
-                              <div className="text-center">
-                                <p className="text-sm text-muted-foreground">
-                                  وضعیت
-                                </p>
-                                <OrderStatusBadge status={order.status} />
-                              </div>
-                              <div className="text-center">
-                                <p className="text-sm text-muted-foreground">
-                                  تاریخ
-                                </p>
-                                <p className="text-lg font-semibold">
-                                  {order.date}
-                                </p>
-                              </div>
-                            </div>
-                            {/* Order items preview */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {order.items
-                                .slice(0, 3)
-                                .map((item: any, index: number) => (
-                                  <div
-                                    key={index}
-                                    className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg"
-                                  >
-                                    <div className="relative h-12 w-12 flex-shrink-0">
-                                      <img
-                                        src={
-                                          item.product.productMedia.find(
-                                            (m: any) => m.isDefault
-                                          )?.url || "/placeholder.svg"
-                                        }
-                                        alt={item.product.name}
-                                        className="object-cover rounded-md"
-                                      />
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                      <p className="text-sm font-medium truncate">
-                                        {item.product.name}
-                                      </p>
-                                      <p className="text-xs text-muted-foreground">
-                                        {item.quantity} عدد
-                                      </p>
-                                    </div>
-                                  </div>
-                                ))}
-                              {order.items.length > 3 && (
-                                <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg">
-                                  <p className="text-sm text-muted-foreground">
-                                    +{order.items.length - 3} محصول دیگر
-                                  </p>
-                                </div>
-                              )}
-                            </div>
-                          </CardContent>
-                        </Card>
+                        <OrderCard
+                          key={order.id}
+                          order={order}
+                          variant="compact"
+                        />
                       ))}
                     </div>
                     <div className="mt-8 text-center">
