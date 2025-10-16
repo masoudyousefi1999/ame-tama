@@ -11,6 +11,24 @@ export const OrderStatusBadge = ({
   className = "",
 }: OrderStatusBadgeProps) => {
   switch (status) {
+    case "open":
+      return (
+        <Badge
+          className={`bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800/20 dark:text-gray-400 border-gray-200 dark:border-gray-800 ${className}`}
+        >
+          <Package className="ml-1 h-3 w-3" />
+          باز
+        </Badge>
+      );
+    case "pending":
+      return (
+        <Badge
+          className={`bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800 ${className}`}
+        >
+          <Clock className="ml-1 h-3 w-3" />
+          در انتظار
+        </Badge>
+      );
     case "confirmed":
       return (
         <Badge
@@ -26,7 +44,7 @@ export const OrderStatusBadge = ({
           className={`bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400 border-blue-200 dark:border-blue-800 ${className}`}
         >
           <Truck className="ml-1 h-3 w-3" />
-          ارسال شده
+          در حال ارسال
         </Badge>
       );
     case "shipped":
@@ -35,25 +53,7 @@ export const OrderStatusBadge = ({
           className={`bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800 ${className}`}
         >
           <Package className="ml-1 h-3 w-3" />
-          دریافت شده
-        </Badge>
-      );
-    case "delivered":
-      return (
-        <Badge
-          className={`bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800 ${className}`}
-        >
-          <CheckCircle className="ml-1 h-3 w-3" />
-          تحویل شده
-        </Badge>
-      );
-    case "processing":
-      return (
-        <Badge
-          className={`bg-amber-100 text-amber-800 hover:bg-amber-200 dark:bg-amber-800/20 dark:text-amber-400 border-amber-200 dark:border-amber-800 ${className}`}
-        >
-          <Clock className="ml-1 h-3 w-3" />
-          در حال پردازش
+          ارسال شده
         </Badge>
       );
     case "cancelled":
@@ -63,15 +63,6 @@ export const OrderStatusBadge = ({
         >
           <AlertCircle className="ml-1 h-3 w-3" />
           لغو شده
-        </Badge>
-      );
-    case "pending":
-      return (
-        <Badge
-          className={`bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800 ${className}`}
-        >
-          <Clock className="ml-1 h-3 w-3" />
-          در انتظار
         </Badge>
       );
     default:
@@ -89,41 +80,11 @@ export const OrderStatusBadge = ({
 
 // Status configuration for easy access
 export const ORDER_STATUS_CONFIG = {
-  confirmed: {
-    label: "تایید شده",
-    icon: CheckCircle,
-    className:
-      "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-800/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
-  },
-  shipping: {
-    label: "ارسال شده",
-    icon: Truck,
-    className:
-      "bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400 border-blue-200 dark:border-blue-800",
-  },
-  shipped: {
-    label: "دریافت شده",
+  open: {
+    label: "باز",
     icon: Package,
     className:
-      "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800",
-  },
-  delivered: {
-    label: "تحویل شده",
-    icon: CheckCircle,
-    className:
-      "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800",
-  },
-  processing: {
-    label: "در حال پردازش",
-    icon: Clock,
-    className:
-      "bg-amber-100 text-amber-800 hover:bg-amber-200 dark:bg-amber-800/20 dark:text-amber-400 border-amber-200 dark:border-amber-800",
-  },
-  cancelled: {
-    label: "لغو شده",
-    icon: AlertCircle,
-    className:
-      "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/20 dark:text-red-400 border-red-200 dark:border-red-800",
+      "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800/20 dark:text-gray-400 border-gray-200 dark:border-gray-800",
   },
   pending: {
     label: "در انتظار",
@@ -131,15 +92,30 @@ export const ORDER_STATUS_CONFIG = {
     className:
       "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
   },
+  confirmed: {
+    label: "تایید شده",
+    icon: CheckCircle,
+    className:
+      "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-800/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+  },
+  shipping: {
+    label: "در حال ارسال",
+    icon: Truck,
+    className:
+      "bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+  },
+  shipped: {
+    label: "ارسال شده",
+    icon: Package,
+    className:
+      "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800",
+  },
+  cancelled: {
+    label: "لغو شده",
+    icon: AlertCircle,
+    className:
+      "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/20 dark:text-red-400 border-red-200 dark:border-red-800",
+  },
 } as const;
 
 export type OrderStatus = keyof typeof ORDER_STATUS_CONFIG;
-
-
-
-
-
-
-
-
-

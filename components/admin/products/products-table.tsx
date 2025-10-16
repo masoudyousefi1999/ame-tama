@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Link from "next/link";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Edit, Trash2, Star } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { formatPrice } from "@/lib/format-price";
 
 interface Product {
   uuid: string;
@@ -51,115 +52,108 @@ export function ProductsTable({ data }: ProductsTableProps) {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const handleDelete = async (productId: string) => {
-    setIsDeleting(productId);
-    try {
-      // Replace with actual API call
-      const response = await fetch(`/api/product/${productId}`, {
-        method: "DELETE",
-      });
+  const handleDelete = useCallback(
+    async (productId: string) => {
+      setIsDeleting(productId);
+      try {
+        const response = await fetch(`/api/product/${productId}`, {
+          method: "DELETE",
+        });
 
-      if (!response.ok) {
-        throw new Error("Failed to delete product");
+        if (!response.ok) {
+          throw new Error("Failed to delete product");
+        }
+
+        toast({
+          title: "موفقیت",
+          description: "محصول با موفقیت حذف شد",
+          className: "bg-green-600 text-white",
+        });
+
+        // Refresh the page or update the data
+        window.location.reload();
+      } catch (error) {
+        toast({
+          title: "خطا",
+          description: "حذف محصول با شکست مواجه شد",
+          variant: "error",
+          className: "bg-red-600 text-white",
+        });
+      } finally {
+        setIsDeleting(null);
       }
-
-      toast({
-        title: "موفقیت",
-        description: "محصول با موفقیت حذف شد",
-        className: "bg-green-600 text-white",
-      });
-
-      // Refresh the page or update the data
-      window.location.reload();
-    } catch (error) {
-      toast({
-        title: "خطا",
-        description: "حذف محصول با شکست مواجه شد",
-        variant: "error",
-        className: "bg-red-600 text-white",
-      });
-    } finally {
-      setIsDeleting(null);
-    }
-  };
+    },
+    [toast]
+  );
 
   return (
     <div className="overflow-hidden" dir="rtl">
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>
-            <TableRow className="border-gray-200 dark:border-gray-700">
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
-                تصویر
-              </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
-                نام
-              </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
-                قیمت
-              </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
-                موجودی
-              </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
+            <TableRow className="border-gray-700 hover:bg-transparent">
+              <TableHead className="text-right text-gray-300">تصویر</TableHead>
+              <TableHead className="text-right text-gray-300">نام</TableHead>
+              <TableHead className="text-right text-gray-300">قیمت</TableHead>
+              <TableHead className="text-right text-gray-300">موجودی</TableHead>
+              <TableHead className="text-right text-gray-300">
                 دسته‌بندی
               </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium">
-                امتیاز
-              </TableHead>
-              <TableHead className="sticky top-0 bg-gray-50/90 dark:bg-gray-800/90 text-gray-900 dark:text-gray-100 font-medium text-left">
-                عملیات
-              </TableHead>
+              <TableHead className="text-right text-gray-300">امتیاز</TableHead>
+              <TableHead className="text-left text-gray-300">عملیات</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.products.map((product, index) => (
+            {data.products.map((product) => (
               <TableRow
                 key={product.uuid}
-                className={`border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${
-                  index % 2 === 0
-                    ? "bg-white dark:bg-gray-800"
-                    : "bg-gray-50/50 dark:bg-gray-700/25"
-                }`}
+                className="border-gray-700 hover:bg-gray-700/30 transition-colors"
               >
-                <TableCell>
-                  <Image
-                    src={product.image || "/placeholder.svg"}
-                    alt={product.name}
-                    width={48}
-                    height={48}
-                    className="rounded-lg object-cover border border-gray-200 dark:border-gray-700"
-                  />
+                <TableCell className="text-right">
+                  <Link href={`/admin/products/${product.uuid}/edit`}>
+                    <Image
+                      src={product.image || "/placeholder.svg"}
+                      alt={product.name}
+                      width={48}
+                      height={48}
+                      className="rounded-lg object-cover border border-gray-600 cursor-pointer hover:opacity-80 transition-opacity"
+                    />
+                  </Link>
                 </TableCell>
-                <TableCell className="font-medium text-gray-900 dark:text-gray-100 max-w-xs">
-                  <div className="truncate">{product.name}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400 truncate">
-                    {product.slug}
-                  </div>
+                <TableCell className="text-right font-medium text-white max-w-xs">
+                  <Link
+                    href={`/admin/products/${product.uuid}/edit`}
+                    className="hover:text-purple-400 transition-colors"
+                  >
+                    <div className="truncate">{product.name}</div>
+                    <div className="text-sm text-gray-400 truncate">
+                      {product.slug}
+                    </div>
+                  </Link>
                 </TableCell>
-                <TableCell className="font-semibold text-gray-900 dark:text-gray-100">
-                  ${product.price.toLocaleString("fa-IR")}
+                <TableCell className="text-right font-semibold text-white">
+                  {formatPrice(product.price)}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   <Badge
                     variant={product.quantity > 0 ? "default" : "destructive"}
                     className={`${
                       product.quantity > 0
-                        ? "bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
-                        : "bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"
+                        ? "bg-emerald-900/30 text-emerald-400 border-emerald-700"
+                        : "bg-red-900/30 text-red-400 border-red-700"
                     }`}
                   >
-                    {product.quantity.toLocaleString("fa-IR")} موجود
+                    {product.quantity} موجود
                   </Badge>
                 </TableCell>
-                <TableCell className="text-gray-600 dark:text-gray-400">
+                <TableCell className="text-right text-gray-400">
                   {product.category}
                 </TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   <div className="flex items-center">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 ml-1" />
-                    <span className="text-gray-900 dark:text-gray-100 font-medium">
-                      {product.rating.toLocaleString("fa-IR")}
+                    <span className="text-white font-medium">
+                      {product.rating}
                     </span>
                   </div>
                 </TableCell>
@@ -169,7 +163,7 @@ export function ProductsTable({ data }: ProductsTableProps) {
                       variant="ghost"
                       size="sm"
                       asChild
-                      className="hover:bg-gray-100 dark:hover:bg-gray-600"
+                      className="hover:bg-gray-700 text-gray-300 hover:text-white"
                     >
                       <Link href={`/admin/products/${product.uuid}/edit`}>
                         <Edit className="h-4 w-4" />
@@ -180,26 +174,26 @@ export function ProductsTable({ data }: ProductsTableProps) {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="hover:bg-red-50 dark:hover:bg-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                          className="hover:bg-gray-700 text-red-400 hover:text-red-300"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </AlertDialogTrigger>
                       <AlertDialogContent
-                        className="bg-white dark:bg-gray-800"
+                        className="bg-gray-800 border-gray-700"
                         dir="rtl"
                       >
                         <AlertDialogHeader>
-                          <AlertDialogTitle className="text-gray-900 dark:text-gray-100">
+                          <AlertDialogTitle className="text-white">
                             آیا مطمئن هستید؟
                           </AlertDialogTitle>
-                          <AlertDialogDescription className="text-gray-600 dark:text-gray-400">
+                          <AlertDialogDescription className="text-gray-400">
                             این عمل قابل بازگشت نیست. این کار محصول را به طور
                             دائم حذف خواهد کرد.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel className="bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
+                          <AlertDialogCancel className="bg-gray-700 hover:bg-gray-600 text-white border-gray-600">
                             لغو
                           </AlertDialogCancel>
                           <AlertDialogAction

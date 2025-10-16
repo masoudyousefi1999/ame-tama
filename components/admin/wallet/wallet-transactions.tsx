@@ -94,7 +94,7 @@ export function WalletTransactions({ transactions }: WalletTransactionsProps) {
                       }`}
                     >
                       {transaction.type === "income" ? "+" : "-"}$
-                      {transaction.amount.toLocaleString("fa-IR")}
+                      {transaction.amount}
                     </TableCell>
                     <TableCell className="text-gray-600 dark:text-gray-400">
                       {new Date(transaction.createdAt).toLocaleDateString(

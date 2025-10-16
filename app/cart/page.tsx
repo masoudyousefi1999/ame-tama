@@ -550,7 +550,7 @@ export default function CartPage() {
                       {discount > 0 && (
                         <div className="flex justify-between text-green-600">
                           <span>تخفیف:</span>
-                          <span>-{discount.toLocaleString("fa-IR")} تومان</span>
+                          <span>-{discount} تومان</span>
                         </div>
                       )}
                       <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">

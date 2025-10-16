@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getSubcategories } from "@/lib/categories";
 import type { ICategoryType } from "@/lib/categories";
 import Link from "next/link";
+import { formatPrice } from "@/lib/format-price";
 
 interface CategoryFiltersProps {
   priceRange: [number, number];
@@ -103,8 +104,8 @@ export default function CategoryFilters({
           className="mb-6"
         />
         <div className="flex justify-between text-sm text-muted-foreground">
-          <span>{localPriceRange[0].toLocaleString("fa-IR")}K</span>
-          <span>{localPriceRange[1].toLocaleString("fa-IR")}K</span>
+          <span>{formatPrice(localPriceRange[0])}</span>
+          <span>{formatPrice(localPriceRange[1])}</span>
         </div>
       </div>
 

@@ -1,27 +1,33 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
-import { IUser, UsersTable } from "@/components/admin/users/users-table";
+import type { IUser } from "@/components/admin/users/users-table";
+import { UsersPageClient } from "@/components/admin/users/users-page-client";
 import { customFetch } from "@/lib/utils";
-import { headers } from "next/headers";
+
+const DEFAULT_LIMIT = 20;
+
+interface UsersResponse {
+  users: IUser[];
+  total?: number;
+  totalCount?: number;
+}
 
 async function getUsers(
   searchParams: Promise<{ page?: string; limit?: string }>
 ) {
   const params = await searchParams;
-  const page = Number.parseInt(params.page || "1");
-  const limit = Number.parseInt(params.limit || "10");
+  const page = Number.parseInt(params.page || "1", 10);
+  const limit = Number.parseInt(params.limit || String(DEFAULT_LIMIT), 10);
 
-  const cookie = (await headers()).get("cookie");
+  const res = await customFetch(`/users?page=${page}&limit=${limit}`);
 
-  const res = await customFetch("/users", {
-    headers: {
-      cookie: cookie ?? "",
-    },
-  });
+  if (!res.ok) {
+    throw new Error(`Failed to fetch users: ${res.statusText}`);
+  }
 
-  const users = await res.json();
-  return users;
+  const data = (await res.json()) as UsersResponse;
+  return data;
 }
 
 export default async function UsersPage({
@@ -29,24 +35,24 @@ export default async function UsersPage({
 }: {
   searchParams: Promise<{ page?: string; limit?: string }>;
 }) {
-  const users = (await getUsers(searchParams)) as IUser[];
+  const params = await searchParams;
+  const page = Number.parseInt(params.page || "1", 10);
+  const limit = Number.parseInt(params.limit || String(DEFAULT_LIMIT), 10);
 
-  const data = { users, total: users.length, page: 1, limit: 10 };
+  const response = await getUsers(searchParams);
+  const users = response.users || [];
+  const total = response.total || response.totalCount || users.length;
 
   return (
-    <div className="space-y-6" dir="rtl">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-200 dark:border-gray-700 pb-6">
+    <div className="space-y-4" dir="rtl">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            کاربران
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            مدیریت حساب‌های کاربری و مجوزها
-          </p>
+          <h1 className="text-2xl font-bold text-white">کاربران</h1>
+          <p className="text-gray-400 text-sm mt-1">{total} کاربر</p>
         </div>
         <Button
           asChild
-          className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full"
+          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white"
         >
           <Link href="/admin/users/new" prefetch={false}>
             <Plus className="ml-2 h-4 w-4" />
@@ -55,8 +61,13 @@ export default async function UsersPage({
         </Button>
       </div>
 
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700">
-        <UsersTable data={data} />
+      <div className="bg-gray-800/80 rounded-lg border border-gray-700">
+        <UsersPageClient
+          initialUsers={users}
+          initialTotal={total}
+          initialPage={page}
+          initialLimit={limit}
+        />
       </div>
     </div>
   );

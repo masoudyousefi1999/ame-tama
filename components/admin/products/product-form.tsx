@@ -17,8 +17,9 @@ import {
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { Upload, X, ImageIcon } from "lucide-react";
+import { Upload, X, ImageIcon, Plus } from "lucide-react";
 import { CustomImage as Image } from "@/components/ui/custom-image";
+import { formatPrice } from "@/lib/format-price";
 
 interface ProductMedia {
   mediaId: string;
@@ -35,6 +36,7 @@ interface Product {
   quantity: number;
   rating: number;
   categoryId: string;
+  categoryUuid?: string;
   detail: {
     series: string;
     character: string;
@@ -44,17 +46,30 @@ interface Product {
   productMedia?: ProductMedia[];
 }
 
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  uuid: string;
+  description?: string;
+  children?: Category[];
+  image?: string;
+}
+
 interface ProductFormProps {
   product?: Product;
+  categories?: Category[];
 }
 
 interface UploadedImage {
   uuid: string;
   preview: string;
   file: File;
+  url: string;
+  isDefault: boolean;
 }
 
-export function ProductForm({ product }: ProductFormProps) {
+export function ProductForm({ product, categories = [] }: ProductFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -65,6 +80,58 @@ export function ProductForm({ product }: ProductFormProps) {
   const [existingImages, setExistingImages] = useState<ProductMedia[]>(
     product?.productMedia || []
   );
+
+  // Parse specifications from string/array/object to array of key-value pairs
+  const parseSpecifications = (
+    specs: string | any[] | Record<string, any>
+  ): { key: string; value: string }[] => {
+    try {
+      // If already an array, return it
+      if (Array.isArray(specs)) {
+        return specs.length > 0 ? specs : [{ key: "", value: "" }];
+      }
+
+      // If object (key-value pairs), convert to array
+      if (
+        typeof specs === "object" &&
+        specs !== null &&
+        !Array.isArray(specs)
+      ) {
+        const entries = Object.entries(specs).map(([key, value]) => ({
+          key,
+          value: String(value),
+        }));
+        console.log("Converted object specifications to array:", entries);
+        return entries.length > 0 ? entries : [{ key: "", value: "" }];
+      }
+
+      // If string, try to parse it
+      if (typeof specs === "string" && specs) {
+        const parsed = JSON.parse(specs);
+
+        // If parsed result is an array
+        if (Array.isArray(parsed)) {
+          return parsed.length > 0 ? parsed : [{ key: "", value: "" }];
+        }
+
+        // If parsed result is an object, convert to array
+        if (typeof parsed === "object" && parsed !== null) {
+          const entries = Object.entries(parsed).map(([key, value]) => ({
+            key,
+            value: String(value),
+          }));
+          console.log("Converted parsed object to array:", entries);
+          return entries.length > 0 ? entries : [{ key: "", value: "" }];
+        }
+      }
+
+      // Default: return one empty field
+      return [{ key: "", value: "" }];
+    } catch (error) {
+      console.error("Error parsing specifications:", error);
+      return [{ key: "", value: "" }];
+    }
+  };
 
   const [formData, setFormData] = useState({
     name: product?.name || "",
@@ -81,25 +148,66 @@ export function ProductForm({ product }: ProductFormProps) {
     },
   });
 
+  const initialSpecs = parseSpecifications(
+    product?.detail?.specifications || ""
+  );
+  console.log("Initial specifications:", initialSpecs);
+  console.log("Product detail specs:", product?.detail?.specifications);
+
+  const [specifications, setSpecifications] =
+    useState<{ key: string; value: string }[]>(initialSpecs);
+
+  // Helper function to get category UUID from ID
+  const getCategoryUuidById = (categoryId: string): string => {
+    const category = categories.find((cat) => String(cat.id) === categoryId);
+    return category?.uuid || "";
+  };
+
+  // Add new specification field
+  const addSpecification = () => {
+    setSpecifications([...specifications, { key: "", value: "" }]);
+  };
+
+  // Remove specification field
+  const removeSpecification = (index: number) => {
+    if (specifications.length > 1) {
+      setSpecifications(specifications.filter((_, i) => i !== index));
+    }
+  };
+
+  // Update specification field
+  const updateSpecification = (
+    index: number,
+    field: "key" | "value",
+    value: string
+  ) => {
+    const updated = [...specifications];
+    updated[index][field] = value;
+    setSpecifications(updated);
+  };
+
   const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    // Validate files
+    // Validate files using utility
+    const { validateFile } = await import("@/lib/upload-utils");
     for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        toast({
-          title: "خطا",
-          description: "لطفاً فقط فایل‌های تصویری انتخاب کنید",
-          variant: "error",
-        });
-        return;
-      }
+      const validation = validateFile(file, {
+        maxSize: 5 * 1024 * 1024, // 5MB
+        allowedTypes: [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/gif",
+          "image/webp",
+        ],
+      });
 
-      if (file.size > 5 * 1024 * 1024) {
+      if (!validation.isValid) {
         toast({
           title: "خطا",
-          description: "حجم هر فایل نباید بیشتر از ۵ مگابایت باشد",
+          description: validation.error || "فایل نامعتبر است",
           variant: "error",
         });
         return;
@@ -109,6 +217,8 @@ export function ProductForm({ product }: ProductFormProps) {
     setIsUploading(true);
 
     try {
+      const { uploadFile } = await import("@/lib/upload-utils");
+
       const uploadPromises = files.map(async (file) => {
         // Create preview
         const preview = await new Promise<string>((resolve) => {
@@ -117,21 +227,16 @@ export function ProductForm({ product }: ProductFormProps) {
           reader.readAsDataURL(file);
         });
 
-        // Upload to server
-        const formData = new FormData();
-        formData.append("file", file);
+        // Upload to server using utility
+        const uploadedMedia = await uploadFile(file);
 
-        const response = await fetch("/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!response.ok) {
-          throw new Error(`Upload failed for ${file.name}`);
-        }
-
-        const { uuid } = await response.json();
-        return { uuid, preview, file };
+        return {
+          uuid: uploadedMedia.uuid,
+          preview,
+          file,
+          url: uploadedMedia.url,
+          isDefault: false,
+        };
       });
 
       const results = await Promise.all(uploadPromises);
@@ -143,10 +248,15 @@ export function ProductForm({ product }: ProductFormProps) {
         className: "bg-green-600 text-white",
       });
     } catch (error) {
+      console.error("Upload error:", error);
       toast({
         title: "خطا",
-        description: "آپلود تصاویر با شکست مواجه شد",
+        description:
+          error instanceof Error
+            ? error.message
+            : "آپلود تصاویر با شکست مواجه شد",
         variant: "error",
+        className: "bg-red-600 text-white",
       });
     } finally {
       setIsUploading(false);
@@ -164,16 +274,15 @@ export function ProductForm({ product }: ProductFormProps) {
     setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const setAsDefault = (type: "uploaded" | "existing", index: number) => {
+  const toggleDefaultImage = (type: "uploaded" | "existing", index: number) => {
     if (type === "uploaded") {
-      // Move selected image to first position
-      setUploadedImages((prev) => {
-        const newImages = [...prev];
-        const [selected] = newImages.splice(index, 1);
-        return [selected, ...newImages];
-      });
+      setUploadedImages((prev) =>
+        prev.map((img, i) => ({
+          ...img,
+          isDefault: i === index,
+        }))
+      );
     } else {
-      // Move selected existing image to first position
       setExistingImages((prev) => {
         const newImages = [...prev];
         const [selected] = newImages.splice(index, 1);
@@ -181,6 +290,8 @@ export function ProductForm({ product }: ProductFormProps) {
       });
     }
   };
+
+  const setAsDefault = toggleDefaultImage;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -195,39 +306,195 @@ export function ProductForm({ product }: ProductFormProps) {
       return;
     }
 
+    if (!formData.categoryId) {
+      toast({
+        title: "خطا",
+        description: "لطفاً دسته‌بندی را انتخاب کنید",
+        variant: "error",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const url = product ? `/api/products/${product.uuid}` : "/api/products";
-      const method = product ? "PATCH" : "POST";
+      // Get category UUID from selected category ID
+      const categoryUuid = getCategoryUuidById(formData.categoryId);
 
-      // Combine existing and new images
-      const allMediaUuids = [
-        ...existingImages.map((img) => img.mediaId),
-        ...uploadedImages.map((img) => img.uuid),
-      ];
+      if (!categoryUuid) {
+        throw new Error("دسته‌بندی معتبر نیست");
+      }
 
-      const productMedia = allMediaUuids.map((uuid, index) => ({
-        mediaId: uuid,
-        order: index,
-        isDefault: index === 0,
-      }));
+      // Filter and prepare specifications array (send as array, not string)
+      const specificationsArray = specifications.filter(
+        (spec) => spec.key.trim() !== "" && spec.value.trim() !== ""
+      );
 
-      const payload = {
-        ...formData,
-        productMedia,
-      };
+      const specificationsString = JSON.stringify(specificationsArray);
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      let payload: any;
+
+      if (product) {
+        // For update: only send changed fields
+        payload = {};
+
+        // Check each field for changes
+        if (formData.name !== product.name) {
+          payload.name = formData.name;
+        }
+        if (formData.slug !== product.slug) {
+          payload.slug = formData.slug;
+        }
+        if (formData.price !== product.price) {
+          payload.price = formData.price;
+        }
+        if (formData.quantity !== product.quantity) {
+          payload.quantity = formData.quantity;
+        }
+        if (formData.rating !== product.rating) {
+          payload.rating = formData.rating;
+        }
+
+        // Check if category changed
+        const currentCategoryUuid =
+          product.categoryUuid || getCategoryUuidById(product.categoryId);
+        if (categoryUuid !== currentCategoryUuid) {
+          payload.category = categoryUuid;
+        }
+
+        // Check productDetail fields for changes
+        let hasDetailChanges = false;
+        const detailChanges: any = {};
+
+        if (formData.detail.series !== product.detail?.series) {
+          detailChanges.series = formData.detail.series;
+          hasDetailChanges = true;
+        }
+        if (formData.detail.character !== product.detail?.character) {
+          detailChanges.character = formData.detail.character;
+          hasDetailChanges = true;
+        }
+        if (formData.detail.description !== product.detail?.description) {
+          detailChanges.description = formData.detail.description;
+          hasDetailChanges = true;
+        }
+        if (specificationsString !== product.detail?.specifications) {
+          // Send as array, not string
+          detailChanges.specifications = specificationsArray;
+          hasDetailChanges = true;
+        }
+
+        // If any detail changed, send ALL detail fields (API requirement)
+        if (hasDetailChanges) {
+          payload.productDetail = {
+            series:
+              detailChanges.series !== undefined
+                ? detailChanges.series
+                : formData.detail.series,
+            character:
+              detailChanges.character !== undefined
+                ? detailChanges.character
+                : formData.detail.character,
+            description:
+              detailChanges.description !== undefined
+                ? detailChanges.description
+                : formData.detail.description,
+            specifications:
+              detailChanges.specifications !== undefined
+                ? detailChanges.specifications
+                : specificationsArray,
+          };
+        }
+
+        // If no changes, show message and return
+        if (Object.keys(payload).length === 0) {
+          toast({
+            title: "اطلاعات",
+            description: "هیچ تغییری برای ذخیره وجود ندارد",
+            className: "bg-blue-600 text-white",
+          });
+          setIsLoading(false);
+          return;
+        }
+      } else {
+        // For create: send all fields with specifications as array
+        payload = {
+          name: formData.name,
+          slug: formData.slug,
+          price: formData.price,
+          quantity: formData.quantity,
+          rating: formData.rating,
+          category: categoryUuid,
+          productDetail: {
+            series: formData.detail.series,
+            character: formData.detail.character,
+            description: formData.detail.description,
+            specifications: specificationsArray,
+          },
+        };
+      }
+
+      let response;
+
+      if (product) {
+        // Update existing product
+        const { customFetch } = await import("@/lib/utils");
+        console.log("Sending PATCH with payload:", payload);
+        response = await customFetch(`/product/${product.uuid}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        // Create new product
+        const { customFetch } = await import("@/lib/utils");
+        response = await customFetch("/product", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+      }
 
       if (!response.ok) {
-        throw new Error("Failed to save product");
+        const errorData = await response.json().catch(() => ({}));
+        console.log("Error response:", errorData);
+        throw new Error(errorData.message || "Failed to save product");
+      }
+
+      const savedProduct = await response.json();
+      const productUuid = product?.uuid || savedProduct.uuid;
+
+      // If there are uploaded images, attach them to the product
+      if (uploadedImages.length > 0 && productUuid) {
+        const { attachMediaToProduct } = await import("@/lib/upload-utils");
+
+        try {
+          // Attach each uploaded image to the product
+          for (let i = 0; i < uploadedImages.length; i++) {
+            const image = uploadedImages[i];
+            await attachMediaToProduct(
+              productUuid,
+              image.uuid,
+              i,
+              image.isDefault
+            );
+          }
+
+          console.log(
+            `Successfully attached ${uploadedImages.length} images to product`
+          );
+        } catch (attachError) {
+          console.error("Error attaching media:", attachError);
+          toast({
+            title: "هشدار",
+            description: "محصول ذخیره شد اما برخی تصاویر اضافه نشدند",
+            className: "bg-yellow-600 text-white",
+          });
+        }
       }
 
       toast({
@@ -237,13 +504,18 @@ export function ProductForm({ product }: ProductFormProps) {
       });
 
       router.push("/admin/products");
+      router.refresh();
     } catch (error) {
+      console.log("Error:", error);
+      console.error("Error saving product:", error);
       toast({
         title: "خطا",
-        description: `${
-          product ? "به‌روزرسانی" : "ایجاد"
-        } محصول با شکست مواجه شد`,
+        description:
+          error instanceof Error
+            ? error.message
+            : `${product ? "به‌روزرسانی" : "ایجاد"} محصول با شکست مواجه شد`,
         variant: "error",
+        className: "bg-red-600 text-white",
       });
     } finally {
       setIsLoading(false);
@@ -254,9 +526,9 @@ export function ProductForm({ product }: ProductFormProps) {
 
   return (
     <div dir="rtl">
-      <Card className="max-w-4xl bg-white dark:bg-gray-800 rounded-2xl shadow-sm border-gray-200 dark:border-gray-700">
-        <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-          <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+      <Card className="max-w-4xl bg-gray-800/80 border-gray-700">
+        <CardHeader className="border-b border-gray-700">
+          <CardTitle className="text-lg font-semibold text-white">
             {product ? "ویرایش محصول" : "ایجاد محصول"}
           </CardTitle>
         </CardHeader>
@@ -266,7 +538,7 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="name"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
                   نام محصول
                 </Label>
@@ -277,7 +549,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
                   placeholder="نام محصول را وارد کنید"
                 />
               </div>
@@ -285,9 +557,9 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="slug"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
-                  نامک (Slug)
+                  اسلاگ محصول
                 </Label>
                 <Input
                   id="slug"
@@ -296,7 +568,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     setFormData({ ...formData, slug: e.target.value })
                   }
                   required
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
                   placeholder="product-slug"
                 />
               </div>
@@ -304,9 +576,9 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="price"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
-                  قیمت (تومان)
+                  قیمت (ریال)
                 </Label>
                 <Input
                   id="price"
@@ -316,15 +588,23 @@ export function ProductForm({ product }: ProductFormProps) {
                     setFormData({ ...formData, price: Number(e.target.value) })
                   }
                   required
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
                   placeholder="0"
                 />
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    معادل:
+                  </span>
+                  <span className="font-semibold text-purple-600 dark:text-purple-400">
+                    {formatPrice(formData.price)}
+                  </span>
+                </div>
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="quantity"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
                   موجودی
                 </Label>
@@ -339,7 +619,7 @@ export function ProductForm({ product }: ProductFormProps) {
                     })
                   }
                   required
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
                   placeholder="0"
                 />
               </div>
@@ -347,7 +627,7 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="rating"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
                   امتیاز
                 </Label>
@@ -361,7 +641,7 @@ export function ProductForm({ product }: ProductFormProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, rating: Number(e.target.value) })
                   }
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
                   placeholder="4.5"
                 />
               </div>
@@ -369,7 +649,7 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="categoryId"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
                   دسته‌بندی
                 </Label>
@@ -379,16 +659,29 @@ export function ProductForm({ product }: ProductFormProps) {
                     setFormData({ ...formData, categoryId: value })
                   }
                 >
-                  <SelectTrigger className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white">
+                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500">
                     <SelectValue placeholder="دسته‌بندی را انتخاب کنید" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700">
-                    <SelectItem value="1" className="dark:text-gray-300">
-                      گوشی هوشمند
-                    </SelectItem>
-                    <SelectItem value="2" className="dark:text-gray-300">
-                      لپ‌تاپ
-                    </SelectItem>
+                  <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 max-h-[300px] overflow-y-auto">
+                    {categories.length > 0 ? (
+                      categories.map((category) => (
+                        <SelectItem
+                          key={category.id}
+                          value={String(category.id)}
+                          className="dark:text-gray-300"
+                        >
+                          {category.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem
+                        value="0"
+                        disabled
+                        className="dark:text-gray-500"
+                      >
+                        دسته‌بندی موجود نیست
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>
@@ -398,9 +691,9 @@ export function ProductForm({ product }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="series"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
-                  سری
+                  اسم انیمه
                 </Label>
                 <Input
                   id="series"
@@ -411,17 +704,17 @@ export function ProductForm({ product }: ProductFormProps) {
                       detail: { ...formData.detail, series: e.target.value },
                     })
                   }
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
-                  placeholder="سری محصول"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  placeholder="اسم انیمه"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="character"
-                  className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                  className="text-sm font-medium text-gray-300"
                 >
-                  مشخصه
+                  شخصیت
                 </Label>
                 <Input
                   id="character"
@@ -432,8 +725,8 @@ export function ProductForm({ product }: ProductFormProps) {
                       detail: { ...formData.detail, character: e.target.value },
                     })
                   }
-                  className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
-                  placeholder="مشخصه محصول"
+                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  placeholder="شخصیت"
                 />
               </div>
             </div>
@@ -441,7 +734,7 @@ export function ProductForm({ product }: ProductFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="description"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
+                className="text-sm font-medium text-gray-300"
               >
                 توضیحات
               </Label>
@@ -454,39 +747,70 @@ export function ProductForm({ product }: ProductFormProps) {
                     detail: { ...formData.detail, description: e.target.value },
                   })
                 }
-                className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
+                className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
                 placeholder="توضیحات محصول را وارد کنید"
                 rows={3}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label
-                htmlFor="specifications"
-                className="text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
+            <div className="space-y-4">
+              <Label className="text-sm font-medium text-gray-300">
                 مشخصات فنی
               </Label>
-              <Textarea
-                id="specifications"
-                value={formData.detail.specifications}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    detail: {
-                      ...formData.detail,
-                      specifications: e.target.value,
-                    },
-                  })
-                }
-                className="border-gray-300 dark:border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-purple-500 dark:bg-gray-700 dark:text-white"
-                placeholder="مشخصات فنی محصول"
-                rows={3}
-              />
+              <div className="space-y-3">
+                {specifications.map((spec, index) => (
+                  <div
+                    key={index}
+                    className="flex gap-3 items-start bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border border-gray-200 dark:border-gray-600"
+                  >
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        placeholder="کلید (مثال: ارتفاع)"
+                        value={spec.key}
+                        onChange={(e) =>
+                          updateSpecification(index, "key", e.target.value)
+                        }
+                        className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                      />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <Input
+                        placeholder="مقدار (مثال: ۲۵ سانتی‌متر)"
+                        value={spec.value}
+                        onChange={(e) =>
+                          updateSpecification(index, "value", e.target.value)
+                        }
+                        className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                      />
+                    </div>
+                    {specifications.length > 1 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeSpecification(index)}
+                        className="hover:bg-red-50 dark:hover:bg-red-900/50 hover:text-red-600 dark:hover:text-red-400 mt-1"
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addSpecification}
+                className="w-full border-dashed border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"
+              >
+                <Plus className="h-4 w-4 ml-2" />
+                افزودن مشخصه جدید
+              </Button>
             </div>
 
             <div className="space-y-4">
-              <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Label className="text-sm font-medium text-gray-300">
                 تصاویر محصول
               </Label>
 
@@ -553,29 +877,33 @@ export function ProductForm({ product }: ProductFormProps) {
                       <div key={image.uuid} className="relative group">
                         <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
                           <Image
-                            src={image.preview || "/placeholder.svg"}
+                            src={
+                              image.preview || image.url || "/placeholder.svg"
+                            }
                             alt={`تصویر جدید ${index + 1}`}
                             fill
                             className="object-cover"
                           />
-                          {existingImages.length === 0 && index === 0 && (
+                          {image.isDefault && (
                             <div className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
                               اصلی
                             </div>
                           )}
                         </div>
-                        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
-                          {!(existingImages.length === 0 && index === 0) && (
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => setAsDefault("uploaded", index)}
-                              className="text-xs"
-                            >
-                              اصلی
-                            </Button>
-                          )}
+                        <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-2 p-2">
+                          <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-1 rounded-full">
+                            <input
+                              type="checkbox"
+                              checked={image.isDefault}
+                              onChange={() =>
+                                toggleDefaultImage("uploaded", index)
+                              }
+                              className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                            />
+                            <span className="text-xs text-gray-900 dark:text-gray-100">
+                              پیش‌فرض
+                            </span>
+                          </div>
                           <Button
                             type="button"
                             variant="destructive"

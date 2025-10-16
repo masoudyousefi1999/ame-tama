@@ -21,6 +21,7 @@ import { toast } from "@/components/ui/use-toast";
 import { getAllCategories, ICategoryType } from "@/lib/categories";
 import { ProductCard } from "../product/product-card";
 import { motion, AnimatePresence } from "framer-motion";
+import { formatPrice } from "@/lib/format-price";
 
 interface ProductGridProps {
   products: any[];
@@ -241,8 +242,8 @@ export default function ProductGrid({
                 className="mb-6"
               />
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>{priceRange[0].toLocaleString("fa-IR")}K</span>
-                <span>{priceRange[1].toLocaleString("fa-IR")}K</span>
+                <span>{formatPrice(priceRange[0])}</span>
+                <span>{formatPrice(priceRange[1])}</span>
               </div>
             </div>
 

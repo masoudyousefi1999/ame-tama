@@ -33,13 +33,13 @@ export default async function EditCategoryPage({
   const category = await getCategory(params.slug);
 
   return (
-    <div className="space-y-6" dir="rtl">
+    <div className="space-y-4" dir="rtl">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-bold text-white">
           ویرایش دسته‌بندی
         </h1>
-        <p className="text-gray-600 dark:text-gray-400 mt-2">
-          اطلاعات دسته‌بندی را ویرایش کنید
+        <p className="text-gray-400 text-sm mt-1">
+          {category.name}
         </p>
       </div>
 

@@ -9,13 +9,11 @@ export default async function CategoriesPage() {
     const categories = await res.json();
 
     return (
-      <div className="space-y-6" dir="rtl">
+      <div className="space-y-4" dir="rtl">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-            مدیریت دسته‌بندی‌ها
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
-            دسته‌بندی‌های محصولات را مدیریت کنید
+          <h1 className="text-2xl font-bold text-white">دسته‌بندی‌ها</h1>
+          <p className="text-gray-400 text-sm mt-1">
+            {categories.children?.length || 0} دسته‌بندی
           </p>
         </div>
 

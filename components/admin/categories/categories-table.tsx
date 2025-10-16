@@ -94,41 +94,54 @@ export function CategoriesTable({
 
   return (
     <div className="space-y-4" dir="rtl">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold tracking-tight">دسته‌بندی‌ها</h2>
+      <div className="flex justify-end">
         <Button
           onClick={() => router.push("/admin/categories/new")}
-          className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full"
+          className="bg-purple-600 hover:bg-purple-700 text-white"
         >
           <Plus className="ml-2 h-4 w-4" /> افزودن دسته‌بندی
         </Button>
       </div>
 
-      <div className="rounded-lg border bg-white dark:bg-gray-800 shadow-sm">
+      <div className="bg-gray-800/80 rounded-lg border border-gray-700">
         <div className="relative w-full overflow-auto">
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">تصویر</TableHead>
-                <TableHead>نام</TableHead>
-                <TableHead>نامک</TableHead>
-                <TableHead>توضیحات</TableHead>
-                <TableHead>تاریخ ایجاد</TableHead>
-                <TableHead className="text-left">عملیات</TableHead>
+              <TableRow className="border-gray-700 hover:bg-transparent">
+                <TableHead className="w-[80px] text-right text-gray-300">
+                  تصویر
+                </TableHead>
+                <TableHead className="text-right text-gray-300">نام</TableHead>
+                <TableHead className="text-right text-gray-300">نامک</TableHead>
+                <TableHead className="text-right text-gray-300">
+                  توضیحات
+                </TableHead>
+                <TableHead className="text-right text-gray-300">
+                  تاریخ ایجاد
+                </TableHead>
+                <TableHead className="text-left text-gray-300">
+                  عملیات
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {categories.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center">
+                <TableRow className="border-gray-700">
+                  <TableCell
+                    colSpan={6}
+                    className="h-24 text-center text-gray-400"
+                  >
                     هیچ دسته‌بندی یافت نشد
                   </TableCell>
                 </TableRow>
               ) : (
                 categories.map((category) => (
-                  <TableRow key={category.id}>
-                    <TableCell>
-                      <div className="relative w-10 h-10 rounded-md overflow-hidden">
+                  <TableRow
+                    key={category.id}
+                    className="border-gray-700 hover:bg-gray-700/30 transition-colors"
+                  >
+                    <TableCell className="text-right">
+                      <div className="relative w-10 h-10 rounded-md overflow-hidden bg-gray-700">
                         <Image
                           src={
                             category.image ||
@@ -140,14 +153,18 @@ export function CategoriesTable({
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="font-medium">
+                    <TableCell className="text-right font-medium text-white">
                       {category.name}
                     </TableCell>
-                    <TableCell>{category.slug}</TableCell>
-                    <TableCell className="max-w-[200px] truncate">
+                    <TableCell className="text-right text-gray-400">
+                      {category.slug}
+                    </TableCell>
+                    <TableCell className="text-right max-w-[200px] truncate text-gray-400">
                       {category.description}
                     </TableCell>
-                    <TableCell>{formatDate(category.createdAt)}</TableCell>
+                    <TableCell className="text-right text-gray-400">
+                      {formatDate(category.createdAt)}
+                    </TableCell>
                     <TableCell>
                       <div className="flex space-x-reverse space-x-2 justify-end">
                         <Button
@@ -158,6 +175,7 @@ export function CategoriesTable({
                               `/admin/categories/${category.slug}/edit`
                             )
                           }
+                          className="hover:bg-gray-700 text-gray-300 hover:text-white"
                         >
                           <Edit className="h-4 w-4" />
                           <span className="sr-only">ویرایش</span>
@@ -166,8 +184,9 @@ export function CategoriesTable({
                           variant="ghost"
                           size="icon"
                           onClick={() => setDeleteId(category.id)}
+                          className="hover:bg-gray-700 text-red-400 hover:text-red-300"
                         >
-                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <Trash2 className="h-4 w-4" />
                           <span className="sr-only">حذف</span>
                         </Button>
                       </div>
@@ -184,16 +203,20 @@ export function CategoriesTable({
         open={!!deleteId}
         onOpenChange={(open) => !open && setDeleteId(null)}
       >
-        <AlertDialogContent dir="rtl">
+        <AlertDialogContent dir="rtl" className="bg-gray-800 border-gray-700">
           <AlertDialogHeader>
-            <AlertDialogTitle>تأیید حذف</AlertDialogTitle>
-            <AlertDialogDescription>
+            <AlertDialogTitle className="text-white">
+              تأیید حذف
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-400">
               آیا از حذف این دسته‌بندی اطمینان دارید؟ این عمل غیرقابل بازگشت
               است.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-row-reverse space-x-reverse space-x-2">
-            <AlertDialogCancel>لغو</AlertDialogCancel>
+            <AlertDialogCancel className="bg-gray-700 hover:bg-gray-600 text-white border-gray-600">
+              لغو
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}

@@ -15,6 +15,7 @@ import LoginToastEffect from "@/components/LoginToastEffect";
 import localFont from "next/font/local";
 import SchemaOrg from "@/components/seo/schema-org";
 import Script from "next/script";
+import ConditionalLayout from "@/components/conditional-layout";
 
 const baseUrl = "https://ame-tama.com";
 
@@ -123,12 +124,7 @@ export default function RootLayout({
             <CartProvider>
               <WishlistProvider>
                 <ImageProvider>
-                  <SkipLink href="#main-content" />
-                  <Navbar />
-                  <main id="main-content" className="min-h-screen">
-                    {children}
-                  </main>
-                  <Footer />
+                  <ConditionalLayout>{children}</ConditionalLayout>
                   <Toaster />
                 </ImageProvider>
               </WishlistProvider>

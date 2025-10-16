@@ -252,9 +252,9 @@ export function CategoryForm({ category }: CategoryFormProps) {
   };
 
   return (
-    <Card className="max-w-2xl bg-white dark:bg-gray-800" dir="rtl">
-      <CardHeader className="border-b border-gray-200 dark:border-gray-700">
-        <CardTitle className="text-xl font-semibold text-gray-900 dark:text-white">
+    <Card className="max-w-2xl bg-gray-800/80 border-gray-700" dir="rtl">
+      <CardHeader className="border-b border-gray-700">
+        <CardTitle className="text-lg font-semibold text-white">
           {category ? "ویرایش دسته‌بندی" : "ایجاد دسته‌بندی جدید"}
         </CardTitle>
       </CardHeader>
@@ -263,7 +263,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="name"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-gray-300"
             >
               نام دسته‌بندی *
             </Label>
@@ -274,7 +274,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
               placeholder="نام دسته‌بندی را وارد کنید"
-              className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+              className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
               required
             />
           </div>
@@ -282,7 +282,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="slug"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-gray-300"
             >
               اسلاگ
             </Label>
@@ -293,9 +293,9 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 setFormData((prev) => ({ ...prev, slug: e.target.value }))
               }
               placeholder="اسلاگ"
-              className="border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+              className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
             />
-            <p className="text-xs text-gray-500 dark:text-gray-400">
+            <p className="text-xs text-gray-500">
               نامک برای URL استفاده می‌شود و باید منحصر به فرد باشد
             </p>
           </div>
@@ -303,7 +303,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="description"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-gray-300"
             >
               توضیحات
             </Label>
@@ -317,7 +317,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 }))
               }
               placeholder="توضیحات دسته‌بندی را وارد کنید"
-              className="  border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-purple-500"
+              className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
               rows={3}
             />
           </div>
@@ -325,7 +325,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="parentId"
-              className="text-sm font-medium text-gray-700 dark:text-gray-300"
+              className="text-sm font-medium text-gray-300"
             >
               دسته‌بندی والد
             </Label>
@@ -361,7 +361,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <Label className="text-sm font-medium text-gray-300">
               تصویر دسته‌بندی {!category && "*"}
             </Label>
 
@@ -370,7 +370,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 <img
                   src={imagePreview || "/placeholder.svg"}
                   alt="پیش‌نمایش تصویر"
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-600"
+                  className="w-32 h-32 object-cover rounded-lg border-2 border-gray-600"
                 />
                 <Button
                   type="button"
@@ -383,7 +383,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 </Button>
               </div>
             ) : (
-              <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors">
+              <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors">
                 <input
                   type="file"
                   accept="image/*"
@@ -400,16 +400,16 @@ export function CategoryForm({ category }: CategoryFormProps) {
                   className="cursor-pointer flex flex-col items-center space-y-2"
                 >
                   {isUploading ? (
-                    <Loader2 className="h-8 w-8 animate-spin text-purple-600" />
+                    <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
                   ) : (
                     <ImageIcon className="h-8 w-8 text-gray-400" />
                   )}
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-sm text-gray-400">
                     {isUploading
                       ? "در حال آپلود..."
                       : "برای انتخاب تصویر کلیک کنید"}
                   </span>
-                  <span className="text-xs text-gray-500 dark:text-gray-500">
+                  <span className="text-xs text-gray-500">
                     حداکثر ۵ مگابایت - JPG, PNG, GIF
                   </span>
                 </label>
@@ -421,7 +421,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
             <Button
               type="submit"
               disabled={isLoading || isUploading || (!category && !imageUuid)}
-              className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center">
@@ -438,7 +438,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
               type="button"
               variant="outline"
               onClick={() => router.push("/admin/categories")}
-              className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full"
+              className="w-full sm:w-auto border-gray-600 bg-transparent text-gray-300 hover:bg-gray-700"
             >
               لغو
             </Button>

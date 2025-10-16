@@ -86,7 +86,6 @@ export default function OrdersPage() {
   const router = useRouter();
   const { user, isLoading } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isLoadingOrders, setIsLoadingOrders] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
 
@@ -142,22 +141,17 @@ export default function OrdersPage() {
     }
   }, [user, isLoading, router]);
 
+  // Fetch orders when tab changes
+  useEffect(() => {
+    if (user && activeTab) {
+      fetchOrders(activeTab);
+    }
+  }, [activeTab, user]);
+
   // اگر در حال بارگذاری است یا کاربر وارد نشده، چیزی نمایش نمی‌دهیم
   if (isLoading || !user) {
     return null;
   }
-
-  const handleOrderSelect = (order: Order) => {
-    try {
-      setSelectedOrder(order);
-    } catch (error) {
-      toast({
-        title: "خطا در نمایش جزئیات سفارش",
-        description: "مشکلی در نمایش جزئیات سفارش رخ داد.",
-        variant: "error",
-      });
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
@@ -246,20 +240,42 @@ export default function OrdersPage() {
           {/* ---------------------------------------------------------------- */}
           {/*  Tabs header                                                    */}
           {/* ---------------------------------------------------------------- */}
-          <TabsList className="grid grid-cols-4 max-w-md mx-auto mb-8 h-15 sm:h-12">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-3xl mx-auto mb-8 bg-gray-800/50 border border-gray-700">
             {[
-              { value: "all", icon: Package, label: "همه" },
-              { value: "processing", icon: Clock, label: "در حال پردازش" },
-              { value: "shipped", icon: Truck, label: "ارسال شده" },
-              { value: "delivered", icon: CheckCircle, label: "تحویل شده" },
+              { value: "all", icon: Package, label: "همه", mobileLabel: "همه" },
+              {
+                value: "confirmed",
+                icon: CheckCircle,
+                label: "تایید شده",
+                mobileLabel: "تایید",
+              },
+              {
+                value: "shipping",
+                icon: Truck,
+                label: "در حال ارسال",
+                mobileLabel: "ارسال",
+              },
+              {
+                value: "shipped",
+                icon: Package,
+                label: "ارسال شده",
+                mobileLabel: "ارسال شده",
+              },
+              {
+                value: "cancelled",
+                icon: Clock,
+                label: "لغو شده",
+                mobileLabel: "لغو",
+              },
             ].map((t) => (
               <TabsTrigger
                 key={t.value}
                 value={t.value}
-                className="flex items-center justify-center px-4 py-2"
+                className="flex items-center justify-center px-3 py-3 data-[state=active]:bg-orange-500 data-[state=active]:text-white transition-all"
               >
                 <t.icon className="ml-2 h-4 w-4" />
-                {t.label}
+                <span className="hidden sm:inline">{t.label}</span>
+                <span className="sm:hidden text-xs">{t.mobileLabel}</span>
               </TabsTrigger>
             ))}
           </TabsList>
@@ -267,185 +283,117 @@ export default function OrdersPage() {
           {/* ================================================================ */}
           {/*  Tab content                                                    */}
           {/* ================================================================ */}
-          <TabsContent value={activeTab}>
-            {isLoadingOrders ? (
-              <div className="flex justify-center py-12">
-                <LoadingSpinner size="lg" />
-              </div>
-            ) : orders.length > 0 ? (
-              <div className="space-y-6">
-                {orders.map((order) => (
-                  <Card key={order.id} className="overflow-hidden">
-                    <CardHeader className="bg-muted/50">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                          <CardTitle className="text-lg">
-                            سفارش #{order.id.slice(0, 8)}
-                          </CardTitle>
-                          <CardDescription>
-                            {order.date} • {order.items.length} محصول
-                          </CardDescription>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <OrderStatusBadge status={order.status} />
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleOrderSelect(order)}
-                          >
-                            مشاهده جزئیات
-                          </Button>
-                        </div>
-                      </div>
-                    </CardHeader>
+          {["all", "confirmed", "shipping", "shipped", "cancelled"].map(
+            (tabValue) => (
+              <TabsContent key={tabValue} value={tabValue}>
+                {isLoadingOrders ? (
+                  <div className="flex justify-center py-12">
+                    <LoadingSpinner size="lg" />
+                  </div>
+                ) : orders.length > 0 ? (
+                  <div className="space-y-6">
+                    {orders.map((order) => (
+                      <div
+                        key={order.id}
+                        className="group relative bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-orange-500/50 transition-all duration-300 overflow-hidden"
+                      >
+                        {/* Background Pattern */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                    <CardContent className="p-6">
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div className="text-center">
-                          <p className="text-sm text-muted-foreground">
-                            مبلغ کل
-                          </p>
-                          <p className="text-lg font-semibold">
-                            {formatPriceDivided(order.total)}
-                          </p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-muted-foreground">وضعیت</p>
-                          <OrderStatusBadge status={order.status} />
-                        </div>
-                        <div className="text-center">
-                          <p className="text-sm text-muted-foreground">تاریخ</p>
-                          <p className="text-lg font-semibold">{order.date}</p>
-                        </div>
-                      </div>
+                        <div className="relative p-6">
+                          {/* Header */}
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <div className="flex items-center gap-2 bg-gray-700/50 rounded-lg px-3 py-1.5">
+                                  <Package className="h-4 w-4 text-orange-400" />
+                                  <span className="text-sm font-mono font-semibold text-white">
+                                    #{order.id.slice(0, 8)}
+                                  </span>
+                                </div>
+                                <OrderStatusBadge status={order.status} />
+                              </div>
+                              <p className="text-sm text-gray-400 flex items-center gap-2">
+                                <Clock className="h-3.5 w-3.5" />
+                                {order.date}
+                              </p>
+                            </div>
+                          </div>
 
-                      {/* Order items preview */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {order.items.slice(0, 3).map((item, index) => (
-                          <div
-                            key={index}
-                            className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg"
-                          >
-                            <div className="relative h-12 w-12 flex-shrink-0">
-                              <img
-                                src={
-                                  item.product.productMedia.find(
-                                    (m) => m.isDefault
-                                  )?.url || "/placeholder.svg"
+                          {/* Order Details Grid */}
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+                            {/* Products Count */}
+                            <div className="bg-gray-700/30 rounded-xl p-3 border border-gray-600/50">
+                              <p className="text-xs text-gray-400 mb-1">
+                                تعداد محصولات
+                              </p>
+                              <p className="text-lg font-bold text-white">
+                                {order.items.length} عدد
+                              </p>
+                            </div>
+
+                            {/* Total Price */}
+                            <div className="bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-xl p-3 border border-orange-500/20">
+                              <p className="text-xs text-gray-400 mb-1">
+                                مبلغ کل
+                              </p>
+                              <p className="text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+                                {formatPriceDivided(order.total)}
+                              </p>
+                            </div>
+
+                            {/* Action Button - Full width on mobile */}
+                            <div className="col-span-2 md:col-span-1 flex items-end">
+                              <Button
+                                onClick={() =>
+                                  router.push(`/profile/orders/${order.id}`)
                                 }
-                                alt={item.product.name}
-                                className="object-cover rounded-md"
-                              />
+                                className="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+                              >
+                                <span>مشاهده جزئیات</span>
+                                <svg
+                                  className="mr-2 h-4 w-4 transition-transform group-hover/btn:-translate-x-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M15 19l-7-7 7-7"
+                                  />
+                                </svg>
+                              </Button>
                             </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium truncate">
-                                {item.product.name}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                {item.quantity} عدد
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                        {order.items.length > 3 && (
-                          <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg">
-                            <p className="text-sm text-muted-foreground">
-                              +{order.items.length - 3} محصول دیگر
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              /* empty-state */
-              <div className="text-center py-12">
-                <Package className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
-                <h3 className="text-lg font-medium mb-2">
-                  هنوز سفارشی ثبت نکرده‌اید
-                </h3>
-                <p className="text-muted-foreground mb-6">
-                  به فروشگاه بروید و اولین سفارش خود را ثبت کنید
-                </p>
-                <Button
-                  onClick={() => router.push("/shop")}
-                  className="rounded-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
-                >
-                  <Package className="ml-2 h-4 w-4" />
-                  رفتن به فروشگاه
-                </Button>
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
-
-        {/* Order details modal */}
-        {selectedOrder && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-            <Card className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>
-                    جزئیات سفارش #{selectedOrder.id.slice(0, 8)}
-                  </CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setSelectedOrder(null)}
-                  >
-                    ×
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <h3 className="font-semibold mb-2">اطلاعات سفارش</h3>
-                    <div className="space-y-2 text-sm">
-                      <p>تاریخ: {selectedOrder.date}</p>
-                      <p>
-                        وضعیت:{" "}
-                        <OrderStatusBadge status={selectedOrder.status} />
-                      </p>
-                      <p>مبلغ کل: {formatPriceDivided(selectedOrder.total)}</p>
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="font-semibold mb-2">محصولات سفارش</h3>
-                    <div className="space-y-2">
-                      {selectedOrder.items.map((item, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-3 p-2 bg-muted/30 rounded"
-                        >
-                          <img
-                            src={
-                              item.product.productMedia.find((m) => m.isDefault)
-                                ?.url || "/placeholder.svg"
-                            }
-                            alt={item.product.name}
-                            className="w-8 h-8 object-cover rounded"
-                          />
-                          <div className="flex-1">
-                            <p className="text-sm font-medium">
-                              {item.product.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {item.quantity} عدد ×{" "}
-                              {formatPriceDivided(item.price)}
-                            </p>
                           </div>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                ) : (
+                  /* empty-state */
+                  <div className="text-center py-12">
+                    <Package className="h-12 w-12 mx-auto text-muted-foreground/40 mb-4" />
+                    <h3 className="text-lg font-medium mb-2">
+                      هنوز سفارشی ثبت نکرده‌اید
+                    </h3>
+                    <p className="text-muted-foreground mb-6">
+                      به فروشگاه بروید و اولین سفارش خود را ثبت کنید
+                    </p>
+                    <Button
+                      onClick={() => router.push("/shop")}
+                      className="rounded-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
+                    >
+                      <Package className="ml-2 h-4 w-4" />
+                      رفتن به فروشگاه
+                    </Button>
+                  </div>
+                )}
+              </TabsContent>
+            )
+          )}
+        </Tabs>
       </div>
     </div>
   );

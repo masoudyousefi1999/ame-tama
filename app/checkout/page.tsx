@@ -491,7 +491,6 @@ export default function CheckoutPage() {
                     <span>تخفیف ({discount}%):</span>
                     <span className="font-medium">
                       {formatPriceDivided((subtotal * discount) / 100)}
-                      تومان
                     </span>
                   </div>
                 )}

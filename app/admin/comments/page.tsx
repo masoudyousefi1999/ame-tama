@@ -1,11 +1,11 @@
-import { OrdersPageClient } from "@/components/admin/orders/orders-page-client";
+import { CommentsPageClient } from "@/components/admin/comments/comments-page-client";
 import { customFetch } from "@/lib/utils";
 import { productLimit } from "@/lib/product-limit";
 
 /**
- * Fetch orders from the API
+ * Fetch comments from the API
  */
-async function getOrders(
+async function getComments(
   searchParams: Promise<{
     page?: string;
     limit?: string;
@@ -21,26 +21,26 @@ async function getOrders(
       limit: String(limit),
     });
 
-    const response = await customFetch(`/order/all?${queryParams.toString()}`, {
-      next: { tags: ["orders", "admin"], revalidate: 60 },
+    const response = await customFetch(`/comment?${queryParams.toString()}`, {
+      next: { tags: ["comments", "admin"], revalidate: 60 },
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch orders: ${response.statusText}`);
+      throw new Error(`Failed to fetch comments: ${response.statusText}`);
     }
 
     const result = await response.json();
 
     return {
-      orders: result.orders || [],
-      total: result.totalCount || result.orders?.length || 0,
+      comments: result.comments || [],
+      total: result.totalCount || result.comments?.length || 0,
       page,
       limit,
     };
   } catch (error) {
-    console.error("Error fetching orders:", error);
+    console.error("Error fetching comments:", error);
     return {
-      orders: [],
+      comments: [],
       total: 0,
       page,
       limit,
@@ -48,7 +48,7 @@ async function getOrders(
   }
 }
 
-export default async function OrdersPage({
+export default async function CommentsPage({
   searchParams,
 }: {
   searchParams: Promise<{ page?: string; limit?: string }>;
@@ -57,22 +57,18 @@ export default async function OrdersPage({
   const page = Number.parseInt(params.page || "1", 10);
   const limit = Number.parseInt(params.limit || String(productLimit), 10);
 
-  const data = await getOrders(searchParams);
+  const data = await getComments(searchParams);
 
   return (
     <div className="space-y-4" dir="rtl">
       <div>
-        <h1 className="text-2xl font-bold text-white">
-          سفارشات
-        </h1>
-        <p className="text-gray-400 text-sm mt-1">
-          {data.total} سفارش
-        </p>
+        <h1 className="text-2xl font-bold text-white">نظرات کاربران</h1>
+        <p className="text-gray-400 text-sm mt-1">{data.total} نظر</p>
       </div>
 
       <div className="bg-gray-800/80 rounded-lg border border-gray-700">
-        <OrdersPageClient
-          initialOrders={data.orders}
+        <CommentsPageClient
+          initialComments={data.comments}
           initialTotal={data.total}
           initialPage={page}
           initialLimit={limit}

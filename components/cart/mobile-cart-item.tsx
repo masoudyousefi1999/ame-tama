@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Trash2, ExternalLink } from "lucide-react";
 import { motion, useAnimation } from "framer-motion";
 import { IProductType } from "@/lib/products";
+import { formatPriceDivided } from "@/lib/format-price";
 
 interface MobileCartItemProps {
   item: {
@@ -89,7 +90,7 @@ export function MobileCartItem({
             <h3 className="text-sm font-medium">{item.product.name}</h3>
 
             <div className="mt-1 text-sm text-muted-foreground">
-              {new Intl.NumberFormat("fa-IR").format(item.product.price)} تومان
+              {formatPriceDivided(item.product.price)}
             </div>
 
             <Link
@@ -145,10 +146,7 @@ export function MobileCartItem({
 
             <div className="mt-2 text-sm font-medium text-foreground">
               مجموع:&nbsp;
-              {new Intl.NumberFormat("fa-IR").format(
-                item.product.price * item.quantity
-              )}{" "}
-              تومان
+              {formatPriceDivided(item.product.price * item.quantity)}
             </div>
           </div>
         </div>
