@@ -7,7 +7,6 @@ import { ShoppingBag, X, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
 import { formatPriceDivided } from "@/lib/format-price";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -90,18 +89,11 @@ export default function CartDropdown() {
         className="relative rounded-full overflow-visible"
       >
         <ShoppingBag className="h-5 w-5" />
-        <AnimatePresence>
-          {itemCount > 0 && (
-            <motion.span
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0 }}
-              className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs z-10 shadow"
-            >
-              {itemCount}
-            </motion.span>
-          )}
-        </AnimatePresence>
+        {itemCount > 0 && (
+          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs z-10 shadow">
+            {itemCount}
+          </span>
+        )}
       </Button>
 
       {/* dropdown */}
@@ -154,122 +146,97 @@ export default function CartDropdown() {
             </div>
           ) : (
             <ul className="space-y-4">
-              <AnimatePresence initial={false}>
-                {items?.map((item) => (
-                  <motion.li
-                    key={item.product.uuid}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, x: -100 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex gap-x-4 p-3 rounded-lg"
-                  >
-                    {/* image */}
-                    <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
-                      <Image
-                        src={
-                          item.product.productMedia[0]?.url ||
-                          "/placeholder.svg"
+              {items?.map((item) => (
+                <li
+                  key={item.product.uuid}
+                  className="flex gap-x-4 p-3 rounded-lg"
+                >
+                  {/* image */}
+                  <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted">
+                    <Image
+                      src={
+                        item.product.productMedia[0]?.url || "/placeholder.svg"
+                      }
+                      alt={item.product.name}
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                    />
+                  </div>
+
+                  {/* info */}
+                  <div className="flex-1 mr-4">
+                    <Link
+                      href={`/product/${item.product.slug}`}
+                      onClick={() => setIsOpen(false)}
+                      className="line-clamp-1 text-sm font-medium hover:text-primary transition-colors"
+                      prefetch={false}
+                    >
+                      {item.product.name}
+                    </Link>
+
+                    <div className="mt-1 text-sm text-muted-foreground">
+                      {formatPriceDivided(item.product.price)}
+                    </div>
+
+                    {/* qty controls */}
+                    <div className="mt-1 flex items-center">
+                      <button
+                        disabled={item.quantity <= 1 || isLoading}
+                        onClick={() =>
+                          handleQuantityUpdate(item.product.uuid, 1, "decrease")
                         }
-                        alt={item.product.name}
-                        fill
-                        sizes="64px"
-                        className="object-cover"
-                      />
-                    </div>
-
-                    {/* info */}
-                    <div className="flex-1 mr-4">
-                      <Link
-                        href={`/product/${item.product.slug}`}
-                        onClick={() => setIsOpen(false)}
-                        className="line-clamp-1 text-sm font-medium hover:text-primary transition-colors"
-                        prefetch={false}
+                        aria-label="کاهش تعداد"
+                        className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
                       >
-                        {item.product.name}
-                      </Link>
+                        {isLoading ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <Minus className="h-3 w-3" />
+                        )}
+                      </button>
 
-                      <div className="mt-1 text-sm text-muted-foreground">
-                        {formatPriceDivided(item.product.price)}
-                      </div>
+                      <span className="mx-2 text-sm">
+                        {new Intl.NumberFormat("fa-IR").format(item.quantity)}
+                      </span>
 
-                      {/* qty controls */}
-                      <div className="mt-1 flex items-center">
-                        <motion.button
-                          whileTap={{ scale: 0.9 }}
-                          disabled={item.quantity <= 1 || isLoading}
-                          onClick={() =>
-                            handleQuantityUpdate(
-                              item.product.uuid,
-                              1,
-                              "decrease"
-                            )
-                          }
-                          aria-label="کاهش تعداد"
-                          className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
-                        >
-                          {isLoading ? (
-                            <LoadingSpinner size="sm" />
-                          ) : (
-                            <Minus className="h-3 w-3" />
-                          )}
-                        </motion.button>
-
-                        <motion.span
-                          key={item.quantity}
-                          initial={{ scale: 0.8, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          className="mx-2 text-sm"
-                        >
-                          {new Intl.NumberFormat("fa-IR").format(item.quantity)}
-                        </motion.span>
-
-                        <motion.button
-                          whileTap={{ scale: 0.9 }}
-                          disabled={isLoading}
-                          onClick={() =>
-                            handleQuantityUpdate(
-                              item.product.uuid,
-                              1,
-                              "increase"
-                            )
-                          }
-                          aria-label="افزایش تعداد"
-                          className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
-                        >
-                          {isLoading ? (
-                            <LoadingSpinner size="sm" />
-                          ) : (
-                            <Plus className="h-3 w-3" />
-                          )}
-                        </motion.button>
-                      </div>
-
-                      <div className="mt-1 flex items-center justify-between">
-                        <span className="text-sm font-medium">
-                          {formatPriceDivided(
-                            item.product.price * item.quantity
-                          )}
-                        </span>
-                        <motion.button
-                          whileTap={{ scale: 0.9 }}
-                          aria-label="حذف محصول"
-                          onClick={() =>
-                            handleQuantityUpdate(
-                              item.product.uuid,
-                              item.quantity,
-                              "decrease"
-                            )
-                          }
-                          className="p-1 text-destructive hover:text-destructive-foreground"
-                        >
-                          <X className="h-4 w-4" />
-                        </motion.button>
-                      </div>
+                      <button
+                        disabled={isLoading}
+                        onClick={() =>
+                          handleQuantityUpdate(item.product.uuid, 1, "increase")
+                        }
+                        aria-label="افزایش تعداد"
+                        className="flex h-6 w-6 items-center justify-center text-muted-foreground hover:text-foreground disabled:opacity-50"
+                      >
+                        {isLoading ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <Plus className="h-3 w-3" />
+                        )}
+                      </button>
                     </div>
-                  </motion.li>
-                ))}
-              </AnimatePresence>
+
+                    <div className="mt-1 flex items-center justify-between">
+                      <span className="text-sm font-medium">
+                        {formatPriceDivided(item.product.price * item.quantity)}
+                      </span>
+                      <button
+                        aria-label="حذف محصول"
+                        onClick={() =>
+                          handleQuantityUpdate(
+                            item.product.uuid,
+                            item.quantity,
+                            "decrease"
+                          )
+                        }
+                        className="p-1 text-destructive hover:text-destructive-foreground"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                </li>
+              ))}
             </ul>
           )}
         </div>
@@ -279,14 +246,9 @@ export default function CartDropdown() {
           <div className="p-4 border-t border-border">
             <div className="mb-4 flex justify-between">
               <span>مجموع:</span>
-              <motion.span
-                key={subtotal}
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="font-semibold"
-              >
+              <span className="font-semibold">
                 {formatPriceDivided(subtotal)}
-              </motion.span>
+              </span>
             </div>
 
             <div className="grid grid gap-2">

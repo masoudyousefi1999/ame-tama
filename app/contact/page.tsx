@@ -25,9 +25,9 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
       {/* Breadcrumb */}
-      <main className="container mx-auto px-4 md:px-6">
+      <main className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
           items={[{ label: "تماس با ما", href: "/contact", isCurrent: true }]}
           className="mb-6"
@@ -254,7 +254,7 @@ export default function ContactPage() {
                       href={soc.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                       prefetch={false}
+                      prefetch={false}
                     >
                       <Button
                         variant="outline"

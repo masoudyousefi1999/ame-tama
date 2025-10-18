@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { SkipLink } from "@/components/ui/skip-link";
+import { MobileLayout } from "@/components/mobile-layout";
 
 export default function ConditionalLayout({
   children,
@@ -20,13 +21,14 @@ export default function ConditionalLayout({
       {!isAdminRoute && (
         <>
           <SkipLink href="#main-content" />
+          {/* Desktop Navbar */}
           <Navbar />
+          {/* Mobile Layout */}
+          <MobileLayout>{children}</MobileLayout>
         </>
       )}
 
-      <main id="main-content" className={isAdminRoute ? "" : "min-h-screen"}>
-        {children}
-      </main>
+      {isAdminRoute && <main id="main-content">{children}</main>}
 
       {!isAdminRoute && <Footer />}
     </>

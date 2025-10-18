@@ -1,6 +1,6 @@
 import HeroSection from "@/components/hero-section";
 import FeaturedProductsSection from "@/components/featured-products-section";
-import TestimonialSection from "@/components/testimonial-section";
+import CustomerReviews from "@/components/customer-reviews";
 import CategoryShowcase from "@/components/shop/category-showcase";
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
@@ -101,7 +101,7 @@ export default async function Home() {
             </p>
           </div>
           <div className="px-4">
-            <TestimonialSection />
+            <CustomerReviews />
           </div>
         </div>
       </section>

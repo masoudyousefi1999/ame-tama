@@ -231,7 +231,7 @@ export function PreCheckoutModal({
         {step === 1 &&
           (userStepConfirmed ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <CheckCircle className="w-16 h-16 text-green-500 mb-4 animate-bounceIn" />
+              <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
               <div className="text-lg font-bold text-green-500 text-center">
                 {userStepConfirmed === "already"
                   ? "اطلاعات حساب کاربری شما تکمیل است"
@@ -293,7 +293,7 @@ export function PreCheckoutModal({
         {step === 2 &&
           (addressStepConfirmed ? (
             <div className="flex flex-col items-center justify-center py-12">
-              <CheckCircle className="w-16 h-16 text-green-500 mb-4 animate-bounceIn" />
+              <CheckCircle className="w-16 h-16 text-green-500 mb-4" />
               <div className="text-lg font-bold text-green-500 text-center">
                 آدرس شما تکمیل و انتخاب شد
               </div>

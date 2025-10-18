@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Heart,
-  Settings,
-  MapPin,
-  ShoppingBag,
-  LogOut,
-} from "lucide-react";
+import { Heart, Settings, MapPin, ShoppingBag, LogOut } from "lucide-react";
 
 import { useAuth } from "@/context/auth-context";
 import {
@@ -72,9 +66,9 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
       {/* Breadcrumb */}
-      <div className="container mx-auto px-4 md:px-6 mt-8">
+      <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
           items={[{ label: "پروفایل من", href: "/profile", isCurrent: true }]}
           className="mb-6"
@@ -82,7 +76,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
+      <section className="relative py-16 md:py-16 lg:py-24 overflow-hidden">
         {/* Animated background layers */}
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900" />
 
@@ -125,26 +119,9 @@ export default function ProfilePage() {
           <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-white via-blue-200 to-indigo-200 bg-clip-text text-transparent mb-6 drop-shadow-lg">
             پروفایل من
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8 font-medium">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-medium">
             مدیریت حساب کاربری و سفارش‌های شما
           </p>
-          <div className="flex items-center justify-center gap-4">
-            <div className="relative h-16 w-16">
-              <Image
-                src={user.avatar || "/placeholder.svg?height=64&width=64"}
-                alt={`${user.firstName} ${user.lastName}`}
-                fill
-                className="object-cover rounded-full border-4 border-white/20"
-                sizes="64px"
-              />
-            </div>
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-white">
-                {user.firstName} {user.lastName}
-              </h2>
-              <p className="text-white/80">{user.email}</p>
-            </div>
-          </div>
         </div>
       </section>
 

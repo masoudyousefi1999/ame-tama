@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { useRouter } from "next/navigation";
 import {
@@ -17,7 +16,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/context/cart-context";
 import { toast } from "@/components/ui/use-toast";
-import { motion, AnimatePresence } from "framer-motion";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileCartItem } from "@/components/cart/mobile-cart-item";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -157,7 +155,7 @@ export default function CartPage() {
   /* --------------------------------------------------------------------- */
   if (isLoading) {
     return (
-      <div className="container py-16 mt-20 flex items-center justify-center min-h-[50vh]">
+      <div className="container py-16 lg:mt-20 flex items-center justify-center min-h-[50vh]">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -168,9 +166,9 @@ export default function CartPage() {
   /* --------------------------------------------------------------------- */
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
         {/* Breadcrumb */}
-        <div className="container mx-auto px-4 md:px-6 mt-8">
+        <div className="container mx-auto px-4 md:px-6 pt-6">
           <Breadcrumb
             className="mb-6"
             items={[{ label: "سبد خرید", href: "/cart", isCurrent: true }]}
@@ -178,44 +176,9 @@ export default function CartPage() {
         </div>
 
         {/* Hero Section */}
-        <section className="relative py-16 md:py-24 overflow-hidden">
-          {/* Animated background layers */}
+        <section className="relative py-16 md:py-24">
+          {/* Simple background */}
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900" />
-
-          {/* Animated gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-500/30 via-gray-500/30 to-zinc-500/30 animate-pulse" />
-
-          {/* Floating orbs */}
-          <div
-            className="absolute top-20 left-20 w-32 h-32 bg-slate-400/20 rounded-full blur-xl animate-bounce"
-            style={{ animationDelay: "0s", animationDuration: "3s" }}
-          />
-          <div
-            className="absolute top-40 right-32 w-24 h-24 bg-gray-400/20 rounded-full blur-xl animate-bounce"
-            style={{ animationDelay: "1s", animationDuration: "4s" }}
-          />
-          <div
-            className="absolute bottom-20 left-1/3 w-28 h-28 bg-zinc-400/20 rounded-full blur-xl animate-bounce"
-            style={{ animationDelay: "2s", animationDuration: "3.5s" }}
-          />
-          <div
-            className="absolute bottom-32 right-20 w-20 h-20 bg-slate-400/20 rounded-full blur-xl animate-bounce"
-            style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
-          />
-
-          {/* Radial gradients for depth */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(148,163,184,0.4),transparent_40%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(156,163,175,0.4),transparent_40%)]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(161,161,170,0.3),transparent_50%)]" />
-
-          {/* Animated mesh gradient */}
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-500/10 to-transparent animate-pulse"
-            style={{ animationDuration: "6s" }}
-          />
-
-          {/* Top overlay for better text readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-white via-slate-200 to-gray-200 bg-clip-text text-transparent mb-6 drop-shadow-lg">
@@ -255,9 +218,9 @@ export default function CartPage() {
   /*  Main page                                                            */
   /* --------------------------------------------------------------------- */
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20 cart-page-no-transitions">
       {/* Breadcrumb */}
-      <div className="container mx-auto px-4 md:px-6 mt-8">
+      <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
           className="mb-6"
           items={[{ label: "سبد خرید", href: "/cart", isCurrent: true }]}
@@ -265,44 +228,9 @@ export default function CartPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
-        {/* Animated background layers */}
+      <section className="relative py-12 md:py-24">
+        {/* Simple background */}
         <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900" />
-
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-500/30 via-gray-500/30 to-zinc-500/30 animate-pulse" />
-
-        {/* Floating orbs */}
-        <div
-          className="absolute top-20 left-20 w-32 h-32 bg-slate-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "0s", animationDuration: "3s" }}
-        />
-        <div
-          className="absolute top-40 right-32 w-24 h-24 bg-gray-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "1s", animationDuration: "4s" }}
-        />
-        <div
-          className="absolute bottom-20 left-1/3 w-28 h-28 bg-zinc-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "2s", animationDuration: "3.5s" }}
-        />
-        <div
-          className="absolute bottom-32 right-20 w-20 h-20 bg-slate-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
-        />
-
-        {/* Radial gradients for depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(148,163,184,0.4),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(156,163,175,0.4),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(161,161,170,0.3),transparent_50%)]" />
-
-        {/* Animated mesh gradient */}
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-transparent via-slate-500/10 to-transparent animate-pulse"
-          style={{ animationDuration: "6s" }}
-        />
-
-        {/* Top overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
 
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-white via-slate-200 to-gray-200 bg-clip-text text-transparent mb-6 drop-shadow-lg">
@@ -325,7 +253,7 @@ export default function CartPage() {
 
       {/* Main Content */}
       <div
-        className="container mx-auto px-4 md:px-6 mt-12 pb-24 md:pb-8"
+        className="container mx-auto px-4 md:px-6 mt-12 pb-40 md:pb-8"
         dir="rtl"
       >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -455,24 +383,14 @@ export default function CartPage() {
               {/* Mobile cards */}
               {isMobile && (
                 <div className="grid grid-cols-1 gap-4 p-2">
-                  <AnimatePresence>
-                    {items.map((item, index) => (
-                      <motion.div
-                        key={item.product.uuid}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="h-full"
-                      >
-                        <MobileCartItem
-                          item={item}
-                          onUpdateQuantity={handleQuantityChange}
-                          isUpdating={isUpdating}
-                        />
-                      </motion.div>
-                    ))}
-                  </AnimatePresence>
+                  {items.map((item) => (
+                    <MobileCartItem
+                      key={item.product.uuid}
+                      item={item}
+                      onUpdateQuantity={handleQuantityChange}
+                      isUpdating={isUpdating}
+                    />
+                  ))}
                 </div>
               )}
             </div>
@@ -504,86 +422,107 @@ export default function CartPage() {
             )}
 
             {/* Summary card */}
-            <AnimatePresence>
-              {showSummary && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  className="bg-card rounded-2xl shadow-sm overflow-hidden"
-                >
-                  <div className="p-4 md:p-6 border-b border-border">
-                    <h2 className="text-lg font-semibold">خلاصه سفارش</h2>
+            {showSummary && (
+              <div className="bg-card rounded-2xl shadow-sm overflow-hidden">
+                <div className="p-4 md:p-6 border-b border-border">
+                  <h2 className="text-lg font-semibold">خلاصه سفارش</h2>
+                </div>
+
+                <div className="p-4 md:p-6 space-y-4">
+                  {/* Discount code */}
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">کد تخفیف</label>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="کد تخفیف خود را وارد کنید"
+                        value={discountCode}
+                        onChange={(e) => setDiscountCode(e.target.value)}
+                        className="flex-1"
+                      />
+                      <Button
+                        onClick={handleApplyDiscount}
+                        disabled={isApplyingDiscount || !discountCode.trim()}
+                        size="sm"
+                      >
+                        {isApplyingDiscount ? (
+                          <RefreshCw className="h-4 w-4 animate-spin" />
+                        ) : (
+                          "اعمال"
+                        )}
+                      </Button>
+                    </div>
                   </div>
 
-                  <div className="p-4 md:p-6 space-y-4">
-                    {/* Discount code */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium">کد تخفیف</label>
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="کد تخفیف خود را وارد کنید"
-                          value={discountCode}
-                          onChange={(e) => setDiscountCode(e.target.value)}
-                          className="flex-1"
-                        />
-                        <Button
-                          onClick={handleApplyDiscount}
-                          disabled={isApplyingDiscount || !discountCode.trim()}
-                          size="sm"
-                        >
-                          {isApplyingDiscount ? (
-                            <RefreshCw className="h-4 w-4 animate-spin" />
-                          ) : (
-                            "اعمال"
-                          )}
-                        </Button>
-                      </div>
+                  {/* Price breakdown */}
+                  <div className="space-y-2 pt-4 border-t border-border">
+                    <div className="flex justify-between">
+                      <span>جمع کل:</span>
+                      <span>{formatPriceDivided(subtotal)}</span>
                     </div>
-
-                    {/* Price breakdown */}
-                    <div className="space-y-2 pt-4 border-t border-border">
-                      <div className="flex justify-between">
-                        <span>جمع کل:</span>
-                        <span>{formatPriceDivided(subtotal)}</span>
+                    {discount > 0 && (
+                      <div className="flex justify-between text-green-600">
+                        <span>تخفیف:</span>
+                        <span>-{discount} تومان</span>
                       </div>
-                      {discount > 0 && (
-                        <div className="flex justify-between text-green-600">
-                          <span>تخفیف:</span>
-                          <span>-{discount} تومان</span>
-                        </div>
-                      )}
-                      <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">
-                        <span>مبلغ قابل پرداخت:</span>
-                        <span>{formatPriceDivided(subtotal)}</span>
-                      </div>
+                    )}
+                    <div className="flex justify-between font-semibold text-lg pt-2 border-t border-border">
+                      <span>مبلغ قابل پرداخت:</span>
+                      <span>{formatPriceDivided(subtotal)}</span>
                     </div>
-
-                    {/* Checkout button */}
-                    <Button
-                      className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-                      size="lg"
-                      onClick={handlePreCheckout}
-                    >
-                      ادامه خرید
-                    </Button>
-
-                    {/* Continue shopping */}
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={() => router.push("/shop")}
-                    >
-                      <ArrowLeft className="h-4 w-4 ml-2" />
-                      رفتن به فروشگاه
-                    </Button>
                   </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+
+                  {/* Checkout button - hidden on mobile */}
+                  <Button
+                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 hidden md:block"
+                    size="lg"
+                    onClick={handlePreCheckout}
+                  >
+                    ادامه خرید
+                  </Button>
+
+                  {/* Continue shopping - hidden on mobile */}
+                  <Button
+                    variant="outline"
+                    className="w-full hidden md:block h-[55px] text-base flex items-center justify-center"
+                    onClick={() => router.push("/shop")}
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    <span>رفتن به فروشگاه</span>
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Mobile Sticky Footer */}
+      {isMobile && items.length > 0 && !showPreCheckout && (
+        <div className="fixed bottom-[70px]  left-0 right-0 bg-card border-t border-border p-4 z-[60] md:hidden shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium">مبلغ قابل پرداخت:</span>
+            <span className="text-lg font-bold text-primary">
+              {formatPriceDivided(subtotal)}
+            </span>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => router.push("/shop")}
+            >
+              <ArrowLeft className="h-4 w-4 ml-2" />
+              فروشگاه
+            </Button>
+            <Button
+              className="flex-1 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+              onClick={handlePreCheckout}
+            >
+              ادامه خرید
+            </Button>
+          </div>
+        </div>
+      )}
 
       <PreCheckoutModal
         open={showPreCheckout}

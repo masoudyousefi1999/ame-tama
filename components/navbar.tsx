@@ -227,7 +227,9 @@ export default function Navbar() {
         "fixed inset-x-0 top-0 z-40 transition-all duration-300 backdrop-blur-md",
         isScrolled
           ? "bg-popover/90 border-b border-border glass"
-          : "bg-popover/80"
+          : "bg-popover/80",
+        // Hide on mobile, show only on desktop
+        "hidden lg:block"
       )}
     >
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4 overflow-visible">

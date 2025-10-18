@@ -55,9 +55,9 @@ export default function WishlistPage() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
       {/* Breadcrumb */}
-      <div className="container mx-auto px-4 md:px-6 mt-8">
+      <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
           items={[
             { label: "پروفایل من", href: "/profile" },
@@ -131,7 +131,7 @@ export default function WishlistPage() {
       </section>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 md:px-6 mt-12">
+      <div className="container mx-auto px-4 md:px-6 lg:mt-12">
         {/* top bar */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <BackButton href="/profile" label="بازگشت به پروفایل" />

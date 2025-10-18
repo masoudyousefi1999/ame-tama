@@ -1,13 +1,10 @@
 import type React from "react";
 import "@/app/globals.css";
 import { Toaster } from "@/components/ui/toaster";
-import Navbar from "@/components/navbar";
-import Footer from "@/components/footer";
 import { CartProvider } from "@/context/cart-context";
 import { AuthProvider } from "@/context/auth-context";
 import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
-import { SkipLink } from "@/components/ui/skip-link";
 import ViewportHeightFix from "@/components/viewport-height-fix";
 import dynamic from "next/dynamic";
 import { LoginModalProvider } from "@/context/login-modal-context";
@@ -98,6 +95,17 @@ export default function RootLayout({
           rel="preconnect"
           href="https://ame-tama.storage.c2.liara.space"
           crossOrigin="anonymous"
+        />
+        {/* Google Fonts for anime-style branding */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Langar:wght@400;700;900&display=swap"
+          rel="stylesheet"
         />
         {/* Additional performance hints */}
         <link rel="preconnect" href="https://www.clarity.ms" />

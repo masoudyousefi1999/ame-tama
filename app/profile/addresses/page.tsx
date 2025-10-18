@@ -346,7 +346,7 @@ export default function AddressesPage() {
 
   if (isLoadingAddresses) {
     return (
-      <div className="container py-8 mt-20">
+      <div className="container py-8 lg:mt-20">
         <div className="flex justify-center items-center min-h-[50vh]">
           <LoadingSpinner size="lg" />
         </div>
@@ -355,7 +355,7 @@ export default function AddressesPage() {
   }
 
   return (
-    <div className="container py-8 mt-20" dir="rtl">
+    <div className="container py-8 lg:mt-20" dir="rtl">
       <Breadcrumb
         className="mb-6"
         items={[

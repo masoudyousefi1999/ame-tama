@@ -28,7 +28,7 @@ export default function AboutPage() {
   return (
     <>
       {/* Breadcrumb */}
-      <main className="container py-8 md:py-12 mt-12">
+      <main className="container py-8 md:py-12 lg:mt-12">
         <Breadcrumb
           items={[{ label: "درباره ما", href: "/about", isCurrent: true }]}
           className="mb-6"

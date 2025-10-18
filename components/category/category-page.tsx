@@ -177,7 +177,7 @@ export default function CategoryPage({
   }, [subcategories, category.name]);
 
   return (
-    <div className="container mx-auto mt-16 px-4 py-8 md:mt-24">
+    <div className="container mx-auto lg:mt-16 px-4 py-8 lg:md:mt-24">
       {/* breadcrumb */}
       <Breadcrumb items={breadcrumbItems} className="mb-4" />
 

@@ -12,11 +12,9 @@ interface ProductPageClientProps {
   product: any;
 }
 
-export default function ProductPageClient({
-  product,
-}: ProductPageClientProps) {
+export default function ProductPageClient({ product }: ProductPageClientProps) {
   return (
-    <div className="container mx-auto px-4 py-8 mt-20" dir="rtl">
+    <div className="container mx-auto px-4 py-8 lg:mt-20" dir="rtl">
       <div className="mb-2">
         <Breadcrumb
           items={[

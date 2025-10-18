@@ -4,7 +4,7 @@ import type React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { CustomImage as Image } from "@/components/ui/custom-image";
-import { User, Lock, Bell, Moon, Sun, Upload, Save } from "lucide-react";
+import { User, Lock, Upload, Save, X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,7 +20,8 @@ import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/auth-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { BackButton } from "@/components/ui/back-button";
+import { customFetch } from "@/lib/utils";
+import { uploadFile, validateFile } from "@/lib/upload-utils";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -41,12 +42,8 @@ export default function SettingsPage() {
     confirmPassword: "",
   });
 
-  const [notificationSettings, setNotificationSettings] = useState({
-    orderUpdates: true,
-    promotions: true,
-    newProducts: false,
-    newsletter: true,
-  });
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [uploadedAvatar, setUploadedAvatar] = useState<string | null>(null);
 
   // اگر کاربر وارد نشده باشد، به صفحه اصلی هدایت می‌شود
   useEffect(() => {
@@ -68,12 +65,37 @@ export default function SettingsPage() {
     return null;
   }
 
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "پروفایل به‌روزرسانی شد",
-      description: "اطلاعات پروفایل شما با موفقیت به‌روزرسانی شد",
-    });
+
+    try {
+      const response = await customFetch("/users/update", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: profileData.firstName,
+          lastName: profileData.lastName,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update profile");
+      }
+
+      toast({
+        title: "پروفایل به‌روزرسانی شد",
+        description: "اطلاعات پروفایل شما با موفقیت به‌روزرسانی شد",
+      });
+    } catch (error) {
+      console.error("Profile update error:", error);
+      toast({
+        title: "خطا",
+        description: "به‌روزرسانی پروفایل با شکست مواجه شد",
+        variant: "error",
+      });
+    }
   };
 
   const handlePasswordUpdate = (e: React.FormEvent) => {
@@ -100,13 +122,6 @@ export default function SettingsPage() {
     });
   };
 
-  const handleNotificationUpdate = () => {
-    toast({
-      title: "تنظیمات اعلان‌ها به‌روزرسانی شد",
-      description: "تنظیمات اعلان‌های شما با موفقیت به‌روزرسانی شد",
-    });
-  };
-
   const toggleTheme = () => {
     toast({
       title: "تم سایت تغییر کرد",
@@ -114,32 +129,94 @@ export default function SettingsPage() {
     });
   };
 
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    const validation = validateFile(file, {
+      maxSize: 2 * 1024 * 1024, // 2MB
+      allowedTypes: ["image/jpeg", "image/jpg", "image/png", "image/webp"],
+    });
+
+    if (!validation.isValid) {
+      toast({
+        title: "خطا",
+        description: validation.error,
+        variant: "error",
+      });
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+
+    try {
+      // Upload file
+      const uploadedMedia = await uploadFile(file);
+
+      // Update user avatar
+      const response = await customFetch("/users/update", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          avatar: uploadedMedia.uuid,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update avatar");
+      }
+
+      setUploadedAvatar(uploadedMedia.url);
+
+      toast({
+        title: "موفقیت",
+        description: "تصویر پروفایل با موفقیت آپدیت شد",
+      });
+    } catch (error) {
+      console.error("Avatar upload error:", error);
+      toast({
+        title: "خطا",
+        description: "آپلود تصویر پروفایل با شکست مواجه شد",
+        variant: "error",
+      });
+    } finally {
+      setIsUploadingAvatar(false);
+      // Clear file input
+      if (e.target) {
+        e.target.value = "";
+      }
+    }
+  };
+
+  const removeAvatar = () => {
+    setUploadedAvatar(null);
+  };
+
   return (
-    <div className="container py-8 mt-20">
-      {/* top bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-        <BackButton href="/profile" label="بازگشت به پروفایل" />
-        <Breadcrumb
-          items={[
-            { label: "پروفایل", href: "/profile" },
-            {
-              label: "تنظیمات حساب کاربری",
-              href: "/profile/settings",
-              isCurrent: true,
-            },
-          ]}
-        />
-      </div>
+    <div className="container py-8 lg:mt-20">
+      <Breadcrumb
+        className="mb-6"
+        items={[
+          { label: "پروفایل", href: "/profile" },
+          {
+            label: "تنظیمات حساب کاربری",
+            href: "/profile/settings",
+            isCurrent: true,
+          },
+        ]}
+      />
 
       <Tabs defaultValue="profile" className="space-y-6">
         {/* ---------------------------------------------------------------- */}
         {/*  Tabs header                                                    */}
         {/* ---------------------------------------------------------------- */}
-        <TabsList className="grid grid-cols-3 max-w-md mx-auto mb-8 h-15 sm:h-12">
+        <TabsList className="grid grid-cols-2 max-w-md mx-auto mb-8 h-15 sm:h-12">
           {[
             { value: "profile", icon: User, label: "پروفایل" },
             { value: "security", icon: Lock, label: "امنیت" },
-            { value: "notifications", icon: Bell, label: "اعلان‌ها" },
           ].map((t) => (
             <TabsTrigger
               key={t.value}
@@ -169,6 +246,7 @@ export default function SettingsPage() {
                   <div className="relative h-24 w-24 mb-4">
                     <Image
                       src={
+                        uploadedAvatar ||
                         profileData.avatar ||
                         "/placeholder.svg?height=96&width=96"
                       }
@@ -177,21 +255,54 @@ export default function SettingsPage() {
                       className="object-cover rounded-full border-2 border-purple-200 dark:border-purple-800"
                       sizes="96px"
                     />
-                    <div className="absolute -bottom-2 -right-2">
+                    {uploadedAvatar && (
                       <Button
                         type="button"
                         size="icon"
-                        variant="outline"
-                        className="h-8 w-8 rounded-full bg-background border-purple-200 dark:border-purple-800 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-muted"
+                        variant="destructive"
+                        className="absolute -top-2 -right-2 h-6 w-6 rounded-full"
+                        onClick={removeAvatar}
                       >
-                        <Upload className="h-4 w-4" />
-                        <span className="sr-only">آپلود تصویر</span>
+                        <X className="h-3 w-3" />
                       </Button>
-                    </div>
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    تصویر پروفایل (حداکثر 2 MB)
-                  </p>
+
+                  {/* Upload Area */}
+                  <div className="space-y-2 flex flex-col items-center">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarUpload}
+                      className="hidden"
+                      id="avatar-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
+                        document.getElementById("avatar-upload")?.click()
+                      }
+                      disabled={isUploadingAvatar}
+                      className="flex items-center gap-2"
+                    >
+                      {isUploadingAvatar ? (
+                        <>
+                          <Upload className="h-4 w-4 animate-spin" />
+                          در حال آپلود...
+                        </>
+                      ) : (
+                        <>
+                          <ImageIcon className="h-4 w-4" />
+                          تغییر تصویر پروفایل
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center">
+                      فرمت‌های مجاز: JPG, PNG, WebP (حداکثر 2MB)
+                    </p>
+                  </div>
                 </div>
 
                 {/* name */}
@@ -243,15 +354,12 @@ export default function SettingsPage() {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="09123456789"
                       value={profileData.phone}
-                      onChange={(e) =>
-                        setProfileData({
-                          ...profileData,
-                          phone: e.target.value,
-                        })
-                      }
+                      disabled
                     />
+                    <p className="text-xs text-muted-foreground">
+                      شماره موبایل شما قابل تغییر نیست
+                    </p>
                   </div>
                 </div>
 
@@ -332,94 +440,6 @@ export default function SettingsPage() {
                   </Button>
                 </div>
               </form>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* ================================================================ */}
-        {/*  Tab 3 — notifications                                          */}
-        {/* ================================================================ */}
-        <TabsContent value="notifications">
-          <Card>
-            <CardHeader>
-              <CardTitle>تنظیمات اعلان‌ها</CardTitle>
-              <CardDescription>
-                نحوه دریافت اعلان‌ها و اطلاع‌رسانی‌ها را مدیریت کنید
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <div className="space-y-6">
-                {/* notification toggles */}
-                {[
-                  {
-                    key: "orderUpdates",
-                    label: "به‌روزرسانی سفارش‌ها",
-                    desc: "دریافت اعلان درباره وضعیت سفارش و ارسال‌ها",
-                  },
-                  {
-                    key: "promotions",
-                    label: "تخفیف‌ها و پیشنهادات ویژه",
-                    desc: "دریافت اعلان درباره تخفیف‌ها و پیشنهادات",
-                  },
-                  {
-                    key: "newProducts",
-                    label: "محصولات جدید",
-                    desc: "دریافت اعلان درباره محصولات جدید فروشگاه",
-                  },
-                ].map((n) => (
-                  <div
-                    key={n.key}
-                    className="flex items-center justify-between py-2"
-                  >
-                    <div className="space-y-0.5 max-w-[70%]">
-                      <Label>{n.label}</Label>
-                      <p className="text-sm text-muted-foreground">{n.desc}</p>
-                    </div>
-                    <Switch
-                      checked={false}
-                      onCheckedChange={(checked) =>
-                        setNotificationSettings({
-                          ...notificationSettings,
-                          [n.key]: checked,
-                        })
-                      }
-                      className="scale-75 sm:scale-100"
-                    />
-                  </div>
-                ))}
-
-                {/* theme toggle */}
-                <div className="border-t border-border pt-6">
-                  <div className="flex items-center justify-between py-2">
-                    <div className="space-y-0.5 max-w-[70%]">
-                      <Label>حالت تیره</Label>
-                      <p className="text-sm text-muted-foreground">
-                        تغییر بین حالت روشن و تیره
-                      </p>
-                    </div>
-                    <div className="flex items-center">
-                      <Sun className="h-4 w-4 ml-2 text-muted-foreground" />
-                      <Switch
-                        checked={false}
-                        onCheckedChange={toggleTheme}
-                        className="scale-75 sm:scale-100"
-                      />
-                      <Moon className="h-4 w-4 mr-2 text-muted-foreground" />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex justify-end">
-                  <Button
-                    onClick={handleNotificationUpdate}
-                    className="bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
-                  >
-                    <Save className="ml-2 h-4 w-4" />
-                    ذخیره تنظیمات
-                  </Button>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
