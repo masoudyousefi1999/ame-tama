@@ -36,6 +36,7 @@ export async function customFetch(
     try {
       const headersList = await headers();
       const cookieHeader = headersList.get("cookie");
+
       if (cookieHeader) {
         requestHeaders.set("cookie", cookieHeader);
       }

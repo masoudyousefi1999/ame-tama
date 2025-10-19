@@ -147,7 +147,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         body.phone = identifier;
       }
 
-      const res = await customFetch("/auth/register", {
+      const res = await fetch("/api/auth/login", {
         method: "POST",
         body: JSON.stringify(body),
         headers: {
@@ -213,7 +213,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // خروج از حساب کاربری
   const logout = async () => {
     try {
-      await customFetch("/auth/logout", { method: "POST" });
+      // Get token from localStorage
+      const token =
+        typeof window !== "undefined" ? localStorage.getItem("token") : null;
+
+      if (token) {
+        await fetch("/api/auth/logout", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
     } catch (error) {
       // Ignore errors, just clear user state
     }

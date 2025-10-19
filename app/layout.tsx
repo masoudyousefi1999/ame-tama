@@ -6,13 +6,13 @@ import { AuthProvider } from "@/context/auth-context";
 import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
 import ViewportHeightFix from "@/components/viewport-height-fix";
-import dynamic from "next/dynamic";
 import { LoginModalProvider } from "@/context/login-modal-context";
-import LoginToastEffect from "@/components/LoginToastEffect";
 import localFont from "next/font/local";
-import SchemaOrg from "@/components/seo/schema-org";
 import Script from "next/script";
+import LoginToastEffect from "@/components/LoginToastEffect";
+import SchemaOrg from "@/components/seo/schema-org";
 import ConditionalLayout from "@/components/conditional-layout";
+import ScrollToTop from "@/components/scroll-to-top";
 
 const baseUrl = "https://ame-tama.com";
 
@@ -85,10 +85,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const ScrollToTop = dynamic(() => import("@/components/scroll-to-top"), {
-    ssr: true,
-  });
-
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning className="h-full">
       <head>
@@ -105,10 +101,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://www.clarity.ms" />
         {/* Performance optimization */}
         <meta name="format-detection" content="telephone=no" />
+        <meta
+          httpEquiv="Cache-Control"
+          content="public, max-age=31536000, immutable"
+        />
         {process.env.NODE_ENV === "production" && (
           <>
             <Script id="ms-clarity" strategy="afterInteractive">
               {`(function(c,l,a,r,i,t,y){
+                  // Skip Clarity on admin pages
+                  if (window.location.pathname.startsWith('/admin')) {
+                    return;
+                  }
                   c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                   t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                   y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
