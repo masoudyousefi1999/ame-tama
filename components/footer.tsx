@@ -24,7 +24,7 @@ export default function Footer() {
           {/* ─────────────────── Brand / about ─────────────────── */}
           <div className="text-right">
             <Link href="/" className="inline-block mb-6 group" prefetch={false}>
-              <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">
+              <span className="brand-name text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-200">
                 AME-TAMA
               </span>
             </Link>

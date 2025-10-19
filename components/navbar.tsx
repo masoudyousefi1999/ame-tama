@@ -235,7 +235,7 @@ export default function Navbar() {
       <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4 overflow-visible">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 z-10 relative" prefetch={false}>
-          <span className="text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
+          <span className="brand-name text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
             AME-TAMA
           </span>
         </Link>

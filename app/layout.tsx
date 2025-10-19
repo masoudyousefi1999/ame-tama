@@ -21,6 +21,11 @@ const vazirmatn = localFont({
   variable: "--font-vazirmatn",
 });
 
+const langar = localFont({
+  src: "./fonts/Langar-Regular.ttf",
+  variable: "--font-langar",
+});
+
 export const metadata = {
   metadataBase: new URL(baseUrl),
   title: "AME-TAMA | آمه تاما",
@@ -96,17 +101,6 @@ export default function RootLayout({
           href="https://ame-tama.storage.c2.liara.space"
           crossOrigin="anonymous"
         />
-        {/* Google Fonts for anime-style branding */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Langar:wght@400;700;900&display=swap"
-          rel="stylesheet"
-        />
         {/* Additional performance hints */}
         <link rel="preconnect" href="https://www.clarity.ms" />
         {/* Performance optimization */}
@@ -123,7 +117,9 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className={`${vazirmatn.variable} h-full overflow-x-hidden`}>
+      <body
+        className={`${vazirmatn.variable} ${langar.variable} h-full overflow-x-hidden`}
+      >
         <LoginToastEffect />
         <ViewportHeightFix />
         <ScrollToTop />

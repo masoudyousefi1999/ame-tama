@@ -2,17 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import {
-  Home,
-  Store,
-  Search,
-  User,
-  ShoppingBag,
-  Heart,
-  Menu,
-  Grid3X3,
-} from "lucide-react";
+import { Home, Store, Search, User, ShoppingBag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/context/cart-context";
 import { useAuth } from "@/context/auth-context";
@@ -28,7 +18,7 @@ interface NavItem {
 
 export function MobileBottomNavbar() {
   const pathname = usePathname();
-  const { items: cartItems, itemCount } = useCart();
+  const { itemCount } = useCart();
   const { user } = useAuth();
 
   // Don't show on admin pages, checkout pages, or success pages
@@ -78,12 +68,7 @@ export function MobileBottomNavbar() {
   ];
 
   return (
-    <motion.div
-      initial={{ y: 100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ type: "spring", damping: 25, stiffness: 300 }}
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden"
-    >
+    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
       {/* Background with blur and gradient */}
       <div className="absolute inset-0 bg-background/95 backdrop-blur-xl border-t border-border/50">
         {/* Gradient overlay */}
@@ -103,22 +88,18 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="relative flex flex-col items-center justify-center p-2 rounded-2xl transition-all duration-200 group"
+              className="tactile-button relative flex flex-col items-center justify-center p-2 rounded-2xl group shadow-sm"
             >
               {/* Active indicator background */}
               {isActive && (
-                <motion.div
-                  layoutId="activeTab"
-                  className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/30"
-                  transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                />
+                <div className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/30" />
               )}
 
               {/* Icon container */}
               <div className="relative flex items-center justify-center">
                 <Icon
                   className={cn(
-                    "h-6 w-6 transition-all duration-200",
+                    "h-6 w-6",
                     isActive
                       ? "text-primary scale-110"
                       : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
@@ -127,36 +108,26 @@ export function MobileBottomNavbar() {
 
                 {/* Badge for cart items */}
                 {item.badge && item.badge > 0 && (
-                  <motion.div
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ type: "spring", damping: 15, stiffness: 300 }}
-                    className="absolute -top-1 -right-1"
-                  >
+                  <div className="absolute -top-1 -right-1">
                     <Badge
                       variant="destructive"
                       className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs font-bold bg-gradient-to-r from-red-500 to-pink-500 border-2 border-background shadow-lg"
                     >
                       {item.badge > 99 ? "99+" : item.badge}
                     </Badge>
-                  </motion.div>
+                  </div>
                 )}
 
                 {/* Ripple effect on tap */}
                 {isActive && (
-                  <motion.div
-                    className="absolute inset-0 rounded-full bg-primary/20"
-                    initial={{ scale: 0, opacity: 0 }}
-                    animate={{ scale: 1.5, opacity: 0 }}
-                    transition={{ duration: 0.6, ease: "easeOut" }}
-                  />
+                  <div className="absolute inset-0 rounded-full bg-primary/20" />
                 )}
               </div>
 
               {/* Label */}
               <span
                 className={cn(
-                  "text-xs mt-1 transition-all duration-200 font-medium",
+                  "text-xs mt-1 font-medium",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground group-hover:text-foreground"
@@ -167,12 +138,7 @@ export function MobileBottomNavbar() {
 
               {/* Active indicator dot */}
               {isActive && (
-                <motion.div
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", damping: 15, stiffness: 300 }}
-                />
+                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
               )}
             </Link>
           );
@@ -181,6 +147,6 @@ export function MobileBottomNavbar() {
 
       {/* Safe area for devices with home indicator */}
       <div className="h-safe-area-inset-bottom bg-background/95 backdrop-blur-xl" />
-    </motion.div>
+    </div>
   );
 }
