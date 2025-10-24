@@ -14,7 +14,6 @@ export async function GET() {
         Accept:
           "application/xml,text/xml,application/xhtml+xml,application/rss+xml;q=0.9,*/*;q=0.8",
       },
-      // Cache on the edge for 12h and allow stale while revalidating
     });
 
     if (!res.ok) {
@@ -44,8 +43,7 @@ export async function GET() {
       status: 200,
       headers: {
         "Content-Type": "application/xml; charset=utf-8",
-        "Cache-Control":
-          "public, max-age=0, s-maxage=43200, stale-while-revalidate=21600",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
       },
     });
   } catch (error) {
@@ -57,7 +55,7 @@ export async function GET() {
       status: 200,
       headers: {
         "Content-Type": "application/xml; charset=utf-8",
-        "Cache-Control": "public, max-age=0, s-maxage=3600",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
       },
     });
   }
