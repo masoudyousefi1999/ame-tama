@@ -1,27 +1,18 @@
 "use client";
 
 import { useState, useEffect, useRef, useMemo, useCallback } from "react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { Filter, SlidersHorizontal, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import CategoryFilters from "@/components/category/category-filters";
 import CategoryProducts from "@/components/category/category-products";
 import { type ICategoryType } from "@/lib/categories";
-import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { customFetch } from "@/lib/utils";
 import Link from "next/link";
 import { IProductType } from "@/lib/products";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import CategoryHeader from "./category-header";
 import { productLimit } from "@/lib/product-limit";
-import { GoToTopButton } from "@/components/go-to-top-button";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 
 interface CategoryPageProps {
   category: ICategoryType & { image: string };
-  subcategories?: ICategoryType[];
-  sort: string;
-  filter?: string;
   page: number;
   products: IProductType[];
   totalCount: number;
@@ -30,27 +21,28 @@ interface CategoryPageProps {
 
 export default function CategoryPage({
   category,
-  subcategories = [],
-  sort,
-  filter,
   page: initialPage,
   products: initialProducts,
   totalCount,
   limit,
 }: CategoryPageProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 500]);
-  const [selectedFilters, setSelectedFilters] = useState<string[]>(
-    filter ? filter.split(",") : []
-  );
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [products, setProducts] = useState(initialProducts);
   const [page, setPage] = useState(initialPage);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialProducts.length < totalCount);
   const loader = useRef<HTMLDivElement | null>(null);
+
+  // Memoize breadcrumb items
+  const breadcrumbItems = useMemo(
+    () => [
+      {
+        label: category.name,
+        href: `/${category.slug}`,
+        isCurrent: true,
+      },
+    ],
+    [category.name, category.slug]
+  );
 
   // Infinite scroll effect
   useEffect(() => {
@@ -68,28 +60,6 @@ export default function CategoryPage({
       if (loader.current) observer.unobserve(loader.current);
     };
   }, [loader, hasMore, loading]);
-
-  const handlePriceRangeChange = useCallback((range: [number, number]) => {
-    setPriceRange(range);
-  }, []);
-
-  const handleFilterChange = useCallback((filters: string[]) => {
-    setSelectedFilters(filters);
-  }, []);
-
-  const handleSortChange = useCallback(
-    (newSort: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      newSort !== "newest"
-        ? params.set("sort", newSort)
-        : params.delete("sort");
-      const newUrl = params.toString()
-        ? `${pathname}?${params.toString()}`
-        : pathname;
-      router.replace(newUrl);
-    },
-    [searchParams, pathname, router]
-  );
 
   const fetchMore = useCallback(async () => {
     setLoading(true);
@@ -119,175 +89,117 @@ export default function CategoryPage({
     }
   }, [page, category.slug]);
 
-  // Memoize breadcrumb items
-  const breadcrumbItems = useMemo(() => {
-    return category.name === "figures"
-      ? [{ label: "اکشن فیگور", href: `/category/`, isCurrent: true }]
-      : [
-          { label: "اکشن فیگور", href: `/category/figures` },
-          {
-            label: category.name,
-            href: `/category/figures/${category.slug}`,
-            isCurrent: true,
-          },
-        ];
-  }, [category.name, category.slug]);
-
-  // Memoize subcategories section
-  const subcategoriesSection = useMemo(() => {
-    if (subcategories.length === 0) return null;
+  // Memoize tags section with modern minimal design
+  const tagsSection = useMemo(() => {
+    if (!category.tags || category.tags.length === 0) return null;
 
     return (
-      <section className="mb-14">
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-2xl font-extrabold text-transparent tracking-tight">
-            زیردسته‌های&nbsp;{category.name}
+      <section className="mb-16">
+        <div className="mb-8 text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground mb-2">
+            انیمه‌های موجود در {category.name}
           </h2>
-          <span className="text-xs text-muted-foreground lg:hidden">
-            ← پیمایش افقی →
-          </span>
+          <p className="text-muted-foreground text-lg">
+            مجموعه کامل محصولات انیمه‌ای با بهترین کیفیت
+          </p>
         </div>
-        <div className="scrollbar-thin scrollbar-thumb-border dark:scrollbar-thumb-border flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory md:grid md:grid-cols-3 md:gap-8 md:overflow-visible lg:grid-cols-4 xl:grid-cols-5">
-          {subcategories.map((subcat) => (
+
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {category.tags.map((tag) => (
             <Link
-              key={subcat.id}
+              key={tag.uuid}
               prefetch={false}
-              href={`/category/figures/${subcat.slug}`}
-              className="group relative aspect-square w-32 flex-none snap-start overflow-hidden rounded-3xl transition-all duration-300 hover:scale-105 hover:rotate-2 sm:w-36 md:w-full"
+              href={`/${category.slug}/${tag.slug}`}
+              className="group relative aspect-square overflow-hidden rounded-2xl bg-card border border-border/50 transition-all duration-300 hover:scale-105 hover:border-primary/50 hover:shadow-lg"
             >
               <Image
-                src={subcat.image ?? "/placeholder.jpg"}
-                alt={subcat.name}
+                src={tag.image?.url ?? "/placeholder.jpg"}
+                alt={tag.name}
                 fill
-                sizes="(max-width:640px) 8rem, (max-width:768px) 9rem, 18vw"
-                className="object-cover transition-transform duration-300 group-hover:scale-110 group-hover:rotate-1"
+                sizes="(max-width:640px) 50vw, (max-width:768px) 33vw, (max-width:1024px) 25vw, (max-width:1280px) 20vw, 16vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
-                quality={75}
+                quality={80}
               />
-              <div className="absolute inset-0 flex items-end justify-center pb-4">
-                <span className="font-sans text-xs font-semibold tracking-wide text-accent sm:text-sm md:text-base drop-shadow-lg">
-                  {subcat.name}
+
+              {/* Gradient overlay for better text readability */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+
+              {/* Tag name */}
+              <div className="absolute bottom-0 left-0 right-0 p-3">
+                <span className="block text-sm font-semibold text-white text-center drop-shadow-lg transform translate-y-2 transition-transform duration-300 group-hover:translate-y-0">
+                  {tag.name}
                 </span>
               </div>
+
+              {/* Hover effect indicator */}
+              <div className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             </Link>
           ))}
         </div>
+
+        {/* View all link */}
+        <div className="mt-8 text-center">
+          <Link
+            href={`/shop?category=${category.slug}`}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium transition-all duration-300 hover:bg-primary/90 hover:scale-105"
+          >
+            مشاهده همه محصولات
+            <svg
+              className="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
+        </div>
       </section>
     );
-  }, [subcategories, category.name]);
+  }, [category.tags, category.name, category.slug]);
 
   return (
-    <div className="container mx-auto lg:mt-16 px-4 py-8 lg:md:mt-24">
+    <div className="min-h-screen bg-background">
       {/* breadcrumb */}
-      <Breadcrumb items={breadcrumbItems} className="mb-4" />
+      <div className="container mx-auto px-4 pt-8 pb-4 md:mt-12">
+        <Breadcrumb items={breadcrumbItems} className="mb-8" />
+      </div>
 
       {/* hero header */}
       <CategoryHeader category={category} />
 
-      {/* sub-categories */}
-      {subcategoriesSection}
+      {/* tags section */}
+      <div className="container mx-auto px-4">{tagsSection}</div>
 
-      <div className="flex flex-col gap-8 lg:flex-row">
-        {/* desktop filters */}
-        <div className="hidden w-64 flex-shrink-0 lg:block">
-          <CategoryFilters
-            priceRange={priceRange}
-            onPriceRangeChange={handlePriceRangeChange}
-            selectedFilters={selectedFilters}
-            onFilterChange={handleFilterChange}
-            category={category}
-          />
+      {/* Products section */}
+      <div id="products" className="container mx-auto px-4 pb-16">
+        {/* Products header */}
+        <div className="mb-8 text-center">
+          <h3 className="text-3xl font-bold text-foreground mb-2">
+            محصولات {category.name}
+          </h3>
+          <p className="text-muted-foreground text-lg">
+            {totalCount} محصول موجود
+          </p>
         </div>
 
-        {/* mobile filter & sort */}
-        <div className="mb-4 flex items-center justify-between lg:hidden">
-          <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
-            <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Filter className="h-4 w-4" />
-                <span>فیلترها</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] p-0 sm:w-[400px]">
-              <div className="h-full overflow-y-auto p-6">
-                <div className="mb-6 flex items-center justify-between">
-                  <h3 className="  text-lg font-medium">فیلترها</h3>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsFilterOpen(false)}
-                    className="h-8 w-8 rounded-full"
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <CategoryFilters
-                  priceRange={priceRange}
-                  onPriceRangeChange={handlePriceRangeChange}
-                  selectedFilters={selectedFilters}
-                  onFilterChange={handleFilterChange}
-                  category={category}
-                  onClose={() => setIsFilterOpen(false)}
-                />
-              </div>
-            </SheetContent>
-          </Sheet>
+        <CategoryProducts products={products} viewMode="grid" />
 
-          <div className="flex items-center gap-2">
-            <SlidersHorizontal className="h-4 w-4 text-muted-foreground" />
-            <label htmlFor="mobile-sort" className="sr-only">
-              مرتب‌سازی
-            </label>
-            <select
-              id="mobile-sort"
-              value={sort}
-              onChange={(e) => handleSortChange(e.target.value)}
-              className="text-sm text-foreground bg-transparent border-none focus:ring-0"
-              aria-label="مرتب‌سازی محصولات"
-            >
-              <option value="newest">جدیدترین</option>
-              <option value="price-asc">قیمت: کم به زیاد</option>
-              <option value="price-desc">قیمت: زیاد به کم</option>
-              <option value="popular">محبوب‌ترین</option>
-            </select>
-          </div>
-        </div>
-
-        {/* products */}
-        <div className="flex-1">
-          <div className="mb-6 hidden justify-end lg:flex">
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">مرتب‌سازی:</span>
-              <label htmlFor="desktop-sort" className="sr-only">
-                مرتب‌سازی
-              </label>
-              <select
-                id="desktop-sort"
-                value={sort}
-                onChange={(e) => handleSortChange(e.target.value)}
-                className="text-sm text-foreground bg-transparent border-none focus:ring-0"
-                aria-label="مرتب‌سازی محصولات"
-              >
-                <option value="newest">جدیدترین</option>
-                <option value="price-asc">قیمت: کم به زیاد</option>
-                <option value="price-desc">قیمت: زیاد به کم</option>
-                <option value="popular">محبوب‌ترین</option>
-              </select>
-            </div>
-          </div>
-
-          <CategoryProducts products={products} viewMode="grid" />
-          {loading && (
-            <div className="flex justify-center py-8">
+        {loading && (
+          <div className="flex justify-center py-12">
+            <div className="flex items-center gap-3">
+              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               <span className="text-muted-foreground">در حال بارگذاری...</span>
             </div>
-          )}
-          <div ref={loader} />
-        </div>
+          </div>
+        )}
+        <div ref={loader} />
       </div>
     </div>
   );

@@ -11,6 +11,7 @@ import type { IProductType } from "@/lib/products";
 interface CategoryProductsProps {
   products: IProductType[];
   viewMode: "grid" | "list";
+  showProductName?: boolean; // New prop to show product name
 }
 
 // Memoized ProductCard for better performance
@@ -19,6 +20,7 @@ const MemoizedProductCard = memo(ProductCard);
 export default function CategoryProducts({
   products,
   viewMode,
+  showProductName = false, // Default to false
 }: CategoryProductsProps) {
   const [hoveredProduct, setHoveredProduct] = useState<number | null>(null);
   const { addItem } = useCart();
@@ -115,6 +117,7 @@ export default function CategoryProducts({
               className="border-0 shadow-none"
               showAddToCart
               showAddToWishlist
+              showProductName={showProductName}
             />
           </div>
         ))}
@@ -131,6 +134,7 @@ export default function CategoryProducts({
           product={product}
           showAddToCart
           showAddToWishlist
+          showProductName={showProductName}
           eagerLoad={index < 6} // Eager load first 6 products
         />
       ))}

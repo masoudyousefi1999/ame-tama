@@ -5,6 +5,7 @@ import { CartProvider } from "@/context/cart-context";
 import { AuthProvider } from "@/context/auth-context";
 import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
+import { BreadcrumbProvider } from "@/context/breadcrumb-context";
 import ViewportHeightFix from "@/components/viewport-height-fix";
 import { LoginModalProvider } from "@/context/login-modal-context";
 import localFont from "next/font/local";
@@ -132,7 +133,9 @@ export default function RootLayout({
             <CartProvider>
               <WishlistProvider>
                 <ImageProvider>
-                  <ConditionalLayout>{children}</ConditionalLayout>
+                  <BreadcrumbProvider>
+                    <ConditionalLayout>{children}</ConditionalLayout>
+                  </BreadcrumbProvider>
                   <Toaster />
                 </ImageProvider>
               </WishlistProvider>

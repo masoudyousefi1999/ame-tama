@@ -7,9 +7,10 @@ import ProductTabs from "@/components/product/product-tabs";
 import RelatedProducts from "@/components/product/related-products";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { ArrowRight } from "lucide-react";
+import { IProductType } from "@/lib/products";
 
 interface ProductPageClientProps {
-  product: any;
+  product: IProductType;
 }
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
@@ -18,13 +19,13 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       <div className="mb-2">
         <Breadcrumb
           items={[
-            { href: "/category/figures", label: "فیگور ها" },
+            { href: `/${product.category.slug}`, label: product.category.name },
             {
-              href: `/category/figures/${product.category.slug}`,
-              label: product.category.slug,
+              href: `/anime/${product.tags[0].slug}`,
+              label: product.tags[0].name,
             },
             {
-              href: product.slug,
+              href: `/${product.category.slug}/${product.tags[0].slug}/${product.slug}`,
               label: product.name,
               isCurrent: true,
             },

@@ -9,52 +9,43 @@ import CategorySchema from "@/components/seo/category-schema";
 // ✅ Use correct server function prop type
 type Props = {
   params: {
-    slug: string[];
+    category: string;
   };
 };
 
 const baseUrl = "https://ame-tama.com";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const category = await getCategoryBySlug(slug[slug.length - 1]);
+  const { category } = await params;
+  const categoryData = await getCategoryBySlug(category);
 
-  if (!category) {
+  if (!categoryData) {
     return {
       title: "دسته‌بندی یافت نشد | AME-TAMA",
     };
   }
 
   // ساخت URL کامل برای دسته‌بندی
-  const categoryUrl = `${baseUrl}/category/${slug.join("/")}`;
-
-  // ساخت breadcrumb path
-  const breadcrumbPath = slug.map((segment, index) => {
-    const path = slug.slice(0, index + 1).join("/");
-    return {
-      name: segment.replace(/-/g, " "),
-      path: `/category/${path}`,
-    };
-  });
+  const categoryUrl = `${baseUrl}/${category}`;
 
   return {
     metadataBase: new URL(baseUrl),
-    title:  `خرید فیگورهای انیمه ${category.name} | AME-TAMA`,
-    description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA. مجموعه کامل اکشن فیگورهای انیمه ای با تضمین اصالت`,
-    keywords: `فیگور انیمه, اکشن فیگور, ${category.name}, AME-TAMA, خرید فیگور, فیگور انیمه ای, مجسمه انیمه, کلکسیون انیمه`,
+    title: `خرید فیگورهای انیمه ${categoryData.name} | AME-TAMA`,
+    description: `خرید فیگور های انیمه ${categoryData.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA. مجموعه کامل اکشن فیگورهای انیمه ای با تضمین اصالت`,
+    keywords: `فیگور انیمه, اکشن فیگور, ${categoryData.name}, AME-TAMA, خرید فیگور, فیگور انیمه ای, مجسمه انیمه, کلکسیون انیمه`,
     openGraph: {
-      title: `خرید فیگورهای انیمه ${category.name} | AME-TAMA`,
-      description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
+      title: `خرید فیگورهای انیمه ${categoryData.name} | AME-TAMA`,
+      description: `خرید فیگور های انیمه ${categoryData.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
       type: "website",
-      images: [category.image],
+      images: [categoryData.image],
       url: categoryUrl,
       locale: "fa_IR",
       siteName: "AME-TAMA",
     },
     twitter: {
       card: "summary_large_image",
-      title: `خرید فیگورهای انیمه ${category.name} | AME-TAMA`,
-      description: `خرید فیگور های انیمه ${category.name} با بهترین قیمت و کیفیت`,
-      images: [category.image],
+      title: `خرید فیگورهای انیمه ${categoryData.name} | AME-TAMA`,
+      description: `خرید فیگور های انیمه ${categoryData.name} با بهترین قیمت و کیفیت`,
+      images: [categoryData.image],
     },
     alternates: {
       canonical: categoryUrl,
@@ -74,33 +65,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function CategoryRoute(props: {
-  params: { slug: string[] };
+  params: { category: string };
   searchParams?: { page?: string };
 }) {
   const params = await props.params;
   const searchParams = await props.searchParams;
 
-  const lastSlug = params.slug[params.slug.length - 1];
+  const categorySlug = params.category;
   const page = Number.parseInt(searchParams?.page || "1");
   const limit = productLimit;
 
   // Parallel data fetching for better performance
   const [category, { products, totalCount }] = await Promise.all([
-    getCategoryBySlug(lastSlug),
-    getProductByCategorySlug(lastSlug, page, limit),
+    getCategoryBySlug(categorySlug),
+    getProductByCategorySlug(categorySlug, page, limit),
   ]);
 
   if (!category) notFound();
   if (!Array.isArray(products)) notFound();
 
   // ساخت breadcrumb path برای schema
-  const breadcrumbPath = params.slug.map((segment, index) => {
-    const path = params.slug.slice(0, index + 1).join("/");
-    return {
-      name: segment.replace(/-/g, " "),
-      path: `/category/${path}`,
-    };
-  });
+  const breadcrumbPath = [
+    {
+      name: "خانه",
+      path: "/",
+    },
+    {
+      name: category.name,
+      path: `/${category.slug}`,
+    },
+  ];
 
   return (
     <>
@@ -111,9 +105,6 @@ export default async function CategoryRoute(props: {
       />
       <CategoryPage
         category={category}
-        subcategories={category.children}
-        sort={"newest"}
-        filter={undefined}
         page={page}
         products={products}
         totalCount={totalCount}

@@ -1,80 +1,133 @@
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import type { ICategoryType } from "@/lib/categories";
+import Link from "next/link";
 
 interface CategoryHeaderProps {
   category: ICategoryType;
 }
 
 export default function CategoryHeader({ category }: CategoryHeaderProps) {
-  const isRoot = category.name === "figures";
-
   return (
-    <header className="relative mb-12 overflow-hidden rounded-3xl group transition-all ease-in-out">
-      {/* Hero Section with Gradient Background */}
-      <section
-        className={cn(
-          "relative py-16 md:py-24 overflow-hidden",
-          isRoot ? "h-[16rem] md:h-[20rem]" : "h-48 md:h-56"
-        )}
-      >
-        {/* Animated background layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900" />
+    <header className="relative mb-16 overflow-hidden rounded-3xl group transition-all ease-in-out">
+      <section className="relative py-20 md:py-32 overflow-hidden min-h-[400px] md:min-h-[500px]">
+        {/* Dynamic gradient background based on category */}
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700" />
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
 
-        {/* Simplified gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-teal-500/20 to-cyan-500/20" />
+        {/* Animated floating elements */}
+        <div className="absolute top-10 left-10 w-40 h-40 bg-primary/10 rounded-full blur-2xl animate-pulse" />
+        <div className="absolute top-32 right-20 w-32 h-32 bg-accent/10 rounded-full blur-2xl animate-pulse delay-1000" />
+        <div className="absolute bottom-20 left-1/4 w-36 h-36 bg-primary/10 rounded-full blur-2xl animate-pulse delay-2000" />
+        <div className="absolute bottom-32 right-1/3 w-28 h-28 bg-accent/10 rounded-full blur-2xl animate-pulse delay-500" />
 
-        {/* Static decorative elements */}
-        <div className="absolute top-20 left-20 w-32 h-32 bg-emerald-400/10 rounded-full blur-xl" />
-        <div className="absolute top-40 right-32 w-24 h-24 bg-teal-400/10 rounded-full blur-xl" />
-        <div className="absolute bottom-20 left-1/3 w-28 h-28 bg-cyan-400/10 rounded-full blur-xl" />
-        <div className="absolute bottom-32 right-20 w-20 h-20 bg-emerald-400/10 rounded-full blur-xl" />
-
-        {/* Simplified radial gradients */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(16,185,129,0.2),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(20,184,166,0.2),transparent_40%)]" />
-
-        {/* Background Image with Overlay */}
+        {/* Background Image with enhanced overlay */}
         <div className="absolute inset-0">
-          <Image
-            src={category.image || "/placeholder.svg"}
-            alt={category.name}
-            fill
-            priority
-            quality={85}
-            loading="eager"
-            fetchPriority="high"
-            className="object-cover brightness-75 saturate-110"
-            placeholder="blur"
-            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-          />
-          {/* Soft Gradient for Legibility */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
-        </div>
-
-        {/* Top overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-
-        {/* Content */}
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
-          <h1
-            className={cn(
-              "font-sans font-extrabold tracking-tight text-white drop-shadow-lg",
-              isRoot ? "text-5xl md:text-6xl" : "text-4xl md:text-5xl"
-            )}
-          >
-            {category.name}
-          </h1>
-
-          {category.description && (
-            <p className="mt-4 max-w-3xl text-base leading-relaxed text-white/90 md:text-lg font-sans">
-              {category.description}
-            </p>
+          {category.image ? (
+            <Image
+              src={category.image}
+              alt={category.name}
+              fill
+              sizes="100vw"
+              className="object-cover opacity-25 group-hover:opacity-35 transition-all duration-700 scale-105 group-hover:scale-110"
+              priority
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+              <span className="text-8xl opacity-60 animate-bounce">📦</span>
+            </div>
           )}
+          {/* Enhanced gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-accent/20" />
         </div>
 
-        {/* Bottom Glow */}
-        <div className="pointer-events-none absolute -bottom-12 left-1/2 h-24 w-[120%] -translate-x-1/2 bg-emerald-500/20 blur-[60px] transition-colors group-hover:bg-emerald-500/30" />
+        {/* Content with better typography and layout */}
+        <div className="relative z-10 flex items-center h-full">
+          <div className="container mx-auto px-6">
+            <div className="max-w-5xl">
+              {/* Category title with enhanced styling */}
+              <div className="mb-6">
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 leading-tight tracking-tight">
+                  <span className="bg-gradient-to-r from-white via-primary/80 to-accent/80 bg-clip-text text-transparent">
+                    {category.name}
+                  </span>
+                </h1>
+                <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent rounded-full mb-6"></div>
+              </div>
+
+              {/* Description with better styling */}
+              {category.description && (
+                <p className="text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl leading-relaxed font-medium">
+                  {category.description}
+                </p>
+              )}
+
+              {/* Stats with enhanced design */}
+              <div className="flex flex-wrap gap-6 mb-8">
+                <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
+                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-white font-semibold text-lg">
+                    محصولات متنوع
+                  </span>
+                </div>
+                {category.tags && category.tags.length > 0 && (
+                  <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
+                    <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse delay-500"></div>
+                    <span className="text-white font-semibold text-lg">
+                      {category.tags.length} انیمه موجود
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Call to action buttons */}
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="#products"
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                >
+                  <span>مشاهده محصولات</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </Link>
+                <Link
+                  href="/shop"
+                  className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold px-8 py-4 rounded-2xl hover:bg-white/20 transition-all duration-300"
+                >
+                  <span>مشاهده فروشگاه</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                    />
+                  </svg>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Decorative elements */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-900 to-transparent"></div>
       </section>
     </header>
   );

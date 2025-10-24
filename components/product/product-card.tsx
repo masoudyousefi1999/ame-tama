@@ -20,6 +20,7 @@ export interface ProductCardProps {
   product: IProductType;
   showAddToCart?: boolean;
   showAddToWishlist?: boolean;
+  showProductName?: boolean; // New prop to show product name
   className?: string;
   eagerLoad?: boolean; // For LCP optimization
 }
@@ -27,7 +28,7 @@ export interface ProductCardProps {
 export function ProductCard({
   product,
   showAddToCart = true,
-  showAddToWishlist = true,
+  showProductName = false, // Default to false
   className,
   eagerLoad = false,
 }: ProductCardProps) {
@@ -44,6 +45,9 @@ export function ProductCard({
     isInWishlist,
   } = useWishlist();
   const { toast } = useToast();
+
+  const tagSlug = product.tags[0]?.slug;
+  const categorySlug = product.category?.slug;
 
   useEffect(() => {
     if (isMobile) setHovered(true);
@@ -164,7 +168,7 @@ export function ProductCard({
         onMouseLeave={() => !isMobile && setHovered(false)}
       >
         <Link
-          href={`/product/${product.slug}`}
+          href={`/${categorySlug}/${tagSlug}/${product.slug}`}
           className="block"
           prefetch={false}
           onClick={(e) => {
@@ -205,19 +209,13 @@ export function ProductCard({
               retryDelayMs={isMobile ? 1000 : 500}
             />
 
-            {/* علاقه‌مندی */}
-            {showAddToWishlist && (
-              <button
-                onClick={handleWishlistToggle}
-                className="absolute top-2 left-2 z-20 flex h-8 w-8 md:h-9 md:w-9 items-center justify-center rounded-full bg-primary/80 text-primary-foreground hover:bg-primary hover:text-primary-foreground shadow transition-all duration-300"
-                aria-label={
-                  isInWishlist(product.uuid)
-                    ? `حذف ${product.name} از علاقه‌مندی‌ها`
-                    : `افزودن ${product.name} به علاقه‌مندی‌ها`
-                }
-              >
-                <Heart className="h-4 w-4 md:h-5 md:w-5" />
-              </button>
+            {/* نمایش نوع محصول (فقط در صفحه تگ) */}
+            {showProductName && (
+              <div className="absolute top-0 left-0 z-20">
+                <Badge className="text-sm font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 shadow-xl rounded-br-lg rounded-tl-none rounded-tr-none rounded-bl-none px-3 py-1">
+                  {product.category?.name || "بدون دسته‌بندی"}
+                </Badge>
+              </div>
             )}
 
             {/* موجودی */}
@@ -296,8 +294,8 @@ export function ProductCard({
       product.price,
       imageLoaded,
       imageError,
-      showAddToWishlist,
       showAddToCart,
+      showProductName, // Add new prop to dependencies
       isInStock,
       formatPriceDivided,
       hovered,

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getCategoryPath } from "@/lib/categories";
 import { getSiteUrl } from "@/lib/site-url";
 import Script from "next/script";
 
@@ -23,27 +22,8 @@ export default function Breadcrumb({
   className,
   categoryId,
 }: BreadcrumbProps) {
-  // اگر شناسه دسته‌بندی وجود داشت، مسیر کامل دسته‌بندی را دریافت می‌کنیم
+  // استفاده از items اصلی
   let breadcrumbItems = [...items];
-
-  if (categoryId) {
-    const categoryPath = getCategoryPath(categoryId);
-
-    // حذف آخرین آیتم که همان دسته‌بندی فعلی است (چون در items هم وجود دارد)
-    if (categoryPath.length > 1) {
-      const parentCategories = categoryPath.slice(0, -1);
-
-      // اضافه کردن دسته‌بندی‌های والد به مسیر
-      breadcrumbItems = [
-        { name: "خانه", path: "/" },
-        ...parentCategories.map((cat) => ({
-          name: cat.name,
-          path: `/category/${cat.slug}`,
-        })),
-        ...items.slice(1), // حذف "خانه" از items اصلی چون قبلاً اضافه شده
-      ];
-    }
-  }
 
   // ساخت structured data برای breadcrumb
   const breadcrumbSchema = {

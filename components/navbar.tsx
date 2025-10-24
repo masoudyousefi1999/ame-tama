@@ -24,11 +24,7 @@ import { cn } from "@/lib/utils";
 import CartDropdown from "@/components/cart/cart-dropdown";
 import UserMenu from "@/components/auth/user-menu";
 import UnifiedSearch from "@/components/search/unified-search";
-import {
-  getRootCategories,
-  getSubcategories,
-  type ICategoryType,
-} from "@/lib/categories";
+import { type ICategoryType } from "@/lib/categories";
 import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";
@@ -79,12 +75,9 @@ export default function Navbar() {
         }
 
         const categories = await response.json();
-        const rootCategories: any[] = [];
-        categories.forEach((item: any) =>
-          rootCategories.push(...item.children)
-        );
-        setCategoryTree(rootCategories);
-        setMobileCategories(rootCategories);
+        // Directly use categories instead of extracting children
+        setCategoryTree(categories);
+        setMobileCategories(categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
         toast({
@@ -144,16 +137,18 @@ export default function Navbar() {
     };
   }, [isOpen]);
 
-  // Mobile category navigation
+  // Mobile category navigation for tags
   const handleMobileCategoryClick = (
     categoryId: string,
     categoryName: string,
     categorySlug: string
   ) => {
     try {
-      const subs = getSubcategories(categoryId);
-      if (subs.length > 0) {
-        setMobileCategories(subs);
+      const category = categoryTree.find(
+        (cat) => cat.id.toString() === categoryId
+      );
+      if (category && category.tags.length > 0) {
+        setMobileCategories(category.tags);
         setCurrentMobileLevel(categoryId);
         setMobileCategoryPath((p) => [
           ...p,
@@ -166,7 +161,7 @@ export default function Navbar() {
     } catch {
       toast({
         title: "خطا در دسته‌بندی",
-        description: "مشکلی در بارگذاری زیردسته‌ها رخ داد.",
+        description: "مشکلی در بارگذاری تگ‌ها رخ داد.",
         variant: "error",
       });
     }
@@ -176,8 +171,7 @@ export default function Navbar() {
   const handleMobileBackClick = () => {
     try {
       if (mobileCategoryPath.length <= 1) {
-        const roots = getRootCategories();
-        setMobileCategories(roots);
+        setMobileCategories(categoryTree);
         setCurrentMobileLevel(null);
         setMobileCategoryPath([]);
       } else {
@@ -185,10 +179,14 @@ export default function Navbar() {
         newPath.pop();
         const parentId = newPath[newPath.length - 1]?.id;
         if (parentId) {
-          const subs = getSubcategories(parentId);
-          setMobileCategories(subs);
-          setCurrentMobileLevel(parentId);
-          setMobileCategoryPath(newPath);
+          const category = categoryTree.find(
+            (cat) => cat.id.toString() === parentId
+          );
+          if (category && category.tags.length > 0) {
+            setMobileCategories(category.tags);
+            setCurrentMobileLevel(parentId);
+            setMobileCategoryPath(newPath);
+          }
         }
       }
     } catch {
@@ -280,73 +278,41 @@ export default function Navbar() {
                   className="absolute right-0 mt-1 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] z-[60] dropdown-menu"
                 >
                   {categoryTree.map((cat) => (
-                    <div key={cat.id} className="relative">
-                      <div
-                        onMouseEnter={() => setActiveCategory(cat.id as any)}
-                        className="flex justify-between items-center px-4 py-2 bg-popover hover:bg-muted cursor-pointer transition-colors"
-                      >
+                    <div
+                      key={cat.id}
+                      className="relative group"
+                      onMouseEnter={() => setActiveCategory(cat.id as any)}
+                      onMouseLeave={() => setActiveCategory(null)}
+                    >
+                      <div className="flex justify-between items-center px-4 py-2.5 bg-popover hover:bg-muted cursor-pointer transition-all duration-200 rounded-md mx-2 my-1">
                         <Link
-                          href={`/category/figures/${cat.slug}`}
+                          href={`/${cat.slug}`}
                           onClick={() => setIsCategoriesOpen(false)}
                           className="block flex-1 text-foreground transition-colors"
                           prefetch={false}
                         >
                           {cat.name}
                         </Link>
-                        {cat.children?.length > 0 && (
+                        {cat.tags?.length > 0 && (
                           <ChevronRight className="h-4 w-4 rotate-180 text-foreground" />
                         )}
                       </div>
 
-                      {activeCategory === cat.id &&
-                        cat.children?.length > 0 && (
-                          <div
-                            onMouseLeave={() => setActiveSubcategory(null)}
-                            className="absolute right-full top-0 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] mr-1 dropdown-menu"
-                          >
-                            {cat.children.map((sub) => (
-                              <div key={sub.id} className="relative">
-                                <div
-                                  onMouseEnter={() =>
-                                    setActiveSubcategory(sub.id)
-                                  }
-                                  className="flex justify-between items-center px-4 py-2 bg-popover hover:bg-muted cursor-pointer transition-colors"
-                                >
-                                  <Link
-                                    href={`/category/${sub.slug}`}
-                                    onClick={() => setIsCategoriesOpen(false)}
-                                    className="block flex-1 text-foreground transition-colors"
-                                    prefetch={false}
-                                  >
-                                    {sub.name}
-                                  </Link>
-                                  {sub.children?.length > 0 && (
-                                    <ChevronRight className="h-4 w-4 rotate-180 text-foreground" />
-                                  )}
-                                </div>
-
-                                {activeSubcategory === sub.id &&
-                                  sub.children?.length > 0 && (
-                                    <div className="absolute right-full top-0 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] mr-1 dropdown-menu">
-                                      {sub.children.map((lvl3) => (
-                                        <Link
-                                          key={lvl3.id}
-                                          href={`/category/${lvl3.slug}`}
-                                          onClick={() =>
-                                            setIsCategoriesOpen(false)
-                                          }
-                                          prefetch={false}
-                                          className="block px-4 py-2 whitespace-nowrap bg-popover hover:bg-muted transition-colors text-foreground"
-                                        >
-                                          {lvl3.name}
-                                        </Link>
-                                      ))}
-                                    </div>
-                                  )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
+                      {activeCategory === cat.id && cat.tags?.length > 0 && (
+                        <div className="absolute right-full top-0 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] dropdown-menu z-[70] border border-border/50 mr-[218px]">
+                          {cat.tags.map((tag) => (
+                            <div key={tag.uuid} className="relative">
+                              <Link
+                                href={`/${cat.slug}/${tag.slug}`}
+                                onClick={() => setIsCategoriesOpen(false)}
+                                className="block px-4 py-2.5 whitespace-nowrap bg-popover hover:bg-muted transition-all duration-200 text-foreground hover:text-primary rounded-md mx-2 my-1"
+                              >
+                                {tag.name}
+                              </Link>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
                 </motion.div>
@@ -360,6 +326,13 @@ export default function Navbar() {
           >
             <Store className="h-4 w-4" />
             <span>فروشگاه</span>
+          </Link>
+          <Link
+            href="/anime"
+            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            prefetch={false}
+          >
+            لیست انمیه ها
           </Link>
           <Link
             href="/about"
@@ -457,6 +430,16 @@ export default function Navbar() {
                     <Home className="h-6 w-6 text-foreground mb-2" />
                     <span className="text-xs text-foreground">خانه</span>
                   </Link>
+                  <Link
+                    href="/anime"
+                    onClick={() => setIsOpen(false)}
+                    prefetch={false}
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                  >
+                    <span className="text-xs text-foreground">
+                      لیست انمیه ها
+                    </span>
+                  </Link>
                   <div className="col-span-3 flex items-center justify-center p-3 rounded-lg bg-card">
                     <UserMenu />
                   </div>
@@ -515,7 +498,7 @@ export default function Navbar() {
                             <ChevronLeft className="h-3 w-3 mx-1 text-muted-foreground" />
                           )}
                           <Link
-                            href={`/category/${cat.slug}`}
+                            href={`/${cat.slug}`}
                             prefetch={false}
                             onClick={() => setIsOpen(false)}
                             className={cn(
@@ -534,15 +517,13 @@ export default function Navbar() {
                 )}
 
                 <h3 className="font-medium mb-3 text-foreground">
-                  {mobileCategoryPath.length > 0
-                    ? "زیردسته‌ها"
-                    : "دسته‌بندی‌ها"}
+                  {mobileCategoryPath.length > 0 ? "تگ‌ها" : "دسته‌بندی‌ها"}
                 </h3>
                 <div className="grid grid-cols-2 gap-2">
                   {mobileCategories.map((c) => (
-                    <div key={c.id} className="flex items-center">
+                    <div key={c.id || c.uuid} className="flex items-center">
                       <Link
-                        href={`/category/${c.slug}`}
+                        href={`/${c.slug}`}
                         prefetch={false}
                         onClick={() => setIsOpen(false)}
                         className="block p-2 bg-card rounded-lg text-sm hover:bg-muted transition-colors flex-1 text-foreground"
@@ -550,13 +531,13 @@ export default function Navbar() {
                       >
                         {c.name}
                       </Link>
-                      {getSubcategories(c.id).length > 0 && (
+                      {c.tags?.length > 0 && (
                         <button
                           onClick={() =>
                             handleMobileCategoryClick(c.id, c.name, c.slug)
                           }
                           className="p-2 ml-1 bg-card rounded-lg hover:bg-muted transition-colors"
-                          aria-label="نمایش زیردسته‌ها"
+                          aria-label="نمایش تگ‌ها"
                         >
                           <ChevronLeft className="h-4 w-4 text-foreground" />
                         </button>

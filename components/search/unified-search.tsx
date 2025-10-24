@@ -117,7 +117,9 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
 
     setIsNavigating(true);
     saveRecentSearch(query);
-    router.push(`/product/${product.slug}`);
+    router.push(
+      `/${product.category?.slug}/${product.tags?.[0]?.slug}/${product.slug}`
+    );
     setTimeout(() => {
       setIsOpen(false);
       setIsNavigating(false);

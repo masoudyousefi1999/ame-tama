@@ -1,4 +1,6 @@
-// تعریف نوع محصول بر اساس API جدید
+
+import { ITagType } from "./tags";
+import { customFetch } from "./utils";
 export interface ProductMedia {
   order: number;
   isDefault: boolean;
@@ -31,6 +33,7 @@ export interface IProductType {
   category: ProductCategory;
   productMedia: ProductMedia[];
   reviews?: any[];
+  tags: ITagType[];
 }
 
 export interface ProductReview {
@@ -40,17 +43,6 @@ export interface ProductReview {
   rating: number;
   comment: string;
 }
-
-export function getProductByUuid(uuid: string): IProductType | null {
-  return null;
-}
-
-// دریافت محصول با آیدی مشخص (برای سازگاری با کد قدیمی)
-export function getProductById(id: number): IProductType | null {
-  return null; // فرض می‌کنیم ID ها از 1 شروع می‌شوند
-}
-
-import { customFetch } from "./utils";
 
 export async function getProductBySlug(
   slug: string,
@@ -84,6 +76,45 @@ export async function getProductBySlug(
     return product as IProductType;
   } catch (error) {
     return null;
+  }
+}
+
+export async function getProductsByTagSlug(
+  tagSlug: string,
+  page: number = 1,
+  limit: number = 8
+): Promise<{ products: IProductType[]; totalCount: number }> {
+  try {
+    const res = await customFetch(
+      `/tag/${tagSlug}?page=${page}&limit=${limit}`,
+      { method: "GET" }
+    );
+    const result = await res.json();
+    const { products, totalCount } = result;
+    return { products: products || [], totalCount: totalCount || 0 };
+  } catch (error) {
+    console.error("Error fetching products by tag:", error);
+    return { products: [], totalCount: 0 };
+  }
+}
+
+export async function getProductByCategoryAndTagSlug(
+  categorySlug: string,
+  tagSlug: string,
+  page: number = 1,
+  limit: number = 8
+): Promise<{ products: IProductType[]; totalCount: number }> {
+  try {
+    const res = await customFetch(
+      `/category/${categorySlug}/${tagSlug}?page=${page}&limit=${limit}`,
+      { method: "GET" }
+    );
+    const result = await res.json();
+    const { products, totalCount } = result;
+    return { products: products || [], totalCount: totalCount || 0 };
+  } catch (error) {
+    console.error("Error fetching products by category and tag:", error);
+    return { products: [], totalCount: 0 };
   }
 }
 
@@ -153,48 +184,4 @@ export async function getAllProducts(
     console.error("Error fetching products:", error);
     return { products: [], totalCount: 0 };
   }
-}
-
-// دریافت محصولات جدید (محصولات با تاریخ ایجاد اخیر)
-export function getNewProducts(limit = 8): IProductType[] {
-  return [];
-}
-
-// دریافت محصولات با موجودی کم
-export function getLowStockProducts(limit = 8): IProductType[] {
-  return [];
-}
-
-// برای سازگاری با کد قدیمی - reviews جداگانه
-export const productReviews: { [productUuid: string]: ProductReview[] } = {
-  "prod-58b1f289-be86-4344-8d07-3a55a01badbe": [
-    {
-      id: 1,
-      user: "علی محمدی",
-      date: "۱۴۰۲/۰۴/۱۲",
-      rating: 5,
-      comment:
-        "کیفیت این مجسمه فوق‌العاده است! جزئیات چهره و لباس لوفی بی‌نظیر است و رنگ‌آمیزی آن عالی انجام شده. قطعاً ارزش خرید دارد.",
-    },
-    {
-      id: 2,
-      user: "مریم حسینی",
-      date: "۱۴۰۲/۰۴/۰۵",
-      rating: 4,
-      comment:
-        "مجسمه بسیار زیبایی است و طراحی آن عالی است. تنها ایراد کوچکی که داشت، بسته‌بندی آن بود که کمی آسیب دیده بود، اما خود مجسمه سالم بود.",
-    },
-    {
-      id: 3,
-      user: "رضا کریمی",
-      date: "۱۴۰۲/۰۳/۲۰",
-      rating: 5,
-      comment:
-        "به عنوان یک کلکسیونر حرفه‌ای، باید بگویم که این یکی از بهترین مجسمه‌های لوفی است که تا به حال دیده‌ام. جزئیات و کیفیت ساخت آن فوق‌العاده است.",
-    },
-  ],
-};
-
-export function getProductReviews(productUuid: string): ProductReview[] {
-  return productReviews[productUuid] || [];
 }

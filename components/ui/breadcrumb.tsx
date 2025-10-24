@@ -53,11 +53,11 @@ export function Breadcrumb({
     <nav
       aria-label="breadcrumb"
       className={cn(
-        "w-full overflow-x-auto whitespace-nowrap rounded-lg bg-muted px-2 py-2 text-xs text-muted-foreground sm:px-4 sm:text-sm",
+        "w-full overflow-x-auto whitespace-nowrap rounded-lg bg-muted px-3 py-3 text-xs text-muted-foreground sm:px-6 sm:text-sm",
         className
       )}
     >
-      <ol className="flex w-full items-center gap-x-1 sm:gap-x-2">
+      <ol className="flex w-full items-center gap-x-2 sm:gap-x-3">
         {showHome && (
           <li className="flex items-center">
             <Link
@@ -141,7 +141,7 @@ export const BreadcrumbSeparator = React.forwardRef<
 >(({ children, className, ...props }, ref) => (
   <span
     ref={ref}
-    className={cn("mx-2", className)}
+    className={cn("mx-1 sm:mx-2", className)}
     aria-hidden="true"
     {...props}
   >
@@ -157,7 +157,10 @@ export const BreadcrumbCurrent = React.forwardRef<
   <span
     ref={ref}
     aria-current="page"
-    className={cn("rounded-md px-2 py-1 text-foreground", className)}
+    className={cn(
+      "rounded-md px-2 py-1 text-foreground font-medium",
+      className
+    )}
     {...props}
   >
     {children}

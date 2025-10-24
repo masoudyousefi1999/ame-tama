@@ -5,7 +5,6 @@ import { Slider } from "@/components/ui/slider";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { getSubcategories } from "@/lib/categories";
 import type { ICategoryType } from "@/lib/categories";
 import Link from "next/link";
 import { formatPrice } from "@/lib/format-price";
@@ -31,8 +30,8 @@ export default function CategoryFilters({
     useState<[number, number]>(priceRange);
   const [localFilters, setLocalFilters] = useState<string[]>(selectedFilters);
 
-  // دریافت زیردسته‌های این دسته‌بندی
-  const subcategories = getSubcategories(category.uuid);
+  // دریافت تگ‌های این دسته‌بندی
+  const tags = category.tags || [];
 
   // همگام‌سازی با props
   useEffect(() => {
@@ -71,20 +70,20 @@ export default function CategoryFilters({
 
   return (
     <div className="space-y-6 rounded-lg bg-card p-6 shadow-sm">
-      {/* sub-categories */}
-      {subcategories.length > 0 && (
+      {/* tags */}
+      {tags.length > 0 && (
         <div className="mb-6">
-          <h3 className="mb-4 font-medium">زیردسته‌های {category.name}</h3>
+          <h3 className="mb-4 font-medium">انیمه ی {category.name}</h3>
 
           <div className="space-y-2">
-            {subcategories.map((subcat) => (
+            {tags.map((tag) => (
               <Link
-                key={subcat.id}
-                href={`/category/${subcat.slug}`}
+                key={tag.uuid}
+                href={`/${category.slug}/${tag.slug}`}
                 className="block rounded-lg bg-muted p-3 text-sm transition-colors hover:bg-muted/80 min-h-[44px] flex items-center"
                 prefetch={false}
               >
-                {subcat.name}
+                {tag.name}
               </Link>
             ))}
           </div>

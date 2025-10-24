@@ -4,30 +4,38 @@ import ServerCustomerReviews from "@/components/server-customer-reviews";
 import CategoryShowcase from "@/components/shop/category-showcase";
 import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
+import { getAllTags, ITagType } from "@/lib/tags";
+import AnimeShowcase from "@/components/animes/anime-showcase";
 
 export default async function Home() {
   let allCategories: any[] = [];
   let productsResult: any = { products: [] };
+  let tagsResult: any = { tags: [] };
 
   try {
-    const [categoriesData, productsData] = await Promise.all([
+    const [categoriesData, productsData, tagsData] = await Promise.all([
       getAllCategories({
         next: { tags: ["categories"] }, // 10 minutes cache
       }),
       getAllProducts(1, 8, {
         next: { tags: ["products", "homepage"] }, // 5 minutes cache
       }),
+      getAllTags(1, 6, {
+        next: { tags: ["tags", "homepage"] }, // 5 minutes cache
+      }),
     ]);
 
     allCategories = categoriesData || [];
     productsResult = productsData || { products: [] };
+    tagsResult = tagsData || { tags: [] };
   } catch (error) {
     console.warn("Failed to fetch data for homepage:", error);
     // Use empty arrays as fallback
   }
 
-  const categories = allCategories?.[0]?.children ?? [];
+  const categories = allCategories || [];
   const products = productsResult.products || [];
+  const tags = tagsResult.tags || [];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
@@ -74,14 +82,36 @@ export default async function Home() {
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 md:mb-8 section-title">
-              دسته‌بندی‌های محبوب
+              تنوع محصول
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              مجموعه‌ای متنوع از مجسمه‌های انیمه در دسته‌بندی‌های مختلف
+              مجموعه‌ای متنوع از دسته‌بندی‌های مختلف برای انتخاب بهترین محصولات
+              انیمه
             </p>
           </div>
           <div className="px-4">
             <CategoryShowcase categories={categories as any} />
+          </div>
+        </div>
+      </section>
+
+      <div className="section-separator" />
+
+      {/* Tags Showcase */}
+      <section className="relative py-16 md:py-24 section-elevated section-glow mx-4 lg:mx-8">
+        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
+        <div className="relative container mx-auto px-6 lg:px-8 z-10">
+          <div className="text-center mb-12 md:mb-20">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 md:mb-8 section-title">
+              انیمه مورد علاقه‌ات رو انتخاب کن
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              محصولات متنوع انیمه مورد علاقه‌ات رو ببین و بهترین محصولات رو پیدا
+              کن
+            </p>
+          </div>
+          <div className="px-4">
+            <AnimeShowcase tags={tags as ITagType[]} />
           </div>
         </div>
       </section>

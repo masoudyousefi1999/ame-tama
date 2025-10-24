@@ -162,17 +162,6 @@ export default function FeaturedProducts({
   return (
     <section id="featured-products" className="py-10">
       <div className="container mx-auto px-2 md:px-4">
-        <div className="mb-6 text-center">
-          <h2 className="text-primary text-2xl font-bold mb-2">
-            مجسمه‌های لوکس ویژه
-          </h2>
-          <p className="mx-auto max-w-xl text-muted-foreground text-sm">
-            {loading
-              ? "در حال بارگذاری محصولات..."
-              : "جدیدترین محصولات ما را بررسی کنید"}
-          </p>
-        </div>
-
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {loading ? (
             loadingSkeletons

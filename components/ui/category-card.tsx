@@ -28,7 +28,7 @@ export const CategoryCard = memo(({ category }: CategoryCardProps) => {
 
   return (
     <Link
-      href={`/category/${category.slug}`}
+      href={`/${category.slug}`}
       prefetch={false}
       className={cn(
         "group relative overflow-hidden rounded-2xl border border-border bg-card bg-opacity-50 transition-all duration-300",
