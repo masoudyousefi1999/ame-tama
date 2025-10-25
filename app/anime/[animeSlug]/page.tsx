@@ -8,15 +8,15 @@ import AnimePageClient from "@/components/animes/anime-page-client";
 
 // ✅ Use correct server function prop type
 type Props = {
-  params: {
-    slug: string;
-  };
+  params: Promise<{
+    animeSlug: string;
+  }>;
 };
 
 const baseUrl = "https://ame-tama.com";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const tag = await getTagBySlug(slug);
+  const { animeSlug } = await params;
+  const tag = await getTagBySlug(animeSlug);
 
   if (!tag) {
     return {
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   // ساخت URL کامل برای انیمه
-  const animeUrl = `${baseUrl}/anime/${slug}`;
+  const animeUrl = `${baseUrl}/anime/${animeSlug}`;
 
   return {
     metadataBase: new URL(baseUrl),
@@ -64,20 +64,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function AnimeRoute(props: {
-  params: { slug: string };
-  searchParams?: { page?: string };
+export default async function AnimeRoute({
+  params,
+}: {
+  params: Promise<{
+    animeSlug: string;
+  }>;
 }) {
-  const params = await props.params;
-  const searchParams = await props.searchParams;
-
-  const tagSlug = params.slug;
-  const page = Number.parseInt(searchParams?.page || "1");
-  const limit = productLimit;
+  const { animeSlug } = await params;
 
   // Parallel data fetching for better performance
   const [documents] = await Promise.all([
-    getTagBySlug(tagSlug) as unknown as Promise<{
+    getTagBySlug(animeSlug) as unknown as Promise<{
       tag: ITagType;
       totalCount: number;
     }>,

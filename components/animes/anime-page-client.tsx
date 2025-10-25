@@ -57,8 +57,8 @@ export default function AnimePageClient({
         <Breadcrumb items={breadcrumbItems} className="mb-4" />
 
         {/* Hero Header */}
-        <header className="relative mb-16 overflow-hidden rounded-3xl group transition-all ease-in-out">
-          <section className="relative py-20 md:py-32 overflow-hidden min-h-[400px] md:min-h-[500px]">
+        <header className="relative mb-12 overflow-hidden rounded-3xl group transition-all ease-in-out">
+          <section className="relative py-12 md:py-20 overflow-hidden min-h-[300px] md:min-h-[350px]">
             {/* Dynamic gradient background based on anime */}
             <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700" />
             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
@@ -95,13 +95,13 @@ export default function AnimePageClient({
               <div className="container mx-auto px-6">
                 <div className="max-w-5xl">
                   {/* Anime title with enhanced styling */}
-                  <div className="mb-6">
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white mb-4 leading-tight tracking-tight">
+                  <div className="mb-4">
+                    <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-3 leading-tight tracking-tight">
                       <span className="bg-gradient-to-r from-white via-primary/80 to-accent/80 bg-clip-text text-transparent">
                         {tag.name}
                       </span>
                     </h1>
-                    <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent rounded-full mb-6"></div>
+                    <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent rounded-full mb-4"></div>
                   </div>
 
                   {/* Description with better styling */}
@@ -112,17 +112,17 @@ export default function AnimePageClient({
                   )}
 
                   {/* Stats with enhanced design */}
-                  <div className="flex flex-wrap gap-6 mb-8">
-                    <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
-                      <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                      <span className="text-white font-semibold text-lg">
+                  <div className="flex flex-wrap gap-4 mb-6">
+                    <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      <span className="text-white font-medium text-sm">
                         {totalCount} محصول موجود
                       </span>
                     </div>
                     {categories && categories.length > 0 && (
-                      <div className="flex items-center gap-3 bg-white/10 backdrop-blur-sm rounded-2xl px-6 py-3 border border-white/20">
-                        <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse delay-500"></div>
-                        <span className="text-white font-semibold text-lg">
+                      <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-500"></div>
+                        <span className="text-white font-medium text-sm">
                           {categories.length} دسته‌بندی
                         </span>
                       </div>
@@ -130,14 +130,14 @@ export default function AnimePageClient({
                   </div>
 
                   {/* Call to action buttons */}
-                  <div className="flex flex-wrap gap-4">
+                  <div className="flex flex-wrap gap-3">
                     <Link
                       href="#products"
-                      className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-8 py-4 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold px-6 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
                     >
                       <span>مشاهده محصولات</span>
                       <svg
-                        className="w-5 h-5"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -152,11 +152,11 @@ export default function AnimePageClient({
                     </Link>
                     <Link
                       href="/anime"
-                      className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold px-8 py-4 rounded-2xl hover:bg-white/20 transition-all duration-300"
+                      className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300"
                     >
                       <span>بازگشت به انیمه‌ها</span>
                       <svg
-                        className="w-5 h-5"
+                        className="w-4 h-4"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"

@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Store, Search, User, ShoppingBag } from "lucide-react";
+import { Home, Store, BookOpen, User, ShoppingBag } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/context/cart-context";
 import { useAuth } from "@/context/auth-context";
@@ -47,10 +47,10 @@ export function MobileBottomNavbar() {
       isActive: pathname === "/shop",
     },
     {
-      name: "جستجو",
-      href: "/search",
-      icon: Search,
-      isActive: pathname === "/search",
+      name: "اخبار",
+      href: "/topic",
+      icon: BookOpen,
+      isActive: pathname.startsWith("/topic"),
     },
     {
       name: "سفارشات",
@@ -79,8 +79,8 @@ export function MobileBottomNavbar() {
       </div>
 
       {/* Navigation items */}
-      <nav className="relative flex items-center justify-around px-2 py-2">
-        {navItems.map((item, index) => {
+      <nav className="relative flex items-center justify-around px-1 py-1">
+        {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;
 

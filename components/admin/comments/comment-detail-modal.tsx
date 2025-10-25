@@ -57,14 +57,6 @@ export function CommentDetailModal({
         (comment as any).published === 1 ||
         (comment as any).published === "1";
 
-      console.log(
-        "Modal - comment.isPublished:",
-        comment.isPublished,
-        "Type:",
-        typeof comment.isPublished
-      );
-      console.log("Modal - Resolved published:", published);
-
       setIsPublished(published);
     }
   }, [comment]);

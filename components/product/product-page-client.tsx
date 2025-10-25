@@ -21,7 +21,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
           items={[
             { href: `/${product.category.slug}`, label: product.category.name },
             {
-              href: `/anime/${product.tags[0].slug}`,
+              href: `/${product.category.slug}/${product.tags[0].slug}`,
               label: product.tags[0].name,
             },
             {

@@ -88,17 +88,6 @@ export function CommentsTable({ data }: CommentsTableProps) {
               comments.map((comment, index) => {
                 const userName = getUserName(comment);
 
-                // Debug: Check isPublished value
-                if (index === 0) {
-                  console.log(
-                    "Comment isPublished:",
-                    comment.isPublished,
-                    "Type:",
-                    typeof comment.isPublished
-                  );
-                  console.log("Full comment:", comment);
-                }
-
                 return (
                   <TableRow
                     key={comment.uuid}

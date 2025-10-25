@@ -7,78 +7,106 @@ import Link from "next/link";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { ITagType } from "@/lib/tags";
+import type { IBlogTopicType } from "@/lib/blog";
 
-interface AnimePageClientProps {
-  tags: ITagType[];
+interface BlogPageClientProps {
+  topics: IBlogTopicType[];
 }
 
-const AnimeCard = ({ tag }: { tag: ITagType }) => {
+const TopicCard = ({ topic }: { topic: IBlogTopicType }) => {
   const isMobile = useIsMobile();
 
   return (
     <Link
-      href={`/anime/${tag.slug}`}
+      href={`/topic/${topic.slug}`}
       prefetch={false}
       className={cn(
-        "group relative overflow-hidden rounded-xl border border-border bg-card transition-all duration-300",
+        "group relative overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300",
         isMobile
           ? "shadow-md hover:shadow-lg"
           : "shadow-lg hover:shadow-2xl hover:scale-[1.02]"
       )}
     >
-      <div className="relative aspect-square w-full overflow-hidden">
+      <div className="relative aspect-video w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
-        {tag.image?.url ? (
+        {topic.image && topic.image.url ? (
           <Image
-            src={tag.image.url}
-            alt={tag.name}
+            src={topic.image.url}
+            alt={topic.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
             quality={80}
             onError={() => {
-              console.error(`Anime image failed to load: ${tag.name}`);
+              console.error(`Topic image failed to load: ${topic.name}`);
             }}
           />
         ) : (
           <div className="h-full w-full bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center">
-            <span className="text-4xl opacity-50">🎭</span>
+            <span className="text-4xl opacity-50">📰</span>
           </div>
         )}
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
 
-        {/* Overlay with anime name */}
-        <div className="absolute inset-0 flex items-end p-4">
-          <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2 w-full">
-            <h3 className="text-white font-semibold text-sm md:text-base truncate">
-              {tag.name}
-            </h3>
-          </div>
+        {/* Blog count badge */}
+        <div className="absolute top-4 right-4">
+          <span className="bg-primary/90 backdrop-blur-sm text-primary-foreground text-xs font-semibold px-3 py-1 rounded-full">
+            {topic.blogs?.length || 0} مقاله
+          </span>
         </div>
+      </div>
+
+      <div className="p-6">
+        {/* Meta info */}
+        <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3">
+          <span>{new Date(topic.createdAt).toLocaleDateString("fa-IR")}</span>
+          <span>•</span>
+          <span>{topic.blogs?.length || 0} مقاله</span>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-lg md:text-xl font-bold text-card-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+          {topic.name}
+        </h3>
+
+        {/* Description */}
+        {topic.description && (
+          <p className="text-muted-foreground text-sm md:text-base line-clamp-3 mb-4">
+            {topic.description}
+          </p>
+        )}
+
+        {/* Latest blog preview */}
+        {topic.blogs && topic.blogs.length > 0 && (
+          <div className="border-t border-border pt-4">
+            <p className="text-xs text-muted-foreground mb-2">آخرین مقاله:</p>
+            <p className="text-sm font-medium text-card-foreground line-clamp-1">
+              {topic.blogs[0].title}
+            </p>
+          </div>
+        )}
       </div>
     </Link>
   );
 };
 
-export default function AnimePageClient({ tags }: AnimePageClientProps) {
+export default function BlogPageClient({ topics }: BlogPageClientProps) {
   const { setBreadcrumbs } = useBreadcrumb();
-  const isMobile = useIsMobile();
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "انیمه", href: "/anime", isCurrent: true }]);
+    setBreadcrumbs([{ label: "موضوعات", href: "/topic", isCurrent: true }]);
   }, [setBreadcrumbs]);
 
-  // Memoize tags count for performance
-  const tagsCount = useMemo(() => tags.length, [tags.length]);
+  // Memoize topics count for performance
+  const topicsCount = useMemo(() => topics.length, [topics.length]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
-          items={[{ label: "انیمه", href: "/anime", isCurrent: true }]}
+          items={[{ label: "موضوعات", href: "/topic", isCurrent: true }]}
           className="mb-6"
         />
       </div>
@@ -88,34 +116,36 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
         <div className="absolute inset-0 bg-pattern-dots opacity-20" />
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <h1 className="text-2xl md:text-4xl font-black text-white mb-3 md:mb-4">
-            لیست انیمه ها
+            موضوعات
           </h1>
           <p className="text-sm md:text-lg text-white/90 max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
-            مجموعه کامل انیمه ها برای پیدا کردن محصولات مورد علاقه‌تان
+            آخرین موضوعات انیمه ای
           </p>
           <div className="flex items-center justify-center gap-2 text-white/80">
-            <span className="text-xs md:text-sm">{tagsCount} انیمه موجود</span>
+            <span className="text-xs md:text-sm">
+              {topicsCount} موضوع موجود
+            </span>
           </div>
         </div>
       </section>
 
-      {/* Anime Grid */}
+      {/* Topics Grid */}
       <section className="container mx-auto px-4 md:px-6 mt-4 md:mt-6">
         <div className="mb-6 md:mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <h2 className="text-xl md:text-2xl font-bold text-primary">
-            همه انیمه ها
+            موضوعات
           </h2>
           <div className="flex gap-2 items-center">
             <span className="text-sm text-muted-foreground">
-              {tagsCount} انیمه نمایش داده می‌شود
+              {topicsCount} موضوع نمایش داده می‌شود
             </span>
           </div>
         </div>
 
-        {tags && tags.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-            {tags.map((tag) => (
-              <AnimeCard key={tag.uuid} tag={tag} />
+        {topics && topics.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {topics.map((topic) => (
+              <TopicCard key={topic.uuid} topic={topic} />
             ))}
           </div>
         ) : (
@@ -134,7 +164,7 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
               />
             </svg>
             <p className="text-base md:text-lg text-muted-foreground mb-2">
-              هیچ انیمه‌ای یافت نشد
+              هیچ موضوعی یافت نشد
             </p>
             <Link
               href="/"

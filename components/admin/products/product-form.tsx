@@ -101,7 +101,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
           key,
           value: String(value),
         }));
-        console.log("Converted object specifications to array:", entries);
+
         return entries.length > 0 ? entries : [{ key: "", value: "" }];
       }
 
@@ -120,7 +120,6 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
             key,
             value: String(value),
           }));
-          console.log("Converted parsed object to array:", entries);
           return entries.length > 0 ? entries : [{ key: "", value: "" }];
         }
       }
@@ -151,8 +150,6 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
   const initialSpecs = parseSpecifications(
     product?.detail?.specifications || ""
   );
-  console.log("Initial specifications:", initialSpecs);
-  console.log("Product detail specs:", product?.detail?.specifications);
 
   const [specifications, setSpecifications] =
     useState<{ key: string; value: string }[]>(initialSpecs);
@@ -439,7 +436,6 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
       if (product) {
         // Update existing product
         const { customFetch } = await import("@/lib/utils");
-        console.log("Sending PATCH with payload:", payload);
         response = await customFetch(`/product/${product.uuid}`, {
           method: "PATCH",
           headers: {
@@ -461,7 +457,6 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        console.log("Error response:", errorData);
         throw new Error(errorData.message || "Failed to save product");
       }
 
@@ -483,10 +478,6 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               image.isDefault
             );
           }
-
-          console.log(
-            `Successfully attached ${uploadedImages.length} images to product`
-          );
         } catch (attachError) {
           console.error("Error attaching media:", attachError);
           toast({

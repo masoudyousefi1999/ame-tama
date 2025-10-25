@@ -48,10 +48,22 @@ export async function getAllTags(
 export async function getTagBySlug(
   slug: string
 ): Promise<ITagType | undefined> {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT}/tag/${slug}`
-  );
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+    const res = await fetch(`${baseUrl}/api/tags/${slug}`, {
+      next: { tags: [`tag-${slug}`] },
+    });
 
-  const tagData = await res.json();
-  return tagData;
+    if (!res.ok) {
+      console.error(`Failed to fetch tag: ${res.status}`);
+      return undefined;
+    }
+
+    const tagData = await res.json();
+    return tagData as ITagType;
+  } catch (error) {
+    console.error("Error fetching tag:", error);
+    return undefined;
+  }
 }

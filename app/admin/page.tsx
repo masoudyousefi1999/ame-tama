@@ -13,7 +13,6 @@ async function getDashboardStats(): Promise<SiteInfo> {
   try {
     const data = await customFetch("/auth/site-info");
     const result = (await data.json()) as SiteInfo;
-    console.log(result);
     return result as SiteInfo;
   } catch (error) {
     console.error("Error fetching dashboard stats:", error);

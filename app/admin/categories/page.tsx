@@ -8,20 +8,35 @@ export default async function CategoriesPage() {
     const res = await customFetch("/category/figures");
     const categories = await res.json();
 
+    // Ensure categories.children exists and is an array
+    const categoriesList = categories?.children || [];
+
     return (
       <div className="space-y-4" dir="rtl">
         <div>
           <h1 className="text-2xl font-bold text-white">دسته‌بندی‌ها</h1>
           <p className="text-gray-400 text-sm mt-1">
-            {categories.children?.length || 0} دسته‌بندی
+            {categoriesList.length} دسته‌بندی
           </p>
         </div>
 
-        <CategoriesTable initialCategories={categories.children} />
+        <CategoriesTable initialCategories={categoriesList} />
       </div>
     );
   } catch (error) {
     console.error("Error fetching categories:", error);
-    return <div>Error fetching categories. Please try again later.</div>;
+    return (
+      <div className="space-y-4" dir="rtl">
+        <div>
+          <h1 className="text-2xl font-bold text-white">دسته‌بندی‌ها</h1>
+          <p className="text-gray-400 text-sm mt-1">
+            خطا در بارگذاری دسته‌بندی‌ها
+          </p>
+        </div>
+        <div className="text-red-400">
+          Error fetching categories. Please try again later.
+        </div>
+      </div>
+    );
   }
 }

@@ -10,9 +10,6 @@ import {
   ChevronRight,
   Home,
   Store,
-  Info,
-  MessageSquare,
-  HelpCircle,
   User,
   LogOut,
   Search,
@@ -334,26 +331,13 @@ export default function Navbar() {
           >
             لیست انمیه ها
           </Link>
+
           <Link
-            href="/about"
+            href="/topic"
             className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
             prefetch={false}
           >
-            درباره ما
-          </Link>
-          <Link
-            href="/contact"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
-            prefetch={false}
-          >
-            تماس با ما
-          </Link>
-          <Link
-            href="/faq"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
-            prefetch={false}
-          >
-            سوالات متداول
+            اخبار انیمه
           </Link>
         </nav>
 
@@ -440,36 +424,17 @@ export default function Navbar() {
                       لیست انمیه ها
                     </span>
                   </Link>
+                  <Link
+                    href="/topic"
+                    onClick={() => setIsOpen(false)}
+                    prefetch={false}
+                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                  >
+                    <span className="text-xs text-foreground">اخبار انیمه</span>
+                  </Link>
                   <div className="col-span-3 flex items-center justify-center p-3 rounded-lg bg-card">
                     <UserMenu />
                   </div>
-                  <Link
-                    href="/about"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <Info className="h-6 w-6 text-foreground mb-2" />
-                    <span className="text-xs text-foreground">درباره ما</span>
-                  </Link>
-                  <Link
-                    href="/contact"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <MessageSquare className="h-6 w-6 text-foreground mb-2" />
-                    <span className="text-xs text-foreground">تماس</span>
-                  </Link>
-                  <Link
-                    href="/faq"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <HelpCircle className="h-6 w-6 text-foreground mb-2" />
-                    <span className="text-xs text-foreground">سوالات</span>
-                  </Link>
                   <Link
                     href="/search"
                     onClick={() => setIsOpen(false)}
