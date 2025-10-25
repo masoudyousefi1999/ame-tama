@@ -73,13 +73,10 @@ export function MobileBottomNavbar() {
       <div className="absolute inset-0 bg-background/95 backdrop-blur-xl border-t border-border/50">
         {/* Gradient overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-background/100 via-background/95 to-transparent" />
-
-        {/* Subtle glow effect */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       </div>
 
       {/* Navigation items */}
-      <nav className="relative flex items-center justify-around px-1 py-1">
+      <nav className="relative flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;
@@ -88,7 +85,7 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="tactile-button relative flex flex-col items-center justify-center p-2 rounded-2xl group shadow-sm"
+              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm"
             >
               {/* Active indicator background */}
               {isActive && (
@@ -99,7 +96,7 @@ export function MobileBottomNavbar() {
               <div className="relative flex items-center justify-center">
                 <Icon
                   className={cn(
-                    "h-6 w-6",
+                    "h-5 w-5",
                     isActive
                       ? "text-primary scale-110"
                       : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
@@ -127,7 +124,7 @@ export function MobileBottomNavbar() {
               {/* Label */}
               <span
                 className={cn(
-                  "text-xs mt-1 font-medium",
+                  "text-xs font-medium",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground group-hover:text-foreground"
@@ -135,18 +132,10 @@ export function MobileBottomNavbar() {
               >
                 {item.name}
               </span>
-
-              {/* Active indicator dot */}
-              {isActive && (
-                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full" />
-              )}
             </Link>
           );
         })}
       </nav>
-
-      {/* Safe area for devices with home indicator */}
-      <div className="h-safe-area-inset-bottom bg-background/95 backdrop-blur-xl" />
     </div>
   );
 }

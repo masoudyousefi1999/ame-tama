@@ -9,10 +9,6 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogTopicType } from "@/lib/blog";
 
-interface BlogTopicClientProps {
-  topic: IBlogTopicType;
-}
-
 const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
   const isMobile = useIsMobile();
 
@@ -97,7 +93,7 @@ export default function BlogTopicClient({ topic }: { topic: IBlogTopicType }) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 lg:mt-20">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
