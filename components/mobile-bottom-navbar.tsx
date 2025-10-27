@@ -76,7 +76,7 @@ export function MobileBottomNavbar() {
       </div>
 
       {/* Navigation items */}
-      <nav className="relative flex items-center justify-around">
+      <nav className="relative flex items-center justify-around p-1">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;
@@ -85,7 +85,7 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm"
+              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm p-2"
             >
               {/* Active indicator background */}
               {isActive && (
