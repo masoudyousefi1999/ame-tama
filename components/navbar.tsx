@@ -219,15 +219,25 @@ export default function Navbar() {
     <header
       ref={parentRef}
       className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-all duration-300 backdrop-blur-md",
+        "fixed inset-x-0 top-0 z-40 transition-all duration-300",
+        // Glassmorphism design
+        "backdrop-blur-xl",
+        "before:absolute before:inset-0 before:bg-gradient-to-br before:from-gray-900/80 before:via-gray-800/70 before:to-gray-900/80",
+        "after:absolute after:inset-0 after:bg-gradient-to-b after:from-white/5 after:via-transparent after:to-transparent",
+        "border-b border-white/10",
         isScrolled
-          ? "bg-popover/90 border-b border-border glass"
-          : "bg-popover/80",
+          ? "shadow-2xl shadow-black/20"
+          : "shadow-lg shadow-black/10",
         // Hide on mobile, show only on desktop
         "hidden lg:block"
       )}
+      style={{
+        background: isScrolled 
+          ? 'linear-gradient(to bottom right, rgba(17, 24, 39, 0.85), rgba(31, 41, 55, 0.75), rgba(17, 24, 39, 0.85))'
+          : 'linear-gradient(to bottom right, rgba(17, 24, 39, 0.75), rgba(31, 41, 55, 0.65), rgba(17, 24, 39, 0.75))',
+      }}
     >
-      <div className="container mx-auto flex items-center justify-between px-4 py-2 md:py-4 overflow-visible">
+      <div className="relative z-10 container mx-auto flex items-center justify-between px-4 py-2 md:py-4 overflow-visible">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 z-10 relative" prefetch={false}>
           <span className="brand-name text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
@@ -272,7 +282,7 @@ export default function Navbar() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-1 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] z-[60] dropdown-menu"
+                  className="absolute right-0 mt-1 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-lg shadow-lg py-2 min-w-[220px] z-[60] dropdown-menu"
                 >
                   {categoryTree.map((cat) => (
                     <div
@@ -281,7 +291,7 @@ export default function Navbar() {
                       onMouseEnter={() => setActiveCategory(cat.id as any)}
                       onMouseLeave={() => setActiveCategory(null)}
                     >
-                      <div className="flex justify-between items-center px-4 py-2.5 bg-popover hover:bg-muted cursor-pointer transition-all duration-200 rounded-md mx-2 my-1">
+                      <div className="flex justify-between items-center px-4 py-2.5 bg-transparent hover:bg-muted cursor-pointer transition-all duration-200 rounded-md mx-2 my-1">
                         <Link
                           href={`/${cat.slug}`}
                           onClick={() => setIsCategoriesOpen(false)}
@@ -296,13 +306,13 @@ export default function Navbar() {
                       </div>
 
                       {activeCategory === cat.id && cat.tags?.length > 0 && (
-                        <div className="absolute right-full top-0 bg-popover rounded-lg shadow-lg py-2 min-w-[220px] dropdown-menu z-[70] border border-border/50 mr-[218px]">
+                        <div className="absolute right-full top-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 rounded-lg shadow-lg py-2 min-w-[220px] dropdown-menu z-[70] border border-border/50 mr-[218px]">
                           {cat.tags.map((tag) => (
                             <div key={tag.uuid} className="relative">
                               <Link
                                 href={`/${cat.slug}/${tag.slug}`}
                                 onClick={() => setIsCategoriesOpen(false)}
-                                className="block px-4 py-2.5 whitespace-nowrap bg-popover hover:bg-muted transition-all duration-200 text-foreground hover:text-primary rounded-md mx-2 my-1"
+                                className="block px-4 py-2.5 whitespace-nowrap bg-transparent hover:bg-muted transition-all duration-200 text-foreground hover:text-primary rounded-md mx-2 my-1"
                               >
                                 {tag.name}
                               </Link>
@@ -399,7 +409,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-[50] overflow-y-auto bg-popover/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none"
+              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-[50] overflow-y-auto bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="p-6 overflow-y-auto min-h-screen">

@@ -69,10 +69,17 @@ export function MobileBottomNavbar() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
-      {/* Background with blur and gradient */}
-      <div className="absolute inset-0 bg-background/95 backdrop-blur-xl border-t border-border/50">
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/100 via-background/95 to-transparent" />
+      {/* Glassmorphism Background */}
+      <div 
+        className="absolute inset-0 backdrop-blur-xl border-t border-white/10 shadow-2xl shadow-black/20"
+        style={{
+          background: 'linear-gradient(to top right, rgba(17, 24, 39, 0.85), rgba(31, 41, 55, 0.75), rgba(17, 24, 39, 0.85))',
+        }}
+      >
+        {/* Top highlight */}
+        <div className="absolute inset-0 bg-gradient-to-t from-white/5 via-transparent to-transparent pointer-events-none" />
+        {/* Bottom shadow gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
       </div>
 
       {/* Navigation items */}

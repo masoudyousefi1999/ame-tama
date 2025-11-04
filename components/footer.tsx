@@ -14,7 +14,7 @@ import { BrandedIllustration } from "./ui/branded-illustration";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-card border-t border-border overflow-hidden">
+    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-t border-border overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-pattern-dots opacity-5" />
       <BrandedIllustration variant="footer" />
