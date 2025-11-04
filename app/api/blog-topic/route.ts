@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://ame-tama.com";
 
 export async function GET(request: NextRequest) {
-    console.log('blog topic route called');
   try {
     const { searchParams } = new URL(request.url);
     const page = searchParams.get("page") || "1";

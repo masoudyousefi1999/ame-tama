@@ -258,12 +258,9 @@ export async function getBlogPostBySlugs(
   try {
     const baseUrl =
       process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const response = await fetch(
-      `${baseUrl}/api/blog/${blogSlug}`,
-      {
-        next: { tags: ["blog-post"] },
-      }
-    );
+    const response = await fetch(`${baseUrl}/api/blog/${blogSlug}`, {
+      next: { tags: ["blog-post"] },
+    });
 
     if (!response.ok) {
       if (response.status === 404) {

@@ -52,7 +52,7 @@ export default function GoogleShoppingSchema({
       "@type": "Offer",
       url: getSiteUrl(`product/${product.slug}`),
       priceCurrency: "IRR",
-      price: product.price,
+      price: String(product.price), // قیمت ریال از بک‌اند به صورت string برای Schema.org
       priceValidUntil: new Date(
         new Date().setFullYear(new Date().getFullYear() + 1)
       )
@@ -123,7 +123,7 @@ export default function GoogleShoppingSchema({
       },
       object: {
         "@type": "Offer",
-        price: product.price,
+        price: String(product.price), // قیمت ریال به صورت string
         priceCurrency: "IRR",
       },
     },

@@ -8,6 +8,7 @@ import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
+import { ArrowLeft } from "lucide-react";
 
 interface BlogPostClientProps {
   blogPost: IBlogPostType;
@@ -68,22 +69,27 @@ export default function BlogPostClient({
               {/* Featured Image */}
               {blogPost.image && blogPost.image.url && (
                 <div className="p-6 md:p-8">
-                  <div className="relative aspect-[16/9] w-full max-w-2xl mx-auto overflow-hidden rounded-xl">
-                    <Image
-                      src={blogPost.image.url}
-                      alt={blogPost.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover"
-                      priority
-                      quality={95}
-                      onError={() => {
-                        console.error(
-                          `Blog image failed to load: ${blogPost.title}`
-                        );
-                      }}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  <div className="relative w-full max-w-4xl mx-auto">
+                    <div
+                      className="relative w-full flex items-center justify-center"
+                      style={{ minHeight: "200px" }}
+                    >
+                      <Image
+                        src={blogPost.image.url}
+                        alt={blogPost.title}
+                        width={1200}
+                        height={800}
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                        className="w-full h-auto object-contain max-h-[600px]"
+                        priority
+                        quality={95}
+                        onError={() => {
+                          console.error(
+                            `Blog image failed to load: ${blogPost.title}`
+                          );
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               )}
@@ -101,10 +107,10 @@ export default function BlogPostClient({
                     <div className="flex items-center gap-2 text-sm text-gray-300">
                       <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                       <span>
-                        تاریخ انتشار: {formatDate(blogPost.createdAt)}
+                        تاریخ انتشار: {formatDate(blogPost.publishedAt || "")}
                       </span>
                     </div>
-                    {blogPost.updatedAt !== blogPost.createdAt && (
+                    {blogPost.updatedAt !== blogPost.publishedAt && (
                       <div className="flex items-center gap-2 text-sm text-gray-300">
                         <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
                         <span>
@@ -136,7 +142,10 @@ export default function BlogPostClient({
                     <div className="text-sm text-gray-300">
                       <p className="mb-2">
                         این مقاله بخشی از مجموعه{" "}
-                        <strong className="text-white">{topic.slug}</strong> است.
+                        <strong className="text-white mr-1 ml-1">
+                          {topic.name}
+                        </strong>{" "}
+                        میباشد.
                       </p>
                       <p>برای مشاهده مقالات مشابه، روی دکمه زیر کلیک کنید.</p>
                     </div>
@@ -147,38 +156,13 @@ export default function BlogPostClient({
                         className="inline-flex items-center gap-2 bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold px-6 py-3 rounded-xl hover:from-primary/90 hover:to-accent/90 transition-all duration-300"
                       >
                         <span>مقالات مشابه</span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                          />
-                        </svg>
                       </Link>
                       <Link
                         href="/topic"
                         className="inline-flex items-center gap-2 bg-gray-600 text-gray-200 font-semibold px-6 py-3 rounded-xl hover:bg-gray-500 transition-all duration-300"
                       >
                         <span>همه موضوعات</span>
-                        <svg
-                          className="w-4 h-4"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                          />
-                        </svg>
+                        <ArrowLeft className="w-4 h-4" />
                       </Link>
                     </div>
                   </div>

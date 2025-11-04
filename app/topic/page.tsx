@@ -4,6 +4,10 @@ import type { Metadata } from "next";
 
 const baseUrl = "https://ame-tama.com";
 
+// Force dynamic rendering - no caching
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(baseUrl),
