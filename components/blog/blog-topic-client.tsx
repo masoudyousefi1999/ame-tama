@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
+import CategoryHeader from "../category/category-header";
 
 const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
   const isMobile = useIsMobile();
@@ -195,6 +196,7 @@ export default function BlogTopicClient({
       </div>
 
       {/* Hero Section - مطابق با CategoryHeader */}
+      <div className="container mx-auto px-4 md:px-6 pt-6 mb-6">
       <header className="relative mb-12 overflow-hidden rounded-3xl group transition-all ease-in-out">
         <section className="relative py-12 md:py-20 overflow-hidden min-h-[300px] md:min-h-[350px]">
           {/* Dynamic gradient background */}
@@ -308,6 +310,7 @@ export default function BlogTopicClient({
           <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-900 to-transparent"></div>
         </section>
       </header>
+      </div>
 
       {/* Blogs Grid */}
       <section

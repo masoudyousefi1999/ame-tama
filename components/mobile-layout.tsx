@@ -12,7 +12,10 @@ export function MobileLayout({ children }: MobileLayoutProps) {
       {/* Main Content with proper spacing for bottom navbar only */}
       <main 
         id="main-content" 
-        className="min-h-screen pb-16 lg:pt-0 lg:pb-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
+        className="min-h-screen pb-20 lg:pt-0 lg:pb-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900"
+        style={{
+          paddingBottom: 'calc(5rem + env(safe-area-inset-bottom, 0px))',
+        }}
       >
         {children}
       </main>

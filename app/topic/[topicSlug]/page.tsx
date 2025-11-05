@@ -93,7 +93,7 @@ export default async function BlogTopicPage({
       </div>
     );
   }
-
+  
   return (
     <BlogTopicClient
       topic={topic}

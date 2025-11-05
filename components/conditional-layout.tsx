@@ -17,7 +17,7 @@ export default function ConditionalLayout({
   const isAdminRoute = pathname.startsWith("/admin");
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       {!isAdminRoute && (
         <>
           <SkipLink href="#main-content" />
@@ -25,12 +25,12 @@ export default function ConditionalLayout({
           <Navbar />
           {/* Mobile Layout */}
           <MobileLayout>{children}</MobileLayout>
+          {/* Footer - only on desktop to avoid gap on mobile */}
+          <Footer />
         </>
       )}
 
       {isAdminRoute && <main id="main-content">{children}</main>}
-
-      {!isAdminRoute && <Footer />}
-    </>
+    </div>
   );
 }

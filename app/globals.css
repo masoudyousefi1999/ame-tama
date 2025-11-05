@@ -8,9 +8,17 @@
   font-family: var(--font-vazirmatn), sans-serif;
 }
 
-html,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  position: relative;
+}
+
 body {
-  height: calc(var(--vh, 1vh) * 100);
+  min-height: 100vh;
+  min-height: 100dvh;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
@@ -113,6 +121,230 @@ body {
 
 /* Mobile performance optimizations */
 @media (max-width: 768px) {
+  /* Chrome specific fixes */
+  @supports (-webkit-appearance: none) and (not (appearance: none)) {
+    html {
+      height: 100% !important;
+      min-height: 100% !important;
+      overflow: hidden !important;
+    }
+    
+    body {
+      height: 100vh !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      position: relative !important;
+    }
+
+    .mobile-bottom-navbar,
+    .mobile-bottom-navbar.fixed.bottom-0 {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+      padding-bottom: 0 !important;
+      margin: 0 !important;
+      margin-bottom: 0 !important;
+      transform: translateY(0) !important;
+      translate: none !important;
+      inset-block-end: 0 !important;
+      will-change: auto !important;
+    }
+  }
+
+  /* Force bottom navbar to stick to bottom - Ultra specific */
+  .mobile-bottom-navbar,
+  .mobile-bottom-navbar.fixed.bottom-0,
+  [class*="mobile-bottom-navbar"] {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    margin: 0 !important;
+    margin-bottom: 0 !important;
+    transform: translateY(0) !important;
+    translate: none !important;
+    inset-block-end: 0 !important;
+  }
+
+  .fixed.bottom-0 {
+    bottom: 0 !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    margin-bottom: 0 !important;
+    transform: translateY(0) !important;
+    position: fixed !important;
+  }
+
+  .mobile-bottom-navbar::after,
+  .mobile-bottom-navbar::before,
+  .fixed.bottom-0::after,
+  .fixed.bottom-0::before {
+    display: none !important;
+    content: none !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Remove any extra spacing */
+  html {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 100% !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+  }
+
+  html::after,
+  html::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    position: relative !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Ensure no white space below viewport */
+  body::after,
+  body::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* Prevent any element from creating gap */
+  #__next,
+  #root {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+  }
+
+  /* Ensure body background extends to bottom */
+  body {
+    background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39)) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+  }
+
+  /* Ensure html also has background */
+  html {
+    background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39)) !important;
+    background-attachment: fixed !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+  }
+
+  /* Ensure main content area also has background */
+  #main-content,
+  main {
+    background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39)) !important;
+  }
+
+  /* Remove any gap below viewport */
+  @supports (-webkit-touch-callout: none) {
+    body {
+      min-height: -webkit-fill-available !important;
+      height: -webkit-fill-available !important;
+    }
+    
+    html {
+      height: -webkit-fill-available !important;
+      min-height: -webkit-fill-available !important;
+    }
+
+    /* Ensure viewport is exactly screen height */
+    #__next,
+    #root {
+      min-height: -webkit-fill-available !important;
+      height: -webkit-fill-available !important;
+    }
+  }
+
+  /* Prevent overscroll bounce that creates white space */
+  body {
+    overscroll-behavior-y: none !important;
+    overscroll-behavior: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+  }
+
+  html {
+    overscroll-behavior-y: none !important;
+    overscroll-behavior: none !important;
+    overflow: hidden !important;
+  }
+
+  /* Chrome specific: prevent white space on scroll */
+  @supports (-webkit-appearance: none) and (not (appearance: none)) {
+    html {
+      height: 100% !important;
+      min-height: 100% !important;
+      max-height: 100% !important;
+      overflow: hidden !important;
+      position: fixed !important;
+      width: 100% !important;
+    }
+    
+    body {
+      height: 100vh !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
+      overflow-y: auto !important;
+      overflow-x: hidden !important;
+      -webkit-overflow-scrolling: touch !important;
+      position: relative !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* Force bottom navbar to absolute bottom in Chrome */
+    .mobile-bottom-navbar {
+      position: fixed !important;
+      bottom: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+      transform: none !important;
+      will-change: auto !important;
+    }
+
+    /* Prevent Chrome from creating extra space */
+    * {
+      -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* Ensure no gap below viewport */
+    #__next,
+    #root {
+      height: 100vh !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+    }
+  }
+
   /* Reduce animation complexity on mobile */
   *:not(.cart-page-no-transitions *) {
     animation-duration: 0.3s !important;

@@ -68,7 +68,21 @@ export function MobileBottomNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden">
+    <div 
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar"
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        width: '100%',
+        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        margin: 0,
+        marginBottom: 0,
+        transform: 'translateY(0)',
+        willChange: 'auto',
+      }}
+    >
       {/* Glassmorphism Background */}
       <div 
         className="absolute inset-0 backdrop-blur-xl border-t border-white/10 shadow-2xl shadow-black/20"
