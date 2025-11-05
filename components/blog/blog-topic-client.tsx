@@ -1,13 +1,14 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
-import type { IBlogTopicType } from "@/lib/blog";
+import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
+import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
 
 const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
   const isMobile = useIsMobile();
@@ -76,8 +77,27 @@ const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
   );
 };
 
-export default function BlogTopicClient({ topic }: { topic: IBlogTopicType }) {
+export default function BlogTopicClient({
+  topic,
+  initialBlogs,
+  initialTotalCount,
+  initialPage,
+  initialLimit,
+}: {
+  topic: IBlogTopicType;
+  initialBlogs: IBlogPostType[];
+  initialTotalCount: number;
+  initialPage: number;
+  initialLimit: number;
+}) {
   const { setBreadcrumbs } = useBreadcrumb();
+  const [blogs, setBlogs] = useState<IBlogPostType[]>(initialBlogs);
+  const [page, setPage] = useState(initialPage);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(
+    initialBlogs.length < initialTotalCount
+  );
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setBreadcrumbs([
@@ -86,11 +106,77 @@ export default function BlogTopicClient({ topic }: { topic: IBlogTopicType }) {
     ]);
   }, [setBreadcrumbs, topic.name, topic.slug]);
 
+  // Fetch more blogs from the API
+  const fetchMoreBlogs = useCallback(async () => {
+    if (isLoading || !hasMore) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const nextPage = page + 1;
+      const params = new URLSearchParams({
+        page: String(nextPage),
+        limit: String(initialLimit),
+      });
+
+      const baseUrl =
+        process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+      const response = await fetch(
+        `${baseUrl}/api/blog-topic/${topic.slug}?${params}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch blogs: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      const newBlogs = result.blogs || [];
+
+      // Deduplicate blogs based on uuid and check if there are more
+      setBlogs((prevBlogs) => {
+        const existingUuids = new Set(prevBlogs.map((b) => b.uuid));
+        const uniqueNewBlogs = newBlogs.filter(
+          (b: IBlogPostType) => !existingUuids.has(b.uuid)
+        );
+
+        // If no new unique blogs, we've reached the end
+        if (uniqueNewBlogs.length === 0) {
+          setHasMore(false);
+          return prevBlogs;
+        }
+
+        const updatedBlogs = [...prevBlogs, ...uniqueNewBlogs];
+
+        // Check if there are more blogs to load
+        setHasMore(
+          updatedBlogs.length < initialTotalCount && newBlogs.length > 0
+        );
+
+        return updatedBlogs;
+      });
+
+      setPage(nextPage);
+    } catch (err) {
+      console.error("Error fetching more blogs:", err);
+      setError(err instanceof Error ? err.message : "خطا در بارگذاری مقالات");
+      setHasMore(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isLoading, hasMore, page, initialLimit, initialTotalCount, topic.slug]);
+
+  // Use the custom infinite scroll hook
+  const { loaderRef } = useInfiniteScroll({
+    onLoadMore: fetchMoreBlogs,
+    hasMore,
+    isLoading,
+    threshold: 0.1,
+    rootMargin: "200px",
+  });
+
   // Memoize blogs count for performance
-  const blogsCount = useMemo(
-    () => topic.blogs?.length || 0,
-    [topic.blogs?.length]
-  );
+  const blogsCount = useMemo(() => blogs.length, [blogs.length]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 lg:mt-20 pb-16 lg:pb-0">
@@ -234,18 +320,60 @@ export default function BlogTopicClient({ topic }: { topic: IBlogTopicType }) {
           </h2>
           <div className="flex gap-2 items-center">
             <span className="text-sm text-muted-foreground">
-              {blogsCount} مقاله نمایش داده می‌شود
+              {blogsCount} از {initialTotalCount} مقاله نمایش داده می‌شود
             </span>
           </div>
         </div>
 
         <div className="mb-5">
-          {topic.blogs && topic.blogs.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-              {topic.blogs.map((blog: any) => (
-                <BlogCard key={blog.uuid} topic={topic} post={blog} />
-              ))}
-            </div>
+          {blogs && blogs.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+                {blogs.map((blog: IBlogPostType) => (
+                  <BlogCard key={blog.uuid} topic={topic} post={blog} />
+                ))}
+              </div>
+
+              {/* Infinite scroll loader */}
+              <div ref={loaderRef} className="h-4" />
+
+              {/* Loading indicator */}
+              {isLoading && (
+                <div
+                  className="flex justify-center items-center py-8"
+                  dir="rtl"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary" />
+                    <span className="text-sm text-muted-foreground">
+                      در حال بارگذاری مقالات بیشتر...
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Error message */}
+              {error && (
+                <div
+                  className="flex justify-center items-center py-4 text-red-400"
+                  dir="rtl"
+                >
+                  <span className="text-sm">{error}</span>
+                </div>
+              )}
+
+              {/* No more data indicator */}
+              {!hasMore && blogs.length > 0 && (
+                <div
+                  className="flex justify-center items-center py-8"
+                  dir="rtl"
+                >
+                  <span className="text-sm text-muted-foreground">
+                    تمام مقالات نمایش داده شد
+                  </span>
+                </div>
+              )}
+            </>
           ) : (
             <div className="col-span-full py-16 md:py-24 text-center flex flex-col items-center">
               <svg

@@ -1,20 +1,25 @@
 import BlogTopicClient from "@/components/blog/blog-topic-client";
 import { getBlogTopicBySlug } from "@/lib/blog";
 import type { Metadata } from "next";
+import { productLimit } from "@/lib/product-limit";
 
 const baseUrl = "https://ame-tama.com";
 
 interface BlogTopicPageProps {
   params: Promise<{ topicSlug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: BlogTopicPageProps): Promise<Metadata> {
   const { topicSlug } = await params;
-  const topic = await getBlogTopicBySlug(topicSlug);
+  const data = await getBlogTopicBySlug(topicSlug, 1, 1);
 
-  if (!topic) {
+  // Get topic from response or fallback to first blog's topic
+  const topic = data?.topic || data?.blogs?.[0]?.topic;
+
+  if (!data || !topic) {
     return {
       title: "تاپیک یافت نشد | AME-TAMA",
       description: "تاپیک مورد نظر یافت نشد",
@@ -56,11 +61,21 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogTopicPage({ params }: BlogTopicPageProps) {
+export default async function BlogTopicPage({
+  params,
+  searchParams,
+}: BlogTopicPageProps) {
   const { topicSlug } = await params;
-  const topic = await getBlogTopicBySlug(topicSlug);
+  const { page: pageParam } = await searchParams;
+  const page = Number.parseInt(pageParam || "1", 10);
+  const limit = productLimit;
 
-  if (!topic) {
+  const data = await getBlogTopicBySlug(topicSlug, page, limit);
+
+  // Get topic from response or fallback to first blog's topic
+  const topic = data?.topic || data?.blogs?.[0]?.topic;
+
+  if (!data || !topic) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
         <div className="text-center">
@@ -79,5 +94,13 @@ export default async function BlogTopicPage({ params }: BlogTopicPageProps) {
     );
   }
 
-  return <BlogTopicClient topic={topic} />;
+  return (
+    <BlogTopicClient
+      topic={topic}
+      initialBlogs={data.blogs || []}
+      initialTotalCount={data.totalCount || 0}
+      initialPage={page}
+      initialLimit={limit}
+    />
+  );
 }

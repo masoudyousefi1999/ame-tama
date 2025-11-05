@@ -225,16 +225,29 @@ export async function getAllBlogTopics(
   }
 }
 
-// Get blog topic by slug
+// Get blog topic by slug with pagination
 export async function getBlogTopicBySlug(
-  slug: string
-): Promise<IBlogTopicType | null> {
+  slug: string,
+  page: number = 1,
+  limit: number = 8
+): Promise<{
+  totalCount: number;
+  blogs: IBlogPostType[];
+  topic?: IBlogTopicType;
+} | null> {
   try {
     const baseUrl =
       process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const response = await fetch(`${baseUrl}/api/blog-topic/${slug}`, {
-      next: { tags: ["blog-topic"] },
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
     });
+    const response = await fetch(
+      `${baseUrl}/api/blog-topic/${slug}?${params}`,
+      {
+        next: { tags: [`blog-topic-${slug}`] },
+      }
+    );
 
     if (!response.ok) {
       if (response.status === 404) {
