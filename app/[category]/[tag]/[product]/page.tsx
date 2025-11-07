@@ -2,19 +2,18 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getProductBySlug } from "@/lib/products";
 import ProductPageClient from "@/components/product/product-page-client";
-import MetaTags from "@/components/seo/meta-tags";
 import ProductSchema from "@/components/seo/product-schema";
 import GoogleShoppingSchema from "@/components/seo/google-shopping-schema";
-import { formatPriceDivided } from "@/lib/format-price";
+import { getSiteUrl } from "@/lib/site-url";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{
+  params: {
     category: string;
     tag: string;
     product: string;
-  }>;
+  };
 }): Promise<Metadata> {
   const { category, tag, product } = await params;
 
@@ -34,41 +33,76 @@ export async function generateMetadata({
     };
   }
 
-  const baseUrl = "https://ame-tama.com";
-  const productUrl = `${baseUrl}/${category}/${tag}/${product}`;
+  const baseUrl = getSiteUrl();
+  const seo = productData.seoMetadata;
+
+  const fallbackPath = [
+    productData.category?.slug || category,
+    productData.tags?.[0]?.slug || tag,
+    productData.slug || product,
+  ]
+    .filter(Boolean)
+    .join("/");
+  const fallbackCanonical = getSiteUrl(fallbackPath);
+  const canonicalUrl = seo?.canonicalUrl || fallbackCanonical;
+
+  const metaTitle = seo?.metaTitle || `${productData.name} | AME-TAMA`;
+  const metaDescription =
+    seo?.metaDescription ||
+    productData.detail?.description ||
+    `خرید ${productData.name} از فروشگاه AME-TAMA`;
+
+  const ogDescription = seo?.ogDescription || metaDescription;
+  const ogTitle = seo?.ogTitle || metaTitle;
+
+  const primaryImage = seo?.ogImage
+    ? seo.ogImage.startsWith("http")
+      ? seo.ogImage
+      : getSiteUrl(seo.ogImage)
+    : productData.productMedia?.[0]?.url
+    ? productData.productMedia[0].url.startsWith("http")
+      ? productData.productMedia[0].url
+      : getSiteUrl(productData.productMedia[0].url)
+    : getSiteUrl("/placeholder.svg");
+
+  const ogImages = primaryImage ? [{ url: primaryImage }] : undefined;
+
+  const availability = productData.quantity > 0 ? "instock" : "outofstock";
+
+  const otherMeta: Record<string, string> = {
+    product_id: productData.uuid,
+    product_name: productData.name,
+    product_price: String(productData.price),
+    availability,
+  };
+
+  const specifications = productData.detail?.specifications as
+    | Record<string, any>
+    | undefined;
+
+  const oldPrice =
+    (productData as any).oldPrice ??
+    (specifications &&
+      (specifications.oldPrice || specifications.originalPrice));
+  if (oldPrice) {
+    otherMeta.product_old_price = String(oldPrice);
+  }
 
   return {
     metadataBase: new URL(baseUrl),
-    title: `خرید ${productData.name} | AME-TAMA`,
-    description:
-      productData.detail?.description ||
-      `خرید ${productData.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
-    keywords: `${productData.name}, محصولات انیمه, ${
-      productData.category?.name || ""
-    }, ${
-      productData.tags?.map((tag) => tag.name).join(", ") || ""
-    }, AME-TAMA, خرید محصولات انیمه, فیگور انیمه, مجسمه انیمه`,
+    title: metaTitle,
+    description: metaDescription,
     openGraph: {
-      title: `خرید ${productData.name} | AME-TAMA`,
-      description:
-        productData.detail?.description ||
-        `خرید ${productData.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
+      title: ogTitle,
+      description: ogDescription,
       type: "website",
-      images: productData.productMedia?.map((media) => media.url) || [],
-      url: productUrl,
+      images: ogImages,
+      url: canonicalUrl,
       locale: "fa_IR",
-      siteName: "AME-TAMA",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `خرید ${productData.name} | AME-TAMA`,
-      description:
-        productData.detail?.description ||
-        `خرید ${productData.name} با بهترین قیمت و کیفیت`,
-      images: productData.productMedia?.map((media) => media.url) || [],
+      siteName: "AME-TAMA | آمه تاما",
     },
     alternates: {
-      canonical: productUrl,
+      canonical: canonicalUrl,
     },
     robots: {
       index: true,
@@ -81,48 +115,37 @@ export async function generateMetadata({
         "max-snippet": -1,
       },
     },
+    other: otherMeta,
   };
 }
 
 export default async function ProductPage({
   params,
 }: {
-  params: Promise<{
+  params: {
     category: string;
     tag: string;
     product: string;
-  }>;
+  };
 }) {
   const { category, tag, product } = await params;
   const productData = await getProductBySlug(product, {
     next: { tags: ["products", `product-${product}`] },
   });
 
-  if (!productData) notFound();
+  if (!productData) {
+    notFound();
+  }
+
+  const categorySlug = productData.category?.slug;
+  const tagSlug = productData.tags?.[0]?.slug;
+
+  if (categorySlug !== category || tagSlug !== tag) {
+    notFound();
+  }
 
   return (
     <>
-      <MetaTags
-        title={`خرید ${productData.name} | AME-TAMA`}
-        description={
-          productData.detail?.description ||
-          `خرید ${productData.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`
-        }
-        keywords={`${productData.name}, محصولات انیمه, ${
-          productData.category?.name || ""
-        }, ${
-          productData.tags?.map((tag) => tag.name).join(", ") || ""
-        }, AME-TAMA`}
-        ogType="product"
-        canonicalPath={`/${category}/${tag}/${product}`}
-        price={productData.price}
-        currency="IRR"
-        productId={productData.uuid}
-        brand="AME-TAMA"
-        category={productData.category?.name}
-        condition="new"
-        ogImage={productData.productMedia?.[0]?.url}
-      />
       <ProductSchema product={productData} />
       <GoogleShoppingSchema product={productData} />
       <ProductPageClient product={productData} />

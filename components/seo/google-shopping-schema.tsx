@@ -14,32 +14,47 @@ export default function GoogleShoppingSchema({
   else if (product.quantity > 0 && product.quantity < 3)
     availability = "limited";
 
+  const seo = product.seoMetadata;
+  const fallbackTagSlug = product.tags?.[0]?.slug;
+  const fallbackPath = [product.category?.slug, fallbackTagSlug, product.slug]
+    .filter(Boolean)
+    .join("/");
+  const fallbackUrl = getSiteUrl(
+    fallbackPath.length > 0 ? fallbackPath : `product/${product.slug}`
+  );
+  const canonicalUrl = seo?.canonicalUrl || fallbackUrl;
+
+  const ogImage = seo?.ogImage
+    ? seo.ogImage.startsWith("http")
+      ? seo.ogImage
+      : getSiteUrl(seo.ogImage)
+    : undefined;
+
+  const primaryMedia = product.productMedia[0];
+  const productImage = primaryMedia
+    ? primaryMedia.url.startsWith("http")
+      ? primaryMedia.url
+      : getSiteUrl(primaryMedia.url)
+    : getSiteUrl("/placeholder.svg");
+
+  const schemaImage = ogImage || productImage;
+
   const schemaData = {
     "@context": "https://schema.org/",
     "@type": "Product",
-    name: product.name,
+    name: seo?.metaTitle || product.name,
     description:
+      seo?.metaDescription ||
       product.detail?.description ||
       `فیگور ${product.name} از انیمه ${product.category.name}`,
-    image:
-      product.productMedia.length > 0
-        ? {
-            "@type": "ImageObject",
-            url: product.productMedia[0].url.startsWith("http")
-              ? product.productMedia[0].url
-              : getSiteUrl(product.productMedia[0].url),
-            width: 1200,
-            height: 1200,
-            alt: `${product.name} - فیگور انیمه`,
-            caption: `فیگور ${product.name} از انیمه ${product.category.name}`,
-          }
-        : {
-            "@type": "ImageObject",
-            url: getSiteUrl("/placeholder.svg"),
-            width: 1200,
-            height: 1200,
-            alt: `${product.name} - فیگور انیمه`,
-          },
+    image: {
+      "@type": "ImageObject",
+      url: schemaImage,
+      width: 1200,
+      height: 1200,
+      alt: `${product.name} - فیگور انیمه`,
+      caption: `فیگور ${product.name} از انیمه ${product.category.name}`,
+    },
     sku: `AME-${product.uuid}`,
     mpn: `AME-${product.uuid}`,
     gtin: `AME-${product.uuid}`,
@@ -50,7 +65,7 @@ export default function GoogleShoppingSchema({
     category: product.category.name,
     offers: {
       "@type": "Offer",
-      url: getSiteUrl(`product/${product.slug}`),
+      url: canonicalUrl,
       priceCurrency: "IRR",
       price: String(product.price), // قیمت ریال از بک‌اند به صورت string برای Schema.org
       priceValidUntil: new Date(
@@ -112,14 +127,14 @@ export default function GoogleShoppingSchema({
     // اطلاعات بیشتر برای تصاویر
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": getSiteUrl(`product/${product.slug}`),
+      "@id": canonicalUrl,
     },
     // اطلاعات بیشتر برای موتورهای جستجو
     potentialAction: {
       "@type": "BuyAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: getSiteUrl(`product/${product.slug}`),
+        urlTemplate: canonicalUrl,
       },
       object: {
         "@type": "Offer",

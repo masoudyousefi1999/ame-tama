@@ -12,6 +12,43 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     outOfStock: "https://schema.org/OutOfStock",
   };
 
+  const seo = product.seoMetadata;
+  const fallbackTagSlug = product.tags?.[0]?.slug;
+  const fallbackPath = [product.category?.slug, fallbackTagSlug, product.slug]
+    .filter(Boolean)
+    .join("/");
+  const fallbackUrl = getSiteUrl(
+    fallbackPath.length > 0 ? fallbackPath : `product/${product.slug}`
+  );
+  const canonicalUrl = seo?.canonicalUrl || fallbackUrl;
+
+  const ogImage = seo?.ogImage
+    ? seo.ogImage.startsWith("http")
+      ? seo.ogImage
+      : getSiteUrl(seo.ogImage)
+    : undefined;
+
+  const baseImageList =
+    product.productMedia.length > 0
+      ? product.productMedia.map((m) =>
+          m.url
+            ? m.url.startsWith("http")
+              ? m.url
+              : getSiteUrl(m.url)
+            : getSiteUrl("/placeholder.svg")
+        )
+      : [getSiteUrl("/placeholder.svg")];
+
+  const imageList = ogImage
+    ? [ogImage, ...baseImageList.filter((img) => img !== ogImage)]
+    : baseImageList;
+
+  const ratingValueRaw =
+    typeof product.rating === "number"
+      ? product.rating
+      : parseFloat(String(product.rating ?? ""));
+  const ratingValue = Number.isFinite(ratingValueRaw) ? ratingValueRaw : null;
+
   // حدس وضعیت موجودی بر اساس quantity
   let availability: "inStock" | "outOfStock" | "limitedAvailability" =
     "inStock";
@@ -21,10 +58,10 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
 
   // داده‌های aggregateRating
   const aggregateRating =
-    product.rating && product.reviews && product.reviews.length > 0
+    ratingValue !== null && product.reviews && product.reviews.length > 0
       ? {
           "@type": "AggregateRating",
-          ratingValue: product.rating.toFixed(1),
+          ratingValue: ratingValue.toFixed(1),
           reviewCount: product.reviews.length,
         }
       : undefined;
@@ -32,18 +69,10 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
   const schemaData: any = {
     "@context": "https://schema.org/",
     "@type": "Product",
-    name: product.name,
-    image:
-      product.productMedia.length > 0
-        ? product.productMedia.map((m) =>
-            m.url
-              ? m.url.startsWith("http")
-                ? m.url
-                : getSiteUrl(m.url)
-              : getSiteUrl("/placeholder.svg")
-          )
-        : [getSiteUrl("/placeholder.svg")],
+    name: seo?.metaTitle || product.name,
+    image: imageList,
     description:
+      seo?.metaDescription ||
       product.detail?.description ||
       `فیگور ${product.name} از انیمه ی  ${product.category.name}`,
     sku: `AME-${product.uuid}`,
@@ -62,7 +91,7 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     gtin14: `AME-${product.uuid}`,
     offers: {
       "@type": "Offer",
-      url: getSiteUrl(`product/${product.slug}`),
+      url: canonicalUrl,
       priceCurrency: "IRR",
       price: String(product.price), // قیمت ریال از بک‌اند به صورت string برای Schema.org
       priceValidUntil: new Date(
@@ -170,7 +199,7 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
   // اضافه کردن اطلاعات بیشتر برای تصاویر
   schemaData.mainEntityOfPage = {
     "@type": "WebPage",
-    "@id": getSiteUrl(`product/${product.slug}`),
+    "@id": canonicalUrl,
   };
 
   // اضافه کردن اطلاعات بیشتر برای موتورهای جستجو
@@ -178,7 +207,7 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
     "@type": "BuyAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: getSiteUrl(`product/${product.slug}`),
+      urlTemplate: canonicalUrl,
     },
     object: {
       "@type": "Offer",

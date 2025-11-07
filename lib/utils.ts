@@ -1,6 +1,24 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+export enum SeoTypeEnum {
+  PRODUCT = 1,
+  TOPIC = 2,
+  BLOG = 3,
+  CATEGORY = 4,
+  TAG = 5,
+}
+export interface SeoDto {
+  entityType: SeoTypeEnum;
+  metaTitle: string;
+  metaDescription: string;
+  canonicalUrl: string;
+  ogTitle: string;
+  ogDescription: string;
+  ogImage?: string;
+  twitterCard: string;
+}
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }

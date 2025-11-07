@@ -58,6 +58,16 @@ export function ProductCard({
     [product.quantity]
   );
 
+  const ratingValue = useMemo(() => {
+    const rawRating = product.rating;
+    if (typeof rawRating === "number") {
+      return Number.isFinite(rawRating) ? rawRating : null;
+    }
+
+    const parsed = parseFloat(String(rawRating));
+    return Number.isFinite(parsed) ? parsed : null;
+  }, [product.rating]);
+
   const handleAddToCart = useCallback(
     (e: React.MouseEvent) => {
       e.preventDefault();
@@ -244,21 +254,21 @@ export function ProductCard({
               {product.name}
             </h3>
 
-            {product.rating && (
+            {ratingValue !== null && (
               <div className="flex items-center text-amber-400 text-xs md:text-sm">
                 {Array.from({ length: 5 }).map((_, idx) => (
                   <Star
                     key={idx}
                     className={cn(
                       "h-3 w-3 md:h-4 md:w-4",
-                      idx < Math.round(product.rating)
+                      idx < Math.round(ratingValue)
                         ? "fill-amber-400 text-amber-400"
                         : "text-muted-foreground/40"
                     )}
                   />
                 ))}
                 <span className="mr-1 text-xs text-muted-foreground">
-                  ({product.rating.toFixed(1)})
+                  ({ratingValue.toFixed(1)})
                 </span>
               </div>
             )}
@@ -290,7 +300,7 @@ export function ProductCard({
       product.name,
       product.productMedia,
       product.quantity,
-      product.rating,
+      ratingValue,
       product.price,
       imageLoaded,
       imageError,

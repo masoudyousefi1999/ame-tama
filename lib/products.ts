@@ -1,6 +1,5 @@
-
 import { ITagType } from "./tags";
-import { customFetch } from "./utils";
+import { customFetch, SeoDto } from "./utils";
 export interface ProductMedia {
   order: number;
   isDefault: boolean;
@@ -34,6 +33,7 @@ export interface IProductType {
   productMedia: ProductMedia[];
   reviews?: any[];
   tags: ITagType[];
+  seoMetadata?: SeoDto;
 }
 
 export interface ProductReview {
