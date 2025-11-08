@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -11,6 +11,7 @@ import { toast } from "@/components/ui/use-toast";
 import { CheckCircle } from "lucide-react";
 import { customFetch } from "@/lib/utils";
 import clsx from "clsx";
+import citiesData from "@/lib/cities";
 
 export function PreCheckoutModal({
   open,
@@ -48,12 +49,23 @@ export function PreCheckoutModal({
     null | "already" | "just"
   >(null);
   const [addressStepConfirmed, setAddressStepConfirmed] = useState(false);
-  const [provinces, setProvinces] = useState<any[]>([]);
-  const [cities, setCities] = useState<any[]>([]);
-  const [provinceLoading, setProvinceLoading] = useState(false);
-  const [cityLoading, setCityLoading] = useState(false);
   const [defaultAddressUuid, setDefaultAddressUuid] = useState<string>("");
   const [isSettingDefault, setIsSettingDefault] = useState(false);
+
+  const provinceOptions = useMemo(
+    () => citiesData.map((item) => item.province),
+    []
+  );
+
+  const cityOptions = useMemo(() => {
+    if (!addressForm.province) {
+      return [];
+    }
+    const provinceEntry = citiesData.find(
+      (item) => item.province === addressForm.province
+    );
+    return provinceEntry?.cities ?? [];
+  }, [addressForm.province]);
 
   useEffect(() => {
     if (open) {
@@ -92,33 +104,6 @@ export function PreCheckoutModal({
     }
   }, [open, step]);
 
-  useEffect(() => {
-    if (open && showAddressForm) {
-      setProvinceLoading(true);
-      customFetch("/address/province", { method: "GET" })
-        .then((res) => res.json())
-        .then((data) => setProvinces(Array.isArray(data) ? data : []))
-        .catch(() => setProvinces([]))
-        .finally(() => setProvinceLoading(false));
-    }
-  }, [open, showAddressForm]);
-
-  useEffect(() => {
-    if (showAddressForm && addressForm.province) {
-      setCityLoading(true);
-      customFetch(
-        `/address/city?province=${encodeURIComponent(addressForm.province)}`,
-        { method: "GET" }
-      )
-        .then((res) => res.json())
-        .then((data) => setCities(Array.isArray(data) ? data : []))
-        .catch(() => setCities([]))
-        .finally(() => setCityLoading(false));
-    } else {
-      setCities([]);
-    }
-  }, [showAddressForm, addressForm.province]);
-
   const handleUserFormChange = (e: any) => {
     setUserForm({ ...userForm, [e.target.name]: e.target.value });
   };
@@ -149,10 +134,12 @@ export function PreCheckoutModal({
     }
   };
   const handleAddressFormChange = (e: any) => {
-    setAddressForm({ ...addressForm, [e.target.name]: e.target.value });
-    if (e.target.name === "province") {
-      setAddressForm((prev) => ({ ...prev, city: "" }));
-    }
+    const { name, value } = e.target;
+    setAddressForm((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "province" ? { city: "" } : {}),
+    }));
   };
   const handleCreateAddress = async (e: any) => {
     e.preventDefault();
@@ -208,20 +195,24 @@ export function PreCheckoutModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg w-full">
+      <DialogContent className="max-w-lg w-full bg-slate-900/70 border border-white/10 backdrop-blur-2xl shadow-[0_20px_60px_-30px_rgba(59,130,246,0.6)] p-8">
         <div className="flex items-center justify-center mb-6">
           <div className="flex gap-2">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                step === 1 ? "bg-primary" : "bg-muted text-muted-foreground"
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                step === 1
+                  ? "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30"
+                  : "bg-white/10 text-white/60"
               }`}
             >
               1
             </div>
-            <div className="h-1 w-8 bg-muted rounded" />
+            <div className="h-1 w-10 bg-white/10 rounded" />
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${
-                step === 2 ? "bg-primary" : "bg-muted text-muted-foreground"
+              className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
+                step === 2
+                  ? "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-purple-500/30"
+                  : "bg-white/10 text-white/60"
               }`}
             >
               2
@@ -239,9 +230,11 @@ export function PreCheckoutModal({
               </div>
             </div>
           ) : (
-            <Card>
+            <Card className="bg-slate-900/60 border border-white/10 shadow-xl backdrop-blur-xl">
               <CardHeader>
-                <CardTitle>تکمیل اطلاعات کاربری</CardTitle>
+                <CardTitle className="text-lg font-semibold text-white">
+                  تکمیل اطلاعات کاربری
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleUpdateUser} className="space-y-4">
@@ -254,6 +247,7 @@ export function PreCheckoutModal({
                       onChange={handleUserFormChange}
                       required
                       autoFocus
+                      className="mt-1 bg-slate-900/60 border border-white/10 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 rounded-xl"
                     />
                   </div>
                   <div>
@@ -264,6 +258,7 @@ export function PreCheckoutModal({
                       value={userForm.lastName}
                       onChange={handleUserFormChange}
                       required
+                      className="mt-1 bg-slate-900/60 border border-white/10 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 rounded-xl"
                     />
                   </div>
                   <div>
@@ -273,11 +268,12 @@ export function PreCheckoutModal({
                       name="email"
                       value={userForm.email}
                       onChange={handleUserFormChange}
+                      className="mt-1 bg-slate-900/60 border border-white/10 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 rounded-xl"
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+                    className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-lg shadow-purple-500/25"
                     disabled={isUpdatingUser}
                   >
                     {isUpdatingUser ? (
@@ -299,9 +295,11 @@ export function PreCheckoutModal({
               </div>
             </div>
           ) : (
-            <Card>
+            <Card className="bg-slate-900/60 border border-white/10 shadow-xl backdrop-blur-xl">
               <CardHeader>
-                <CardTitle>انتخاب یا ثبت آدرس</CardTitle>
+                <CardTitle className="text-lg font-semibold text-white">
+                  انتخاب یا ثبت آدرس
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 {isLoadingAddresses ? (
@@ -386,17 +384,6 @@ export function PreCheckoutModal({
                         onSubmit={handleCreateAddress}
                         className="space-y-2 mb-4"
                       >
-                        <div>
-                          <Label htmlFor="address">آدرس</Label>
-                          <Textarea
-                            id="address"
-                            name="address"
-                            value={addressForm.address}
-                            onChange={handleAddressFormChange}
-                            required
-                            rows={2}
-                          />
-                        </div>
                         <div className="grid grid-cols-2 gap-2">
                           <div>
                             <Label htmlFor="province">استان</Label>
@@ -406,21 +393,15 @@ export function PreCheckoutModal({
                               value={addressForm.province}
                               onChange={handleAddressFormChange}
                               required
-                              className="w-full rounded-md border px-2 py-2 bg-background"
-                              disabled={provinceLoading}
+                              className="w-full rounded-xl border border-white/10 px-3 py-2 bg-slate-950/60 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 transition-all"
                             >
                               <option value="">انتخاب استان...</option>
-                              {provinces.map((prov) => (
-                                <option key={prov.name} value={prov.name}>
-                                  {prov.name}
+                              {provinceOptions.map((province) => (
+                                <option key={province} value={province}>
+                                  {province}
                                 </option>
                               ))}
                             </select>
-                            {provinceLoading && (
-                              <div className="text-xs text-muted-foreground mt-1">
-                                در حال بارگذاری استان‌ها...
-                              </div>
-                            )}
                           </div>
                           <div>
                             <Label htmlFor="city">شهر</Label>
@@ -430,25 +411,28 @@ export function PreCheckoutModal({
                               value={addressForm.city}
                               onChange={handleAddressFormChange}
                               required
-                              className="w-full rounded-md border px-2 py-2 bg-background"
-                              disabled={!addressForm.province || cityLoading}
+                              className="w-full rounded-xl border border-white/10 px-3 py-2 bg-slate-950/60 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 transition-all"
+                              disabled={!addressForm.province}
                             >
                               <option value="">
                                 {addressForm.province
                                   ? "انتخاب شهر..."
                                   : "ابتدا استان را انتخاب کنید"}
                               </option>
-                              {cities.map((city) => (
-                                <option key={city.name} value={city.name}>
-                                  {city.name}
+                              {cityOptions.length > 0 ? (
+                                cityOptions.map((city) => (
+                                  <option key={city} value={city}>
+                                    {city}
+                                  </option>
+                                ))
+                              ) : (
+                                <option value="__empty" disabled>
+                                  {addressForm.province
+                                    ? "شهری برای این استان ثبت نشده است"
+                                    : "ابتدا استان را انتخاب کنید"}
                                 </option>
-                              ))}
+                              )}
                             </select>
-                            {cityLoading && (
-                              <div className="text-xs text-muted-foreground mt-1">
-                                در حال بارگذاری شهرها...
-                              </div>
-                            )}
                           </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2">
@@ -460,6 +444,7 @@ export function PreCheckoutModal({
                               value={addressForm.postalCode}
                               onChange={handleAddressFormChange}
                               required
+                              className="mt-1 bg-slate-900/60 border border-white/10 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 rounded-xl"
                             />
                           </div>
                           <div>
@@ -470,6 +455,7 @@ export function PreCheckoutModal({
                               value={addressForm.houseNumber}
                               onChange={handleAddressFormChange}
                               required
+                              className="mt-1 bg-slate-900/60 border border-white/10 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 rounded-xl"
                             />
                           </div>
                         </div>
@@ -481,11 +467,24 @@ export function PreCheckoutModal({
                             value={addressForm.floorNumber}
                             onChange={handleAddressFormChange}
                             required
+                            className="mt-1 bg-slate-900/60 border border-white/10 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 rounded-xl"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="address">آدرس</Label>
+                          <Textarea
+                            id="address"
+                            name="address"
+                            value={addressForm.address}
+                            onChange={handleAddressFormChange}
+                            required
+                            rows={2}
+                            className="mt-1 rounded-xl border border-white/10 bg-slate-900/60 text-white placeholder:text-white/40 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:border-purple-500 transition-all"
                           />
                         </div>
                         <Button
                           type="submit"
-                          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+                          className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 shadow-lg shadow-purple-500/25"
                           disabled={isCreatingAddress}
                         >
                           {isCreatingAddress ? (

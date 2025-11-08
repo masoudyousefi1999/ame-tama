@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   MapPin,
@@ -47,9 +47,16 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { BackButton } from "@/components/ui/back-button";
 import { customFetch } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import citiesData from "@/lib/cities";
 
 // API Address interface
 interface ApiAddress {
@@ -130,6 +137,37 @@ export default function AddressesPage() {
       isDefault: false,
     },
   });
+
+  const provinceOptions = useMemo(
+    () => citiesData.map((item) => item.province),
+    []
+  );
+
+  const selectedProvince = form.watch("province");
+
+  const cityOptions = useMemo(() => {
+    if (!selectedProvince) {
+      return [];
+    }
+    const provinceEntry = citiesData.find(
+      (item) => item.province === selectedProvince
+    );
+    return provinceEntry?.cities ?? [];
+  }, [selectedProvince]);
+
+  useEffect(() => {
+    const currentCity = form.getValues("city");
+    if (!selectedProvince) {
+      if (currentCity) {
+        form.setValue("city", "");
+      }
+      return;
+    }
+
+    if (currentCity && !cityOptions.includes(currentCity)) {
+      form.setValue("city", "");
+    }
+  }, [selectedProvince, cityOptions, form]);
 
   // Fetch addresses from backend
   const fetchAddresses = async () => {
@@ -531,9 +569,26 @@ export default function AddressesPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>استان</FormLabel>
-                      <FormControl>
-                        <Input placeholder="تهران" {...field} />
-                      </FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={(value) => {
+                          field.onChange(value);
+                          form.setValue("city", "");
+                        }}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="استان را انتخاب کنید" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {provinceOptions.map((province) => (
+                            <SelectItem key={province} value={province}>
+                              {province}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -545,31 +600,44 @@ export default function AddressesPage() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>شهر</FormLabel>
-                      <FormControl>
-                        <Input placeholder="تهران" {...field} />
-                      </FormControl>
+                      <Select
+                        key={selectedProvince || "city-select"}
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={!selectedProvince}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={
+                                selectedProvince
+                                  ? "شهر را انتخاب کنید"
+                                  : "ابتدا استان را انتخاب کنید"
+                              }
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {cityOptions.length > 0 ? (
+                            cityOptions.map((city) => (
+                              <SelectItem key={city} value={city}>
+                                {city}
+                              </SelectItem>
+                            ))
+                          ) : (
+                            <SelectItem value="__empty" disabled>
+                              {selectedProvince
+                                ? "شهری برای این استان ثبت نشده است"
+                                : "ابتدا استان را انتخاب کنید"}
+                            </SelectItem>
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
-
-              <FormField
-                control={form.control}
-                name="address"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>آدرس کامل</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="آدرس کامل خود را وارد کنید"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
 
               <div className="grid grid-cols-3 gap-4">
                 <FormField
@@ -672,6 +740,23 @@ export default function AddressesPage() {
                         می‌شود
                       </FormDescription>
                     </div>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>آدرس کامل</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="آدرس کامل خود را وارد کنید"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
