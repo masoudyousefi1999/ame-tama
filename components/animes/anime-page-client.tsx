@@ -1,18 +1,18 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { ProductCard } from "@/components/product/product-card";
-import { PaginationWrapper } from "@/components/pagination-wrapper";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn, customFetch } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { ITagType } from "@/lib/tags";
 import type { ICategoryType } from "@/lib/categories";
 import type { IProductType } from "@/lib/products";
+import { productLimit } from "@/lib/product-limit";
 
 interface AnimePageClientProps {
   tag: ITagType;
@@ -29,6 +29,36 @@ export default function AnimePageClient({
 }: AnimePageClientProps) {
   const { setBreadcrumbs } = useBreadcrumb();
   const isMobile = useIsMobile();
+  const loader = useRef<HTMLDivElement | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [resolvedTotalCount, setResolvedTotalCount] = useState(totalCount);
+
+  const enrichedInitialProducts = useMemo(
+    () =>
+      (products || []).map((product) => ({
+        ...product,
+        tags: product.tags && product.tags.length > 0 ? product.tags : [tag],
+      })),
+    [products, tag]
+  );
+
+  const [displayProducts, setDisplayProducts] = useState(
+    enrichedInitialProducts
+  );
+  const [page, setPage] = useState(() =>
+    enrichedInitialProducts.length > 0 || totalCount > 0 ? 1 : 0
+  );
+  const [hasMore, setHasMore] = useState(
+    enrichedInitialProducts.length < totalCount
+  );
+
+  useEffect(() => {
+    setDisplayProducts(enrichedInitialProducts);
+    setPage(enrichedInitialProducts.length > 0 || totalCount > 0 ? 1 : 0);
+    setHasMore(enrichedInitialProducts.length < totalCount);
+    setResolvedTotalCount(totalCount);
+  }, [enrichedInitialProducts, totalCount]);
 
   // Memoize breadcrumb items
   const breadcrumbItems = useMemo(
@@ -49,6 +79,108 @@ export default function AnimePageClient({
   useEffect(() => {
     setBreadcrumbs(breadcrumbItems);
   }, [setBreadcrumbs, breadcrumbItems]);
+
+  const fetchMore = useCallback(async () => {
+    if (loading || !hasMore) {
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage(null);
+    try {
+      const nextPage = page + 1;
+      const response = await customFetch(
+        `/tag/${tag.slug}?page=${nextPage}&limit=${productLimit}`,
+        {
+          method: "GET",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch more products");
+      }
+
+      const result = await response.json();
+      const responseProducts: IProductType[] =
+        result?.products ?? result?.tag?.products ?? [];
+      const newProducts = Array.isArray(responseProducts)
+        ? responseProducts
+        : [];
+      const newTotalCount: number | undefined =
+        result?.totalCount ?? result?.tag?.totalCount;
+
+      let appendedCount = 0;
+      let updatedTotalCount = 0;
+
+      setDisplayProducts((prev) => {
+        const existingUuids = new Set(prev.map((product) => product.uuid));
+        const merged = newProducts
+          .filter(
+            (product) => product?.uuid && !existingUuids.has(product.uuid)
+          )
+          .map((product) => ({
+            ...product,
+            tags:
+              product.tags && product.tags.length > 0 ? product.tags : [tag],
+          }));
+
+        appendedCount = merged.length;
+        updatedTotalCount = prev.length + merged.length;
+
+        return merged.length > 0 ? [...prev, ...merged] : prev;
+      });
+
+      setPage(nextPage);
+
+      if (typeof newTotalCount === "number") {
+        setResolvedTotalCount(newTotalCount);
+      }
+
+      const effectiveTotal =
+        typeof newTotalCount === "number" ? newTotalCount : resolvedTotalCount;
+
+      if (
+        newProducts.length < productLimit ||
+        updatedTotalCount >= effectiveTotal ||
+        appendedCount === 0
+      ) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error fetching more products:", error);
+      setErrorMessage("خطا در بارگذاری محصولات بیشتر");
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [hasMore, loading, page, resolvedTotalCount, tag, totalCount]);
+
+  useEffect(() => {
+    if (!hasMore || loading) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchMore();
+        }
+      },
+      { threshold: 1 }
+    );
+
+    const currentLoader = loader.current;
+
+    if (currentLoader) {
+      observer.observe(currentLoader);
+    }
+
+    return () => {
+      if (currentLoader) {
+        observer.unobserve(currentLoader);
+      }
+    };
+  }, [fetchMore, hasMore, loading]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
@@ -244,14 +376,15 @@ export default function AnimePageClient({
             </h2>
             <div className="flex gap-2 items-center">
               <span className="text-sm text-muted-foreground">
-                {products.length} محصول نمایش داده می‌شود
+                {displayProducts.length} محصول نمایش داده می‌شود از{" "}
+                {resolvedTotalCount}
               </span>
             </div>
           </div>
 
-          {products && products.length > 0 ? (
+          {displayProducts && displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {products.map((product, index) => (
+              {displayProducts.map((product, index) => (
                 <ProductCard
                   key={product.uuid}
                   product={product}
@@ -282,6 +415,24 @@ export default function AnimePageClient({
               </div>
             </div>
           )}
+
+          {errorMessage && (
+            <div className="mt-8 text-center text-sm text-destructive">
+              {errorMessage}
+            </div>
+          )}
+
+          {loading && (
+            <div className="flex justify-center py-12">
+              <div className="flex items-center gap-3">
+                <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                <span className="text-muted-foreground">
+                  در حال بارگذاری...
+                </span>
+              </div>
+            </div>
+          )}
+          <div ref={loader} className="h-12" />
         </section>
       </div>
     </div>

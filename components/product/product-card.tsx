@@ -46,8 +46,8 @@ export function ProductCard({
   } = useWishlist();
   const { toast } = useToast();
 
-  const tagSlug = product.tags[0]?.slug;
-  const categorySlug = product.category?.slug;
+  const tagSlug = product?.tags[0]?.slug;
+  const categorySlug = product?.category?.slug;
 
   useEffect(() => {
     if (isMobile) setHovered(true);

@@ -46,14 +46,28 @@ export async function getAllTags(
 
 // دریافت تگ با شناسه
 export async function getTagBySlug(
-  slug: string
-): Promise<ITagType | undefined> {
+  slug: string,
+  options: { page?: number; limit?: number } = {}
+): Promise<{ tag: ITagType; totalCount?: number } | undefined> {
   try {
     const baseUrl =
       process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const res = await fetch(`${baseUrl}/api/tags/${slug}`, {
-      next: { tags: [`tag-${slug}`] },
-    });
+
+    const searchParams = new URLSearchParams();
+    if (options.page) {
+      searchParams.set("page", String(options.page));
+    }
+    if (options.limit) {
+      searchParams.set("limit", String(options.limit));
+    }
+    const queryString = searchParams.toString();
+
+    const res = await fetch(
+      `${baseUrl}/api/tags/${slug}${queryString ? `?${queryString}` : ""}`,
+      {
+        next: { tags: [`tag-${slug}`] },
+      }
+    );
 
     if (!res.ok) {
       console.error(`Failed to fetch tag: ${res.status}`);
@@ -61,7 +75,7 @@ export async function getTagBySlug(
     }
 
     const tagData = await res.json();
-    return tagData as ITagType;
+    return { tag: tagData.tag as ITagType, totalCount: tagData.totalCount };
   } catch (error) {
     console.error("Error fetching tag:", error);
     return undefined;

@@ -16,12 +16,28 @@ export async function GET(
       );
     }
 
-    const response = await customFetch(`/tag/${slug}`, {
+    const { searchParams } = new URL(request.url);
+    const page = searchParams.get("page") || undefined;
+    const limit = searchParams.get("limit") || undefined;
+
+    const queryParams = new URLSearchParams();
+    if (page) {
+      queryParams.set("page", page);
+    }
+    if (limit) {
+      queryParams.set("limit", limit);
+    }
+    const queryString = queryParams.toString();
+
+    const response = await customFetch(
+      `/tag/${slug}${queryString ? `?${queryString}` : ""}`,
+      {
       method: "GET",
       next: {
         tags: [`tag-${slug}`],
       },
-    });
+      }
+    );
 
     if (!response.ok) {
       console.log(`Backend returned ${response.status} for tag: ${slug}`);

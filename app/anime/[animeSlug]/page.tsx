@@ -1,7 +1,5 @@
 import { notFound } from "next/navigation";
 import { getTagBySlug, ITagType } from "@/lib/tags";
-import { getAllCategories } from "@/lib/categories";
-import { getProductsByTagSlug, IProductType } from "@/lib/products";
 import type { Metadata } from "next";
 import { productLimit } from "@/lib/product-limit";
 import AnimePageClient from "@/components/animes/anime-page-client";
@@ -29,23 +27,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     metadataBase: new URL(baseUrl),
-    title: `خرید محصولات ${tag.name} | AME-TAMA`,
-    description: `خرید محصولات ${tag.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA. مجموعه کامل محصولات انیمه ${tag.name} با تضمین اصالت`,
-    keywords: `انیمه ${tag.name}, محصولات انیمه, ${tag.name}, AME-TAMA, خرید محصولات انیمه, فیگور انیمه, مجسمه انیمه`,
+    title: `خرید محصولات ${tag.tag.name} | AME-TAMA`,
+    description: `خرید محصولات ${tag.tag.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA. مجموعه کامل محصولات انیمه ${tag.tag.name} با تضمین اصالت`,
+    keywords: `انیمه ${tag.tag.name}, محصولات انیمه, ${tag.tag.name}, AME-TAMA, خرید محصولات انیمه, فیگور انیمه, مجسمه انیمه`,
     openGraph: {
-      title: `خرید محصولات ${tag.name} | AME-TAMA`,
-      description: `خرید محصولات ${tag.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
+      title: `خرید محصولات ${tag.tag.name} | AME-TAMA`,
+      description: `خرید محصولات ${tag.tag.name} با بهترین قیمت و کیفیت در فروشگاه AME-TAMA`,
       type: "website",
-      images: [tag.image?.url],
+      images: [tag.tag.image?.url],
       url: animeUrl,
       locale: "fa_IR",
       siteName: "AME-TAMA",
     },
     twitter: {
       card: "summary_large_image",
-      title: `خرید محصولات ${tag.name} | AME-TAMA`,
-      description: `خرید محصولات ${tag.name} با بهترین قیمت و کیفیت`,
-      images: [tag.image?.url],
+      title: `خرید محصولات ${tag.tag.name} | AME-TAMA`,
+      description: `خرید محصولات ${tag.tag.name} با بهترین قیمت و کیفیت`,
+      images: [tag.tag.image?.url],
     },
     alternates: {
       canonical: animeUrl,
@@ -73,30 +71,24 @@ export default async function AnimeRoute({
 }) {
   const { animeSlug } = await params;
 
-  // Parallel data fetching for better performance
-  const [documents] = await Promise.all([
-    getTagBySlug(animeSlug) as unknown as Promise<{
-      tag: ITagType;
-      totalCount: number;
-    }>,
-  ]);
+  const tagData = await getTagBySlug(animeSlug, {
+    page: 1,
+    limit: productLimit,
+  });
 
-  const tag = documents.tag;
-  const totalCount = documents.totalCount;
-  const categories = tag.categories;
-  const products = tag.products;
+  if (!tagData) notFound();
+  const categories = tagData.tag.categories;
+  const products = tagData.tag.products;
+  const totalCount = tagData.totalCount;
 
-  delete (tag as any).categories;
-  delete (tag as any).products;
-
-  if (!tag) notFound();
+  const tag = tagData.tag as ITagType;
 
   return (
     <AnimePageClient
       tag={tag}
       categories={categories}
       products={products}
-      totalCount={totalCount}
+      totalCount={totalCount || 0}
     />
   );
 }

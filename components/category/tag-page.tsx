@@ -48,11 +48,20 @@ export default function TagPage({
   totalCount,
   limit,
 }: TagPageProps) {
-  const [products, setProducts] = useState(initialProducts);
+  const [displayProducts, setDisplayProducts] = useState(initialProducts);
   const [page, setPage] = useState(initialPage);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [resolvedTotalCount, setResolvedTotalCount] = useState(totalCount);
   const [hasMore, setHasMore] = useState(initialProducts.length < totalCount);
   const loader = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    setDisplayProducts(initialProducts);
+    setPage(initialPage);
+    setHasMore(initialProducts.length < totalCount);
+    setResolvedTotalCount(totalCount);
+  }, [initialProducts, initialPage, totalCount]);
 
   // Memoize breadcrumb items
   const breadcrumbItems = useMemo(
@@ -70,6 +79,106 @@ export default function TagPage({
     [category.name, category.slug, tag.name, tag.slug]
   );
 
+  const fallbackTag = useMemo(
+    () =>
+      ({
+        ...tag,
+        categories: [],
+        products: [],
+      }) as unknown as ITagType,
+    [tag]
+  );
+
+  const fetchMore = useCallback(async () => {
+    if (loading || !hasMore) {
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage(null);
+    try {
+      const nextPage = page + 1;
+    const url = `/category/${category.slug}/${tag.slug}?page=${nextPage}&limit=${productLimit}`;
+      const res = await customFetch(url, { method: "GET" });
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          setHasMore(false);
+          setLoading(false);
+          return;
+        }
+        throw new Error("Failed to fetch more products");
+      }
+
+      const result = await res.json();
+      const responseProducts: IProductType[] =
+        result?.products ?? result?.tag?.products ?? [];
+      const newProducts = Array.isArray(responseProducts)
+        ? responseProducts
+        : [];
+      const newTotalCount: number | undefined =
+        result?.totalCount ?? result?.tag?.totalCount;
+
+      let appendedCount = 0;
+      let updatedTotalCount = 0;
+
+      setDisplayProducts((prev: IProductType[]) => {
+        const existingUuids = new Set(prev.map((p: IProductType) => p.uuid));
+        const filteredNew = newProducts
+          .filter(
+            (p: IProductType) => p?.uuid && !existingUuids.has(p.uuid)
+          )
+          .map((p) => {
+            if (!p.tags || p.tags.length === 0) {
+              return {
+                ...p,
+                tags: [fallbackTag],
+              };
+            }
+            return p;
+          });
+
+        appendedCount = filteredNew.length;
+        updatedTotalCount = prev.length + filteredNew.length;
+
+        return filteredNew.length > 0 ? [...prev, ...filteredNew] : prev;
+      });
+
+      setPage(nextPage);
+
+      if (typeof newTotalCount === "number") {
+        setResolvedTotalCount(newTotalCount);
+      }
+
+      const effectiveTotal =
+        typeof newTotalCount === "number"
+          ? newTotalCount
+          : resolvedTotalCount;
+
+      if (
+        newProducts.length < productLimit ||
+        updatedTotalCount >= effectiveTotal ||
+        appendedCount === 0
+      ) {
+        setHasMore(false);
+      }
+    } catch (error) {
+      console.error("Error fetching more products:", error);
+      setErrorMessage("خطا در بارگذاری محصولات بیشتر");
+      setHasMore(false);
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    category.slug,
+    fallbackTag,
+    hasMore,
+    loading,
+    page,
+    resolvedTotalCount,
+    tag.slug,
+  ]);
+
   // Infinite scroll effect
   useEffect(() => {
     if (!hasMore || loading) return;
@@ -85,35 +194,7 @@ export default function TagPage({
     return () => {
       if (loader.current) observer.unobserve(loader.current);
     };
-  }, [loader, hasMore, loading]);
-
-  const fetchMore = useCallback(async () => {
-    setLoading(true);
-    try {
-      const nextPage = page + 1;
-      let url = `/product/category/${category.slug}/${tag.slug}?page=${nextPage}&limit=${productLimit}`;
-      const res = await customFetch(url, { method: "GET" });
-      const result = await res.json();
-      const newProducts = result.products || [];
-      setProducts((prev: IProductType[]) => {
-        const existingUuids = new Set(prev.map((p: IProductType) => p.uuid));
-        const filteredNew = newProducts.filter(
-          (p: IProductType) => !existingUuids.has(p.uuid)
-        );
-        return [...prev, ...filteredNew];
-      });
-      setPage((prev) => prev + 1);
-      if (newProducts.length === 0) {
-        setHasMore(false);
-      } else {
-        setHasMore(newProducts.length === productLimit);
-      }
-    } catch (error) {
-      setHasMore(false);
-    } finally {
-      setLoading(false);
-    }
-  }, [page, category.slug, tag.slug]);
+  }, [fetchMore, hasMore, loading]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -179,12 +260,12 @@ export default function TagPage({
 
                 {/* Stats with enhanced design */}
                 <div className="flex flex-wrap gap-4 mb-6">
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-white font-medium text-sm">
-                      {totalCount} محصول موجود
-                    </span>
-                  </div>
+                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-white font-medium text-sm">
+                    {resolvedTotalCount} محصول موجود
+                  </span>
+                </div>
                   <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
                     <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-500"></div>
                     <span className="text-white font-medium text-sm">
@@ -251,11 +332,18 @@ export default function TagPage({
             محصولات {tag.name}
           </h3>
           <p className="text-muted-foreground text-lg">
-            {totalCount} محصول موجود
+            {displayProducts.length} محصول نمایش داده می‌شود از{" "}
+            {resolvedTotalCount}
           </p>
         </div>
 
-        <CategoryProducts products={products} viewMode="grid" />
+        <CategoryProducts products={displayProducts} viewMode="grid" />
+
+        {errorMessage && (
+          <div className="mt-8 text-center text-sm text-destructive">
+            {errorMessage}
+          </div>
+        )}
 
         {loading && (
           <div className="flex justify-center py-12">
@@ -265,7 +353,7 @@ export default function TagPage({
             </div>
           </div>
         )}
-        <div ref={loader} />
+        <div ref={loader} className="h-12" />
       </div>
     </div>
   );

@@ -113,7 +113,6 @@ export default function CategoryProducts({
           >
             <MemoizedProductCard
               product={product}
-              variant="wishlist"
               className="border-0 shadow-none"
               showAddToCart
               showAddToWishlist
