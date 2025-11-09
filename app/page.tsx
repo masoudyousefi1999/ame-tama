@@ -35,7 +35,6 @@ export default async function Home() {
 
   const categories = allCategories || [];
   const products = productsResult.products || [];
-  console.dir(products[0], { depth: null });
   const tags = tagsResult.tags || [];
 
   return (

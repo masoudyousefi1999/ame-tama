@@ -68,34 +68,7 @@ export function MobileBottomNavbar() {
   ];
 
   return (
-    <div 
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar"
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        width: '100%',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        margin: 0,
-        marginBottom: 0,
-        transform: 'translateY(0)',
-        willChange: 'auto',
-      }}
-    >
-      {/* Glassmorphism Background */}
-      <div 
-        className="absolute inset-0 backdrop-blur-xl border-t border-white/10 shadow-2xl shadow-black/20"
-        style={{
-          background: 'linear-gradient(to top right, rgba(17, 24, 39, 0.85), rgba(31, 41, 55, 0.75), rgba(17, 24, 39, 0.85))',
-        }}
-      >
-        {/* Top highlight */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/5 via-transparent to-transparent pointer-events-none" />
-        {/* Bottom shadow gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20 pointer-events-none" />
-      </div>
-
+    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar bg-background">
       {/* Navigation items */}
       <nav className="relative flex items-center justify-around p-1">
         {navItems.map((item) => {
@@ -106,18 +79,18 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm p-2"
+              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm px-4 py-2"
             >
               {/* Active indicator background */}
               {isActive && (
-                <div className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/30" />
+                <div className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/10" />
               )}
 
               {/* Icon container */}
-              <div className="relative flex items-center justify-center">
+              <div className="relative flex items-center justify-center pb-1">
                 <Icon
                   className={cn(
-                    "h-5 w-5",
+                    "h-6 w-6",
                     isActive
                       ? "text-primary scale-110"
                       : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
@@ -126,7 +99,7 @@ export function MobileBottomNavbar() {
 
                 {/* Badge for cart items */}
                 {item.badge && item.badge > 0 && (
-                  <div className="absolute -top-1 -right-1">
+                  <div className="absolute -top-3 -right-3">
                     <Badge
                       variant="destructive"
                       className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs font-bold bg-gradient-to-r from-red-500 to-pink-500 border-2 border-background shadow-lg"
@@ -145,7 +118,7 @@ export function MobileBottomNavbar() {
               {/* Label */}
               <span
                 className={cn(
-                  "text-xs font-medium",
+                  "text-sm font-medium",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground group-hover:text-foreground"
