@@ -36,7 +36,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="hero-section relative flex h-[calc(var(--vh)*100)] w-full items-center justify-center overflow-hidden">
+    <section className="hero-section relative flex w-full items-center justify-center overflow-hidden">
       {/* Background with multiple layers */}
       <div className="absolute inset-0">
         {/* Main background image */}

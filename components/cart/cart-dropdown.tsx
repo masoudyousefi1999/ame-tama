@@ -23,8 +23,6 @@ export default function CartDropdown() {
     isInitialized,
   } = useCart();
 
-  console.log('items are =>',items);
-
   // Close the dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

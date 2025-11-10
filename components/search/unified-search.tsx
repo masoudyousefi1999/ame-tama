@@ -9,12 +9,17 @@ import { Input } from "@/components/ui/input";
 import { customFetch } from "@/lib/utils";
 import { IProductType } from "@/lib/products";
 import { formatPriceDivided } from "@/lib/format-price";
+import { cn } from "@/lib/utils";
 
 interface UnifiedSearchProps {
   className?: string;
+  mobileButtonClassName?: string;
 }
 
-export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
+export default function UnifiedSearch({
+  className = "",
+  mobileButtonClassName,
+}: UnifiedSearchProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -24,6 +29,8 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
   const [isNavigating, setIsNavigating] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   // Load recent searches
   useEffect(() => {
@@ -117,6 +124,7 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
 
     setIsNavigating(true);
     saveRecentSearch(query);
+    setQuery("");
     router.push(
       `/${product.category?.slug}/${product.tags?.[0]?.slug}/${product.slug}`
     );
@@ -163,21 +171,32 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
   };
 
   // Handle backdrop click - enhanced for better reliability
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    // Only close if clicking the backdrop itself, not any child elements
-    if (e.target === e.currentTarget) {
-      setIsOpen(false);
-    }
-  };
-
-  // Handle touch events for mobile
-  const handleBackdropTouch = (e: React.TouchEvent) => {
-    if (e.target === e.currentTarget) {
-      setIsOpen(false);
-    }
+  const handleBackdropPointerDown = (e: React.PointerEvent) => {
+    setIsOpen(false);
   };
 
   // Handle escape key to close modal
+  useEffect(() => {
+    if (!isOpen) {
+      setQuery("");
+      return;
+    }
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const target = event.target as Node | null;
+      if (modalRef.current && target && modalRef.current.contains(target)) {
+        return;
+      }
+      setIsOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown, true);
+
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown, true);
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -210,7 +229,10 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
       <div className="md:hidden">
         <button
           onClick={handleSearchClick}
-          className="p-2 rounded-lg hover:bg-muted transition-colors"
+          className={cn(
+            "p-2 rounded-lg hover:bg-muted transition-colors",
+            mobileButtonClassName
+          )}
           aria-label="جستجو"
           type="button"
         >
@@ -249,28 +271,30 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
       {/* Search Results Modal */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/50"
-          onClick={handleBackdropClick}
-          onTouchEnd={handleBackdropTouch}
+          ref={backdropRef}
+          className="fixed inset-0 z-[60] bg-black/60 px-3 pb-4 pt-[calc(80px+env(safe-area-inset-top,0px))] md:px-0 md:pt-16"
+          onPointerDown={handleBackdropPointerDown}
         >
-          {/* Mobile: Full backdrop for easier closing */}
           <div
             className="md:hidden absolute inset-0"
-            onClick={handleBackdropClick}
+            onPointerDown={handleBackdropPointerDown}
           />
 
           <div
-            className="absolute top-4 left-4 right-4 bottom-4 md:top-16 md:left-1/2 md:right-auto md:bottom-auto md:w-96 md:-translate-x-1/2 bg-background rounded-lg shadow-lg flex flex-col overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
+            ref={modalRef}
+            className="mx-auto flex max-w-2xl flex-1 flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl md:max-w-md md:-translate-y-4 md:border-border/80"
+            onPointerDown={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="p-4 border-b border-border flex-shrink-0">
+            <div className="flex-shrink-0 border-b border-border bg-background/95 p-4 backdrop-blur">
               {/* Mobile: Header with close button */}
-              <div className="md:hidden flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold">جستجو</h2>
+              <div className="mb-3 flex items-center justify-between md:hidden">
+                <h2 className="text-lg font-semibold text-foreground">
+                  جستجوی سریع
+                </h2>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-muted rounded-lg transition-colors"
+                  className="rounded-lg p-2 transition-colors hover:bg-muted"
                   type="button"
                 >
                   <X className="h-5 w-5 text-muted-foreground" />
@@ -278,21 +302,21 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
               </div>
 
               <div className="relative">
-                <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   ref={inputRef}
                   type="text"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="جستجو کنید..."
-                  className="w-full pr-10 pl-4 py-3 text-base"
+                  className="w-full rounded-xl border border-border bg-card/80 pr-10 pl-4 py-3 text-base shadow-inner focus-visible:ring-2 focus-visible:ring-primary/40"
                   onKeyDown={handleKeyDown}
                   disabled={isNavigating}
                 />
                 {query && (
                   <button
                     onClick={handleClearSearch}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-muted rounded"
+                    className="absolute left-3 top-1/2 -translate-y-1/2 rounded p-1 transition-colors hover:bg-muted"
                     type="button"
                   >
                     <X className="h-4 w-4 text-muted-foreground" />
@@ -302,7 +326,7 @@ export default function UnifiedSearch({ className = "" }: UnifiedSearchProps) {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto bg-background/60">
               {isLoading ? (
                 <div className="flex justify-center items-center py-12">
                   <Loader2 className="h-8 w-8 animate-spin text-primary" />

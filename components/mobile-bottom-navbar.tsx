@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Store, BookOpen, User, ShoppingBag } from "lucide-react";
+import { Home, Store, BookOpen, User, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/context/cart-context";
 import { useAuth } from "@/context/auth-context";
@@ -11,7 +11,8 @@ import { cn } from "@/lib/utils";
 interface NavItem {
   name: string;
   href: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon?: React.ComponentType<{ className?: string }>;
+  avatarUrl?: string | null;
   badge?: number;
   isActive?: boolean;
 }
@@ -53,16 +54,16 @@ export function MobileBottomNavbar() {
       isActive: pathname.startsWith("/topic"),
     },
     {
-      name: "سفارشات",
-      href: "/cart",
-      icon: ShoppingBag,
-      badge: cartItemsCount > 0 ? cartItemsCount : undefined,
-      isActive: pathname === "/cart",
+      name: "محصولات انیمه",
+      href: "/anime",
+      icon: Layers,
+      isActive: pathname.startsWith("/anime"),
     },
     {
       name: user ? "پروفایل" : "ورود",
       href: user ? "/profile" : "/auth/login",
-      icon: User,
+      icon: user?.avatar ? undefined : User,
+      avatarUrl: user?.avatar ?? null,
       isActive: pathname.startsWith("/profile") || pathname.startsWith("/auth"),
     },
   ];
@@ -78,6 +79,7 @@ export function MobileBottomNavbar() {
       <nav className="relative flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
+          const showAvatar = !!item.avatarUrl;
           const isActive = item.isActive;
 
           return (
@@ -93,14 +95,32 @@ export function MobileBottomNavbar() {
 
               {/* Icon container */}
               <div className="relative flex items-center justify-center pb-1">
-                <Icon
-                  className={cn(
-                    "h-[23px] w-[23px]",
-                    isActive
-                      ? "text-primary scale-110"
-                      : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
-                  )}
-                />
+                {showAvatar ? (
+                  <span
+                    className={cn(
+                      "h-[24px] w-[24px] overflow-hidden rounded-full border border-border transition-transform",
+                      isActive ? "scale-105" : "group-hover:scale-105"
+                    )}
+                  >
+                    <img
+                      src={item.avatarUrl ?? ""}
+                      alt="آواتار کاربر"
+                      className="h-full w-full object-cover"
+                      referrerPolicy="no-referrer"
+                    />
+                  </span>
+                ) : (
+                  Icon && (
+                    <Icon
+                      className={cn(
+                        "h-[23px] w-[23px]",
+                        isActive
+                          ? "text-primary scale-110"
+                          : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
+                      )}
+                    />
+                  )
+                )}
 
                 {/* Badge for cart items */}
                 {item.badge && item.badge > 0 && (
