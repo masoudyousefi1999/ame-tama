@@ -265,57 +265,65 @@ export default function OrderDetailPage() {
               محصولات سفارش
             </h2>
             <div className="space-y-4">
-              {order.items.map((item, index) => (
-                <div
-                  key={index}
-                  className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-700/50 hover:bg-gray-700/80 rounded-xl transition-all duration-200 cursor-pointer border border-transparent hover:border-orange-500"
-                  onClick={() => router.push(`/product/${item.product.slug}`)}
-                >
-                  {/* Product Image */}
-                  <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-600 shadow-sm">
-                    <img
-                      src={
-                        item.product.productMedia.find((m) => m.isDefault)
-                          ?.url || "/placeholder.svg"
-                      }
-                      alt={item.product.name}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
-                  </div>
-
-                  {/* Product Info */}
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-base font-semibold mb-2 line-clamp-2 text-white group-hover:text-orange-400 transition-colors">
-                      {item.product.name}
-                    </h4>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-400">
-                      <span className="flex items-center gap-1">
-                        <span className="font-medium text-white">
-                          {item.quantity}
-                        </span>
-                        عدد
-                      </span>
-                      <span className="text-gray-600 hidden sm:inline">•</span>
-                      <span className="font-semibold text-white">
-                        {formatPriceDivided(item.price)}
-                      </span>
+              {order.items.map((item, index) => {
+                const categorySlug = (item.product as any)?.category?.slug;
+                const tagSlug = (item.product as any)?.tags?.[0]?.slug;
+                const productSlug = item.product.slug;
+                const productHref = `/${categorySlug}/${tagSlug}/${productSlug}`;
+                return (
+                  <a
+                    key={index}
+                    href={productHref}
+                    className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-700/50 hover:bg-gray-700/80 rounded-xl transition-all duration-200 border border-transparent hover:border-orange-500"
+                  >
+                    {/* Product Image */}
+                    <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-600 shadow-sm">
+                      <img
+                        src={
+                          item.product.productMedia.find((m) => m.isDefault)
+                            ?.url || "/placeholder.svg"
+                        }
+                        alt={item.product.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      />
                     </div>
-                  </div>
 
-                  {/* Total Price for Item */}
-                  <div className="flex justify-between sm:block sm:text-right mt-2 sm:mt-0">
-                    <span className="text-xs text-gray-400 sm:hidden">
-                      جمع:
-                    </span>
-                    <p className="text-xs text-gray-400 mb-1 hidden sm:block">
-                      جمع
-                    </p>
-                    <p className="text-base font-bold text-white">
-                      {formatPriceDivided(item.price * item.quantity)}
-                    </p>
-                  </div>
-                </div>
-              ))}
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-base font-semibold mb-2 line-clamp-2 text-white group-hover:text-orange-400 transition-colors">
+                        {item.product.name}
+                      </h4>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <span className="font-medium text-white">
+                            {item.quantity}
+                          </span>
+                          عدد
+                        </span>
+                        <span className="text-gray-600 hidden sm:inline">
+                          •
+                        </span>
+                        <span className="font-semibold text-white">
+                          {formatPriceDivided(item.price)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Total Price for Item */}
+                    <div className="flex justify-between sm:block sm:text-right mt-2 sm:mt-0">
+                      <span className="text-xs text-gray-400 sm:hidden">
+                        جمع:
+                      </span>
+                      <p className="text-xs text-gray-400 mb-1 hidden sm:block">
+                        جمع
+                      </p>
+                      <p className="text-base font-bold text-white">
+                        {formatPriceDivided(item.price * item.quantity)}
+                      </p>
+                    </div>
+                  </a>
+                );
+              })}
 
               {/* Price Summary */}
               <div className="mt-6 pt-6 border-t border-gray-700">

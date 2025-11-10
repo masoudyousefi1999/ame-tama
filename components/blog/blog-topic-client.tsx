@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
-import CategoryHeader from "../category/category-header";
+import LoadingSpinner from "../ui/loading-spinner";
 
 const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
   const isMobile = useIsMobile();

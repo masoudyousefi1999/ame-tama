@@ -7,7 +7,7 @@ import { customFetch } from "@/lib/utils";
 import Link from "next/link";
 import { IProductType } from "@/lib/products";
 import { CustomImage as Image } from "@/components/ui/custom-image";
-import CategoryHeader from "./category-header";
+import GradientHero from "@/components/ui/gradient-hero";
 import { productLimit } from "@/lib/product-limit";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 
@@ -167,12 +167,65 @@ export default function CategoryPage({
   return (
     <div className="min-h-screen bg-background">
       {/* breadcrumb */}
-      <div className="container mx-auto px-4 pt-8 pb-4 md:mt-12">
-        <Breadcrumb items={breadcrumbItems} className="mb-8" />
+      <div className="container mx-auto px-4 pb-4 lg:mt-20">
+        <Breadcrumb items={breadcrumbItems} className="mb-6 mt-8" />
       </div>
 
       {/* hero header */}
-      <CategoryHeader category={category} />
+      <GradientHero
+        title={category.name}
+        description={category.description}
+        image={category.image}
+        fallbackIcon="📦"
+        stats={[
+          { label: `${totalCount} محصول موجود` },
+          ...(category.tags && category.tags.length > 0
+            ? [{ label: `${category.tags.length} انیمه موجود` }]
+            : []),
+        ]}
+        actions={[
+          {
+            label: "مشاهده محصولات",
+            href: "#products",
+            icon: (
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            ),
+          },
+          {
+            label: "مشاهده فروشگاه",
+            href: "/shop",
+            icon: (
+              <svg
+                className="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                />
+              </svg>
+            ),
+            variant: "secondary",
+            prefetch: false,
+          },
+        ]}
+      />
 
       {/* tags section */}
       <div className="container mx-auto px-4">{tagsSection}</div>

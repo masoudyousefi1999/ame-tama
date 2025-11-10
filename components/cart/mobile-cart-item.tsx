@@ -26,36 +26,36 @@ export function MobileCartItem({
   isUpdating = false,
 }: MobileCartItemProps) {
   return (
-    <div className="bg-card border-b border-border p-4">
+    <div className="bg-card border-b border-border/60 p-4">
       <div className="flex items-start">
         {/* image */}
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted">
+        <Link
+          href={`/${item.product.category.slug}/${item.product.tags?.[0]?.slug}/${item.product.slug}`}
+          className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg bg-muted"
+          prefetch={false}
+        >
           <Image
             src={item.product?.productMedia[0]?.url || "/placeholder.svg"}
             alt={item.product.name}
             fill
             sizes="80px"
-            className="object-cover"
+            className="object-cover transition-transform duration-300 hover:scale-105"
           />
-        </div>
+        </Link>
 
         {/* info */}
         <div className="mr-3 flex-1">
-          <h3 className="text-sm font-medium">{item.product.name}</h3>
+          <Link
+            href={`/${item.product.category.slug}/${item.product.tags?.[0]?.slug}/${item.product.slug}`}
+            prefetch={false}
+            className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+          >
+            {item.product.name}
+          </Link>
 
           <div className="mt-1 text-sm text-muted-foreground">
             {formatPriceDivided(item.product.price)}
           </div>
-
-          <Link
-            href={`/product/${item.product.slug}`}
-            onClick={(e) => isSwiping && e.preventDefault()}
-            className="mt-1 inline-flex items-center text-xs text-primary hover:text-primary/80 transition-colors py-2 px-1 min-h-[44px]"
-            prefetch={false}
-          >
-            جزییات محصول
-            <ExternalLink className="mr-1 h-3 w-3" />
-          </Link>
 
           {/* qty & actions */}
           <div className="mt-2 flex items-center justify-between">

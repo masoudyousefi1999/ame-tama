@@ -23,6 +23,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useAuth } from "@/context/auth-context";
 import { PreCheckoutModal } from "@/components/cart/pre-checkout-modal";
 import { formatPriceDivided } from "@/lib/format-price";
+import Link from "next/link";
 
 export default function CartPage() {
   const router = useRouter();
@@ -287,10 +288,13 @@ export default function CartPage() {
                       {items.map((item) => (
                         <div
                           key={item.product.uuid}
-                          className="flex items-center gap-4 p-4 border rounded-lg"
+                          className="flex items-center gap-4 p-4 border border-border/60 bg-card/60 rounded-xl"
                         >
                           {/* Product image */}
-                          <div className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+                          <Link
+                            href={`/${item.product.category.slug}/${item.product.tags?.[0]?.slug}/${item.product.slug}`}
+                            className="relative h-20 w-20 rounded-lg overflow-hidden bg-muted flex-shrink-0 block"
+                          >
                             <Image
                               src={
                                 item.product.productMedia[0]?.url ||
@@ -298,16 +302,20 @@ export default function CartPage() {
                               }
                               alt={item.product.name}
                               fill
-                              className="object-cover"
+                              className="object-cover transition-transform duration-300 hover:scale-105"
                               sizes="80px"
                             />
-                          </div>
+                          </Link>
 
                           {/* Product info */}
                           <div className="flex-1 min-w-0">
-                            <h3 className="font-medium truncate">
+                            <Link
+                              href={`/${item.product.category.slug}/${item.product.tags?.[0]?.slug}/${item.product.slug}`}
+                              prefetch={false}
+                              className="font-medium truncate hover:text-primary transition-colors"
+                            >
                               {item.product.name}
-                            </h3>
+                            </Link>
                             <p className="text-sm text-muted-foreground">
                               {formatPriceDivided(item.product.price)}
                             </p>
@@ -498,7 +506,7 @@ export default function CartPage() {
 
       {/* Mobile Sticky Footer */}
       {isMobile && items.length > 0 && !showPreCheckout && (
-        <div className="fixed bottom-[70px]  left-0 right-0 bg-card border-t border-border p-4 z-[60] md:hidden shadow-lg">
+        <div className="fixed bottom-[60px]  left-0 right-0 bg-card border-t border-border p-4 z-[60] md:hidden shadow-lg">
           <div className="flex items-center justify-between mb-3">
             <span className="text-sm font-medium">مبلغ قابل پرداخت:</span>
             <span className="text-lg font-bold text-primary">

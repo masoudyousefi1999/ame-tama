@@ -190,7 +190,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
           </h2>
 
           {product?.detail?.description ? (
-            <div className="rounded-xl p-5 shadow-sm border bg-muted">
+            <div className="rounded-xl p-5 shadow-sm border border-border/60 bg-muted/60">
               <div
                 className="prose prose-lg max-w-none leading-relaxed text-justify dark:prose-invert"
                 dangerouslySetInnerHTML={{
@@ -219,7 +219,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
                 ([key, value]) => (
                   <div
                     key={key}
-                    className="rounded-xl p-4 shadow-sm border bg-muted"
+                    className="rounded-xl p-4 shadow-sm border border-border/60 bg-muted/60"
                   >
                     <div className="mb-1 text-sm text-muted-foreground">
                       {key} :
@@ -248,7 +248,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
 
           {/* Submit comment */}
           <form onSubmit={handleSubmit} className="mb-6 space-y-2">
-            <div className="rounded-xl border bg-muted/40 focus-within:ring-2 focus-within:ring-primary/40 transition">
+            <div className="rounded-xl border border-border/60 bg-muted/40 focus-within:ring-2 focus-within:ring-primary/40 transition">
               <Textarea
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, maxLength))}
@@ -323,7 +323,7 @@ export default function ProductTabs({ product }: ProductTabsProps) {
               {comments.map((c) => (
                 <div
                   key={c.uuid}
-                  className="rounded-xl border bg-card p-4 shadow-sm"
+                  className="rounded-xl border border-border/60 bg-card/80 p-4 shadow-sm"
                 >
                   <div className="flex items-start gap-3">
                     <div className="h-10 w-10 flex items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground font-bold">

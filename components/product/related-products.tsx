@@ -78,11 +78,11 @@ export default function RelatedProducts({ uuid }: RelatedProductsProps) {
           </h2>
         </div>
         <div className="grid grid-flow-col auto-cols-[80%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[24%] gap-4 overflow-x-auto pb-2">
-          {Array.from({ length: 4 }).map((_, index) => (
+          {/* {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="snap-start">
               <div className="animate-pulse bg-gray-200 rounded-lg h-64 w-full"></div>
             </div>
-          ))}
+          ))} */}
         </div>
       </section>
     );

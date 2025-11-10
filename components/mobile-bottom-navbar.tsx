@@ -68,9 +68,14 @@ export function MobileBottomNavbar() {
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar bg-background">
+    <div
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar bg-background py-1"
+      style={{
+        paddingBottom: `calc(0.25rem + env(safe-area-inset-bottom, 0px))`,
+      }}
+    >
       {/* Navigation items */}
-      <nav className="relative flex items-center justify-around p-1">
+      <nav className="relative flex items-center justify-around">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = item.isActive;
@@ -79,18 +84,18 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm px-4 py-2"
+              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm px-2 py-1"
             >
               {/* Active indicator background */}
               {isActive && (
-                <div className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/10" />
+                <div className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/30" />
               )}
 
               {/* Icon container */}
               <div className="relative flex items-center justify-center pb-1">
                 <Icon
                   className={cn(
-                    "h-6 w-6",
+                    "h-[23px] w-[23px]",
                     isActive
                       ? "text-primary scale-110"
                       : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"

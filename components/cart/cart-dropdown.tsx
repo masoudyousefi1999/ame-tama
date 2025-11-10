@@ -19,10 +19,11 @@ export default function CartDropdown() {
     itemCount,
     subtotal,
     updateQuantity,
-    recentlyAdded,
     isLoading,
     isInitialized,
   } = useCart();
+
+  console.log('items are =>',items);
 
   // Close the dropdown when clicking outside of it
   useEffect(() => {
@@ -167,7 +168,7 @@ export default function CartDropdown() {
                   {/* info */}
                   <div className="flex-1 mr-4">
                     <Link
-                      href={`/product/${item.product.slug}`}
+                      href={`/${item.product.category.slug}/${item.product.tags?.[0]?.slug}/${item.product.slug}`}
                       onClick={() => setIsOpen(false)}
                       className="line-clamp-1 text-sm font-medium hover:text-primary transition-colors"
                       prefetch={false}
