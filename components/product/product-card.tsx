@@ -14,7 +14,10 @@ import { IProductType } from "@/lib/products";
 import { useAuth } from "@/context/auth-context";
 import { useLoginModal } from "@/context/login-modal-context";
 import { useCart } from "@/context/cart-context";
-import { formatPriceDivided } from "@/lib/format-price";
+import {
+  formatPriceDivided,
+  calculateDiscountPercentage,
+} from "@/lib/format-price";
 
 export interface ProductCardProps {
   product: IProductType;
@@ -219,10 +222,37 @@ export function ProductCard({
               retryDelayMs={isMobile ? 1000 : 500}
             />
 
+            {/* Badge تخفیف */}
+            {product.discountPrice && (
+              <div className="absolute top-5 -left-4 z-30 p-2 rounded-full">
+                <div
+                  className="
+        bg-destructive
+        text-white
+        text-sm
+        font-bold
+        px-5
+        py-1
+        rounded-full
+        shadow-md
+        flex
+        items-center
+        justify-center
+      "
+                >
+                  %
+                  {calculateDiscountPercentage(
+                    product.price,
+                    product.discountPrice
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* نمایش نوع محصول (فقط در صفحه تگ) */}
             {showProductName && (
               <div className="absolute top-0 left-0 z-20">
-                <Badge className="text-sm font-bold bg-gradient-to-r from-orange-500 to-red-500 text-white border-0 shadow-xl rounded-br-lg rounded-tl-none rounded-tr-none rounded-bl-none px-3 py-1">
+                <Badge className="text-sm font-bold bg-gradient-to-r from-primary to-accent text-primary-foreground border-0 shadow-xl rounded-br-lg rounded-tl-none rounded-tr-none rounded-bl-none px-3 py-1">
                   {product.category?.name || "بدون دسته‌بندی"}
                 </Badge>
               </div>
@@ -273,16 +303,31 @@ export function ProductCard({
               </div>
             )}
 
-            <div className="flex items-center justify-between">
-              <p className="text-base md:text-lg font-bold text-primary">
-                {formatPriceDivided(product.price)}
-              </p>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex flex-col gap-1">
+                {product.discountPrice ? (
+                  <>
+                    {/* قیمت اصلی با خط قرمز */}
+                    <p className="text-sm line-through text-destructive decoration-destructive">
+                      {formatPriceDivided(product.price)}
+                    </p>
+                    {/* قیمت تخفیف خورده */}
+                    <p className="text-base md:text-lg font-bold text-primary">
+                      {formatPriceDivided(product.discountPrice)}
+                    </p>
+                  </>
+                ) : (
+                  <p className="text-base md:text-lg font-bold text-primary">
+                    {formatPriceDivided(product.price)}
+                  </p>
+                )}
+              </div>
               {showAddToCart && (
                 <Button
                   size="sm"
                   onClick={handleAddToCart}
                   disabled={!isInStock}
-                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs shadow-md transition-all duration-300"
+                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs shadow-md transition-all duration-300 flex-shrink-0"
                 >
                   <ShoppingCart className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                   افزودن

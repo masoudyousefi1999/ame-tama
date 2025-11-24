@@ -6,7 +6,6 @@ import { AuthProvider } from "@/context/auth-context";
 import { WishlistProvider } from "@/context/wishlist-context";
 import { ImageProvider } from "@/context/image-context";
 import { BreadcrumbProvider } from "@/context/breadcrumb-context";
-import ViewportHeightFix from "@/components/viewport-height-fix";
 import { LoginModalProvider } from "@/context/login-modal-context";
 import localFont from "next/font/local";
 import Script from "next/script";
@@ -129,7 +128,6 @@ export default function RootLayout({
         className={`${vazirmatn.variable} ${langar.variable} h-full overflow-x-hidden`}
       >
         <LoginToastEffect />
-        <ViewportHeightFix />
         <ScrollToTop />
         <LoginModalProvider>
           <AuthProvider>

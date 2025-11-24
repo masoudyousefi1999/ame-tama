@@ -28,6 +28,7 @@ export interface IProductType {
   price: number;
   quantity: number;
   rating: number;
+  discountPrice?: number;
   detail: ProductDetail;
   category: ProductCategory;
   productMedia: ProductMedia[];

@@ -101,7 +101,7 @@ export function MobileTopBar() {
 
         <div className="h-px bg-border/30" />
 
-        <div className="max-h-[75vh] overflow-y-auto px-6 pb-10 pt-4">
+        <div className="max-h-[600px] overflow-y-auto px-6 pb-10 pt-4">
           <div className="mb-6 flex items-center gap-3 rounded-2xl border border-border/30 bg-card p-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-accent/80 text-primary-foreground shadow-lg">
               {user?.avatar ? (

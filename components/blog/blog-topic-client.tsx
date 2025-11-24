@@ -180,7 +180,7 @@ export default function BlogTopicClient({
   const blogsCount = useMemo(() => blogs.length, [blogs.length]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 lg:mt-20 pb-16 lg:pb-0">
+    <div className="min-h-screen bg-background text-foreground lg:mt-20 pb-16 lg:pb-0">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 pt-6 mb-6">
         <Breadcrumb
@@ -200,7 +200,7 @@ export default function BlogTopicClient({
       <header className="relative mb-12 overflow-hidden rounded-3xl group transition-all ease-in-out">
         <section className="relative py-12 md:py-20 overflow-hidden min-h-[300px] md:min-h-[350px]">
           {/* Dynamic gradient background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700" />
+          <div className="absolute inset-0 bg-background/95" />
           <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
 
           {/* Animated floating elements */}
@@ -236,8 +236,8 @@ export default function BlogTopicClient({
               <div className="max-w-5xl">
                 {/* Topic title with enhanced styling */}
                 <div className="mb-4">
-                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white mb-3 leading-tight tracking-tight">
-                    <span className="bg-gradient-to-r from-white via-primary/80 to-accent/80 bg-clip-text text-transparent">
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-foreground mb-3 leading-tight tracking-tight">
+                    <span className="bg-gradient-to-r from-primary/60 via-foreground to-accent/70 bg-clip-text text-transparent">
                       {topic.name}
                     </span>
                   </h1>
@@ -246,16 +246,16 @@ export default function BlogTopicClient({
 
                 {/* Description with better styling */}
                 {topic.description && (
-                  <p className="text-lg md:text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl leading-relaxed font-medium">
+                  <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground mb-8 max-w-3xl leading-relaxed font-medium">
                     {topic.description}
                   </p>
                 )}
 
                 {/* Stats with enhanced design */}
                 <div className="flex flex-wrap gap-4 mb-6">
-                  <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-xl px-4 py-2 border border-white/20">
-                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-white font-medium text-sm">
+                  <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-xl px-4 py-2 border border-border/70">
+                    <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                    <span className="text-foreground font-medium text-sm">
                       مقالات متنوع
                     </span>
                   </div>
@@ -284,7 +284,7 @@ export default function BlogTopicClient({
                   </Link>
                   <Link
                     href="/topic"
-                    className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/20 transition-all duration-300"
+                    className="inline-flex items-center gap-2 bg-card/70 backdrop-blur-sm border border-border/60 text-foreground font-semibold px-6 py-3 rounded-xl hover:bg-card transition-all duration-300"
                   >
                     <span>مشاهده همه تاپیک‌ها</span>
                     <svg
@@ -307,7 +307,7 @@ export default function BlogTopicClient({
           </div>
 
           {/* Decorative elements */}
-          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-gray-900 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent"></div>
         </section>
       </header>
       </div>

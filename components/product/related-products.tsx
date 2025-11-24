@@ -73,7 +73,7 @@ export default function RelatedProducts({ uuid }: RelatedProductsProps) {
     return (
       <section className="mb-16">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
             محصولات مشابه
           </h2>
         </div>
@@ -96,9 +96,9 @@ export default function RelatedProducts({ uuid }: RelatedProductsProps) {
     <section className="mb-16">
       {/* Heading & arrows */}
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-          محصولات مشابه
-        </h2>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            محصولات مشابه
+          </h2>
 
         <div className="flex gap-x-2 rtl:gap-x-reverse">
           <Button variant="outline" size="icon" className="rounded-full">

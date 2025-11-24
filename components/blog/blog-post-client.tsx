@@ -56,7 +56,7 @@ export default function BlogPostClient({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       <div className="container mx-auto lg:mt-16 px-4 py-8 lg:md:mt-24">
         {/* Breadcrumb */}
         <Breadcrumb items={breadcrumbItems} className="mb-4" />
@@ -65,7 +65,7 @@ export default function BlogPostClient({
         <section className="">
           <div className="">
             {/* Article Card - Unified Content */}
-            <article className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl shadow-xl border border-gray-700 overflow-hidden">
+            <article className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden">
               {/* Featured Image */}
               {blogPost.image && blogPost.image.url && (
                 <div className="p-6 md:p-8">
@@ -98,21 +98,21 @@ export default function BlogPostClient({
               <div className="p-8 md:p-12">
                 {/* Article Title */}
                 <div className="mb-8">
-                  <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+                  <h2 className="text-2xl md:text-3xl font-bold text-foreground mb-4 leading-tight">
                     {blogPost.title}
                   </h2>
 
                   {/* Article Meta */}
                   <div className="flex flex-wrap gap-4 mb-6">
-                    <div className="flex items-center gap-2 text-sm text-gray-300">
-                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <div className="w-2 h-2 bg-success rounded-full"></div>
                       <span>
                         تاریخ انتشار: {formatDate(blogPost.publishedAt || "")}
                       </span>
                     </div>
                     {blogPost.updatedAt !== blogPost.publishedAt && (
-                      <div className="flex items-center gap-2 text-sm text-gray-300">
-                        <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+                      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div className="w-2 h-2 bg-warning rounded-full"></div>
                         <span>
                           آخرین به‌روزرسانی: {formatDate(blogPost.updatedAt)}
                         </span>
@@ -125,24 +125,20 @@ export default function BlogPostClient({
                 <div className="prose prose-lg prose-invert max-w-none">
                   <div
                     ref={contentRef}
-                    className="article-content"
+                    className="article-content text-foreground"
                     dangerouslySetInnerHTML={{ __html: blogPost.content }}
-                    style={{
-                      color: "#d1d5db !important",
-                      backgroundColor: "transparent !important",
-                    }}
                   />
                 </div>
               </div>
 
               {/* Article Footer */}
               <div className="px-8 md:px-12 pb-8 md:pb-12">
-                <div className="bg-gray-700/50 rounded-xl p-6 border border-gray-600">
+                <div className="bg-muted/50 rounded-xl p-6 border border-border">
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-                    <div className="text-sm text-gray-300">
+                    <div className="text-sm text-muted-foreground">
                       <p className="mb-2">
                         این مقاله بخشی از مجموعه{" "}
-                        <strong className="text-white mr-1 ml-1">
+                        <strong className="text-foreground mr-1 ml-1">
                           {topic.name}
                         </strong>{" "}
                         میباشد.
@@ -159,7 +155,7 @@ export default function BlogPostClient({
                       </Link>
                       <Link
                         href="/topic"
-                        className="inline-flex items-center gap-2 bg-gray-600 text-gray-200 font-semibold px-6 py-3 rounded-xl hover:bg-gray-500 transition-all duration-300"
+                        className="inline-flex items-center gap-2 bg-muted text-foreground font-semibold px-6 py-3 rounded-xl hover:bg-muted/80 transition-all duration-300"
                       >
                         <span>همه موضوعات</span>
                         <ArrowLeft className="w-4 h-4" />

@@ -64,7 +64,7 @@ const TopicCard = ({ topic }: { topic: IBlogTopicType }) => {
                 setImageError(true);
               }}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent z-10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent z-10" />
           </>
         ) : (
           <div className="h-full w-full bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center">
@@ -120,7 +120,7 @@ export default function BlogPageClient({ topics }: BlogPageClientProps) {
   const topicsCount = useMemo(() => topics.length, [topics.length]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 lg:mt-20 pb-16 lg:pb-0">
+    <div className="min-h-screen bg-background text-foreground lg:mt-20 pb-16 lg:pb-0">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
@@ -130,16 +130,16 @@ export default function BlogPageClient({ topics }: BlogPageClientProps) {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-8 md:py-12 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-        <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+      <section className="relative py-8 md:py-12 bg-muted/60">
+        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <h1 className="text-2xl md:text-4xl font-black text-white mb-3 md:mb-4">
+          <h1 className="text-2xl md:text-4xl font-black text-foreground mb-3 md:mb-4">
             موضوعات
           </h1>
-          <p className="text-sm md:text-lg text-white/90 max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
             آخرین موضوعات انیمه ای
           </p>
-          <div className="flex items-center justify-center gap-2 text-white/80">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <span className="text-xs md:text-sm">
               {topicsCount} موضوع موجود
             </span>

@@ -14,7 +14,7 @@ import { BrandedIllustration } from "./ui/branded-illustration";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 border-t border-border overflow-hidden">
+    <footer className="relative bg-background border-t border-border overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 bg-pattern-dots opacity-5" />
       <BrandedIllustration variant="footer" />
@@ -220,9 +220,9 @@ export default function Footer() {
           />
           <defs>
             <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="rgba(139,92,246,0.1)" />
-              <stop offset="50%" stopColor="rgba(59,130,246,0.15)" />
-              <stop offset="100%" stopColor="rgba(6,182,212,0.1)" />
+              <stop offset="0%" stopColor="hsl(var(--primary) / 0.12)" />
+              <stop offset="50%" stopColor="hsl(var(--secondary) / 0.18)" />
+              <stop offset="100%" stopColor="hsl(var(--accent) / 0.12)" />
             </linearGradient>
           </defs>
         </svg>

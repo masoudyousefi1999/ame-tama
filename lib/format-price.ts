@@ -33,6 +33,22 @@ export const formatPriceDivided = (price: number): string => {
   return new Intl.NumberFormat("fa-IR").format(price / 10) + " تومان";
 };
 
+/**
+ * Calculates the discount percentage
+ * @param originalPrice - The original price before discount
+ * @param discountPrice - The price after discount
+ * @returns The discount percentage as a rounded number
+ */
+export const calculateDiscountPercentage = (
+  originalPrice: number,
+  discountPrice: number
+): number => {
+  if (originalPrice <= 0 || discountPrice >= originalPrice) {
+    return 0;
+  }
+  return Math.round(((originalPrice - discountPrice) / originalPrice) * 100);
+};
+
 
 
 

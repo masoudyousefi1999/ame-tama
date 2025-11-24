@@ -15,7 +15,8 @@ interface ProductPageClientProps {
 
 export default function ProductPageClient({ product }: ProductPageClientProps) {
   return (
-    <div className="container mx-auto px-4 py-8 lg:mt-20" dir="rtl">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="container mx-auto px-4 py-8 lg:mt-20" dir="rtl">
       <div className="mb-2">
         <Breadcrumb
           items={[
@@ -57,6 +58,7 @@ export default function ProductPageClient({ product }: ProductPageClientProps) {
       </div>
       <div>
         <RelatedProducts uuid={product.uuid} />
+      </div>
       </div>
     </div>
   );

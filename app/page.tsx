@@ -38,7 +38,7 @@ export default async function Home() {
   const tags = tagsResult.tags || [];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
+    <div className="min-h-screen bg-background text-foreground relative overflow-hidden">
       {/* Cleanup script for unused preloads */}
       <script
         dangerouslySetInnerHTML={{
@@ -69,15 +69,11 @@ export default async function Home() {
         </div>
       </div>
 
-      <div className="section-separator" />
-
       {/* Featured Products */}
       <FeaturedProductsSection initialProducts={products} />
 
-      <div className="section-separator" />
-
       {/* Category Showcase */}
-      <section className="relative py-16 md:py-24 section-elevated section-glow mx-4 lg:mx-8">
+      <section className="relative py-16 md:py-24 bg-background">
         <div className="absolute inset-0 bg-pattern-grid opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
@@ -95,10 +91,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="section-separator" />
-
       {/* Tags Showcase */}
-      <section className="relative py-16 md:py-24 section-elevated section-glow mx-4 lg:mx-8">
+      <section className="relative py-16 md:py-24 bg-muted/60">
         <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
@@ -116,10 +110,8 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="section-separator" />
-
       {/* Testimonials */}
-      <section className="relative py-16 md:py-24 section-elevated section-glow mx-4 lg:mx-8">
+      <section className="relative py-16 md:py-24 bg-background">
         <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
@@ -136,13 +128,11 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="section-separator" />
-
       {/* CTA */}
-      <section className="relative py-16 md:py-24 section-elevated section-glow mx-4 lg:mx-8">
-        <div className="relative container mx-auto px-6 lg:px-8 text-center z-10">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 md:mb-8 section-title">
+      <section className="relative py-16 md:py-24 bg-background">
+        <div className="relative container mx-auto px-6 lg:px-8 z-10">
+          <div className="max-w-4xl mx-auto rounded-3xl bg-card/80 border border-border/60 px-6 py-12 md:px-10 md:py-16 text-center shadow-2xl backdrop-blur">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6 md:mb-8">
               آماده شروع کلکسیون خود هستید؟
             </h2>
             <p className="text-lg text-muted-foreground mb-10 md:mb-12 max-w-2xl mx-auto leading-relaxed">
@@ -151,13 +141,13 @@ export default async function Home() {
             <div className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center">
               <a
                 href="/shop"
-                className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-white font-semibold transition-transform duration-200 hover:scale-105 shadow-lg"
+                className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground font-semibold transition-transform duration-200 hover:scale-105 shadow-lg shadow-primary/30"
               >
                 مشاهده فروشگاه
               </a>
               <a
                 href="/about"
-                className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full bg-gray-800 hover:bg-gray-700 border-2 border-primary text-primary hover:text-primary/80 font-semibold transition-transform duration-200 hover:scale-105 shadow-md"
+                className="inline-flex items-center justify-center px-8 md:px-10 py-3 md:py-4 rounded-full border border-border/70 text-foreground hover:text-primary hover:border-primary font-semibold transition-transform duration-200 hover:scale-105 bg-transparent"
               >
                 درباره ما
               </a>
@@ -165,8 +155,6 @@ export default async function Home() {
           </div>
         </div>
       </section>
-
-      <div className="section-separator" />
     </div>
   );
 }

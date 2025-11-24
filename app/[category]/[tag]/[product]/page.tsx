@@ -69,12 +69,21 @@ export async function generateMetadata({
 
   const availability = productData.quantity > 0 ? "instock" : "outofstock";
 
+  const discountPrice = productData.discountPrice;
+
   const otherMeta: Record<string, string> = {
     product_id: productData.uuid,
     product_name: productData.name,
-    product_price: String(productData.price),
     availability,
+    "og:image": primaryImage,
   };
+
+  if (discountPrice) {
+    otherMeta.product_price = String(discountPrice);
+    otherMeta.product_old_price = String(productData.price);
+  } else {
+    otherMeta.product_price = String(productData.price);
+  }
 
   const specifications = productData.detail?.specifications as
     | Record<string, any>

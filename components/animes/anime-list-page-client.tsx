@@ -47,12 +47,12 @@ const AnimeCard = ({ tag }: { tag: ITagType }) => {
             <span className="text-4xl opacity-50">🎭</span>
           </div>
         )}
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+        <div className="absolute inset-0 bg-background/40 group-hover:bg-background/20 transition-colors" />
 
         {/* Overlay with anime name */}
         <div className="absolute inset-0 flex items-end p-4">
-          <div className="bg-black/60 backdrop-blur-sm rounded-lg px-3 py-2 w-full">
-            <h3 className="text-white font-semibold text-sm md:text-base truncate">
+          <div className="bg-background/80 backdrop-blur-sm rounded-lg px-3 py-2 w-full">
+            <h3 className="text-foreground font-semibold text-sm md:text-base truncate">
               {tag.name}
             </h3>
           </div>
@@ -74,7 +74,7 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
   const tagsCount = useMemo(() => tags.length, [tags.length]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
+    <div className="min-h-screen bg-background text-foreground pb-24 lg:mt-20">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
@@ -84,16 +84,16 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-8 md:py-12 bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
-        <div className="absolute inset-0 bg-pattern-dots opacity-20" />
+      <section className="relative py-8 md:py-12 bg-muted/60">
+        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <h1 className="text-2xl md:text-4xl font-black text-white mb-3 md:mb-4">
+          <h1 className="text-2xl md:text-4xl font-black text-foreground mb-3 md:mb-4">
             لیست انیمه ها
           </h1>
-          <p className="text-sm md:text-lg text-white/90 max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
+          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
             مجموعه کامل انیمه ها برای پیدا کردن محصولات مورد علاقه‌تان
           </p>
-          <div className="flex items-center justify-center gap-2 text-white/80">
+          <div className="flex items-center justify-center gap-2 text-muted-foreground">
             <span className="text-xs md:text-sm">{tagsCount} انیمه موجود</span>
           </div>
         </div>

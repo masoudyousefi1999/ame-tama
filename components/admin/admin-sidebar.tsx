@@ -122,7 +122,7 @@ export function AdminSidebar() {
             </Button>
           </div>
 
-          <ScrollArea className="h-[calc(100vh-73px)]">
+          <ScrollArea className="h-[calc(100%-73px)]">
             <nav className="space-y-1 p-4" dir="rtl">
               <div className="pb-3">
                 <p className="px-3 text-xs font-semibold text-gray-400 uppercase tracking-wider">

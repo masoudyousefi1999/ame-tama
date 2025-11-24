@@ -81,8 +81,8 @@ export function CommentUserInfoModal({
       <DialogContent className="max-w-lg w-full">
         {stepConfirmed ? (
           <div className="flex flex-col items-center justify-center py-12">
-            <CheckCircle className="w-16 h-16 text-green-500 mb-4 animate-bounceIn" />
-            <div className="text-lg font-bold text-green-500 text-center">
+            <CheckCircle className="w-16 h-16 text-success mb-4 animate-bounceIn" />
+            <div className="text-lg font-bold text-success text-center">
               {stepConfirmed === "already"
                 ? "اطلاعات حساب کاربری شما تکمیل است"
                 : "اطلاعات حساب کاربری شما تکمیل شد"}
@@ -118,7 +118,7 @@ export function CommentUserInfoModal({
                 </div>
                 <Button
                   type="submit"
-                  className="w-full rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700"
+                  className="w-full rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                   disabled={isUpdatingUser}
                 >
                   {isUpdatingUser ? (

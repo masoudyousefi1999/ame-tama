@@ -77,10 +77,10 @@ export default async function BlogTopicPage({
 
   if (!data || !topic) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">تاپیک یافت نشد</h1>
-          <p className="text-gray-300 mb-6">
+          <h1 className="text-2xl font-bold text-foreground mb-4">تاپیک یافت نشد</h1>
+          <p className="text-muted-foreground mb-6">
             تاپیک مورد نظر وجود ندارد یا حذف شده است.
           </p>
           <a

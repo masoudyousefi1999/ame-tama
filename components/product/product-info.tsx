@@ -22,7 +22,7 @@ import { PersianDate } from "@/components/ui/persian-date";
 import { useAuth } from "@/context/auth-context";
 import { useLoginModal } from "@/context/login-modal-context";
 import { toast } from "@/components/ui/use-toast";
-import { formatPriceDivided } from "@/lib/format-price";
+import { formatPriceDivided, calculateDiscountPercentage } from "@/lib/format-price";
 
 interface ProductInfoProps {
   product: IProductType;
@@ -83,33 +83,33 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     if (product.quantity === 0) {
       return {
         text: "ناموجود",
-        color: "text-red-600 dark:text-red-400",
-        bgColor: "bg-red-50 dark:bg-red-950/30",
-        borderColor: "border-red-200 dark:border-red-800",
+        color: "text-destructive",
+        bgColor: "bg-destructive/10",
+        borderColor: "border-destructive/30",
         icon: "❌",
       };
     } else if (product.quantity > 0 && product.quantity < 3) {
       return {
         text: `تنها ${product.quantity} عدد باقی مانده`,
-        color: "text-amber-600 dark:text-amber-400",
-        bgColor: "bg-amber-50 dark:bg-amber-950/30",
-        borderColor: "border-amber-200 dark:border-amber-800",
+        color: "text-warning",
+        bgColor: "bg-warning/10",
+        borderColor: "border-warning/30",
         icon: "⚡",
       };
     } else if (product.quantity >= 3 && product.quantity < 10) {
       return {
         text: "موجود در انبار",
-        color: "text-emerald-600 dark:text-emerald-400",
-        bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
-        borderColor: "border-emerald-200 dark:border-emerald-800",
+        color: "text-success",
+        bgColor: "bg-success/10",
+        borderColor: "border-success/30",
         icon: "✅",
       };
     } else {
       return {
         text: "موجود در انبار",
-        color: "text-emerald-600 dark:text-emerald-400",
-        bgColor: "bg-emerald-50 dark:bg-emerald-950/30",
-        borderColor: "border-emerald-200 dark:border-emerald-800",
+        color: "text-success",
+        bgColor: "bg-success/10",
+        borderColor: "border-success/30",
         icon: "✅",
       };
     }
@@ -157,7 +157,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
               className={cn(
                 "h-5 w-5",
                 i < product.rating
-                  ? "text-yellow-400 fill-yellow-400"
+                  ? "text-warning fill-warning"
                   : "text-muted-foreground"
               )}
             />
@@ -167,17 +167,33 @@ export default function ProductInfo({ product }: ProductInfoProps) {
       </div>
 
       {/* ────────── price ────────── */}
-      <div className="flex items-center gap-x-3 rtl:gap-x-reverse">
-        <span className="text-3xl font-bold text-foreground">
-          {formatPriceDivided(product.price)}
-        </span>
-
-        {/* {!!product.price && (
-          <span className="text-lg line-through text-muted-foreground">
-            {new Intl.NumberFormat("fa-IR").format(product.price)} تومان
+      {product.discountPrice ? (
+        <div className="flex flex-col gap-2">
+          {/* خط اول: قیمت اصلی + badge تخفیف */}
+          <div className="flex items-center gap-x-3 rtl:gap-x-reverse flex-wrap">
+            <span className="text-xl line-through text-destructive decoration-destructive">
+              {formatPriceDivided(product.price)}
+            </span>
+            <span className="px-3 py-1 rounded-full bg-destructive text-destructive-foreground text-sm font-bold">
+              {calculateDiscountPercentage(product.price, product.discountPrice)}%
+            </span>
+          </div>
+          {/* خط دوم: قیمت تخفیف خورده */}
+          <div className="flex items-center gap-x-2 rtl:gap-x-reverse">
+            <span className="text-3xl font-bold text-foreground">
+              {formatPriceDivided(product.discountPrice)}
+            </span>
+            <span className="text-lg text-muted-foreground">تومان</span>
+          </div>
+        </div>
+      ) : (
+        <div className="flex items-center gap-x-2 rtl:gap-x-reverse">
+          <span className="text-3xl font-bold text-foreground">
+            {formatPriceDivided(product.price)}
           </span>
-        )} */}
-      </div>
+          <span className="text-lg text-muted-foreground">تومان</span>
+        </div>
+      )}
 
       {/* ─── stock + badges ─── */}
       <div className="flex items-center gap-x-2 rtl:gap-x-reverse">

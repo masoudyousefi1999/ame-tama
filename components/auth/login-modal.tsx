@@ -290,7 +290,7 @@ export default function LoginModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-md max-h-[800px] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
             ورود به حساب کاربری

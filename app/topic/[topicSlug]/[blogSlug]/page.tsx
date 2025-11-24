@@ -62,10 +62,10 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   if (!blogPost) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-4">مقاله یافت نشد</h1>
-          <p className="text-gray-300 mb-6">
+          <h1 className="text-2xl font-bold mb-4">مقاله یافت نشد</h1>
+          <p className="text-muted-foreground mb-6">
             مقاله مورد نظر وجود ندارد یا حذف شده است.
           </p>
           <a

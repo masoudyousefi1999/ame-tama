@@ -78,7 +78,7 @@ export function OrderDetailModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-4xl max-h-[90vh] w-[95vw] sm:w-full bg-gray-800 border-gray-700 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]"
+        className="max-w-4xl max-h-[800px] w-[95vw] sm:w-full bg-gray-800 border-gray-700 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] fixed left-[50%] top-[50%] z-50 translate-x-[-50%] translate-y-[-50%]"
         dir="rtl"
       >
         <DialogHeader className="pr-10">
@@ -116,7 +116,7 @@ export function OrderDetailModal({
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[calc(90vh-120px)] pl-4" dir="rtl">
+        <ScrollArea className="max-h-[680px] pl-4" dir="rtl">
           <div className="space-y-4 sm:space-y-6">
             <div className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

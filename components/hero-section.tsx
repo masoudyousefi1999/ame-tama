@@ -11,24 +11,9 @@ export default function HeroSection() {
   const isMobile = useIsMobile();
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Optimized VH update with throttling
-  const updateVH = useCallback(() => {
-    const vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty("--vh", `${vh}px`);
-  }, []);
-
   useEffect(() => {
-    updateVH();
     setIsLoaded(true);
-
-    window.addEventListener("resize", updateVH, { passive: true });
-    window.addEventListener("orientationchange", updateVH, { passive: true });
-
-    return () => {
-      window.removeEventListener("resize", updateVH);
-      window.removeEventListener("orientationchange", updateVH);
-    };
-  }, [updateVH]);
+  }, []);
 
   const scrollToProducts = useCallback(() => {
     const section = document.getElementById("featured-products");

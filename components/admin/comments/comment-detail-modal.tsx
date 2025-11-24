@@ -102,7 +102,7 @@ export function CommentDetailModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="max-w-3xl max-h-[90vh] bg-gray-800 border-gray-700"
+        className="max-w-3xl max-h-[800px] bg-gray-800 border-gray-700"
         dir="rtl"
       >
         <DialogHeader className="pr-10">
@@ -118,7 +118,7 @@ export function CommentDetailModal({
           </DialogTitle>
         </DialogHeader>
 
-        <ScrollArea className="max-h-[calc(90vh-120px)] pl-4" dir="rtl">
+        <ScrollArea className="max-h-[680px] pl-4" dir="rtl">
           <div className="space-y-6">
             {/* Date Info & Publish Status */}
             <div className="bg-gray-700/50 rounded-lg p-4 border border-gray-600">
