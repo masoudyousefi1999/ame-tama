@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import { SkipLink } from "@/components/ui/skip-link";
 import { MobileBottomNavbar } from "@/components/mobile-bottom-navbar";
 import { MobileTopBar } from "@/components/mobile-top-bar";
+import BlackFridayBanner from "@/components/black-friday-banner";
 
 export default function ConditionalLayout({
   children,
@@ -26,11 +27,12 @@ export default function ConditionalLayout({
       {!isAdminRoute && (
         <>
           <SkipLink href="#main-content" />
+          <BlackFridayBanner />
           <MobileTopBar />
           <Navbar />
           <main
             id="main-content"
-            className="flex-1 pt-[calc(65px+env(safe-area-inset-top,0px))] lg:pt-0"
+            className="flex-1 pt-[calc(85px+env(safe-area-inset-top,0px))] lg:pt-0"
           >
             {children}
             {!shouldHideFooter && <Footer />}

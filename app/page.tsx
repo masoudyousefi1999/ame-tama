@@ -73,7 +73,7 @@ export default async function Home() {
       <FeaturedProductsSection initialProducts={products} />
 
       {/* Category Showcase */}
-      <section className="relative py-16 md:py-24 bg-background">
+      <section className="relative py-16 md:py-24 bg-muted/40">
         <div className="absolute inset-0 bg-pattern-grid opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
@@ -92,7 +92,7 @@ export default async function Home() {
       </section>
 
       {/* Tags Showcase */}
-      <section className="relative py-16 md:py-24 bg-muted/60">
+      <section className="relative py-16 md:py-24 bg-background">
         <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
@@ -111,7 +111,7 @@ export default async function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="relative py-16 md:py-24 bg-background">
+      <section className="relative py-16 md:py-24 bg-muted/40">
         <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">

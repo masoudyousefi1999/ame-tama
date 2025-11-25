@@ -14,7 +14,7 @@ export default function FeaturedProductsSection({
   const isMobile = useIsMobile();
 
   return (
-    <section className="relative py-24 bg-muted/60">
+    <section className="relative py-24 bg-background">
       <div className="relative container mx-auto px-6 lg:px-8">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-8 section-title">

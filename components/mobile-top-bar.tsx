@@ -45,9 +45,9 @@ export function MobileTopBar() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <div
-        className="lg:hidden fixed top-0 left-0 right-0 z-50  bg-background/90 backdrop-blur-xl"
+        className="lg:hidden fixed left-0 right-0 z-50 bg-background/90 backdrop-blur-xl"
         style={{
-          paddingTop: `calc(env(safe-area-inset-top, 0px))`,
+          top: "calc(env(safe-area-inset-top, 0px) + 2.3rem)",
         }}
       >
         <div className="container mx-auto flex items-center justify-between px-4 py-3">

@@ -224,17 +224,16 @@ export function ProductCard({
 
             {/* Badge تخفیف */}
             {product.discountPrice && (
-              <div className="absolute top-5 -left-4 z-30 p-2 rounded-full">
+              <div className="absolute top-5 -left-4 z-30 p-2 rounded-full text-center">
                 <div
                   className="
-        bg-destructive
+        bg-red-500
         text-white
         text-sm
         font-bold
-        px-5
+        px-6
         py-1
         rounded-full
-        shadow-md
         flex
         items-center
         justify-center

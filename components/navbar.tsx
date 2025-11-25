@@ -219,7 +219,7 @@ export default function Navbar() {
     <header
       ref={parentRef}
       className={cn(
-        "fixed inset-x-0 top-0 z-40 transition-all duration-300",
+        "fixed inset-x-0 z-40 transition-all duration-300",
         // Glassmorphism design
         "backdrop-blur-xl",
         "before:absolute before:inset-0 before:bg-background/95",
@@ -232,6 +232,7 @@ export default function Navbar() {
         "hidden lg:block"
       )}
       style={{
+        top: "calc(env(safe-area-inset-top, 0px) + 2.75rem)",
         backgroundColor: isScrolled
           ? "hsl(var(--background) / 0.95)"
           : "hsl(var(--background) / 0.9)",

@@ -47,27 +47,6 @@ export default function HeroSection() {
 
         {/* Animated gradient overlays */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-900/70 via-blue-900/70 to-indigo-900/70" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/60" />
-        {/* 
-        Floating particles effect */}
-        <div className="absolute inset-0 opacity-30">
-          <div
-            className="absolute top-20 left-10 w-2 h-2 bg-white/60 rounded-full animate-pulse"
-            style={{ animationDelay: "0s", animationDuration: "3s" }}
-          />
-          <div
-            className="absolute top-40 right-20 w-1 h-1 bg-purple-400/80 rounded-full animate-pulse"
-            style={{ animationDelay: "1s", animationDuration: "4s" }}
-          />
-          <div
-            className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-blue-400/70 rounded-full animate-pulse"
-            style={{ animationDelay: "2s", animationDuration: "3.5s" }}
-          />
-          <div
-            className="absolute bottom-20 right-1/3 w-1 h-1 bg-indigo-400/80 rounded-full animate-pulse"
-            style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
-          />
-        </div>
       </div>
 
       {/* Main content */}
