@@ -53,24 +53,24 @@ export function OrderCard({ order, variant = "detailed" }: OrderCardProps) {
 
   if (variant === "compact") {
     return (
-      <div className="group relative bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-orange-500/50 transition-all duration-300 overflow-hidden">
+      <div className="group relative bg-card rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 overflow-hidden">
         {/* Background Pattern */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
         <div className="relative p-6">
           {/* Header */}
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
               <div className="flex items-center gap-3 mb-2">
-                <div className="flex items-center gap-2 bg-gray-700/50 rounded-lg px-3 py-1.5">
-                  <Package className="h-4 w-4 text-orange-400" />
+                <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-1.5">
+                  <Package className="h-4 w-4 text-primary" />
                   <span className="text-sm font-mono font-semibold text-white">
                     #{order.id.slice(0, 8)}
                   </span>
                 </div>
                 <OrderStatusBadge status={order.status} />
               </div>
-              <p className="text-sm text-gray-400 flex items-center gap-2">
+              <p className="text-sm text-muted-foreground flex items-center gap-2">
                 <Clock className="h-3.5 w-3.5" />
                 {order.date}
               </p>
@@ -80,17 +80,17 @@ export function OrderCard({ order, variant = "detailed" }: OrderCardProps) {
           {/* Order Details Grid */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
             {/* Products Count */}
-            <div className="bg-gray-700/30 rounded-xl p-3 border border-gray-600/50">
-              <p className="text-xs text-gray-400 mb-1">تعداد محصولات</p>
-              <p className="text-lg font-bold text-white">
+            <div className="bg-muted/30 rounded-xl p-3 border border-border/50">
+              <p className="text-xs text-muted-foreground mb-1">تعداد محصولات</p>
+              <p className="text-lg font-bold text-foreground">
                 {order.items.length} عدد
               </p>
             </div>
 
             {/* Total Price */}
-            <div className="bg-gradient-to-br from-orange-500/10 to-amber-500/10 rounded-xl p-3 border border-orange-500/20">
-              <p className="text-xs text-gray-400 mb-1">مبلغ کل</p>
-              <p className="text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+            <div className="bg-gradient-to-br from-primary/10 to-accent/10 rounded-xl p-3 border border-primary/20">
+              <p className="text-xs text-muted-foreground mb-1">مبلغ کل</p>
+              <p className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {formatPriceDivided(order.total)}
               </p>
             </div>
@@ -99,7 +99,7 @@ export function OrderCard({ order, variant = "detailed" }: OrderCardProps) {
             <div className="col-span-2 md:col-span-1 flex items-end">
               <Button
                 onClick={() => router.push(`/profile/orders/${order.id}`)}
-                className="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+                className="w-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
               >
                 <span>مشاهده جزئیات</span>
                 <svg
@@ -125,24 +125,24 @@ export function OrderCard({ order, variant = "detailed" }: OrderCardProps) {
 
   // Detailed variant (for profile page)
   return (
-    <div className="group relative bg-gray-800/50 rounded-2xl border border-gray-700 hover:border-orange-500/50 transition-all duration-300 overflow-hidden">
+    <div className="group relative bg-card rounded-2xl border border-border hover:border-primary/50 transition-all duration-300 overflow-hidden">
       {/* Background Pattern */}
-      <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 via-transparent to-amber-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       <div className="relative p-6">
         {/* Header */}
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
-              <div className="flex items-center gap-2 bg-gray-700/50 rounded-lg px-3 py-1.5">
-                <Package className="h-4 w-4 text-orange-400" />
+              <div className="flex items-center gap-2 bg-muted rounded-lg px-3 py-1.5">
+                <Package className="h-4 w-4 text-primary" />
                 <span className="text-sm font-mono font-semibold text-white">
                   #{order.id.slice(0, 8)}
                 </span>
               </div>
               <OrderStatusBadge status={order.status} />
             </div>
-            <p className="text-sm text-gray-400 flex items-center gap-2">
+            <p className="text-sm text-muted-foreground flex items-center gap-2">
               <Clock className="h-3.5 w-3.5" />
               {order.date}
             </p>
@@ -152,25 +152,25 @@ export function OrderCard({ order, variant = "detailed" }: OrderCardProps) {
         {/* Order Details Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <div className="text-center">
-            <p className="text-sm text-gray-400 mb-1">مبلغ کل</p>
-            <p className="text-lg font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+            <p className="text-sm text-muted-foreground mb-1">مبلغ کل</p>
+            <p className="text-lg font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {formatPriceDivided(order.total)}
             </p>
           </div>
           <div className="text-center">
-            <p className="text-sm text-gray-400 mb-1">وضعیت</p>
+            <p className="text-sm text-muted-foreground mb-1">وضعیت</p>
             <OrderStatusBadge status={order.status} />
           </div>
           <div className="text-center">
-            <p className="text-sm text-gray-400 mb-1">تاریخ</p>
-            <p className="text-lg font-semibold text-white">{order.date}</p>
+            <p className="text-sm text-muted-foreground mb-1">تاریخ</p>
+            <p className="text-lg font-semibold text-foreground">{order.date}</p>
           </div>
         </div>
         {/* Action Button */}
         <div className="text-center">
           <Button
             onClick={() => router.push(`/profile/orders/${order.id}`)}
-            className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
+            className="bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 group/btn"
           >
             <span>مشاهده جزئیات</span>
             <svg

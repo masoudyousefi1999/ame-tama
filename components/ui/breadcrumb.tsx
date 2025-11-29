@@ -62,7 +62,7 @@ export function Breadcrumb({
           <li className="flex items-center">
             <Link
               href="/"
-              className="flex items-center gap-1 rounded-md px-2 py-1 transition-colors hover:bg-accent hover:text-primary"
+              className="flex items-center gap-1 rounded-md px-2 py-1 transition-colors duration-200 hover:bg-muted/50 hover:text-primary/80"
             >
               <Home className="h-4 w-4" />
               <span className="max-w-[100px] truncate">{homeLabel}</span>
@@ -127,7 +127,7 @@ export const BreadcrumbLink = React.forwardRef<
     ref={ref as any}
     href={href}
     className={cn(
-      "rounded-md px-2 py-1 transition-colors hover:bg-accent hover:text-primary",
+      "rounded-md px-2 py-1 transition-colors duration-200 hover:bg-muted/50 hover:text-primary/80",
       className
     )}
     {...props}

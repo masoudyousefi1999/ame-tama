@@ -142,7 +142,7 @@ export default function CategoryPage({
         <div className="mt-8 text-center">
           <Link
             href={`/shop?category=${category.slug}`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium transition-all duration-300 hover:bg-primary/90 hover:scale-105"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-medium transition-all duration-200 hover:bg-primary/85 hover:scale-[1.02]"
           >
             مشاهده همه محصولات
             <svg
@@ -172,12 +172,12 @@ export default function CategoryPage({
       </div>
 
       {/* hero header */}
-      <GradientHero
-        title={category.name}
-        description={category.description}
-        image={category.image}
-        fallbackIcon="📦"
-        stats={[
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <GradientHero
+          title={category.name}
+          description={category.description || null}
+          image={category.image || null}
+          stats={[
           { label: `${totalCount} محصول موجود` },
           ...(category.tags && category.tags.length > 0
             ? [{ label: `${category.tags.length} انیمه موجود` }]
@@ -225,7 +225,8 @@ export default function CategoryPage({
             prefetch: false,
           },
         ]}
-      />
+        />
+      </div>
 
       {/* tags section */}
       <div className="container mx-auto px-4">{tagsSection}</div>

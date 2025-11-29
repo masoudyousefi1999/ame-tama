@@ -175,7 +175,9 @@ export default function CartDropdown() {
                     </Link>
 
                     <div className="mt-1 text-sm text-muted-foreground">
-                      {formatPriceDivided(item.product.price)}
+                      {formatPriceDivided(
+                        item.product?.discountPrice || item.product.price
+                      )}
                     </div>
 
                     {/* qty controls */}
@@ -217,7 +219,10 @@ export default function CartDropdown() {
 
                     <div className="mt-1 flex items-center justify-between">
                       <span className="text-sm font-medium">
-                        {formatPriceDivided(item.product.price * item.quantity)}
+                        {formatPriceDivided(
+                          (item.product?.discountPrice || item.product.price) *
+                            item.quantity
+                        )}
                       </span>
                       <button
                         aria-label="حذف محصول"
@@ -254,7 +259,7 @@ export default function CartDropdown() {
               <Link
                 href="/cart"
                 onClick={() => setIsOpen(false)}
-                className="rounded-full border border-primary bg-background py-2 px-4 text-center text-sm font-medium text-primary hover:bg-primary/10 transition-colors"
+                className="rounded-full border border-primary bg-background py-2 px-4 text-center text-sm font-medium text-primary hover:bg-primary/5 transition-colors duration-200"
               >
                 مشاهده سبد خرید
               </Link>

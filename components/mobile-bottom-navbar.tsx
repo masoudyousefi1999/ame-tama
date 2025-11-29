@@ -61,7 +61,7 @@ export function MobileBottomNavbar() {
     },
     {
       name: user ? "پروفایل" : "ورود",
-      href: user ? "/profile" : "/auth/login",
+      href: user ? "/profile" : "/login",
       icon: user?.avatar ? undefined : User,
       avatarUrl: user?.avatar ?? null,
       isActive: pathname.startsWith("/profile") || pathname.startsWith("/auth"),
@@ -70,9 +70,10 @@ export function MobileBottomNavbar() {
 
   return (
     <div
-      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar bg-background py-1"
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden mobile-bottom-navbar bg-background/95 backdrop-blur-md border-t border-border/50"
       style={{
-        paddingBottom: `calc(0.25rem + env(safe-area-inset-bottom, 0px))`,
+        paddingTop: `0.375rem`,
+        paddingBottom: `0.375rem`,
       }}
     >
       {/* Navigation items */}
@@ -86,37 +87,45 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="tactile-button relative flex flex-col items-center justify-center rounded-2xl group shadow-sm px-2 py-1"
+              className="tactile-button relative flex flex-col items-center justify-center rounded-lg group px-2 py-0.5 min-w-0 flex-1"
             >
               {/* Active indicator background */}
               {isActive && (
-                <div className="absolute inset-0 bg-primary/20 rounded-2xl border border-primary/30" />
+                <div className="absolute inset-0 bg-primary/15 rounded-lg" />
               )}
 
               {/* Icon container */}
-              <div className="relative flex items-center justify-center pb-1">
+              <div className="relative flex items-center justify-center mb-0.5">
                 {showAvatar ? (
                   <span
                     className={cn(
-                      "h-[24px] w-[24px] overflow-hidden rounded-full border border-border transition-transform",
-                      isActive ? "scale-105" : "group-hover:scale-105"
+                      "h-5 w-5 overflow-hidden rounded-full border border-border/50 transition-transform",
+                      isActive
+                        ? "scale-105 border-primary/50"
+                        : "group-hover:scale-105"
                     )}
                   >
-                    <img
-                      src={item.avatarUrl ?? ""}
-                      alt="آواتار کاربر"
-                      className="h-full w-full object-cover"
-                      referrerPolicy="no-referrer"
-                    />
+                    {item.avatarUrl && item.avatarUrl.trim() !== "" ? (
+                      <img
+                        src={item.avatarUrl}
+                        alt="آواتار کاربر"
+                        className="h-full w-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-muted flex items-center justify-center">
+                        <User className="h-3 w-3 text-muted-foreground" />
+                      </div>
+                    )}
                   </span>
                 ) : (
                   Icon && (
                     <Icon
                       className={cn(
-                        "h-[23px] w-[23px]",
+                        "h-5 w-5 transition-colors",
                         isActive
-                          ? "text-primary scale-110"
-                          : "text-muted-foreground group-hover:text-foreground group-hover:scale-105"
+                          ? "text-primary"
+                          : "text-muted-foreground group-hover:text-foreground"
                       )}
                     />
                   )
@@ -124,26 +133,21 @@ export function MobileBottomNavbar() {
 
                 {/* Badge for cart items */}
                 {item.badge && item.badge > 0 && (
-                  <div className="absolute -top-3 -right-3">
+                  <div className="absolute -top-1 -right-1">
                     <Badge
                       variant="destructive"
-                      className="h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs font-bold bg-gradient-to-r from-red-500 to-pink-500 border-2 border-background shadow-lg"
+                      className="h-4 w-4 min-w-[16px] rounded-full p-0 flex items-center justify-center text-[10px] font-bold bg-destructive border border-background shadow-sm"
                     >
                       {item.badge > 99 ? "99+" : item.badge}
                     </Badge>
                   </div>
-                )}
-
-                {/* Ripple effect on tap */}
-                {isActive && (
-                  <div className="absolute inset-0 rounded-full bg-primary/20" />
                 )}
               </div>
 
               {/* Label */}
               <span
                 className={cn(
-                  "text-sm font-medium",
+                  "text-[10px] leading-tight font-medium truncate w-full text-center px-0.5",
                   isActive
                     ? "text-primary"
                     : "text-muted-foreground group-hover:text-foreground"

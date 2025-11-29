@@ -8,6 +8,7 @@ import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { ITagType } from "@/lib/tags";
+import GradientHero from "@/components/ui/gradient-hero";
 
 interface AnimePageClientProps {
   tags: ITagType[];
@@ -84,20 +85,15 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-8 md:py-12 bg-muted/60">
-        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
-        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <h1 className="text-2xl md:text-4xl font-black text-foreground mb-3 md:mb-4">
-            لیست انیمه ها
-          </h1>
-          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
-            مجموعه کامل انیمه ها برای پیدا کردن محصولات مورد علاقه‌تان
-          </p>
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <span className="text-xs md:text-sm">{tagsCount} انیمه موجود</span>
-          </div>
-        </div>
-      </section>
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <GradientHero
+          title="لیست انیمه ها"
+          description="مجموعه کامل انیمه ها برای پیدا کردن محصولات مورد علاقه‌تان"
+          stats={[
+            { label: `${tagsCount} انیمه موجود` }
+          ]}
+        />
+      </div>
 
       {/* Anime Grid */}
       <section className="container mx-auto px-4 md:px-6 mt-4 md:mt-6">
@@ -138,7 +134,7 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center justify-center px-6 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors mt-4"
+              className="inline-flex items-center justify-center px-6 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/85 transition-all duration-200 mt-4"
             >
               بازگشت به صفحه اصلی
             </Link>

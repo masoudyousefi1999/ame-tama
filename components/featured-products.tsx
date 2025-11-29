@@ -189,9 +189,9 @@ export default function FeaturedProducts({
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full border-border hover:bg-accent hover:text-accent-foreground"
+              className="rounded-full border-border hover:bg-muted/50 hover:text-foreground transition-all duration-200"
             >
-              مشاهده همه مجسمه‌های لوکس
+              مشاهده همه محصولات
             </Button>
           </Link>
         </div>

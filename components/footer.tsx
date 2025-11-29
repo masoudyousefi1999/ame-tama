@@ -46,9 +46,9 @@ export default function Footer() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full hover:bg-accent hover:scale-110 transition-all duration-200"
+                    className="rounded-full hover:bg-muted/50 hover:scale-[1.05] transition-all duration-200"
                   >
-                    <Icon className="h-5 w-5 text-muted-foreground group-hover:text-accent transition-colors duration-200" />
+                    <Icon className="h-5 w-5 text-muted-foreground group-hover:text-primary/80 transition-colors duration-200" />
                     <span className="sr-only">{label}</span>
                   </Button>
                 </a>

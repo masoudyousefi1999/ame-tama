@@ -15,16 +15,16 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl",
+          "bg-primary text-primary-foreground hover:bg-primary/85 hover:scale-[1.02] active:scale-100 shadow-lg hover:shadow-lg transition-all duration-200",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90 hover:scale-105 active:scale-95 shadow-lg hover:shadow-xl",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/85 hover:scale-[1.02] active:scale-100 shadow-lg hover:shadow-lg transition-all duration-200",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground hover:scale-105 active:scale-95 shadow-md hover:shadow-lg",
+          "border border-input bg-background hover:bg-muted/50 hover:text-foreground hover:scale-[1.02] active:scale-100 shadow-md hover:shadow-md transition-all duration-200",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80 hover:scale-105 active:scale-95 shadow-md hover:shadow-lg",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/75 hover:scale-[1.02] active:scale-100 shadow-md hover:shadow-md transition-all duration-200",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground hover:scale-105 active:scale-95",
-        link: "text-primary underline-offset-4 hover:underline hover:scale-105",
+          "hover:bg-muted/50 hover:text-foreground hover:scale-[1.02] active:scale-100 transition-all duration-200",
+        link: "text-primary underline-offset-4 hover:underline hover:text-primary/80 transition-colors duration-200",
       },
       size: {
         default: "h-10 px-4 py-2",

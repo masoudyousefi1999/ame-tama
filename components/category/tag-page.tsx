@@ -204,12 +204,12 @@ export default function TagPage({
       </div>
 
       {/* Tag Hero Section */}
-      <GradientHero
-        title={tag.name}
-        description={tag.description}
-        image={tag.image?.url}
-        fallbackIcon="🎭"
-        stats={[
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <GradientHero
+          title={tag.name}
+          description={tag.description || null}
+          image={tag.image?.url || null}
+          stats={[
           { label: `${resolvedTotalCount} محصول موجود` },
           { label: `در دسته‌بندی ${category.name}` },
         ]}
@@ -255,7 +255,8 @@ export default function TagPage({
             prefetch: false,
           },
         ]}
-      />
+        />
+      </div>
       {/* Products section */}
       <div id="products" className="container mx-auto px-4 pb-16">
         {/* Products header */}

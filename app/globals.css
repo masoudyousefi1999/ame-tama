@@ -26,45 +26,47 @@ body {
   overscroll-behavior-y: none;
 }
 
-:root {
-  --vh: 1vh;
-  --background: 230 25% 10%;
-  --foreground: 230 15% 90%;
-  --card: 230 20% 12%;
-  --card-foreground: var(--foreground);
-  --popover: 230 25% 10%;
-  --popover-foreground: var(--foreground);
-  --primary: 260 90% 65%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 340 90% 70%;
-  --secondary-foreground: 0 0% 100%;
-  --accent: 175 90% 60%;
-  --accent-foreground: 0 0% 100%;
-  --muted: 230 10% 18%;
-  --muted-foreground: 230 10% 60%;
-  --success: 140 60% 55%;
-  --success-foreground: 0 0% 100%;
-  --destructive: 345 80% 65%;
-  --destructive-foreground: 0 0% 100%;
-  --warning: 45 100% 65%;
-  --warning-foreground: 0 0% 10%;
-  --info: 200 80% 65%;
-  --info-foreground: 0 0% 100%;
-  --border: 230 10% 20%;
-  --input: 230 10% 25%;
-  --ring: var(--primary);
-  --chart-1: 340 85% 65%;
-  --chart-2: 260 80% 65%;
-  --chart-3: 175 85% 55%;
+@layer base {
+  :root {
+    --vh: 1vh;
+    --background: 230 25% 10%;
+    --foreground: 230 15% 90%;
+    --card: 230 20% 12%;
+    --card-foreground: var(--foreground);
+    --popover: 230 25% 10%;
+    --popover-foreground: var(--foreground);
+    --primary: 260 90% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 340 90% 70%;
+    --secondary-foreground: 0 0% 100%;
+    --accent: 175 90% 60%;
+    --accent-foreground: 0 0% 100%;
+    --muted: 230 10% 18%;
+    --muted-foreground: 230 10% 60%;
+    --success: 140 60% 55%;
+    --success-foreground: 0 0% 100%;
+    --destructive: 345 80% 65%;
+    --destructive-foreground: 0 0% 100%;
+    --warning: 45 100% 65%;
+    --warning-foreground: 0 0% 10%;
+    --info: 200 80% 65%;
+    --info-foreground: 0 0% 100%;
+    --border: 230 10% 20%;
+    --input: 230 10% 25%;
+    --ring: var(--primary);
+    --chart-1: 340 90% 70%;
+    --chart-2: 260 90% 65%;
+    --chart-3: 175 90% 60%;
+    --chart-4: 45 100% 65%;
+    --chart-5: 200 80% 65%;
+    --radius: 0.75rem;
 
-  /* Safe area insets for mobile devices */
-  --safe-area-inset-top: env(safe-area-inset-top, 0px);
-  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-area-inset-left: env(safe-area-inset-left, 0px);
-  --safe-area-inset-right: env(safe-area-inset-right, 0px);
-  --chart-4: 45 100% 75%;
-  --chart-5: 200 80% 65%;
-  --radius: 0.75rem;
+    /* Safe area insets for mobile devices */
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
+    --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-left: env(safe-area-inset-left, 0px);
+    --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  }
 }
 
 /* Safe area utility classes */
@@ -94,7 +96,6 @@ body {
 
 body {
   @apply bg-background text-foreground;
-  background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39));
 }
 
 * {
@@ -102,7 +103,7 @@ body {
 }
 
 :focus-visible {
-  @apply outline-2 outline-offset-2 outline-purple-500;
+  @apply outline-2 outline-offset-2 outline-primary;
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -236,26 +237,18 @@ body {
 
   /* Ensure body background extends to bottom */
   body {
-    background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39)) !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
+    @apply bg-background !important;
   }
 
   /* Ensure html also has background */
   html {
-    background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39)) !important;
-    background-attachment: fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
+    @apply bg-background !important;
   }
 
   /* Ensure main content area also has background */
   #main-content,
   main {
-    background: linear-gradient(to bottom right, rgb(17, 24, 39), rgb(31, 41, 55), rgb(17, 24, 39)) !important;
+    @apply bg-background !important;
   }
 
   /* Remove any gap below viewport */
@@ -975,16 +968,6 @@ img {
     opacity: 0;
   }
 }
-
-.gradient-text {
-  background: linear-gradient(90deg, #a78bfa 0%, #6366f1 50%, #06b6d4 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-  filter: brightness(1.2) contrast(1.1);
-}
-
 .section-elevated {
   background: linear-gradient(
     135deg,

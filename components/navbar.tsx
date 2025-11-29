@@ -195,14 +195,16 @@ export default function Navbar() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     try {
-      logout();
-      clearCart(); // Clear cart on logout
+      await logout(); // Wait for logout to complete
+      clearCart(); // Clear cart on logout (logout already clears it, but keeping for safety)
       setIsOpen(false);
       toast({ title: "خروج موفقیت‌آمیز" });
-      window.location.reload(); // Force UI update after logout
-    } catch {
+      // Force UI update after logout
+      window.location.reload();
+    } catch (error) {
+      console.error("Logout error:", error);
       toast({
         title: "خطا در خروج",
         description: "مشکلی در خروج از حساب کاربری رخ داد.",
@@ -225,9 +227,7 @@ export default function Navbar() {
         "before:absolute before:inset-0 before:bg-background/95",
         "after:absolute after:inset-0 after:bg-transparent",
         "border-b border-border/60",
-        isScrolled
-          ? "shadow-2xl shadow-black/20"
-          : "shadow-lg shadow-black/10",
+        isScrolled ? "shadow-2xl shadow-black/20" : "shadow-lg shadow-black/10",
         // Hide on mobile, show only on desktop
         "hidden lg:block"
       )}
@@ -241,7 +241,7 @@ export default function Navbar() {
       <div className="relative z-10 container mx-auto flex items-center justify-between px-4 py-2 md:py-4 overflow-visible">
         {/* Logo */}
         <Link href="/" className="flex-shrink-0 z-10 relative" prefetch={false}>
-          <span className="brand-name text-xl md:text-2xl font-bold whitespace-nowrap gradient-text drop-shadow-sm">
+          <span className="brand-name text-xl md:text-2xl font-bold whitespace-nowrap text-primary drop-shadow-sm">
             AME-TAMA
           </span>
         </Link>
@@ -254,7 +254,7 @@ export default function Navbar() {
         >
           <Link
             href="/"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            className="whitespace-nowrap p-2 text-foreground hover:text-primary/80 transition-colors duration-200 nav-link"
             prefetch={false}
           >
             خانه
@@ -266,7 +266,7 @@ export default function Navbar() {
               aria-expanded={isCategoriesOpen}
               aria-controls="category-menu"
               onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
-              className="flex items-center p-2 text-foreground hover:text-accent transition-colors nav-link"
+              className="flex items-center p-2 text-foreground hover:text-primary/80 transition-colors duration-200 nav-link"
             >
               دسته‌بندی‌ها
               <ChevronDown
@@ -313,7 +313,7 @@ export default function Navbar() {
                               <Link
                                 href={`/${cat.slug}/${tag.slug}`}
                                 onClick={() => setIsCategoriesOpen(false)}
-                                className="block px-4 py-2.5 whitespace-nowrap bg-transparent hover:bg-muted transition-all duration-200 text-foreground hover:text-primary rounded-md mx-2 my-1"
+                                className="block px-4 py-2.5 whitespace-nowrap bg-transparent hover:bg-muted/70 transition-all duration-200 text-foreground hover:text-primary/80 rounded-md mx-2 my-1"
                               >
                                 {tag.name}
                               </Link>
@@ -330,14 +330,14 @@ export default function Navbar() {
 
           <Link
             href="/shop"
-            className="whitespace-nowrap inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition nav-link shadow-sm transform-gpu active:scale-95 duration-150"
+            className="whitespace-nowrap inline-flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/85 transition-all duration-200 nav-link shadow-sm transform-gpu active:scale-100"
           >
             <Store className="h-4 w-4" />
             <span>فروشگاه</span>
           </Link>
           <Link
             href="/anime"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            className="whitespace-nowrap p-2 text-foreground hover:text-primary/80 transition-colors duration-200 nav-link"
             prefetch={false}
           >
             لیست انمیه ها
@@ -345,7 +345,7 @@ export default function Navbar() {
 
           <Link
             href="/topic"
-            className="whitespace-nowrap p-2 text-foreground hover:text-accent transition-colors nav-link"
+            className="whitespace-nowrap p-2 text-foreground hover:text-primary/80 transition-colors duration-200 nav-link"
             prefetch={false}
           >
             اخبار انیمه
@@ -373,7 +373,7 @@ export default function Navbar() {
           {/* Prominent Shop button on mobile */}
           <Link
             href="/shop"
-            className="lg:hidden inline-flex items-center gap-1 rounded-md px-3 py-2 bg-primary text-primary-foreground hover:opacity-90 transition transform-gpu active:scale-95 duration-150"
+            className="lg:hidden inline-flex items-center gap-1 rounded-md px-3 py-2 bg-primary text-primary-foreground hover:bg-primary/85 transition-all duration-200 transform-gpu active:scale-100"
           >
             <Store className="h-5 w-5" />
             <span className="text-sm">فروشگاه</span>
@@ -387,7 +387,7 @@ export default function Navbar() {
             aria-label={isOpen ? "بستن منو" : "بازکردن منو"}
             aria-expanded={isOpen}
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-foreground hover:text-accent transition-colors"
+            className="lg:hidden p-2 text-foreground hover:text-primary/80 transition-colors duration-200"
           >
             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </Button>

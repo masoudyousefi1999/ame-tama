@@ -279,7 +279,7 @@ export function ProductCard({
               isMobile ? "bg-card/80" : "bg-card/70"
             )}
           >
-            <h3 className="text-sm md:text-base font-semibold leading-relaxed text-card-foreground line-clamp-2 group-hover:text-primary transition-colors">
+            <h3 className="text-sm md:text-base font-semibold leading-relaxed text-card-foreground line-clamp-2 group-hover:text-primary/80 transition-colors duration-200">
               {product.name}
             </h3>
 
@@ -326,7 +326,7 @@ export function ProductCard({
                   size="sm"
                   onClick={handleAddToCart}
                   disabled={!isInStock}
-                  className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs shadow-md transition-all duration-300 flex-shrink-0"
+                  className="rounded-full bg-primary hover:bg-primary/85 text-primary-foreground px-3 md:px-4 py-1 md:py-1.5 text-xs shadow-md transition-all duration-200 flex-shrink-0"
                 >
                   <ShoppingCart className="ml-1 h-3 w-3 md:h-4 md:w-4" />
                   افزودن

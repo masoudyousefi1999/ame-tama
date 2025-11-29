@@ -184,18 +184,18 @@ export default function AnimePageClient({
   }, [fetchMore, hasMore, loading]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 relative overflow-hidden">
-      <div className="container mx-auto lg:mt-16 px-4 py-8 lg:md:mt-24">
+    <div className="min-h-screen bg-background relative overflow-hidden pb-24 lg:mt-20">
+      <div className="container mx-auto px-4 md:px-6 pt-6">
         {/* breadcrumb */}
-        <Breadcrumb items={breadcrumbItems} className="mb-4" />
+        <Breadcrumb items={breadcrumbItems} className="mb-6" />
 
         {/* Hero Header */}
-        <GradientHero
-          title={tag.name}
-          description={tag.description}
-          image={tag.image?.url}
-          fallbackIcon="🎭"
-          stats={[
+        <div className="mb-8">
+          <GradientHero
+            title={tag.name}
+            description={tag.description || null}
+            image={tag.image?.url || null}
+            stats={[
             { label: `${resolvedTotalCount} محصول موجود` },
             ...(categories.length > 0
               ? [{ label: `${categories.length} دسته‌بندی` }]
@@ -243,7 +243,8 @@ export default function AnimePageClient({
               prefetch: false,
             },
           ]}
-        />
+          />
+        </div>
 
         {/* Categories Section */}
         {categories && categories.length > 0 && (

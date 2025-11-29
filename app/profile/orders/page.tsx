@@ -13,6 +13,7 @@ import { toast } from "@/components/ui/use-toast";
 import { customFetch } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { OrderCard } from "@/components/order/order-card";
+import GradientHero from "@/components/ui/gradient-hero";
 
 // API Order interfaces
 interface ApiOrderItem {
@@ -137,7 +138,7 @@ export default function OrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
+    <div className="min-h-screen bg-background pb-24 lg:mt-20">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 mt-8">
         <Breadcrumb
@@ -150,63 +151,15 @@ export default function OrdersPage() {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-16 md:py-24 overflow-hidden">
-        {/* Animated background layers */}
-        <div className="absolute inset-0 bg-gradient-to-br from-orange-900 via-amber-900 to-yellow-900" />
-
-        {/* Animated gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/30 via-amber-500/30 to-yellow-500/30 animate-pulse" />
-
-        {/* Floating orbs */}
-        <div
-          className="absolute top-20 left-20 w-32 h-32 bg-orange-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "0s", animationDuration: "3s" }}
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <GradientHero
+          title="سفارش‌های من"
+          description="مدیریت و پیگیری سفارش‌های شما"
+          stats={[
+            { label: `${orders.length} سفارش` }
+          ]}
         />
-        <div
-          className="absolute top-40 right-32 w-24 h-24 bg-amber-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "1s", animationDuration: "4s" }}
-        />
-        <div
-          className="absolute bottom-20 left-1/3 w-28 h-28 bg-yellow-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "2s", animationDuration: "3.5s" }}
-        />
-        <div
-          className="absolute bottom-32 right-20 w-20 h-20 bg-orange-400/20 rounded-full blur-xl animate-bounce"
-          style={{ animationDelay: "0.5s", animationDuration: "4.5s" }}
-        />
-
-        {/* Radial gradients for depth */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(251,146,60,0.4),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(245,158,11,0.4),transparent_40%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(234,179,8,0.3),transparent_50%)]" />
-
-        {/* Animated mesh gradient */}
-        <div
-          className="absolute inset-0 bg-gradient-to-br from-transparent via-orange-500/10 to-transparent animate-pulse"
-          style={{ animationDuration: "6s" }}
-        />
-
-        {/* Top overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-
-        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <h1 className="text-4xl md:text-6xl font-black bg-gradient-to-r from-white via-orange-200 to-amber-200 bg-clip-text text-transparent mb-6 drop-shadow-lg">
-            سفارش‌های من
-          </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-8 font-medium">
-            مدیریت و پیگیری سفارش‌های شما
-          </p>
-          <div className="flex items-center justify-center gap-4">
-            <Package className="h-12 w-12 text-white/80" />
-            <div className="text-left">
-              <h2 className="text-xl font-bold text-white">
-                {orders.length} سفارش
-              </h2>
-              <p className="text-white/80">تعداد کل سفارش‌های شما</p>
-            </div>
-          </div>
-        </div>
-      </section>
+      </div>
 
       {/* Main Content */}
       <div className="container mx-auto px-4 md:px-6 mt-12">
@@ -223,7 +176,7 @@ export default function OrdersPage() {
           {/* ---------------------------------------------------------------- */}
           {/*  Tabs header                                                    */}
           {/* ---------------------------------------------------------------- */}
-          <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-3xl mx-auto mb-8 bg-gray-800/50 border border-gray-700">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-3xl mx-auto mb-8 bg-card/50 border border-border">
             {[
               { value: "all", icon: Package, label: "همه", mobileLabel: "همه" },
               {
@@ -254,7 +207,7 @@ export default function OrdersPage() {
               <TabsTrigger
                 key={t.value}
                 value={t.value}
-                className="flex items-center justify-center px-3 py-3 data-[state=active]:bg-orange-500 data-[state=active]:text-white transition-all"
+                className="flex items-center justify-center px-3 py-3 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all"
               >
                 <t.icon className="ml-2 h-4 w-4" />
                 <span className="hidden sm:inline">{t.label}</span>
@@ -295,7 +248,7 @@ export default function OrdersPage() {
                     </p>
                     <Button
                       onClick={() => router.push("/shop")}
-                      className="rounded-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700"
+                      className="rounded-full bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90"
                     >
                       <Package className="ml-2 h-4 w-4" />
                       رفتن به فروشگاه

@@ -45,15 +45,24 @@ export default function UserMenu() {
     };
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    clearCart(); // Clear cart on logout
-    setIsOpen(false);
-    toast({
-      variant: "success",
-      title: "خروج موفقیت‌آمیز",
-      description: "شما با موفقیت از حساب کاربری خارج شدید.",
-    });
+  const handleLogout = async () => {
+    try {
+      await logout(); // Wait for logout to complete
+      clearCart(); // Clear cart on logout (logout already clears it, but keeping for safety)
+      setIsOpen(false);
+      toast({
+        variant: "success",
+        title: "خروج موفقیت‌آمیز",
+        description: "شما با موفقیت از حساب کاربری خارج شدید.",
+      });
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast({
+        variant: "error",
+        title: "خطا در خروج",
+        description: "مشکلی در خروج از حساب کاربری رخ داد.",
+      });
+    }
   };
 
   const handleLoginSuccess = () => {

@@ -32,11 +32,11 @@ export default function ConditionalLayout({
           <Navbar />
           <main
             id="main-content"
-            className="flex-1 pt-[calc(85px+env(safe-area-inset-top,0px))] lg:pt-0"
+            className="flex-1 pt-[100px]"
           >
             {children}
             {!shouldHideFooter && <Footer />}
-            <div className="h-24 lg:hidden" aria-hidden="true" />
+            <div className="h-16 lg:hidden" aria-hidden="true" />
           </main>
           <MobileBottomNavbar />
         </>

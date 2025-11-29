@@ -8,6 +8,7 @@ import { CustomImage as Image } from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogTopicType } from "@/lib/blog";
+import GradientHero from "@/components/ui/gradient-hero";
 
 interface BlogPageClientProps {
   topics: IBlogTopicType[];
@@ -82,7 +83,7 @@ const TopicCard = ({ topic }: { topic: IBlogTopicType }) => {
         </div>
 
         {/* Title */}
-        <h3 className="text-base md:text-lg lg:text-xl font-bold text-card-foreground mb-2 md:mb-3 line-clamp-2 group-hover:text-primary transition-colors">
+        <h3 className="text-base md:text-lg lg:text-xl font-bold text-card-foreground mb-2 md:mb-3 line-clamp-2 group-hover:text-primary/80 transition-colors duration-200">
           {topic.name}
         </h3>
 
@@ -130,22 +131,15 @@ export default function BlogPageClient({ topics }: BlogPageClientProps) {
       </div>
 
       {/* Hero Section */}
-      <section className="relative py-8 md:py-12 bg-muted/60">
-        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
-        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <h1 className="text-2xl md:text-4xl font-black text-foreground mb-3 md:mb-4">
-            موضوعات
-          </h1>
-          <p className="text-sm md:text-lg text-muted-foreground max-w-2xl mx-auto mb-4 md:mb-6 font-medium">
-            آخرین موضوعات انیمه ای
-          </p>
-          <div className="flex items-center justify-center gap-2 text-muted-foreground">
-            <span className="text-xs md:text-sm">
-              {topicsCount} موضوع موجود
-            </span>
-          </div>
-        </div>
-      </section>
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <GradientHero
+          title="موضوعات"
+          description="آخرین موضوعات انیمه ای"
+          stats={[
+            { label: `${topicsCount} موضوع موجود` }
+          ]}
+        />
+      </div>
 
       {/* Topics Grid */}
       <section className="container mx-auto px-4 md:px-6 mt-4 md:mt-6">
@@ -186,7 +180,7 @@ export default function BlogPageClient({ topics }: BlogPageClientProps) {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center justify-center px-6 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors mt-4"
+              className="inline-flex items-center justify-center px-6 py-2 rounded-full bg-primary text-primary-foreground hover:bg-primary/85 transition-all duration-200 mt-4"
             >
               بازگشت به صفحه اصلی
             </Link>

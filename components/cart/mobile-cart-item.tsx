@@ -54,7 +54,9 @@ export function MobileCartItem({
           </Link>
 
           <div className="mt-1 text-sm text-muted-foreground">
-            {formatPriceDivided(item.product.price)}
+            {formatPriceDivided(
+              item.product?.discountPrice || item.product.price
+            )}
           </div>
 
           {/* qty & actions */}
@@ -100,7 +102,10 @@ export function MobileCartItem({
 
           <div className="mt-2 text-sm font-medium text-foreground">
             مجموع:&nbsp;
-            {formatPriceDivided(item.product.price * item.quantity)}
+            {formatPriceDivided(
+              (item.product?.discountPrice || item.product.price) *
+                item.quantity
+            )}
           </div>
         </div>
       </div>

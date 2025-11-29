@@ -14,7 +14,7 @@ export const OrderStatusBadge = ({
     case "open":
       return (
         <Badge
-          className={`bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800/20 dark:text-gray-400 border-gray-200 dark:border-gray-800 ${className}`}
+          className={`bg-muted/50 text-muted-foreground hover:bg-muted border-border ${className}`}
         >
           <Package className="ml-1 h-3 w-3" />
           باز
@@ -23,7 +23,7 @@ export const OrderStatusBadge = ({
     case "pending":
       return (
         <Badge
-          className={`bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800 ${className}`}
+          className={`bg-warning/20 text-warning-foreground hover:bg-warning/30 border-warning/40 ${className}`}
         >
           <Clock className="ml-1 h-3 w-3" />
           در انتظار
@@ -32,7 +32,7 @@ export const OrderStatusBadge = ({
     case "confirmed":
       return (
         <Badge
-          className={`bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-800/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 ${className}`}
+          className={`bg-success/20 text-success-foreground hover:bg-success/30 border-success/40 ${className}`}
         >
           <CheckCircle className="ml-1 h-3 w-3" />
           تایید شده
@@ -41,7 +41,7 @@ export const OrderStatusBadge = ({
     case "shipping":
       return (
         <Badge
-          className={`bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400 border-blue-200 dark:border-blue-800 ${className}`}
+          className={`bg-info/20 text-info-foreground hover:bg-info/30 border-info/40 ${className}`}
         >
           <Truck className="ml-1 h-3 w-3" />
           در حال ارسال
@@ -50,7 +50,7 @@ export const OrderStatusBadge = ({
     case "shipped":
       return (
         <Badge
-          className={`bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800 ${className}`}
+          className={`bg-success/20 text-success-foreground hover:bg-success/30 border-success/40 ${className}`}
         >
           <Package className="ml-1 h-3 w-3" />
           ارسال شده
@@ -59,7 +59,7 @@ export const OrderStatusBadge = ({
     case "cancelled":
       return (
         <Badge
-          className={`bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/20 dark:text-red-400 border-red-200 dark:border-red-800 ${className}`}
+          className={`bg-destructive/20 text-destructive-foreground hover:bg-destructive/30 border-destructive/40 ${className}`}
         >
           <AlertCircle className="ml-1 h-3 w-3" />
           لغو شده
@@ -84,37 +84,37 @@ export const ORDER_STATUS_CONFIG = {
     label: "باز",
     icon: Package,
     className:
-      "bg-gray-100 text-gray-800 hover:bg-gray-200 dark:bg-gray-800/20 dark:text-gray-400 border-gray-200 dark:border-gray-800",
+      "bg-muted/50 text-muted-foreground hover:bg-muted border-border",
   },
   pending: {
     label: "در انتظار",
     icon: Clock,
     className:
-      "bg-yellow-100 text-yellow-800 hover:bg-yellow-200 dark:bg-yellow-800/20 dark:text-yellow-400 border-yellow-200 dark:border-yellow-800",
+      "bg-warning/20 text-warning-foreground hover:bg-warning/30 border-warning/40",
   },
   confirmed: {
     label: "تایید شده",
     icon: CheckCircle,
     className:
-      "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-800/20 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800",
+      "bg-success/20 text-success-foreground hover:bg-success/30 border-success/40",
   },
   shipping: {
     label: "در حال ارسال",
     icon: Truck,
     className:
-      "bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-800/20 dark:text-blue-400 border-blue-200 dark:border-blue-800",
+      "bg-info/20 text-info-foreground hover:bg-info/30 border-info/40",
   },
   shipped: {
     label: "ارسال شده",
     icon: Package,
     className:
-      "bg-green-100 text-green-800 hover:bg-green-200 dark:bg-green-800/20 dark:text-green-400 border-green-200 dark:border-green-800",
+      "bg-success/20 text-success-foreground hover:bg-success/30 border-success/40",
   },
   cancelled: {
     label: "لغو شده",
     icon: AlertCircle,
     className:
-      "bg-red-100 text-red-800 hover:bg-red-200 dark:bg-red-800/20 dark:text-red-400 border-red-200 dark:border-red-800",
+      "bg-destructive/20 text-destructive-foreground hover:bg-destructive/30 border-destructive/40",
   },
 } as const;
 

@@ -22,7 +22,7 @@ const Checkbox = React.forwardRef<
       /* base */
       "peer size-4 shrink-0 rounded-sm border border-border bg-background text-foreground",
       "transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      "ring-offset-background hover:bg-accent/20",
+      "ring-offset-background hover:bg-muted/30 transition-colors duration-200",
       /* states */
       "data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
       "disabled:cursor-not-allowed disabled:opacity-50",

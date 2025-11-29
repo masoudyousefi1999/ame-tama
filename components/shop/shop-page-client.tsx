@@ -3,13 +3,11 @@
 import { useState, useEffect, useRef, useCallback, memo, useMemo } from "react";
 import type React from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { customFetch } from "@/lib/utils";
 import { ProductCard } from "../product/product-card";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useIsMobile } from "@/hooks/use-mobile";
+import GradientHero from "@/components/ui/gradient-hero";
 
 const MemoizedProductCard = memo(ProductCard);
 
@@ -33,20 +31,8 @@ export default function ShopPageClient({
   const [hasMore, setHasMore] = useState(
     initialTotalCount > initialProducts.length
   );
-  const [searchQuery, setSearchQuery] = useState("");
   const loader = useRef<HTMLDivElement | null>(null);
-  const router = useRouter();
-  const isMobile = useIsMobile();
 
-  // Initialize mobile optimizations - only on mount
-  useEffect(() => {
-    // Mobile optimizations can be added here if needed
-  }, []);
-
-  // Memoize expensive calculations
-  const productCount = useMemo(() => products.length, [products.length]);
-
-  // Fetch more products with optimized error handling
   const fetchMore = useCallback(async () => {
     if (loading || !hasMore) return;
 
@@ -118,54 +104,8 @@ export default function ShopPageClient({
     setHasMore(initialTotalCount > initialProducts.length);
   }, [initialProducts, initialTotalCount, initialPage]);
 
-  const handleSearch = useCallback(
-    (e?: React.FormEvent) => {
-      e?.preventDefault();
-      if (searchQuery.trim()) {
-        router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
-      }
-    },
-    [searchQuery, router]
-  );
-
-  // Simplified hero section for better performance
-  const heroSection = useMemo(
-    () => (
-      <section className="relative py-12 md:py-20 bg-gradient-to-br from-primary/25 via-primary/10 to-accent/20">
-        <div className="container mx-auto px-4 md:px-6 text-center text-foreground">
-          <h1 className="text-3xl md:text-6xl font-black mb-4 md:mb-6">
-            فروشگاه مجسمه‌های انیمه لوکس
-          </h1>
-          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 md:mb-8 font-medium">
-            جدیدترین و خاص‌ترین اکشن فیگورهای انیمه را با تضمین اصالت و کیفیت از
-            AME-TAMA تهیه کنید.
-          </p>
-          <form
-            className="flex flex-col sm:flex-row gap-3 justify-center items-center max-w-xl mx-auto"
-            onSubmit={handleSearch}
-          >
-            <Input
-              type="text"
-              placeholder="جستجو در محصولات..."
-              className="rounded-full bg-card/80 border-border text-foreground placeholder:text-muted-foreground flex-1 min-w-0 focus:bg-card focus:border-primary/40"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Button
-              type="submit"
-              className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-6 py-2"
-            >
-              جستجو
-            </Button>
-          </form>
-        </div>
-      </section>
-    ),
-    [searchQuery, handleSearch]
-  );
-
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24 lg:mt-20">
+    <div className="min-h-screen bg-background text-foreground pb-16 lg:mt-20 lg:pb-24">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 pt-6">
         <Breadcrumb
@@ -174,8 +114,14 @@ export default function ShopPageClient({
         />
       </div>
 
-      {/* Optimized Hero Section */}
-      {heroSection}
+      {/* Gradient Hero Section */}
+      <div className="container mx-auto px-4 md:px-6 mb-8">
+        <GradientHero
+          title="فروشگاه وسایل انیمه ای"
+          description="جدیدترین و خاص‌ترین وسایل انیمه ای را با تضمین اصالت و کیفیت از AME-TAMA تهیه کنید."
+          className="rounded-3xl"
+        />
+      </div>
 
       {/* Product Grid */}
       <section className="container mx-auto px-4 md:px-6 mt-8 md:mt-12">
@@ -185,7 +131,7 @@ export default function ShopPageClient({
           </h2>
           <div className="flex gap-2 items-center">
             <span className="text-sm text-muted-foreground">
-              {productCount} محصول نمایش داده می‌شود
+              {initialTotalCount} محصول
             </span>
           </div>
         </div>

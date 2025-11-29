@@ -121,7 +121,7 @@ export default function OrderDetailPage() {
 
   if (isLoadingOrder) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     );
@@ -137,7 +137,7 @@ export default function OrderDetailPage() {
   const finalPrice = order.finalPrice || totalPrice;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 pb-24 lg:mt-20">
+    <div className="min-h-screen bg-background pb-24 lg:mt-20">
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 md:px-6 mt-8">
         <Breadcrumb
@@ -160,7 +160,7 @@ export default function OrderDetailPage() {
         <Button
           onClick={() => router.push("/profile/orders")}
           variant="ghost"
-          className="mb-6 text-white hover:text-orange-400 hover:bg-white/10"
+          className="mb-6 text-foreground hover:text-primary hover:bg-muted"
         >
           <ArrowRight className="ml-2 h-4 w-4" />
           بازگشت به لیست سفارشات
@@ -168,16 +168,18 @@ export default function OrderDetailPage() {
 
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="bg-gradient-to-br from-orange-500 to-amber-600 text-white rounded-2xl p-6 mb-6 shadow-lg">
-            <div className="flex items-start justify-between gap-4">
+          <div className="relative bg-gradient-to-br from-primary/80 to-accent/80 rounded-2xl p-6 mb-6 shadow-lg overflow-hidden">
+            {/* Dark overlay to reduce brightness */}
+            <div className="absolute inset-0 bg-background/20 rounded-2xl" />
+            <div className="relative flex items-start justify-between gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-2">
-                  <Package className="h-6 w-6" />
-                  <h1 className="text-2xl font-bold">
+                  <Package className="h-6 w-6 text-foreground" />
+                  <h1 className="text-2xl font-bold text-foreground">
                     سفارش #{order.uuid.slice(0, 8)}
                   </h1>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-white/90">
+                <div className="flex items-center gap-2 text-sm text-foreground">
                   <Clock className="h-4 w-4" />
                   <span>
                     {new Date(order.createdAt).toLocaleDateString("fa-IR")}
@@ -189,35 +191,35 @@ export default function OrderDetailPage() {
           </div>
 
           {/* Tracking Code Section */}
-          <div className="bg-gray-800/80 rounded-2xl p-4 sm:p-6 mb-6 border border-gray-700">
+          <div className="bg-card rounded-2xl p-4 sm:p-6 mb-6 border border-border">
             <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-              <div className="bg-gradient-to-br from-blue-500 to-cyan-600 p-3 rounded-xl self-start sm:self-auto">
-                <Truck className="h-6 w-6 text-white" />
+              <div className="bg-gradient-to-br from-accent to-primary p-3 rounded-xl self-start sm:self-auto">
+                <Truck className="h-6 w-6 text-primary-foreground" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-bold text-white mb-2">
+                <h3 className="text-lg font-bold text-foreground mb-2">
                   رهگیری مرسوله پستی
                 </h3>
                 {order.trackingCode ? (
                   <>
-                    <p className="text-sm text-gray-400 mb-4">
+                    <p className="text-sm text-muted-foreground mb-4">
                       برای پیگیری وضعیت ارسال مرسوله خود، روی دکمه زیر کلیک کنید
                     </p>
                     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                      <div className="bg-gray-700/50 rounded-lg px-4 py-3 border border-gray-600 flex-1">
+                      <div className="bg-muted rounded-lg px-4 py-3 border border-border flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-gray-400">
+                          <span className="text-xs text-muted-foreground">
                             کد رهگیری:
                           </span>
                           <button
                             onClick={copyTrackingLink}
-                            className="text-gray-400 hover:text-blue-400 transition-colors p-1 rounded hover:bg-gray-600/50"
+                            className="text-muted-foreground hover:text-accent transition-colors p-1 rounded hover:bg-muted"
                             title="کپی لینک رهگیری"
                           >
                             <Copy className="h-4 w-4" />
                           </button>
                         </div>
-                        <span className="text-white font-mono font-semibold break-all">
+                        <span className="text-foreground font-mono font-semibold break-all">
                           {order.trackingCode}
                         </span>
                       </div>
@@ -225,7 +227,7 @@ export default function OrderDetailPage() {
                         href={`https://tracking.post.ir/?id=${order.trackingCode}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl whitespace-nowrap"
+                        className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-accent to-primary hover:from-accent/90 hover:to-primary/90 text-primary-foreground px-6 py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl whitespace-nowrap"
                       >
                         <Truck className="h-4 w-4" />
                         <span className="hidden sm:inline">
@@ -237,16 +239,16 @@ export default function OrderDetailPage() {
                   </>
                 ) : (
                   <div className="flex items-start gap-3">
-                    <div className="bg-gray-700/50 rounded-lg px-4 py-3 border border-gray-600 flex-1">
+                    <div className="bg-muted rounded-lg px-4 py-3 border border-border flex-1">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                        <div className="bg-yellow-500/20 p-2 rounded-lg self-start">
-                          <Clock className="h-5 w-5 text-yellow-400" />
+                        <div className="bg-warning/20 p-2 rounded-lg self-start">
+                          <Clock className="h-5 w-5 text-warning" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-white font-medium">
+                          <p className="text-foreground font-medium">
                             هنوز مرسوله ارسال نشده است
                           </p>
-                          <p className="text-sm text-gray-400 mt-1">
+                          <p className="text-sm text-muted-foreground mt-1">
                             به محض ارسال، کد رهگیری قابل نمایش خواهد بود
                           </p>
                         </div>
@@ -259,9 +261,9 @@ export default function OrderDetailPage() {
           </div>
 
           {/* Products List */}
-          <div className="bg-gray-800/80 rounded-2xl p-6 border border-gray-700">
-            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-white">
-              <div className="h-1 w-1 rounded-full bg-orange-500"></div>
+          <div className="bg-card rounded-2xl p-6 border border-border">
+            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-foreground">
+              <div className="h-1 w-1 rounded-full bg-primary"></div>
               محصولات سفارش
             </h2>
             <div className="space-y-4">
@@ -274,10 +276,10 @@ export default function OrderDetailPage() {
                   <a
                     key={index}
                     href={productHref}
-                    className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-gray-700/50 hover:bg-gray-700/80 rounded-xl transition-all duration-200 border border-transparent hover:border-orange-500"
+                    className="group flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-muted/50 hover:bg-muted rounded-xl transition-all duration-200 border border-transparent hover:border-primary"
                   >
                     {/* Product Image */}
-                    <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-600 shadow-sm">
+                    <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-muted shadow-sm">
                       <img
                         src={
                           item.product.productMedia.find((m) => m.isDefault)
@@ -290,20 +292,20 @@ export default function OrderDetailPage() {
 
                     {/* Product Info */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-base font-semibold mb-2 line-clamp-2 text-white group-hover:text-orange-400 transition-colors">
+                      <h4 className="text-base font-semibold mb-2 line-clamp-2 text-foreground group-hover:text-primary transition-colors">
                         {item.product.name}
                       </h4>
-                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-gray-400">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
-                          <span className="font-medium text-white">
+                          <span className="font-medium text-foreground">
                             {item.quantity}
                           </span>
                           عدد
                         </span>
-                        <span className="text-gray-600 hidden sm:inline">
+                        <span className="text-muted-foreground/50 hidden sm:inline">
                           •
                         </span>
-                        <span className="font-semibold text-white">
+                        <span className="font-semibold text-foreground">
                           {formatPriceDivided(item.price)}
                         </span>
                       </div>
@@ -311,13 +313,13 @@ export default function OrderDetailPage() {
 
                     {/* Total Price for Item */}
                     <div className="flex justify-between sm:block sm:text-right mt-2 sm:mt-0">
-                      <span className="text-xs text-gray-400 sm:hidden">
+                      <span className="text-xs text-muted-foreground sm:hidden">
                         جمع:
                       </span>
-                      <p className="text-xs text-gray-400 mb-1 hidden sm:block">
+                      <p className="text-xs text-muted-foreground mb-1 hidden sm:block">
                         جمع
                       </p>
-                      <p className="text-base font-bold text-white">
+                      <p className="text-base font-bold text-foreground">
                         {formatPriceDivided(item.price * item.quantity)}
                       </p>
                     </div>
@@ -326,19 +328,21 @@ export default function OrderDetailPage() {
               })}
 
               {/* Price Summary */}
-              <div className="mt-6 pt-6 border-t border-gray-700">
-                <div className="bg-gray-700/50 rounded-xl p-5 border border-gray-600">
+              <div className="mt-6 pt-6 border-t border-border">
+                <div className="bg-muted rounded-xl p-5 border border-border">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
-                    <span className="text-gray-400 text-sm">تعداد اقلام:</span>
-                    <span className="text-white font-semibold">
+                    <span className="text-muted-foreground text-sm">
+                      تعداد اقلام:
+                    </span>
+                    <span className="text-foreground font-semibold">
                       {order.items.length} محصول
                     </span>
                   </div>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <span className="text-white font-bold text-lg">
+                    <span className="text-foreground font-bold text-lg">
                       مبلغ کل سفارش:
                     </span>
-                    <span className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-400 bg-clip-text text-transparent">
+                    <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                       {formatPriceDivided(finalPrice)}
                     </span>
                   </div>

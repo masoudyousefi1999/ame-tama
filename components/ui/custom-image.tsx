@@ -24,13 +24,23 @@ export function CustomImage({
   height,
   ...rest
 }: CustomImageProps) {
-  const [currentSrc, setCurrentSrc] = React.useState<string>(src);
+  // Validate src - if empty string or invalid, use fallback
+  const validSrc =
+    src && typeof src === "string" && src.trim() !== ""
+      ? src
+      : fallbackSrc || "/placeholder.svg?height=400&width=400";
+
+  const [currentSrc, setCurrentSrc] = React.useState<string>(validSrc);
   const [attempt, setAttempt] = React.useState<number>(0);
   const [failed, setFailed] = React.useState<boolean>(false);
   const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
   React.useEffect(() => {
-    setCurrentSrc(src);
+    const newValidSrc =
+      src && typeof src === "string" && src.trim() !== ""
+        ? src
+        : fallbackSrc || "/placeholder.svg?height=400&width=400";
+    setCurrentSrc(newValidSrc);
     setAttempt(0);
     setFailed(false);
 
@@ -38,7 +48,7 @@ export function CustomImage({
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  }, [src]);
+  }, [src, fallbackSrc]);
 
   const handleError = React.useCallback(() => {
     if (attempt < maxRetries) {

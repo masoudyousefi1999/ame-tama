@@ -73,11 +73,11 @@ export default async function Home() {
       <FeaturedProductsSection initialProducts={products} />
 
       {/* Category Showcase */}
-      <section className="relative py-16 md:py-24 bg-muted/40">
+      <section className="relative py-16 md:py-24 bg-muted/60">
         <div className="absolute inset-0 bg-pattern-grid opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 md:mb-8 section-title">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
               تنوع محصول
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -96,7 +96,7 @@ export default async function Home() {
         <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 md:mb-8 section-title">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
               انیمه مورد علاقه‌ات رو انتخاب کن
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -111,11 +111,11 @@ export default async function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="relative py-16 md:py-24 bg-muted/40">
+      <section className="relative py-16 md:py-24 bg-muted/60">
         <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold gradient-text mb-6 md:mb-8 section-title">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
               نظرات مشتریان
             </h2>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">

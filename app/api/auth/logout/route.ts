@@ -4,18 +4,11 @@ import { NextRequest, NextResponse } from "next/server";
 export async function POST(request: NextRequest) {
   try {
     // Get authorization header from the request
-    const authHeader = request.headers.get("authorization");
 
-    // Forward to main API
     const response = await customFetch("/auth/logout", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        ...(authHeader && { Authorization: authHeader }),
-      },
-      next: {
-        tags: ["auth", "logout"],
-        revalidate: 0, // No cache for logout
       },
     });
 
@@ -26,6 +19,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    console.log(response);
     const data = await response.json();
 
     return NextResponse.json(data, {
