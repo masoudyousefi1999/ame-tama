@@ -19,7 +19,6 @@ async function getCategory(slug: string) {
       name: "دسته‌بندی",
       slug: "category",
       description: "توضیحات دسته‌بندی",
-      parentId: null,
       image: "/placeholder.svg?height=200&width=200",
     };
   }

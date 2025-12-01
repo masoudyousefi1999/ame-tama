@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Home, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -12,7 +11,6 @@ import { toast } from "@/components/ui/use-toast";
 
 export function AdminHeader() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const pathname = usePathname();
   const { user, logout } = useAuth();
   const router = useRouter();
 
@@ -27,7 +25,7 @@ export function AdminHeader() {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      logout();
       toast({
         title: "خروج موفقیت‌آمیز",
         description: "شما با موفقیت از پنل ادمین خارج شدید",
@@ -37,7 +35,7 @@ export function AdminHeader() {
       toast({
         title: "خطا",
         description: "مشکلی در خروج رخ داد",
-        variant: "destructive",
+        variant: "error",
       });
     }
   };
@@ -45,8 +43,8 @@ export function AdminHeader() {
   return (
     <header
       className={cn(
-        "fixed top-0 inset-x-0 z-50 transition-all duration-200 bg-gray-900 border-b",
-        isScrolled ? "border-gray-800 shadow-lg" : "border-gray-800/50"
+        "fixed top-0 inset-x-0 z-50 transition-all duration-200 bg-background border-b",
+        isScrolled ? "border-border shadow-lg" : "border-border/50"
       )}
     >
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -57,9 +55,9 @@ export function AdminHeader() {
             className="flex items-center gap-3 group"
             prefetch={false}
           >
-            <div className="p-2 bg-purple-600 rounded-lg group-hover:bg-purple-700 transition-colors">
+            <div className="p-2 bg-primary rounded-lg group-hover:bg-primary/90 transition-colors">
               <svg
-                className="h-5 w-5 text-white"
+                className="h-5 w-5 text-primary-foreground"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -73,8 +71,8 @@ export function AdminHeader() {
               </svg>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base font-bold text-white">پنل مدیریت</h1>
-              <p className="text-xs text-gray-500">AME-TAMA</p>
+              <h1 className="text-base font-bold text-foreground">پنل مدیریت</h1>
+              <p className="text-xs text-muted-foreground">AME-TAMA</p>
             </div>
           </Link>
         </div>
@@ -83,12 +81,12 @@ export function AdminHeader() {
         <div className="flex items-center gap-2 sm:gap-4">
           {/* User Info */}
           {user && (
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-gray-800 rounded-lg border border-gray-700">
-              <div className="p-1.5 bg-purple-600 rounded-full">
-                <User className="h-3 w-3 text-white" />
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-card rounded-lg border border-border">
+              <div className="p-1.5 bg-primary rounded-full">
+                <User className="h-3 w-3 text-primary-foreground" />
               </div>
               <div className="text-sm">
-                <p className="text-gray-200 font-medium text-xs">
+                <p className="text-foreground font-medium text-xs">
                   {user.firstName} {user.lastName}
                 </p>
               </div>
@@ -100,7 +98,7 @@ export function AdminHeader() {
             <Button
               variant="outline"
               size="sm"
-              className="gap-2 border-gray-700 bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors"
+              className="gap-2 border-border bg-card hover:bg-muted text-foreground hover:text-foreground transition-colors"
             >
               <Home className="h-4 w-4" />
               <span className="hidden sm:inline">بازگشت</span>
@@ -111,7 +109,7 @@ export function AdminHeader() {
           <Button
             onClick={handleLogout}
             size="sm"
-            className="gap-2 bg-red-600 hover:bg-red-700 text-white transition-colors"
+            className="gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground transition-colors"
           >
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline">خروج</span>

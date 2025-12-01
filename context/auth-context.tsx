@@ -213,34 +213,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // خروج از حساب کاربری
   const logout = async () => {
     try {
-      // Call logout API endpoint which will handle cookies/token cleanup
-      // Use regular fetch for Next.js API routes (same origin)
-      await fetch("/api/auth/logout", {
+      await customFetch("/auth/logout", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // Ensure cookies are sent
+        credentials: "include",
       });
     } catch (error) {
       console.error("Logout API error:", error);
-      // Continue with local cleanup even if API call fails
     } finally {
-      // Clear local state regardless of API response
       setUser(null);
-      clearCart(); // Clear the cart on logout
-
-      // Clear all auth-related localStorage items
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("ame-tama-user");
-        localStorage.removeItem("token");
-        // Clear any other potential auth tokens
-        Object.keys(localStorage).forEach((key) => {
-          if (key.includes("token") || key.includes("auth")) {
-            localStorage.removeItem(key);
-          }
-        });
-      }
+      clearCart();
     }
   };
 

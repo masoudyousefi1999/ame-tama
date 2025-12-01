@@ -47,12 +47,12 @@ export default async function UsersPage({
     <div className="space-y-4" dir="rtl">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">کاربران</h1>
-          <p className="text-gray-400 text-sm mt-1">{total} کاربر</p>
+          <h1 className="text-2xl font-bold text-foreground">کاربران</h1>
+          <p className="text-muted-foreground text-sm mt-1">{total} کاربر</p>
         </div>
         <Button
           asChild
-          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white"
+          className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           <Link href="/admin/users/new" prefetch={false}>
             <Plus className="ml-2 h-4 w-4" />
@@ -61,7 +61,7 @@ export default async function UsersPage({
         </Button>
       </div>
 
-      <div className="bg-gray-800/80 rounded-lg border border-gray-700">
+      <div className="bg-card/80 rounded-lg border border-border">
         <UsersPageClient
           initialUsers={users}
           initialTotal={total}

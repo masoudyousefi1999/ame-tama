@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +20,9 @@ import { useToast } from "@/components/ui/use-toast";
 import { Upload, X, ImageIcon, Plus } from "lucide-react";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { formatPrice } from "@/lib/format-price";
+import { ITagType } from "@/lib/tags";
+import { customFetch } from "@/lib/utils";
+import { IProductType, ProductCategory } from "@/lib/products";
 
 interface ProductMedia {
   mediaId: string;
@@ -28,37 +31,9 @@ interface ProductMedia {
   url?: string;
 }
 
-interface Product {
-  uuid?: string;
-  name: string;
-  slug: string;
-  price: number;
-  quantity: number;
-  rating: number;
-  categoryId: string;
-  categoryUuid?: string;
-  detail: {
-    series: string;
-    character: string;
-    description: string;
-    specifications: string;
-  };
-  productMedia?: ProductMedia[];
-}
-
-interface Category {
-  id: number;
-  name: string;
-  slug: string;
-  uuid: string;
-  description?: string;
-  children?: Category[];
-  image?: string;
-}
-
 interface ProductFormProps {
-  product?: Product;
-  categories?: Category[];
+  product?: IProductType;
+  categories?: ProductCategory[];
 }
 
 interface UploadedImage {
@@ -69,7 +44,8 @@ interface UploadedImage {
   isDefault: boolean;
 }
 
-export function ProductForm({ product, categories = [] }: ProductFormProps) {
+export function ProductForm({ product, categories }: ProductFormProps) {
+  const productTag: ITagType | undefined = product?.tags?.[0];
   const router = useRouter();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -78,7 +54,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
   const [existingImages, setExistingImages] = useState<ProductMedia[]>(
-    product?.productMedia || []
+    (product?.productMedia as any) || []
   );
 
   // Parse specifications from string/array/object to array of key-value pairs
@@ -138,7 +114,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
     price: product?.price || 0,
     quantity: product?.quantity || 0,
     rating: product?.rating || 0,
-    categoryId: product?.categoryId || "",
+    categoryId: product?.category?.id ? String(product.category.id) : "",
     detail: {
       series: product?.detail?.series || "",
       character: product?.detail?.character || "",
@@ -154,9 +130,41 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
   const [specifications, setSpecifications] =
     useState<{ key: string; value: string }[]>(initialSpecs);
 
+  // State for tags (anime list)
+  const [tags, setTags] = useState<ITagType[]>([]);
+  const [tagUuid, setTagUuid] = useState<string>(productTag?.uuid || "");
+  const [isLoadingTags, setIsLoadingTags] = useState(false);
+
+  // Fetch tags on component mount
+  useEffect(() => {
+    const fetchTags = async () => {
+      setIsLoadingTags(true);
+      try {
+        const response = await customFetch("/tag?page=1&limit=1000", {
+          method: "GET",
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setTags(data.tags || []);
+        }
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+        toast({
+          title: "خطا",
+          description: "خطا در دریافت لیست انیمه‌ها",
+          variant: "error",
+        });
+      } finally {
+        setIsLoadingTags(false);
+      }
+    };
+
+    fetchTags();
+  }, []);
+
   // Helper function to get category UUID from ID
   const getCategoryUuidById = (categoryId: string): string => {
-    const category = categories.find((cat) => String(cat.id) === categoryId);
+    const category = categories?.find((cat) => String(cat.id) === categoryId);
     return category?.uuid || "";
   };
 
@@ -242,7 +250,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
       toast({
         title: "موفقیت",
         description: `${files.length} تصویر با موفقیت آپلود شد`,
-        className: "bg-green-600 text-white",
+        className: "bg-success text-success-foreground",
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -253,7 +261,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
             ? error.message
             : "آپلود تصاویر با شکست مواجه شد",
         variant: "error",
-        className: "bg-red-600 text-white",
+        className: "bg-destructive text-destructive-foreground",
       });
     } finally {
       setIsUploading(false);
@@ -327,8 +335,6 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
         (spec) => spec.key.trim() !== "" && spec.value.trim() !== ""
       );
 
-      const specificationsString = JSON.stringify(specificationsArray);
-
       let payload: any;
 
       if (product) {
@@ -353,62 +359,83 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
         }
 
         // Check if category changed
-        const currentCategoryUuid =
-          product.categoryUuid || getCategoryUuidById(product.categoryId);
-        if (categoryUuid !== currentCategoryUuid) {
-          payload.category = categoryUuid;
+        const currentCategoryUuid = product.category?.uuid || "";
+        const selectedCategoryUuid = getCategoryUuidById(formData.categoryId);
+
+        if (
+          selectedCategoryUuid &&
+          selectedCategoryUuid !== currentCategoryUuid
+        ) {
+          payload.category = selectedCategoryUuid;
         }
 
-        // Check productDetail fields for changes
-        let hasDetailChanges = false;
-        const detailChanges: any = {};
+        // Check if tag changed
+        const currentTagUuid = product?.tags?.[0]?.uuid || "";
+        if (tagUuid && tagUuid !== currentTagUuid) {
+          payload.tag = tagUuid;
+        } else if (!tagUuid && currentTagUuid) {
+          // Tag was removed
+          payload.tag = null;
+        }
+
+        // Check if any productDetail field has changed
+        // If even one field changed, send ALL productDetail fields (backend requirement)
+        let hasDetailChange = false;
 
         if (formData.detail.series !== product.detail?.series) {
-          detailChanges.series = formData.detail.series;
-          hasDetailChanges = true;
+          hasDetailChange = true;
         }
         if (formData.detail.character !== product.detail?.character) {
-          detailChanges.character = formData.detail.character;
-          hasDetailChanges = true;
+          hasDetailChange = true;
         }
         if (formData.detail.description !== product.detail?.description) {
-          detailChanges.description = formData.detail.description;
-          hasDetailChanges = true;
+          hasDetailChange = true;
         }
-        if (specificationsString !== product.detail?.specifications) {
-          // Send as array, not string
-          detailChanges.specifications = specificationsArray;
-          hasDetailChanges = true;
+        // Parse existing specifications to compare
+        const existingSpecs = parseSpecifications(
+          product?.detail?.specifications || ""
+        );
+        // Filter empty specs for comparison
+        const filteredExistingSpecs = existingSpecs.filter(
+          (spec) => spec.key.trim() !== "" && spec.value.trim() !== ""
+        );
+        // Sort both arrays by key for consistent comparison
+        const sortedExistingSpecs = [...filteredExistingSpecs].sort((a, b) =>
+          a.key.localeCompare(b.key)
+        );
+        const sortedCurrentSpecs = [...specificationsArray].sort((a, b) =>
+          a.key.localeCompare(b.key)
+        );
+        // Compare JSON strings after sorting
+        const existingSpecsString = JSON.stringify(sortedExistingSpecs);
+        const currentSpecsString = JSON.stringify(sortedCurrentSpecs);
+
+        if (currentSpecsString !== existingSpecsString) {
+          hasDetailChange = true;
         }
 
-        // If any detail changed, send ALL detail fields (API requirement)
-        if (hasDetailChanges) {
+        // If any detail field changed, send ALL productDetail fields
+        if (hasDetailChange) {
           payload.productDetail = {
-            series:
-              detailChanges.series !== undefined
-                ? detailChanges.series
-                : formData.detail.series,
-            character:
-              detailChanges.character !== undefined
-                ? detailChanges.character
-                : formData.detail.character,
-            description:
-              detailChanges.description !== undefined
-                ? detailChanges.description
-                : formData.detail.description,
-            specifications:
-              detailChanges.specifications !== undefined
-                ? detailChanges.specifications
-                : specificationsArray,
+            series: formData.detail.series,
+            character: formData.detail.character,
+            description: formData.detail.description,
+            specifications: specificationsArray,
           };
         }
 
-        // If no changes, show message and return
-        if (Object.keys(payload).length === 0) {
+        // Check if images have changed (uploaded new images or modified existing images)
+        const hasImageChanges =
+          uploadedImages.length > 0 ||
+          JSON.stringify(existingImages) !==
+            JSON.stringify(product?.productMedia || []);
+
+        // If no changes in payload and no image changes, show message and return
+        if (Object.keys(payload).length === 0 && !hasImageChanges) {
           toast({
             title: "اطلاعات",
             description: "هیچ تغییری برای ذخیره وجود ندارد",
-            className: "bg-blue-600 text-white",
+            className: "bg-info text-info-foreground",
           });
           setIsLoading(false);
           return;
@@ -422,6 +449,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
           quantity: formData.quantity,
           rating: formData.rating,
           category: categoryUuid,
+          ...(tagUuid && { tag: tagUuid }),
           productDetail: {
             series: formData.detail.series,
             character: formData.detail.character,
@@ -483,7 +511,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
           toast({
             title: "هشدار",
             description: "محصول ذخیره شد اما برخی تصاویر اضافه نشدند",
-            className: "bg-yellow-600 text-white",
+            className: "bg-warning text-warning-foreground",
           });
         }
       }
@@ -491,7 +519,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
       toast({
         title: "موفقیت",
         description: `محصول با موفقیت ${product ? "به‌روزرسانی" : "ایجاد"} شد`,
-        className: "bg-green-600 text-white",
+        className: "bg-success text-success-foreground",
       });
 
       router.push("/admin/products");
@@ -506,7 +534,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
             ? error.message
             : `${product ? "به‌روزرسانی" : "ایجاد"} محصول با شکست مواجه شد`,
         variant: "error",
-        className: "bg-red-600 text-white",
+        className: "bg-destructive text-destructive-foreground",
       });
     } finally {
       setIsLoading(false);
@@ -517,9 +545,9 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
 
   return (
     <div dir="rtl">
-      <Card className="max-w-4xl bg-gray-800/80 border-gray-700">
-        <CardHeader className="border-b border-gray-700">
-          <CardTitle className="text-lg font-semibold text-white">
+      <Card className="max-w-4xl bg-card/80 border-border">
+        <CardHeader className="border-b border-border">
+          <CardTitle className="text-lg font-semibold text-card-foreground">
             {product ? "ویرایش محصول" : "ایجاد محصول"}
           </CardTitle>
         </CardHeader>
@@ -529,7 +557,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="name"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   نام محصول
                 </Label>
@@ -540,7 +568,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                     setFormData({ ...formData, name: e.target.value })
                   }
                   required
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="نام محصول را وارد کنید"
                 />
               </div>
@@ -548,7 +576,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="slug"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   اسلاگ محصول
                 </Label>
@@ -559,7 +587,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                     setFormData({ ...formData, slug: e.target.value })
                   }
                   required
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="product-slug"
                 />
               </div>
@@ -567,7 +595,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="price"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   قیمت (ریال)
                 </Label>
@@ -579,14 +607,12 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                     setFormData({ ...formData, price: Number(e.target.value) })
                   }
                   required
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="0"
                 />
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="text-gray-600 dark:text-gray-400">
-                    معادل:
-                  </span>
-                  <span className="font-semibold text-purple-600 dark:text-purple-400">
+                  <span className="text-muted-foreground">معادل:</span>
+                  <span className="font-semibold text-primary">
                     {formatPrice(formData.price)}
                   </span>
                 </div>
@@ -595,7 +621,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="quantity"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   موجودی
                 </Label>
@@ -610,7 +636,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                     })
                   }
                   required
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="0"
                 />
               </div>
@@ -618,7 +644,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="rating"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   امتیاز
                 </Label>
@@ -632,15 +658,17 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                   onChange={(e) =>
                     setFormData({ ...formData, rating: Number(e.target.value) })
                   }
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="4.5"
                 />
               </div>
+            </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label
                   htmlFor="categoryId"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   دسته‌بندی
                 </Label>
@@ -650,16 +678,16 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                     setFormData({ ...formData, categoryId: value })
                   }
                 >
-                  <SelectTrigger className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500">
+                  <SelectTrigger className="bg-input border-border text-foreground placeholder:text-muted-foreground">
                     <SelectValue placeholder="دسته‌بندی را انتخاب کنید" />
                   </SelectTrigger>
-                  <SelectContent className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 max-h-[300px] overflow-y-auto">
-                    {categories.length > 0 ? (
+                  <SelectContent className="bg-popover border-border max-h-[300px] overflow-y-auto">
+                    {categories && categories.length > 0 ? (
                       categories.map((category) => (
                         <SelectItem
                           key={category.id}
                           value={String(category.id)}
-                          className="dark:text-gray-300"
+                          className="text-popover-foreground"
                         >
                           {category.name}
                         </SelectItem>
@@ -668,10 +696,53 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                       <SelectItem
                         value="0"
                         disabled
-                        className="dark:text-gray-500"
+                        className="text-muted-foreground"
                       >
                         دسته‌بندی موجود نیست
                       </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label
+                  htmlFor="tagUuid"
+                  className="text-sm font-medium text-foreground"
+                >
+                  انیمه
+                </Label>
+                <Select
+                  value={tagUuid || undefined}
+                  onValueChange={setTagUuid}
+                  disabled={isLoadingTags}
+                >
+                  <SelectTrigger className="bg-input border-border text-foreground placeholder:text-muted-foreground">
+                    <SelectValue
+                      placeholder={
+                        isLoadingTags
+                          ? "در حال بارگذاری..."
+                          : "انیمه را انتخاب کنید"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border max-h-[300px] overflow-y-auto">
+                    {tags.length > 0 ? (
+                      tags.map((tag) => (
+                        <SelectItem
+                          key={tag.uuid}
+                          value={tag.uuid}
+                          className="text-popover-foreground"
+                        >
+                          {tag.name}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <div className="px-2 py-1.5 text-sm text-muted-foreground text-center">
+                        {isLoadingTags
+                          ? "در حال بارگذاری..."
+                          : "انیمه موجود نیست"}
+                      </div>
                     )}
                   </SelectContent>
                 </Select>
@@ -682,7 +753,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="series"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   اسم انیمه
                 </Label>
@@ -695,7 +766,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                       detail: { ...formData.detail, series: e.target.value },
                     })
                   }
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="اسم انیمه"
                 />
               </div>
@@ -703,7 +774,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <div className="space-y-2">
                 <Label
                   htmlFor="character"
-                  className="text-sm font-medium text-gray-300"
+                  className="text-sm font-medium text-foreground"
                 >
                   شخصیت
                 </Label>
@@ -716,7 +787,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                       detail: { ...formData.detail, character: e.target.value },
                     })
                   }
-                  className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                  className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                   placeholder="شخصیت"
                 />
               </div>
@@ -725,7 +796,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
             <div className="space-y-2">
               <Label
                 htmlFor="description"
-                className="text-sm font-medium text-gray-300"
+                className="text-sm font-medium text-foreground"
               >
                 توضیحات
               </Label>
@@ -738,7 +809,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                     detail: { ...formData.detail, description: e.target.value },
                   })
                 }
-                className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                 placeholder="توضیحات محصول را وارد کنید"
                 rows={3}
               />
@@ -752,7 +823,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                 {specifications.map((spec, index) => (
                   <div
                     key={index}
-                    className="flex gap-3 items-start bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg border border-gray-200 dark:border-gray-600"
+                    className="flex gap-3 items-start bg-card/50 p-4 rounded-lg border border-border"
                   >
                     <div className="flex-1 space-y-2">
                       <Input
@@ -761,7 +832,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                         onChange={(e) =>
                           updateSpecification(index, "key", e.target.value)
                         }
-                        className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                        className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
                     <div className="flex-1 space-y-2">
@@ -771,7 +842,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                         onChange={(e) =>
                           updateSpecification(index, "value", e.target.value)
                         }
-                        className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+                        className="bg-input border-border text-foreground placeholder:text-muted-foreground"
                       />
                     </div>
                     {specifications.length > 1 && (
@@ -780,7 +851,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                         variant="ghost"
                         size="sm"
                         onClick={() => removeSpecification(index)}
-                        className="hover:bg-red-50 dark:hover:bg-red-900/50 hover:text-red-600 dark:hover:text-red-400 mt-1"
+                        className="hover:bg-destructive/10 hover:text-destructive mt-1"
                       >
                         <X className="h-4 w-4" />
                       </Button>
@@ -793,7 +864,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                 variant="outline"
                 size="sm"
                 onClick={addSpecification}
-                className="w-full border-dashed border-2 border-gray-300 dark:border-gray-600 hover:border-purple-500 dark:hover:border-purple-400 text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400"
+                className="w-full border-dashed border-2 border-border hover:border-primary text-muted-foreground hover:text-primary"
               >
                 <Plus className="h-4 w-4 ml-2" />
                 افزودن مشخصه جدید
@@ -808,13 +879,13 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               {/* Existing Images */}
               {existingImages.length > 0 && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     تصاویر موجود:
                   </p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {existingImages.map((image, index) => (
                       <div key={image.mediaId} className="relative group">
-                        <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                        <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-border">
                           <Image
                             src={
                               image.url ||
@@ -825,7 +896,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                             className="object-cover"
                           />
                           {index === 0 && (
-                            <div className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
+                            <div className="absolute top-1 left-1 bg-success text-success-foreground text-xs px-2 py-1 rounded">
                               اصلی
                             </div>
                           )}
@@ -860,13 +931,13 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               {/* Uploaded Images */}
               {uploadedImages.length > 0 && (
                 <div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  <p className="text-sm text-muted-foreground mb-2">
                     تصاویر جدید:
                   </p>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {uploadedImages.map((image, index) => (
                       <div key={image.uuid} className="relative group">
-                        <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-gray-200 dark:border-gray-600">
+                        <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-border">
                           <Image
                             src={
                               image.preview || image.url || "/placeholder.svg"
@@ -876,22 +947,22 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                             className="object-cover"
                           />
                           {image.isDefault && (
-                            <div className="absolute top-1 left-1 bg-green-500 text-white text-xs px-2 py-1 rounded">
+                            <div className="absolute top-1 left-1 bg-success text-success-foreground text-xs px-2 py-1 rounded">
                               اصلی
                             </div>
                           )}
                         </div>
                         <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex flex-col items-center justify-center gap-2 p-2">
-                          <div className="flex items-center gap-2 bg-white dark:bg-gray-800 px-3 py-1 rounded-full">
+                          <div className="flex items-center gap-2 bg-popover px-3 py-1 rounded-full">
                             <input
                               type="checkbox"
                               checked={image.isDefault}
                               onChange={() =>
                                 toggleDefaultImage("uploaded", index)
                               }
-                              className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                              className="w-4 h-4 text-success rounded focus:ring-success"
                             />
-                            <span className="text-xs text-gray-900 dark:text-gray-100">
+                            <span className="text-xs text-popover-foreground">
                               پیش‌فرض
                             </span>
                           </div>
@@ -912,14 +983,14 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
 
               {/* Upload Area */}
               <div
-                className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center cursor-pointer hover:border-purple-500 transition-colors"
+                className="border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer hover:border-primary transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
-                <ImageIcon className="mx-auto h-12 w-12 text-gray-400 mb-2" />
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <ImageIcon className="mx-auto h-12 w-12 text-muted-foreground mb-2" />
+                <p className="text-sm text-muted-foreground">
                   برای انتخاب تصاویر کلیک کنید
                 </p>
-                <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   حداکثر ۵ مگابایت برای هر فایل - JPG, PNG, GIF
                 </p>
               </div>
@@ -934,7 +1005,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               />
 
               {isUploading && (
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Upload className="h-4 w-4 animate-spin" />
                   در حال آپلود تصاویر...
                 </div>
@@ -945,7 +1016,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
               <Button
                 type="submit"
                 disabled={isSubmitDisabled}
-                className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full sm:w-auto bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 text-primary-foreground rounded-full disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isLoading
                   ? "در حال ذخیره..."
@@ -957,7 +1028,7 @@ export function ProductForm({ product, categories = [] }: ProductFormProps) {
                 type="button"
                 variant="outline"
                 onClick={() => router.push("/admin/products")}
-                className="w-full sm:w-auto border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-full"
+                className="w-full sm:w-auto border-border text-foreground hover:bg-muted rounded-full"
               >
                 لغو
               </Button>

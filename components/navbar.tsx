@@ -10,8 +10,6 @@ import {
   ChevronRight,
   Home,
   Store,
-  User,
-  LogOut,
   Search,
   ChevronLeft,
 } from "lucide-react";
@@ -41,8 +39,6 @@ export default function Navbar() {
   const categoriesRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
-  const { user, logout } = useAuth();
-  const { clearCart } = useCart();
 
   const [categoryTree, setCategoryTree] = useState<CategoryWithChildren[]>([]);
   const [mobileCategories, setMobileCategories] = useState<any[]>([]);
@@ -195,24 +191,6 @@ export default function Navbar() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await logout(); // Wait for logout to complete
-      clearCart(); // Clear cart on logout (logout already clears it, but keeping for safety)
-      setIsOpen(false);
-      toast({ title: "خروج موفقیت‌آمیز" });
-      // Force UI update after logout
-      window.location.reload();
-    } catch (error) {
-      console.error("Logout error:", error);
-      toast({
-        title: "خطا در خروج",
-        description: "مشکلی در خروج از حساب کاربری رخ داد.",
-        variant: "error",
-      });
-    }
-  };
-
   if (!shouldRenderNavbar) {
     return;
   }
@@ -222,17 +200,16 @@ export default function Navbar() {
       ref={parentRef}
       className={cn(
         "fixed inset-x-0 z-40 transition-all duration-300",
-        // Glassmorphism design
         "backdrop-blur-xl",
         "before:absolute before:inset-0 before:bg-background/95",
         "after:absolute after:inset-0 after:bg-transparent",
-        "border-b border-border/60",
+        "border-b border-border",
         isScrolled ? "shadow-2xl shadow-black/20" : "shadow-lg shadow-black/10",
         // Hide on mobile, show only on desktop
         "hidden lg:block"
       )}
       style={{
-        top: "calc(env(safe-area-inset-top, 0px) + 2.75rem)",
+        top: "calc(env(safe-area-inset-top, 0px) + 0)",
         backgroundColor: isScrolled
           ? "hsl(var(--background) / 0.95)"
           : "hsl(var(--background) / 0.9)",

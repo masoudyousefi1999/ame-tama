@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import { CustomImage as Image } from "@/components/ui/custom-image";
-import { cn } from "@/lib/utils";
+import { cn, customFetch } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye } from "lucide-react";
 
 interface BlogPostClientProps {
   blogPost: IBlogPostType;
@@ -22,6 +22,12 @@ export default function BlogPostClient({
   const { setBreadcrumbs } = useBreadcrumb();
   const isMobile = useIsMobile();
   const contentRef = useRef<HTMLDivElement>(null);
+  const viewCountCalledRef = useRef<boolean>(false);
+  const [viewCount, setViewCount] = useState<number>(
+    blogPost.viewCount !== undefined && blogPost.viewCount !== null
+      ? blogPost.viewCount
+      : 0
+  );
 
   // Memoize breadcrumb items
   const breadcrumbItems = useMemo(
@@ -46,6 +52,41 @@ export default function BlogPostClient({
   useEffect(() => {
     setBreadcrumbs(breadcrumbItems);
   }, [setBreadcrumbs, breadcrumbItems]);
+
+  // Call view-count endpoint when component mounts
+  useEffect(() => {
+    // Only call once per component mount
+    if (viewCountCalledRef.current || !blogPost.uuid) {
+      return;
+    }
+
+    viewCountCalledRef.current = true;
+
+    // Call view-count endpoint from client-side
+    const callViewCount = async () => {
+      try {
+        const response = await customFetch(
+          `/blog/${blogPost.uuid}/view-count`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (response.ok) {
+          // Increment view count after successful call
+          setViewCount((prev) => prev + 1);
+        }
+      } catch (error) {
+        // Silently handle errors - we don't want to disrupt the user experience
+        console.error("Error calling view-count:", error);
+      }
+    };
+
+    callViewCount();
+  }, [blogPost.uuid]);
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("fa-IR", {
@@ -118,6 +159,10 @@ export default function BlogPostClient({
                         </span>
                       </div>
                     )}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Eye className="h-4 w-4" />
+                      <span>{viewCount.toLocaleString("fa-IR")}</span>
+                    </div>
                   </div>
                 </div>
 

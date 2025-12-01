@@ -15,6 +15,7 @@ export interface ProductDetail {
 
 export interface ProductCategory {
   id: number;
+  uuid: string;
   name: string;
   slug: string;
 }

@@ -45,9 +45,9 @@ export function MobileTopBar() {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <div
-        className="lg:hidden fixed left-0 right-0 z-50 bg-background/90 backdrop-blur-xl"
+        className="lg:hidden fixed left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border"
         style={{
-          top: "calc(env(safe-area-inset-top, 0px) + 2.3rem)",
+          top: "calc(env(safe-area-inset-top, 0px) + 0rem)",
         }}
       >
         <div className="container mx-auto flex items-center justify-between px-4 py-3">
@@ -104,7 +104,7 @@ export function MobileTopBar() {
         <div className="max-h-[600px] overflow-y-auto px-6 pb-10 pt-4">
           <div className="mb-6 flex items-center gap-3 rounded-2xl border border-border/30 bg-card p-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-accent/80 text-primary-foreground shadow-lg">
-              {user?.avatar && user.avatar.trim() !== "" ? (
+              {typeof user?.avatar === "string" && user?.avatar?.trim() !== "" ? (
                 <img
                   src={user.avatar}
                   alt={user.firstName || "Avatar"}

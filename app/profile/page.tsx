@@ -94,8 +94,8 @@ export default function ProfilePage() {
                 <div className="relative h-24 w-24 mx-auto mb-4">
                   <Image
                     src={
-                      user.avatar && user.avatar.trim() !== ""
-                        ? user.avatar
+                      typeof user?.avatar === "string" && user?.avatar?.trim() !== ""
+                        ? user?.avatar
                         : "/placeholder.svg?height=96&width=96"
                     }
                     alt={`${user.firstName} ${user.lastName}`}
@@ -151,7 +151,7 @@ export default function ProfilePage() {
                   ))}
 
                   <button
-                    onClick={logout}
+                    onClick={() => logout()}
                     className="flex items-center w-full text-right p-2 rounded-lg hover:bg-muted transition-colors text-destructive"
                     aria-label="خروج از حساب کاربری"
                   >

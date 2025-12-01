@@ -1,6 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import { ProductSearch } from "./product-search";
 import { ProductsPageClient } from "./products-page-client";
 
@@ -48,7 +51,19 @@ export function ProductsPageWrapper({
     <div className="space-y-4">
       {/* Search Bar */}
       <div className="bg-gray-800/80 rounded-lg border border-gray-700 p-4">
-        <ProductSearch onSearchResults={handleSearchResults} />
+        <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center">
+          <div className="flex-1 w-full sm:w-auto">
+            <ProductSearch onSearchResults={handleSearchResults} />
+          </div>
+          <Button
+            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Link href="/admin/products/new" prefetch={false} className="flex items-center">
+              <Plus className="ml-2 h-4 w-4" />
+              افزودن محصول جدید
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Products Table with Infinite Scroll */}

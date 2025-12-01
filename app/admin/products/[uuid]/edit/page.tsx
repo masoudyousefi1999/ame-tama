@@ -1,6 +1,8 @@
 import { ProductForm } from "@/components/admin/products/product-form";
 import { customFetch } from "@/lib/utils";
 import { notFound } from "next/navigation";
+import { ITagType } from "@/lib/tags";
+import { IProductType } from "@/lib/products";
 
 interface Category {
   id: number;
@@ -47,6 +49,36 @@ interface APIProduct {
   detail: ProductDetail;
   category: ProductCategory;
   productMedia: ProductMedia[];
+  tags?: ITagType[];
+}
+
+/**
+ * Flatten categories to get all categories including children
+ */
+function flattenCategories(categories: Category[]): Category[] {
+  const result: Category[] = [];
+
+  function traverse(cats: Category[]) {
+    for (const cat of cats) {
+      // Add the category itself
+      result.push({
+        id: cat.id,
+        name: cat.name,
+        slug: cat.slug,
+        uuid: cat.uuid,
+        description: cat.description,
+        children: [],
+      });
+
+      // Traverse children if they exist
+      if (cat.children && cat.children.length > 0) {
+        traverse(cat.children);
+      }
+    }
+  }
+
+  traverse(categories);
+  return result;
 }
 
 /**
@@ -54,7 +86,7 @@ interface APIProduct {
  */
 async function getCategories(): Promise<Category[]> {
   try {
-    const response = await customFetch("/category/figures", {
+    const response = await customFetch("/category", {
       method: "GET",
       next: { tags: ["categories"] },
     });
@@ -65,8 +97,19 @@ async function getCategories(): Promise<Category[]> {
 
     const data = await response.json();
 
-    // Return children (subcategories) which are the actual product categories
-    return data.children || [];
+    // Handle both array and object responses
+    if (Array.isArray(data)) {
+      // If it's already an array, flatten it to get all categories including children
+      return flattenCategories(data);
+    }
+
+    // If it's an object with children array
+    if (data && Array.isArray(data.children)) {
+      return flattenCategories(data.children);
+    }
+
+    // Fallback: return empty array
+    return [];
   } catch (error) {
     console.error("Error fetching categories:", error);
     return [];
@@ -76,7 +119,7 @@ async function getCategories(): Promise<Category[]> {
 /**
  * Fetch product data from API
  */
-async function getProduct(uuid: string) {
+async function getProduct(uuid: string): Promise<IProductType> {
   try {
     const response = await customFetch(`/product/uuid/${uuid}`, {
       method: "GET",
@@ -94,14 +137,15 @@ async function getProduct(uuid: string) {
 
     // Transform API response to form format
     return {
+      createdAt: apiProduct.createdAt,
+      updatedAt: apiProduct.updatedAt,
       uuid: apiProduct.uuid,
       name: apiProduct.name,
       slug: apiProduct.slug,
       price: apiProduct.price,
       quantity: apiProduct.quantity,
       rating: apiProduct.rating,
-      categoryId: String(apiProduct.category?.id || ""),
-      categoryUuid: apiProduct.category?.uuid || "",
+      category: apiProduct.category,
       detail: {
         series: apiProduct.detail?.series || "",
         character: apiProduct.detail?.character || "",
@@ -110,7 +154,7 @@ async function getProduct(uuid: string) {
           typeof apiProduct.detail?.specifications === "string"
             ? apiProduct.detail.specifications
             : JSON.stringify(apiProduct.detail?.specifications || ""),
-      },
+      } as any,
       productMedia:
         apiProduct.productMedia?.map((media, index) => ({
           mediaId: `media-${index}`,
@@ -118,6 +162,7 @@ async function getProduct(uuid: string) {
           isDefault: media.isDefault,
           url: media.url,
         })) || [],
+      tags: apiProduct.tags || [],
     };
   } catch (error) {
     console.error("Error fetching product:", error);
@@ -141,8 +186,8 @@ export default async function EditProductPage({
   return (
     <div className="space-y-4" dir="rtl">
       <div>
-        <h1 className="text-2xl font-bold text-white">ویرایش محصول</h1>
-        <p className="text-gray-400 text-sm mt-1">{product.name}</p>
+        <h1 className="text-2xl font-bold text-foreground">ویرایش محصول</h1>
+        <p className="text-muted-foreground text-sm mt-1">{product.name}</p>
       </div>
 
       <ProductForm product={product} categories={categories} />

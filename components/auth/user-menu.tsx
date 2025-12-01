@@ -119,7 +119,7 @@ export default function UserMenu() {
         <div className="relative h-[36px] w-[36px]">
           <Image
             src={
-              typeof user.avatar === "string" && user.avatar.trim() !== ""
+              typeof user?.avatar === "string" && user?.avatar?.trim() !== ""
                 ? user.avatar
                 : "/placeholder.svg?height=40&width=40"
             }
@@ -155,7 +155,7 @@ export default function UserMenu() {
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border-2 border-primary shadow-lg">
             <Image
               src={
-                typeof user.avatar === "string" && user.avatar.trim() !== ""
+                typeof user?.avatar === "string" && user?.avatar?.trim() !== ""
                   ? user.avatar
                   : "/placeholder.svg?height=40&width=40"
               }

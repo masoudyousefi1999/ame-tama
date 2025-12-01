@@ -12,39 +12,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { X, ImageIcon, Loader2 } from "lucide-react";
 import { customFetch } from "@/lib/utils";
+import { ITagType } from "@/lib/tags";
 
-interface Category {
-  id?: string;
-  name: string;
-  slug: string;
-  description: string;
-  image?: string;
-  uuid: string;
+interface TagFormProps {
+  tag?: ITagType;
 }
 
-interface CategoryFormProps {
-  category?: Category;
-}
-
-export function CategoryForm({ category }: CategoryFormProps) {
+export function TagForm({ tag }: TagFormProps) {
   const router = useRouter();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [imageUuid, setImageUuid] = useState<string>("");
+  const [imageUuid, setImageUuid] = useState<string>(
+    tag?.image?.uuid || ""
+  );
   const [imagePreview, setImagePreview] = useState<string>(
-    category?.image || ""
+    tag?.image?.url || ""
   );
 
   const [formData, setFormData] = useState({
-    name: category?.name || "",
-    slug: category?.slug || "",
-    description: category?.description || "",
+    name: tag?.name || "",
+    slug: tag?.slug || "",
+    description: tag?.description || "",
   });
 
   // Auto-generate slug from name
   useEffect(() => {
-    if (formData.name && !category) {
+    if (formData.name && !tag) {
       const slug = formData.name
         .toLowerCase()
         .replace(/[^a-z0-9\u0600-\u06FF\s]/g, "")
@@ -52,7 +46,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
         .trim();
       setFormData((prev) => ({ ...prev, slug }));
     }
-  }, [formData.name, category]);
+  }, [formData.name, tag]);
 
   const handleImageUpload = async (file: File) => {
     if (!file) return;
@@ -102,6 +96,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       toast({
         title: "موفقیت",
         description: "تصویر با موفقیت آپلود شد",
+        className: "bg-success text-success-foreground",
       });
     } catch (error) {
       console.error("Upload error:", error);
@@ -125,7 +120,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
     if (!formData.name.trim()) {
       toast({
         title: "خطا",
-        description: "نام دسته‌بندی الزامی است",
+        description: "نام انیمه الزامی است",
         variant: "error",
       });
       return;
@@ -134,17 +129,17 @@ export function CategoryForm({ category }: CategoryFormProps) {
     if (!formData.slug.trim()) {
       toast({
         title: "خطا",
-        description: "نامک دسته‌بندی الزامی است",
+        description: "نامک انیمه الزامی است",
         variant: "error",
       });
       return;
     }
 
-    // For new categories, require image
-    if (!category && !imageUuid) {
+    // For new tags, require image
+    if (!tag && !imageUuid) {
       toast({
         title: "خطا",
-        description: "لطفاً تصویر دسته‌بندی را انتخاب کنید",
+        description: "لطفاً تصویر انیمه را انتخاب کنید",
         variant: "error",
       });
       return;
@@ -153,16 +148,27 @@ export function CategoryForm({ category }: CategoryFormProps) {
     setIsLoading(true);
 
     try {
-      const payload = {
+      const payload: {
+        name: string;
+        slug: string;
+        description: string;
+        image?: string;
+      } = {
         name: formData.name.trim(),
         slug: formData.slug.trim(),
         description: formData.description.trim(),
-        ...(imageUuid && { image: imageUuid }),
       };
 
-      const url = category ? `/category/${category.id}` : `/category`;
+      // Include image if new image uploaded, or if editing and image exists
+      if (imageUuid) {
+        payload.image = imageUuid;
+      } else if (tag?.image?.uuid) {
+        // Keep existing image if no new image uploaded
+        payload.image = tag.image.uuid;
+      }
 
-      const method = category ? "PATCH" : "POST";
+      const url = tag ? `/tag/${tag.uuid}` : `/tag`;
+      const method = tag ? "PATCH" : "POST";
 
       const response = await customFetch(url, {
         method,
@@ -179,12 +185,13 @@ export function CategoryForm({ category }: CategoryFormProps) {
 
       toast({
         title: "موفقیت",
-        description: category
-          ? "دسته‌بندی با موفقیت به‌روزرسانی شد"
-          : "دسته‌بندی با موفقیت ایجاد شد",
+        description: tag
+          ? "انیمه با موفقیت به‌روزرسانی شد"
+          : "انیمه با موفقیت ایجاد شد",
+        className: "bg-success text-success-foreground",
       });
 
-      router.push("/admin/categories");
+      router.push("/admin/tags");
       router.refresh();
     } catch (error) {
       console.error("Submit error:", error);
@@ -193,7 +200,6 @@ export function CategoryForm({ category }: CategoryFormProps) {
         description:
           error instanceof Error ? error.message : "عملیات با شکست مواجه شد",
         variant: "error",
-        className: "",
       });
     } finally {
       setIsLoading(false);
@@ -209,10 +215,10 @@ export function CategoryForm({ category }: CategoryFormProps) {
   };
 
   return (
-    <Card className="max-w-2xl bg-gray-800/80 border-gray-700" dir="rtl">
-      <CardHeader className="border-b border-gray-700">
-        <CardTitle className="text-lg font-semibold text-white">
-          {category ? "ویرایش دسته‌بندی" : "ایجاد دسته‌بندی جدید"}
+    <Card className="max-w-2xl bg-card/80 border-border" dir="rtl">
+      <CardHeader className="border-b border-border">
+        <CardTitle className="text-lg font-semibold text-card-foreground">
+          {tag ? "ویرایش انیمه" : "ایجاد انیمه جدید"}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
@@ -220,9 +226,9 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="name"
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-foreground"
             >
-              نام دسته‌بندی *
+              نام انیمه *
             </Label>
             <Input
               id="name"
@@ -230,8 +236,8 @@ export function CategoryForm({ category }: CategoryFormProps) {
               onChange={(e) =>
                 setFormData((prev) => ({ ...prev, name: e.target.value }))
               }
-              placeholder="نام دسته‌بندی را وارد کنید"
-              className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+              placeholder="نام انیمه را وارد کنید"
+              className="bg-input border-border text-foreground placeholder:text-muted-foreground"
               required
             />
           </div>
@@ -239,7 +245,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="slug"
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-foreground"
             >
               اسلاگ
             </Label>
@@ -250,9 +256,9 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 setFormData((prev) => ({ ...prev, slug: e.target.value }))
               }
               placeholder="اسلاگ"
-              className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+              className="bg-input border-border text-foreground placeholder:text-muted-foreground"
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               نامک برای URL استفاده می‌شود و باید منحصر به فرد باشد
             </p>
           </div>
@@ -260,7 +266,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="space-y-2">
             <Label
               htmlFor="description"
-              className="text-sm font-medium text-gray-300"
+              className="text-sm font-medium text-foreground"
             >
               توضیحات
             </Label>
@@ -273,15 +279,15 @@ export function CategoryForm({ category }: CategoryFormProps) {
                   description: e.target.value,
                 }))
               }
-              placeholder="توضیحات دسته‌بندی را وارد کنید"
-              className="bg-gray-700/50 border-gray-600 text-white placeholder:text-gray-500"
+              placeholder="توضیحات انیمه را وارد کنید"
+              className="bg-input border-border text-foreground placeholder:text-muted-foreground"
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium text-gray-300">
-              تصویر دسته‌بندی {!category && "*"}
+            <Label className="text-sm font-medium text-foreground">
+              تصویر انیمه {!tag && "*"}
             </Label>
 
             {imagePreview ? (
@@ -289,7 +295,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 <img
                   src={imagePreview || "/placeholder.svg"}
                   alt="پیش‌نمایش تصویر"
-                  className="w-32 h-32 object-cover rounded-lg border-2 border-gray-600"
+                  className="w-32 h-32 object-cover rounded-lg border-2 border-border"
                 />
                 <Button
                   type="button"
@@ -302,7 +308,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
                 </Button>
               </div>
             ) : (
-              <div className="border-2 border-dashed border-gray-600 rounded-lg p-6 text-center hover:border-purple-500 transition-colors">
+              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary transition-colors">
                 <input
                   type="file"
                   accept="image/*"
@@ -319,16 +325,16 @@ export function CategoryForm({ category }: CategoryFormProps) {
                   className="cursor-pointer flex flex-col items-center space-y-2"
                 >
                   {isUploading ? (
-                    <Loader2 className="h-8 w-8 animate-spin text-purple-500" />
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                   ) : (
-                    <ImageIcon className="h-8 w-8 text-gray-400" />
+                    <ImageIcon className="h-8 w-8 text-muted-foreground" />
                   )}
-                  <span className="text-sm text-gray-400">
+                  <span className="text-sm text-muted-foreground">
                     {isUploading
                       ? "در حال آپلود..."
                       : "برای انتخاب تصویر کلیک کنید"}
                   </span>
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-muted-foreground">
                     حداکثر ۵ مگابایت - JPG, PNG, GIF
                   </span>
                 </label>
@@ -339,25 +345,25 @@ export function CategoryForm({ category }: CategoryFormProps) {
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button
               type="submit"
-              disabled={isLoading || isUploading || (!category && !imageUuid)}
-              className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isLoading || isUploading || (!tag && !imageUuid)}
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-primary-foreground disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? (
                 <span className="flex items-center">
                   <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                   در حال پردازش...
                 </span>
-              ) : category ? (
-                "به‌روزرسانی دسته‌بندی"
+              ) : tag ? (
+                "به‌روزرسانی انیمه"
               ) : (
-                "ایجاد دسته‌بندی"
+                "ایجاد انیمه"
               )}
             </Button>
             <Button
               type="button"
               variant="outline"
-              onClick={() => router.push("/admin/categories")}
-              className="w-full sm:w-auto border-gray-600 bg-transparent text-gray-300 hover:bg-gray-700"
+              onClick={() => router.push("/admin/tags")}
+              className="w-full sm:w-auto border-border text-foreground hover:bg-muted"
             >
               لغو
             </Button>
@@ -367,3 +373,4 @@ export function CategoryForm({ category }: CategoryFormProps) {
     </Card>
   );
 }
+

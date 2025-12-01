@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Home, Store, BookOpen, User, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { useCart } from "@/context/cart-context";
 import { useAuth } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
 
@@ -19,7 +18,6 @@ interface NavItem {
 
 export function MobileBottomNavbar() {
   const pathname = usePathname();
-  const { itemCount } = useCart();
   const { user } = useAuth();
 
   // Don't show on admin pages, checkout pages, or success pages
@@ -31,8 +29,6 @@ export function MobileBottomNavbar() {
   if (shouldHide) {
     return null;
   }
-
-  const cartItemsCount = itemCount || 0;
 
   const navItems: NavItem[] = [
     {
@@ -105,9 +101,9 @@ export function MobileBottomNavbar() {
                         : "group-hover:scale-105"
                     )}
                   >
-                    {item.avatarUrl && item.avatarUrl.trim() !== "" ? (
+                    {typeof item?.avatarUrl === "string" && item?.avatarUrl?.trim() !== "" ? (
                       <img
-                        src={item.avatarUrl}
+                        src={item?.avatarUrl}
                         alt="آواتار کاربر"
                         className="h-full w-full object-cover"
                         referrerPolicy="no-referrer"

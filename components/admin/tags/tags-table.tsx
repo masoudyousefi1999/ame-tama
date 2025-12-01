@@ -25,47 +25,39 @@ import { useToast } from "@/components/ui/use-toast";
 import { Edit, Trash2, Plus } from "lucide-react";
 import { CustomImage as Image } from "@/components/ui/custom-image";
 import { customFetch } from "@/lib/utils";
+import { ITagType } from "@/lib/tags";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  image: string;
-  createdAt: string;
-}
-
-export function CategoriesTable({
-  initialCategories,
+export function TagsTable({
+  initialTags,
 }: {
-  initialCategories: Category[];
+  initialTags: ITagType[];
 }) {
   const router = useRouter();
   const { toast } = useToast();
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
-  const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [tags, setTags] = useState<ITagType[]>(initialTags);
+  const [deleteUuid, setDeleteUuid] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
-    if (!deleteId) return;
+    if (!deleteUuid) return;
 
     setIsDeleting(true);
 
     try {
-      const response = await customFetch(`/category/${deleteId}`, {
+      const response = await customFetch(`/tag/${deleteUuid}`, {
         method: "DELETE",
       });
 
       if (!response.ok) {
-        throw new Error("حذف دسته‌بندی با خطا مواجه شد");
+        throw new Error("حذف انیمه با خطا مواجه شد");
       }
 
-      setCategories(categories.filter((category) => category.id !== deleteId));
+      setTags(tags.filter((tag) => tag.uuid !== deleteUuid));
 
       toast({
         title: "موفقیت",
-        description: "دسته‌بندی با موفقیت حذف شد",
-        className: "bg-green-600 text-white",
+        description: "انیمه با موفقیت حذف شد",
+        className: "bg-success text-success-foreground",
       });
     } catch (error) {
       toast({
@@ -73,12 +65,12 @@ export function CategoriesTable({
         description:
           error instanceof Error
             ? error.message
-            : "حذف دسته‌بندی با خطا مواجه شد",
+            : "حذف انیمه با خطا مواجه شد",
         variant: "error",
       });
     } finally {
       setIsDeleting(false);
-      setDeleteId(null);
+      setDeleteUuid(null);
     }
   };
 
@@ -95,74 +87,74 @@ export function CategoriesTable({
     <div className="space-y-4" dir="rtl">
       <div className="flex justify-end">
         <Button
-          onClick={() => router.push("/admin/categories/new")}
-          className="bg-purple-600 hover:bg-purple-700 text-white"
+          onClick={() => router.push("/admin/tags/new")}
+          className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
-          <Plus className="ml-2 h-4 w-4" /> افزودن دسته‌بندی
+          <Plus className="ml-2 h-4 w-4" /> افزودن انیمه
         </Button>
       </div>
 
-      <div className="bg-gray-800/80 rounded-lg border border-gray-700">
+      <div className="bg-card/80 rounded-lg border border-border">
         <div className="relative w-full overflow-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-gray-700 hover:bg-transparent">
-                <TableHead className="w-[80px] text-right text-gray-300">
+              <TableRow className="border-border hover:bg-transparent">
+                <TableHead className="w-[80px] text-right text-foreground">
                   تصویر
                 </TableHead>
-                <TableHead className="text-right text-gray-300">نام</TableHead>
-                <TableHead className="text-right text-gray-300">نامک</TableHead>
-                <TableHead className="text-right text-gray-300">
+                <TableHead className="text-right text-foreground">نام</TableHead>
+                <TableHead className="text-right text-foreground">نامک</TableHead>
+                <TableHead className="text-right text-foreground">
                   توضیحات
                 </TableHead>
-                <TableHead className="text-right text-gray-300">
+                <TableHead className="text-right text-foreground">
                   تاریخ ایجاد
                 </TableHead>
-                <TableHead className="text-left text-gray-300">
+                <TableHead className="text-left text-foreground">
                   عملیات
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {categories.length === 0 ? (
-                <TableRow className="border-gray-700">
+              {tags.length === 0 ? (
+                <TableRow className="border-border">
                   <TableCell
                     colSpan={6}
-                    className="h-24 text-center text-gray-400"
+                    className="h-24 text-center text-muted-foreground"
                   >
-                    هیچ دسته‌بندی یافت نشد
+                    هیچ انیمه‌ای یافت نشد
                   </TableCell>
                 </TableRow>
               ) : (
-                categories.map((category) => (
+                tags.map((tag) => (
                   <TableRow
-                    key={category.id}
-                    className="border-gray-700 hover:bg-gray-700/30 transition-colors"
+                    key={tag.uuid}
+                    className="border-border hover:bg-muted/30 transition-colors"
                   >
                     <TableCell className="text-right">
-                      <div className="relative w-10 h-10 rounded-md overflow-hidden bg-gray-700">
+                      <div className="relative w-10 h-10 rounded-md overflow-hidden bg-muted">
                         <Image
                           src={
-                            category.image ||
+                            tag.image?.url ||
                             "/placeholder.svg?height=40&width=40"
                           }
-                          alt={category.name}
+                          alt={tag.name}
                           fill
                           className="object-cover"
                         />
                       </div>
                     </TableCell>
-                    <TableCell className="text-right font-medium text-white">
-                      {category.name}
+                    <TableCell className="text-right font-medium text-foreground">
+                      {tag.name}
                     </TableCell>
-                    <TableCell className="text-right text-gray-400">
-                      {category.slug}
+                    <TableCell className="text-right text-muted-foreground">
+                      {tag.slug}
                     </TableCell>
-                    <TableCell className="text-right max-w-[200px] truncate text-gray-400">
-                      {category.description}
+                    <TableCell className="text-right max-w-[200px] truncate text-muted-foreground">
+                      {tag.description}
                     </TableCell>
-                    <TableCell className="text-right text-gray-400">
-                      {formatDate(category.createdAt)}
+                    <TableCell className="text-right text-muted-foreground">
+                      {formatDate(tag.createdAt)}
                     </TableCell>
                     <TableCell>
                       <div className="flex space-x-reverse space-x-2 justify-end">
@@ -171,10 +163,10 @@ export function CategoriesTable({
                           size="icon"
                           onClick={() =>
                             router.push(
-                              `/admin/categories/${category.slug}/edit`
+                              `/admin/tags/${tag.uuid}/edit`
                             )
                           }
-                          className="hover:bg-gray-700 text-gray-300 hover:text-white"
+                          className="hover:bg-muted text-muted-foreground hover:text-foreground"
                         >
                           <Edit className="h-4 w-4" />
                           <span className="sr-only">ویرایش</span>
@@ -182,8 +174,8 @@ export function CategoriesTable({
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => setDeleteId(category.id)}
-                          className="hover:bg-gray-700 text-red-400 hover:text-red-300"
+                          onClick={() => setDeleteUuid(tag.uuid)}
+                          className="hover:bg-destructive/10 text-destructive hover:text-destructive"
                         >
                           <Trash2 className="h-4 w-4" />
                           <span className="sr-only">حذف</span>
@@ -199,27 +191,27 @@ export function CategoriesTable({
       </div>
 
       <AlertDialog
-        open={!!deleteId}
-        onOpenChange={(open) => !open && setDeleteId(null)}
+        open={!!deleteUuid}
+        onOpenChange={(open) => !open && setDeleteUuid(null)}
       >
-        <AlertDialogContent dir="rtl" className="bg-gray-800 border-gray-700">
+        <AlertDialogContent dir="rtl" className="bg-card border-border">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white">
+            <AlertDialogTitle className="text-foreground">
               تأیید حذف
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-gray-400">
-              آیا از حذف این دسته‌بندی اطمینان دارید؟ این عمل غیرقابل بازگشت
+            <AlertDialogDescription className="text-muted-foreground">
+              آیا از حذف این انیمه اطمینان دارید؟ این عمل غیرقابل بازگشت
               است.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-row-reverse space-x-reverse space-x-2">
-            <AlertDialogCancel className="bg-gray-700 hover:bg-gray-600 text-white border-gray-600">
+            <AlertDialogCancel className="bg-muted hover:bg-muted/80 text-foreground border-border">
               لغو
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
             >
               {isDeleting ? "در حال حذف..." : "حذف"}
             </AlertDialogAction>
@@ -229,3 +221,4 @@ export function CategoriesTable({
     </div>
   );
 }
+

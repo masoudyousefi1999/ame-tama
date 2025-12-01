@@ -11,8 +11,9 @@ import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
 import LoadingSpinner from "../ui/loading-spinner";
 import GradientHero from "@/components/ui/gradient-hero";
+import { Eye } from "lucide-react";
 
-const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
+const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: IBlogPostType }) => {
   const isMobile = useIsMobile();
 
   return (
@@ -53,10 +54,19 @@ const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: any }) => {
 
       <div className="p-4 md:p-6">
         {/* Meta info */}
-        <div className="flex items-center gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
+        <div className="flex items-center flex-wrap gap-2 md:gap-4 text-xs md:text-sm text-muted-foreground mb-2 md:mb-3">
           <span>{new Date(post.createdAt).toLocaleDateString("fa-IR")}</span>
           <span>•</span>
           <span>مقاله</span>
+          {post.viewCount !== undefined && post.viewCount !== null && (
+            <>
+              <span>•</span>
+              <div className="flex items-center gap-1">
+                <Eye className="h-3 w-3 md:h-4 md:w-4" />
+                <span>{post.viewCount.toLocaleString("fa-IR")}</span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Title */}

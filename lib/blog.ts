@@ -16,6 +16,7 @@ export interface IBlogPostType {
   uuid: string;
   title: string;
   content: string;
+  viewCount: number;
   isPublished: boolean;
   publishedAt: string | null;
   image: IBlogImageType | null;
