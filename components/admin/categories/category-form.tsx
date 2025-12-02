@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { X, ImageIcon, Loader2 } from "lucide-react";
 import { customFetch } from "@/lib/utils";
+import { MediaType, uploadFile } from "@/lib/upload-utils";
 
 interface Category {
   id?: string;
@@ -80,22 +81,10 @@ export function CategoryForm({ category }: CategoryFormProps) {
     setIsUploading(true);
 
     try {
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
+      const uploadedMedia = await uploadFile(file, MediaType.CATEGORY);
 
-      const uploadResponse = await customFetch("/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
+      setImageUuid(uploadedMedia.uuid);
 
-      if (!uploadResponse.ok) {
-        throw new Error("آپلود تصویر با شکست مواجه شد");
-      }
-
-      const uploadResult = await uploadResponse.json();
-      setImageUuid(uploadResult.uuid);
-
-      // Create preview URL
       const previewUrl = URL.createObjectURL(file);
       setImagePreview(previewUrl);
 
@@ -218,10 +207,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
       <CardContent className="p-6">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <Label
-              htmlFor="name"
-              className="text-sm font-medium text-gray-300"
-            >
+            <Label htmlFor="name" className="text-sm font-medium text-gray-300">
               نام دسته‌بندی *
             </Label>
             <Input
@@ -237,10 +223,7 @@ export function CategoryForm({ category }: CategoryFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label
-              htmlFor="slug"
-              className="text-sm font-medium text-gray-300"
-            >
+            <Label htmlFor="slug" className="text-sm font-medium text-gray-300">
               اسلاگ
             </Label>
             <Input

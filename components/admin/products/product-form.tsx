@@ -140,7 +140,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     const fetchTags = async () => {
       setIsLoadingTags(true);
       try {
-        const response = await customFetch("/tag?page=1&limit=1000", {
+        const response = await customFetch("/tag?page=1&limit=100", {
           method: "GET",
         });
         if (response.ok) {
@@ -222,7 +222,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     setIsUploading(true);
 
     try {
-      const { uploadFile } = await import("@/lib/upload-utils");
+      const { uploadFile, MediaType } = await import("@/lib/upload-utils");
 
       const uploadPromises = files.map(async (file) => {
         // Create preview
@@ -233,7 +233,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
         });
 
         // Upload to server using utility
-        const uploadedMedia = await uploadFile(file);
+        const uploadedMedia = await uploadFile(file, MediaType.PRODUCT);
 
         return {
           uuid: uploadedMedia.uuid,

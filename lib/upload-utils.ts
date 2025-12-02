@@ -10,6 +10,16 @@ export interface UploadedMedia {
   url: string;
 }
 
+export enum MediaType {
+  PRODUCT = 'product',
+  BLOG = 'blog',
+  TOPIC = 'topic',
+  CATEGORY = 'category',
+  TAG = 'tag',
+  USER = 'user',
+}
+
+
 export interface UploadProgress {
   loaded: number;
   total: number;
@@ -24,10 +34,11 @@ export interface UploadProgress {
  */
 export async function uploadFile(
   file: File,
-  onProgress?: (progress: UploadProgress) => void
+  type: MediaType 
 ): Promise<UploadedMedia> {
   const formData = new FormData();
   formData.append("file", file);
+  formData.append("type", type);
 
   try {
     const response = await customFetch("/upload", {
@@ -57,6 +68,7 @@ export async function uploadFile(
  */
 export async function uploadFiles(
   files: File[],
+  type: MediaType,
   onProgress?: (current: number, total: number) => void
 ): Promise<UploadedMedia[]> {
   const results: UploadedMedia[] = [];
@@ -66,7 +78,7 @@ export async function uploadFiles(
     onProgress?.(i + 1, files.length);
 
     try {
-      const result = await uploadFile(file);
+      const result = await uploadFile(file,type);
       results.push(result);
     } catch (error) {
       console.error(`Failed to upload ${file.name}:`, error);

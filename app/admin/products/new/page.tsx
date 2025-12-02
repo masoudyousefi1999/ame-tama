@@ -59,14 +59,12 @@ async function getCategories(): Promise<ProductCategory[]> {
     if (Array.isArray(data)) {
       // If it's already an array, flatten it to get all categories including children
       const flattened = flattenCategories(data);
-      console.log("Fetched categories:", flattened.length, flattened);
       return flattened;
     }
     
     // If it's an object with children array
     if (data && Array.isArray(data.children)) {
       const flattened = flattenCategories(data.children);
-      console.log("Fetched categories from children:", flattened.length, flattened);
       return flattened;
     }
 

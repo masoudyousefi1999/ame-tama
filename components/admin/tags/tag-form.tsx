@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { X, ImageIcon, Loader2 } from "lucide-react";
 import { customFetch } from "@/lib/utils";
 import { ITagType } from "@/lib/tags";
+import { MediaType, uploadFile } from "@/lib/upload-utils";
 
 interface TagFormProps {
   tag?: ITagType;
@@ -23,9 +24,7 @@ export function TagForm({ tag }: TagFormProps) {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [imageUuid, setImageUuid] = useState<string>(
-    tag?.image?.uuid || ""
-  );
+  const [imageUuid, setImageUuid] = useState<string>(tag?.image?.uuid || "");
   const [imagePreview, setImagePreview] = useState<string>(
     tag?.image?.url || ""
   );
@@ -74,20 +73,9 @@ export function TagForm({ tag }: TagFormProps) {
     setIsUploading(true);
 
     try {
-      const uploadFormData = new FormData();
-      uploadFormData.append("file", file);
+      const uploadedMedia = await uploadFile(file, MediaType.TAG);
 
-      const uploadResponse = await customFetch("/upload", {
-        method: "POST",
-        body: uploadFormData,
-      });
-
-      if (!uploadResponse.ok) {
-        throw new Error("آپلود تصویر با شکست مواجه شد");
-      }
-
-      const uploadResult = await uploadResponse.json();
-      setImageUuid(uploadResult.uuid);
+      setImageUuid(uploadedMedia.uuid);
 
       // Create preview URL
       const previewUrl = URL.createObjectURL(file);
@@ -373,4 +361,3 @@ export function TagForm({ tag }: TagFormProps) {
     </Card>
   );
 }
-

@@ -16,12 +16,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/context/auth-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { customFetch } from "@/lib/utils";
-import { uploadFile, validateFile } from "@/lib/upload-utils";
+import { uploadFile, validateFile, MediaType } from "@/lib/upload-utils";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -152,7 +151,7 @@ export default function SettingsPage() {
 
     try {
       // Upload file
-      const uploadedMedia = await uploadFile(file);
+      const uploadedMedia = await uploadFile(file, MediaType.USER);
 
       // Update user avatar
       const response = await customFetch("/users/update", {
