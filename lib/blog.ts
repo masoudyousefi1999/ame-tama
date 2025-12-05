@@ -290,3 +290,52 @@ export async function getBlogPostBySlugs(
     return null;
   }
 }
+
+// Get latest blogs from all topics
+export async function getLatestBlogs(
+  limit: number = 3
+): Promise<IBlogPostType[]> {
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+
+    const response = await fetch(`${baseUrl}/api/blog/latest?limit=${limit}`, {
+      next: { tags: ["latest-blogs"], revalidate: 60 }, // Revalidate every minute for debugging
+    });
+
+    if (!response.ok) {
+      console.error(`Latest blogs API error: ${response.status}`);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Error fetching latest blogs:", error);
+    return [];
+  }
+}
+
+// Get popular blogs (by view count) from all topics
+export async function getPopularBlogs(
+  limit: number = 3
+): Promise<IBlogPostType[]> {
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+
+    const response = await fetch(`${baseUrl}/api/blog/popular?limit=${limit}`, {
+      next: { tags: ["popular-blogs"] },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
+  } catch (error) {
+    console.error("Error fetching popular blogs:", error);
+    return [];
+  }
+}

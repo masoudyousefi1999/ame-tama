@@ -3,7 +3,16 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { CustomImage as Image } from "@/components/ui/custom-image";
-import { CreditCard, MapPin, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  CreditCard,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+  Truck,
+  Package,
+  Plane,
+  Bike,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +24,21 @@ import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
 import { formatPriceDivided } from "@/lib/format-price";
 import { useIsMobile } from "@/hooks/use-mobile";
+
+// Helper function to get icon for shipping method
+const getShippingIcon = (name: string) => {
+  const lowerName = name.toLowerCase();
+  if (lowerName.includes("پست") || lowerName.includes("post")) {
+    return Truck;
+  }
+  if (lowerName.includes("پیک") || lowerName.includes("courier")) {
+    return Bike;
+  }
+  if (lowerName.includes("هواپیما") || lowerName.includes("air")) {
+    return Plane;
+  }
+  return Package;
+};
 
 const paymentMethods = [
   {
@@ -33,23 +57,6 @@ const paymentMethods = [
   },
 ];
 
-const shippingMethods = [
-  {
-    id: "standard",
-    name: "ارسال استاندارد",
-    description: "تحویل بین ۳ تا ۵ روز کاری",
-    price: 0,
-    disable: false,
-  },
-  {
-    id: "express",
-    name: "ارسال سریع",
-    description: "تحویل بین ۱ تا ۲ روز کاری",
-    price: 45_000,
-    disable: true,
-  },
-];
-
 export default function CheckoutPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
@@ -58,13 +65,48 @@ export default function CheckoutPage() {
 
   const [address, setAddress] = useState<any>(null);
   const [paymentMethod, setPaymentMethod] = useState("online");
-  const [shippingMethod, setShippingMethod] = useState("standard");
+  const [shippingMethod, setShippingMethod] = useState<string>("");
+  const [shippingMethods, setShippingMethods] = useState<
+    Array<{
+      id: number;
+      name: string;
+      price: number;
+      isActive: boolean;
+    }>
+  >([]);
+  const [isLoadingShippingMethods, setIsLoadingShippingMethods] =
+    useState(false);
   const [showOrderSummary, setShowOrderSummary] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const shippingCost =
-    shippingMethods.find((m) => m.id === shippingMethod)?.price ?? 0;
+    shippingMethods.find((m) => String(m.id) === shippingMethod)?.price ?? 0;
   const finalTotal = total + shippingCost;
+
+  // Fetch shipping methods on mount
+  useEffect(() => {
+    async function fetchShippingMethods() {
+      setIsLoadingShippingMethods(true);
+      try {
+        const res = await customFetch("/shipping-method", { method: "GET" });
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          // Filter only active methods
+          const activeMethods = data.filter((method) => method.isActive);
+          setShippingMethods(activeMethods);
+          // Set first active method as default
+          if (activeMethods.length > 0) {
+            setShippingMethod((prev) => prev || String(activeMethods[0].id));
+          }
+        }
+      } catch (err) {
+        console.error("Error fetching shipping methods:", err);
+      } finally {
+        setIsLoadingShippingMethods(false);
+      }
+    }
+    fetchShippingMethods();
+  }, []);
 
   // Fetch user address on mount
   useEffect(() => {
@@ -246,50 +288,84 @@ export default function CheckoutPage() {
               {/* shipping method */}
               <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">
                 <h2 className="text-lg font-semibold mb-4">روش ارسال</h2>
-                <RadioGroup
-                  value={shippingMethod}
-                  onValueChange={setShippingMethod}
-                  className="space-y-3"
-                >
-                  {shippingMethods.map((m) => (
-                    <div
-                      key={m.id}
-                      className={cn(
-                        "flex items-center justify-between p-4 rounded-lg border transition-opacity",
-                        shippingMethod === m.id
-                          ? "border-purple-500 bg-purple-900/10"
-                          : "border-border",
-                        m.disable &&
-                          "opacity-50 cursor-not-allowed pointer-events-none"
-                      )}
-                    >
-                      <div className="flex items-center gap-3">
-                        <RadioGroupItem
-                          value={m.id}
-                          id={`shipping-${m.id}`}
-                          className="ml-2"
-                          disabled={m.disable}
-                        />
-                        <div>
-                          <Label
-                            htmlFor={`shipping-${m.id}`}
-                            className="font-medium cursor-pointer"
-                          >
-                            {m.name}
-                          </Label>
-                          <p className="text-sm text-muted-foreground">
-                            {m.description}
-                          </p>
-                        </div>
-                      </div>
-                      <span className="font-medium">
-                        {m.price === 0
-                          ? "رایگان"
-                          : `${formatPriceDivided(m.price)}`}
-                      </span>
+                {isLoadingShippingMethods ? (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="h-4 w-4 border-2 border-purple-500 border-t-transparent rounded-full animate-spin"></div>
+                      <span>در حال بارگذاری روش‌های ارسال...</span>
                     </div>
-                  ))}
-                </RadioGroup>
+                  </div>
+                ) : shippingMethods.length === 0 ? (
+                  <div className="text-center py-6 text-destructive">
+                    روش ارسالی یافت نشد.
+                  </div>
+                ) : (
+                  <RadioGroup
+                    value={shippingMethod}
+                    onValueChange={setShippingMethod}
+                    className="space-y-3"
+                  >
+                    {shippingMethods.map((m) => {
+                      const Icon = getShippingIcon(m.name);
+                      const isSelected = shippingMethod === String(m.id);
+                      return (
+                        <label
+                          key={m.id}
+                          htmlFor={`shipping-${m.id}`}
+                          className={cn(
+                            "flex items-center justify-between p-5 rounded-xl border-2 cursor-pointer transition-all duration-200",
+                            isSelected
+                              ? "border-purple-500 bg-purple-500/10 shadow-md shadow-purple-500/20"
+                              : "border-border hover:border-purple-400/50 hover:bg-card/50"
+                          )}
+                        >
+                          <div className="flex items-center gap-4 flex-1">
+                            <div
+                              className={cn(
+                                "p-3 rounded-lg transition-colors",
+                                isSelected
+                                  ? "bg-purple-500/20 text-purple-400"
+                                  : "bg-muted text-muted-foreground"
+                              )}
+                            >
+                              <Icon className="h-5 w-5" />
+                            </div>
+                            <div className="flex items-center gap-3 flex-1">
+                              <RadioGroupItem
+                                value={String(m.id)}
+                                id={`shipping-${m.id}`}
+                                className="ml-2"
+                              />
+                              <div className="flex-1">
+                                <Label
+                                  htmlFor={`shipping-${m.id}`}
+                                  className={cn(
+                                    "font-semibold text-base cursor-pointer block",
+                                    isSelected && "text-purple-400"
+                                  )}
+                                >
+                                  {m.name}
+                                </Label>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span
+                              className={cn(
+                                "font-bold text-lg whitespace-nowrap",
+                                isSelected && "text-purple-400"
+                              )}
+                            >
+                              {m.price === 0
+                                ? "رایگان"
+                                : formatPriceDivided(m.price)}
+                            </span>
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </RadioGroup>
+                )}
               </section>
               {/* payment method */}
               <section className="bg-card rounded-2xl shadow-sm p-6 mb-6">

@@ -6,14 +6,25 @@ import { getAllCategories } from "@/lib/categories";
 import { getAllProducts } from "@/lib/products";
 import { getAllTags, ITagType } from "@/lib/tags";
 import AnimeShowcase from "@/components/animes/anime-showcase";
+import BlogSection from "@/components/home/blog-section";
+import { getLatestBlogs, getPopularBlogs } from "@/lib/blog";
 
 export default async function Home() {
   let allCategories: any[] = [];
   let productsResult: any = { products: [] };
   let tagsResult: any = { tags: [] };
 
+  let latestBlogs: any[] = [];
+  let popularBlogs: any[] = [];
+
   try {
-    const [categoriesData, productsData, tagsData] = await Promise.all([
+    const [
+      categoriesData,
+      productsData,
+      tagsData,
+      latestBlogsData,
+      popularBlogsData,
+    ] = await Promise.all([
       getAllCategories({
         next: { tags: ["categories"] }, // 10 minutes cache
       }),
@@ -23,11 +34,15 @@ export default async function Home() {
       getAllTags(1, 6, {
         next: { tags: ["tags", "homepage"] }, // 5 minutes cache
       }),
+      getLatestBlogs(3),
+      getPopularBlogs(3),
     ]);
 
     allCategories = categoriesData || [];
     productsResult = productsData || { products: [] };
     tagsResult = tagsData || { tags: [] };
+    latestBlogs = latestBlogsData || [];
+    popularBlogs = popularBlogsData || [];
   } catch (error) {
     console.warn("Failed to fetch data for homepage:", error);
     // Use empty arrays as fallback
@@ -109,6 +124,23 @@ export default async function Home() {
           </div>
         </div>
       </section>
+
+      {/* Latest Blogs */}
+      <BlogSection
+        blogs={latestBlogs}
+        title="جدیدترین بلاگ‌ها"
+        description="آخرین مقالات و مطالب منتشر شده در AME-TAMA"
+      />
+
+      {/* Popular Blogs */}
+      {popularBlogs.length > 0 && (
+        <BlogSection
+          blogs={popularBlogs}
+          title="محبوب‌ترین بلاگ‌ها"
+          description="پربازدیدترین مقالات و مطالب AME-TAMA"
+          bgColor="bg-background"
+        />
+      )}
 
       {/* Testimonials */}
       <section className="relative py-16 md:py-24 bg-muted/60">
