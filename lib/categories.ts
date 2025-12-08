@@ -28,11 +28,6 @@ export async function getAllCategories(
   return categories;
 }
 
-// دریافت دسته‌بندی با شناسه
-export function getCategoryById(id: string): ICategoryType | undefined {
-  return;
-}
-
 // دریافت دسته‌بندی با اسلاگ
 export async function getCategoryBySlug(
   slug: string
@@ -43,30 +38,4 @@ export async function getCategoryBySlug(
 
   const categories = await res.json();
   return categories;
-}
-
-// دریافت دسته‌بندی‌های اصلی (آنهایی که children دارند یا سطح بالا هستند)
-export function getRootCategories(): ICategoryType[] {
-  return [];
-}
-
-// دریافت مسیر کامل دسته‌بندی (از ریشه تا دسته‌بندی فعلی)
-export function getCategoryPath(categoryUuid: string): ICategoryType[] {
-  // این function باید از API استفاده کند
-  return [];
-}
-
-// بررسی اینکه آیا یک تگ زیرمجموعه دسته‌بندی است
-export function isTagInCategory(
-  tagUuid: string,
-  categoryUuid: string
-): boolean {
-  // این function باید از API استفاده کند
-  return false;
-}
-
-// دریافت دسته‌بندی با UUID
-export function getCategoryByUuid(uuid: string): ICategoryType | undefined {
-  // این function باید از API استفاده کند
-  return undefined;
 }

@@ -7,7 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { getUserByEmail, type User } from "@/lib/users";
+import { type User } from "@/lib/users";
 import { getMe } from "@/hooks/use-user";
 import { customFetch } from "@/lib/utils";
 import { useCart } from "@/context/cart-context";
@@ -27,15 +27,9 @@ interface AuthContextType {
     identifier: string,
     password: string
   ) => Promise<{ success: boolean; message: string }>;
-  register: (
-    userData: Omit<User, "id">
-  ) => Promise<{ success: boolean; message: string }>;
   logout: () => void;
   updateProfile: (
     userData: Partial<User>
-  ) => Promise<{ success: boolean; message: string }>;
-  forgotPassword: (
-    email: string
   ) => Promise<{ success: boolean; message: string }>;
 }
 
@@ -46,10 +40,8 @@ const AuthContext = createContext<AuthContextType>({
   login: async () => ({ success: false, message: "" }),
   loginWithOtp: async () => ({ success: false, message: "" }),
   loginWithPassword: async () => ({ success: false, message: "" }),
-  register: async () => ({ success: false, message: "" }),
   logout: () => {},
   updateProfile: async () => ({ success: false, message: "" }),
-  forgotPassword: async () => ({ success: false, message: "" }),
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -63,20 +55,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const getUser = async () => {
       try {
-        // Check localStorage first for immediate UI feedback
-        const cachedUser = localStorage.getItem("ame-tama-user");
-        if (cachedUser && isMounted) {
-          try {
-            const parsedUser = JSON.parse(cachedUser);
-            setUser(parsedUser);
-            setIsLoading(false);
-          } catch (error) {
-            // Silent error handling for localStorage parsing issues
-            localStorage.removeItem("ame-tama-user");
-          }
-        }
-
-        // Then fetch fresh data from server
         const user = await getMe();
         if (isMounted) {
           if (user && !user?.statusCode) {
@@ -177,39 +155,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return loginWithPassword(email, password);
   };
 
-  // ثبت‌نام کاربر جدید
-  const register = async (userData: Omit<User, "id">) => {
-    try {
-      // در یک پروژه واقعی، این بخش با API سرور ارتباط برقرار می‌کند
-      // اما در اینجا فقط بررسی می‌کنیم که آیا ایمیل قبلاً استفاده شده است یا خیر
-      const existingUser = getUserByEmail(userData.email);
-
-      if (existingUser) {
-        return { success: false, message: "این ایمیل قبلاً ثبت شده است" };
-      }
-
-      // در یک پروژه واقعی، کاربر جدید در دیتابیس ذخیره می‌شود
-      // اما در اینجا فقط شبیه‌سازی می‌کنیم
-      const newUser = {
-        id: Date.now().toString(),
-        ...userData,
-      };
-
-      // حذف رمز عبور از اطلاعات کاربر قبل از ذخیره
-      const { password: _, ...userWithoutPassword } = newUser;
-      setUser(userWithoutPassword as User);
-      localStorage.setItem(
-        "ame-tama-user",
-        JSON.stringify(userWithoutPassword)
-      );
-
-      return { success: true, message: "ثبت‌نام با موفقیت انجام شد" };
-    } catch (error) {
-      console.error("Register error:", error);
-      return { success: false, message: "خطا در ثبت‌نام" };
-    }
-  };
-
   // خروج از حساب کاربری
   const logout = async () => {
     try {
@@ -249,40 +194,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // بازیابی رمز عبور
-  const forgotPassword = async (email: string) => {
-    try {
-      // در یک پروژه واقعی، این بخش با API سرور ارتباط برقرار می‌کند
-      // و یک ایمیل بازیابی رمز عبور ارسال می‌کند
-      const foundUser = getUserByEmail(email);
-
-      if (!foundUser) {
-        return { success: false, message: "کاربری با این ایمیل یافت نشد" };
-      }
-
-      // شبیه‌سازی ارسال ایمیل بازیابی رمز عبور
-      return {
-        success: true,
-        message: "لینک بازیابی رمز عبور به ایمیل شما ارسال شد",
-      };
-    } catch (error) {
-      console.error("Forgot password error:", error);
-      return { success: false, message: "خطا در بازیابی رمز عبور" };
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
         user,
-        isLoading,
+        isLoading: false,
         login,
         loginWithOtp,
         loginWithPassword,
-        register,
         logout,
         updateProfile,
-        forgotPassword,
       }}
     >
       {children}

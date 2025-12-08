@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 
 export function AnimatedCharacter() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -15,60 +14,9 @@ export function AnimatedCharacter() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
-  // Character animation variants
-  const characterVariants = {
-    hover: {
-      y: [0, -10, 0],
-      transition: {
-        y: {
-          repeat: Number.POSITIVE_INFINITY,
-          duration: 3,
-          ease: "easeInOut",
-        },
-      },
-    },
-    static: { y: 0 },
-  };
-
-  // Sweat drop animation variants
-  const sweatDropVariants = {
-    animate: {
-      opacity: [0, 1, 0],
-      y: [0, 30],
-      x: [0, 5],
-      transition: {
-        repeat: Number.POSITIVE_INFINITY,
-        duration: 2,
-        repeatDelay: 1,
-        ease: "easeInOut",
-      },
-    },
-    static: { opacity: 0 },
-  };
-
-  // Question mark animation variants
-  const questionMarkVariants = {
-    animate: {
-      opacity: [0, 1],
-      scale: [0.8, 1.2, 1],
-      y: [-10, 0],
-      transition: {
-        repeat: Number.POSITIVE_INFINITY,
-        duration: 2,
-        repeatDelay: 2,
-        ease: "easeInOut",
-      },
-    },
-    static: { opacity: 0 },
-  };
-
   return (
     <div className="relative h-64 w-64 mx-auto">
-      <motion.div
-        variants={characterVariants as any}
-        animate={prefersReducedMotion ? "static" : "hover"}
-        className="relative z-10"
-      >
+      <div className="relative z-10">
         <img
           src="/images/404-character.png"
           alt=""
@@ -79,22 +27,7 @@ export function AnimatedCharacter() {
           }}
         />
 
-        {/* sweat drop */}
-        <motion.div
-          variants={sweatDropVariants as any}
-          animate={prefersReducedMotion ? "static" : "animate"}
-          className="absolute top-10 right-10 h-4 w-2 rounded-full bg-chart-2"
-        />
-
-        {/* question mark */}
-        <motion.div
-          variants={questionMarkVariants as any}
-          animate={prefersReducedMotion ? "static" : "animate"}
-          className="absolute top-0 left-10 text-2xl font-bold text-primary"
-        >
-          ؟
-        </motion.div>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -12,11 +12,17 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import dynamic from "next/dynamic";
 import { useAuth } from "@/context/auth-context";
 import { useCart } from "@/context/cart-context";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import UnifiedSearch from "@/components/search/unified-search";
+
+const LoginModal = dynamic(
+  () => import("@/components/auth/login-modal"),
+  { ssr: false }
+);
 
 const MAIN_LINKS = [
   { label: "خانه", href: "/", icon: Home },
@@ -50,7 +56,7 @@ export function MobileTopBar() {
           top: "calc(env(safe-area-inset-top, 0px) + 0rem)",
         }}
       >
-        <div className="container mx-auto flex items-center justify-between px-4 py-3">
+        <div className="container mx-auto flex items-center justify-between px-1 py-1">
           <SheetTrigger asChild>
             <button
               type="button"

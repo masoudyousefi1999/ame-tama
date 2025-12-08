@@ -16,28 +16,15 @@ export async function GET(
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const page = searchParams.get("page") || undefined;
-    const limit = searchParams.get("limit") || undefined;
+    const searchParams = request.nextUrl.searchParams;
+    const page = searchParams.get("page") || "1";
+    const limit = searchParams.get("limit") || "10";
 
-    const queryParams = new URLSearchParams();
-    if (page) {
-      queryParams.set("page", page);
-    }
-    if (limit) {
-      queryParams.set("limit", limit);
-    }
-    const queryString = queryParams.toString();
-
-    const response = await customFetch(
-      `/tag/${slug}${queryString ? `?${queryString}` : ""}`,
-      {
-      method: "GET",
+    const response = await customFetch(`/tag/${slug}?page=${page}&limit=${limit}`, {
       next: {
         tags: [`tag-${slug}`],
       },
-      }
-    );
+    });
 
     if (!response.ok) {
       console.log(`Backend returned ${response.status} for tag: ${slug}`);
@@ -53,8 +40,7 @@ export async function GET(
 
     const tag = await response.json();
 
-    // Check if tag is empty or has no data
-    if (!tag || Object.keys(tag).length === 0) {
+    if (!tag) {
       console.log(`Tag data is empty for slug: ${slug}`);
       return NextResponse.json({ error: "Tag not found" }, { status: 404 });
     }

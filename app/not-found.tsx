@@ -8,7 +8,6 @@ import {
   HelpCircleIcon,
   ArrowRightIcon,
 } from "lucide-react";
-import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import UnifiedSearch from "@/components/search/unified-search";
 import { Button } from "@/components/ui/button";
@@ -24,41 +23,27 @@ export default function NotFound() {
       </div>
 
       {/* headline & copy */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.5 }}
-      >
+      <div>
         <h1 className="text-3xl font-bold mb-4">صفحه مورد نظر یافت نشد!</h1>
         <p className="text-muted-foreground mb-8 max-w-md">
           متأسفانه صفحه‌ای که به دنبال آن هستید وجود ندارد یا حذف شده است.
           می‌توانید از طریق جستجو یا بازگشت به صفحه اصلی، محصول مورد نظر خود را
           پیدا کنید.
         </p>
-      </motion.div>
+      </div>
 
       {/* search card */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.6, duration: 0.5 }}
-        className="w-full max-w-md mb-8"
-      >
+      <div className="w-full max-w-md mb-8">
         <Card>
           <CardContent className="pt-6">
             <h2 className="text-lg font-semibold mb-4">جستجوی محصولات</h2>
             <UnifiedSearch />
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* quick links */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.8, duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-md"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full max-w-md">
         {[
           { href: "/", icon: HomeIcon, label: "صفحه اصلی" },
           { href: "/shop", icon: ShoppingBagIcon, label: "فروشگاه" },
@@ -71,22 +56,17 @@ export default function NotFound() {
             </Link>
           </Button>
         ))}
-      </motion.div>
+      </div>
 
       {/* support link */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="mt-12"
-      >
+      <div className="mt-12">
         <Button asChild variant="link" className="gap-1 text-muted-foreground">
           <Link href="/contact" prefetch={false}>
             تماس با پشتیبانی
             <ArrowRightIcon className="h-4 w-4" />
           </Link>
         </Button>
-      </motion.div>
+      </div>
     </div>
   );
 }

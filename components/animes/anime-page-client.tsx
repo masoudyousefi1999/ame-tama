@@ -20,6 +20,8 @@ interface AnimePageClientProps {
   categories: ICategoryType[];
   products: IProductType[];
   totalCount: number;
+  initialPage?: number;
+  initialLimit?: number;
 }
 
 export default function AnimePageClient({
@@ -27,6 +29,8 @@ export default function AnimePageClient({
   categories,
   products,
   totalCount,
+  initialPage = 1,
+  initialLimit = productLimit,
 }: AnimePageClientProps) {
   const { setBreadcrumbs } = useBreadcrumb();
   const isMobile = useIsMobile();
@@ -48,7 +52,7 @@ export default function AnimePageClient({
     enrichedInitialProducts
   );
   const [page, setPage] = useState(() =>
-    enrichedInitialProducts.length > 0 || totalCount > 0 ? 1 : 0
+    enrichedInitialProducts.length > 0 || totalCount > 0 ? initialPage : 0
   );
   const [hasMore, setHasMore] = useState(
     enrichedInitialProducts.length < totalCount
@@ -56,10 +60,12 @@ export default function AnimePageClient({
 
   useEffect(() => {
     setDisplayProducts(enrichedInitialProducts);
-    setPage(enrichedInitialProducts.length > 0 || totalCount > 0 ? 1 : 0);
+    setPage(
+      enrichedInitialProducts.length > 0 || totalCount > 0 ? initialPage : 0
+    );
     setHasMore(enrichedInitialProducts.length < totalCount);
     setResolvedTotalCount(totalCount);
-  }, [enrichedInitialProducts, totalCount]);
+  }, [enrichedInitialProducts, totalCount, initialPage]);
 
   // Memoize breadcrumb items
   const breadcrumbItems = useMemo(
@@ -91,7 +97,7 @@ export default function AnimePageClient({
     try {
       const nextPage = page + 1;
       const response = await customFetch(
-        `/tag/${tag.slug}?page=${nextPage}&limit=${productLimit}`,
+        `/tag/${tag.slug}?page=${nextPage}&limit=${initialLimit}`,
         {
           method: "GET",
         }
@@ -141,7 +147,7 @@ export default function AnimePageClient({
         typeof newTotalCount === "number" ? newTotalCount : resolvedTotalCount;
 
       if (
-        newProducts.length < productLimit ||
+        newProducts.length < initialLimit ||
         updatedTotalCount >= effectiveTotal ||
         appendedCount === 0
       ) {
@@ -154,7 +160,15 @@ export default function AnimePageClient({
     } finally {
       setLoading(false);
     }
-  }, [hasMore, loading, page, resolvedTotalCount, tag, totalCount]);
+  }, [
+    hasMore,
+    loading,
+    page,
+    resolvedTotalCount,
+    tag,
+    totalCount,
+    initialLimit,
+  ]);
 
   useEffect(() => {
     if (!hasMore || loading) {
@@ -196,53 +210,53 @@ export default function AnimePageClient({
             description={tag.description || null}
             image={tag.image?.url || null}
             stats={[
-            { label: `${resolvedTotalCount} محصول موجود` },
-            ...(categories.length > 0
-              ? [{ label: `${categories.length} دسته‌بندی` }]
-              : []),
-          ]}
-          actions={[
-            {
-              label: "مشاهده محصولات",
-              href: "#products",
-              icon: (
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              ),
-            },
-            {
-              label: "بازگشت به انیمه‌ها",
-              href: "/anime",
-              icon: (
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                  />
-                </svg>
-              ),
-              variant: "secondary",
-              prefetch: false,
-            },
-          ]}
+              { label: `${resolvedTotalCount} محصول موجود` },
+              ...(categories.length > 0
+                ? [{ label: `${categories.length} دسته‌بندی` }]
+                : []),
+            ]}
+            actions={[
+              {
+                label: "مشاهده محصولات",
+                href: "#products",
+                icon: (
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                ),
+              },
+              {
+                label: "بازگشت به انیمه‌ها",
+                href: "/anime",
+                icon: (
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                    />
+                  </svg>
+                ),
+                variant: "secondary",
+                prefetch: false,
+              },
+            ]}
           />
         </div>
 

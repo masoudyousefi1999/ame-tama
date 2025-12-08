@@ -1,13 +1,28 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import dynamic from "next/dynamic";
 import ProductGallery from "@/components/product/product-gallery";
 import ProductInfo from "@/components/product/product-info";
-import ProductTabs from "@/components/product/product-tabs";
-import RelatedProducts from "@/components/product/related-products";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { ArrowRight } from "lucide-react";
 import { IProductType } from "@/lib/products";
+
+const ProductTabs = dynamic(
+  () => import("@/components/product/product-tabs"),
+  {
+    loading: () => null,
+    ssr: false,
+  }
+);
+
+const RelatedProducts = dynamic(
+  () => import("@/components/product/related-products"),
+  {
+    loading: () => null,
+    ssr: false,
+  }
+);
 
 interface ProductPageClientProps {
   product: IProductType;

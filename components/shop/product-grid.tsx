@@ -20,7 +20,6 @@ import { useCart } from "@/context/cart-context";
 import { toast } from "@/components/ui/use-toast";
 import { getAllCategories, ICategoryType } from "@/lib/categories";
 import { ProductCard } from "../product/product-card";
-import { motion, AnimatePresence } from "framer-motion";
 import { formatPrice } from "@/lib/format-price";
 
 interface ProductGridProps {
@@ -178,12 +177,7 @@ export default function ProductGrid({
   // اگر محصولی وجود نداشت
   if (!loading && filteredProducts.length === 0) {
     return (
-      <motion.div
-        className="py-16 text-center"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="py-16 text-center">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="mx-auto mb-4 h-12 w-12 text-muted-foreground/40"
@@ -212,7 +206,7 @@ export default function ProductGrid({
             پاک کردن فیلترها
           </Button>
         )}
-      </motion.div>
+      </div>
     );
   }
 

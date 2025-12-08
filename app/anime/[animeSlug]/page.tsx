@@ -4,16 +4,19 @@ import type { Metadata } from "next";
 import { productLimit } from "@/lib/product-limit";
 import AnimePageClient from "@/components/animes/anime-page-client";
 
-// ✅ Use correct server function prop type
 type Props = {
   params: Promise<{
     animeSlug: string;
+  }>;
+  searchParams?: Promise<{
+    page?: string;
   }>;
 };
 
 const baseUrl = "https://ame-tama.com";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { animeSlug } = await params;
+
   const tag = await getTagBySlug(animeSlug);
 
   if (!tag) {
@@ -64,24 +67,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function AnimeRoute({
   params,
+  searchParams,
 }: {
   params: Promise<{
     animeSlug: string;
   }>;
+  searchParams?: Promise<{ page?: string }>;
 }) {
   const { animeSlug } = await params;
+  const { page: pageParam } = (await searchParams) || {};
+  const page = Number.parseInt(pageParam || "1", 10);
 
-  const tagData = await getTagBySlug(animeSlug, {
-    page: 1,
-    limit: productLimit,
-  });
+  const data = (await getTagBySlug(animeSlug, page, productLimit)) as
+    | { tag: ITagType; totalCount: number }
+    | undefined;
+
+  if (!data || !data.tag) notFound();
+
+  const { tag: tagData, totalCount } = data;
 
   if (!tagData) notFound();
-  const categories = tagData.tag.categories;
-  const products = tagData.tag.products;
-  const totalCount = tagData.totalCount;
 
-  const tag = tagData.tag as ITagType;
+  const categories = tagData.categories;
+  const products = tagData.products;
+  const tag = tagData as ITagType;
 
   return (
     <AnimePageClient
@@ -89,6 +98,8 @@ export default async function AnimeRoute({
       categories={categories}
       products={products}
       totalCount={totalCount || 0}
+      initialPage={page}
+      initialLimit={productLimit}
     />
   );
 }

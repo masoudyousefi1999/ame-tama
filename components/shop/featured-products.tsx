@@ -4,7 +4,6 @@ import type React from "react";
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
@@ -68,16 +67,10 @@ export default function FeaturedProducts({ products }: FeaturedProductsProps) {
 
       {/* ————— Product Grid ————— */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {products.map((p, i) => (
-          <motion.div
-            key={p.id}
-            initial={{ opacity: 0, y: 28 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: i * 0.05 }}
-            viewport={{ once: true }}
-          >
+        {products.map((p) => (
+          <div key={p?.id ?? p?.uuid ?? p?.slug}>
             <ProductCard product={p} showAddToCart showAddToWishlist />
-          </motion.div>
+          </div>
         ))}
       </div>
 

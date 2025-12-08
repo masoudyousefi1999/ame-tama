@@ -13,7 +13,7 @@ import {
   Search,
   ChevronLeft,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import CartDropdown from "@/components/cart/cart-dropdown";
@@ -253,56 +253,51 @@ export default function Navbar() {
                 )}
               />
             </button>
-            <AnimatePresence>
-              {isCategoriesOpen && (
-                <motion.div
-                  id="category-menu"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="absolute right-0 mt-1 bg-gradient-to-br from-background via-muted/80 to-background rounded-lg shadow-lg py-2 min-w-[220px] z-[60] dropdown-menu border border-border/50"
-                >
-                  {categoryTree.map((cat) => (
-                    <div
-                      key={cat.id}
-                      className="relative group"
-                      onMouseEnter={() => setActiveCategory(cat.id as any)}
-                      onMouseLeave={() => setActiveCategory(null)}
-                    >
-                      <div className="flex justify-between items-center px-4 py-2.5 bg-transparent hover:bg-muted cursor-pointer transition-all duration-200 rounded-md mx-2 my-1">
-                        <Link
-                          href={`/${cat.slug}`}
-                          onClick={() => setIsCategoriesOpen(false)}
-                          className="block flex-1 text-foreground transition-colors"
-                          prefetch={false}
-                        >
-                          {cat.name}
-                        </Link>
-                        {cat.tags?.length > 0 && (
-                          <ChevronRight className="h-4 w-4 rotate-180 text-foreground" />
-                        )}
-                      </div>
-
-                      {activeCategory === cat.id && cat.tags?.length > 0 && (
-                        <div className="absolute right-full top-0 bg-gradient-to-br from-background via-muted/80 to-background rounded-lg shadow-lg py-2 min-w-[220px] dropdown-menu z-[70] border border-border/50 mr-[218px]">
-                          {cat.tags.map((tag) => (
-                            <div key={tag.uuid} className="relative">
-                              <Link
-                                href={`/${cat.slug}/${tag.slug}`}
-                                onClick={() => setIsCategoriesOpen(false)}
-                                className="block px-4 py-2.5 whitespace-nowrap bg-transparent hover:bg-muted/70 transition-all duration-200 text-foreground hover:text-primary/80 rounded-md mx-2 my-1"
-                              >
-                                {tag.name}
-                              </Link>
-                            </div>
-                          ))}
-                        </div>
+            {isCategoriesOpen && (
+              <div
+                id="category-menu"
+                className="absolute right-0 mt-1 bg-gradient-to-br from-background via-muted/80 to-background rounded-lg shadow-lg py-2 min-w-[220px] z-[60] dropdown-menu border border-border/50 transition-opacity duration-150"
+              >
+                {categoryTree.map((cat) => (
+                  <div
+                    key={cat.id}
+                    className="relative group"
+                    onMouseEnter={() => setActiveCategory(cat.id as any)}
+                    onMouseLeave={() => setActiveCategory(null)}
+                  >
+                    <div className="flex justify-between items-center px-4 py-2.5 bg-transparent hover:bg-muted cursor-pointer transition-all duration-200 rounded-md mx-2 my-1">
+                      <Link
+                        href={`/${cat.slug}`}
+                        onClick={() => setIsCategoriesOpen(false)}
+                        className="block flex-1 text-foreground transition-colors"
+                        prefetch={false}
+                      >
+                        {cat.name}
+                      </Link>
+                      {cat.tags?.length > 0 && (
+                        <ChevronRight className="h-4 w-4 rotate-180 text-foreground" />
                       )}
                     </div>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
+
+                    {activeCategory === cat.id && cat.tags?.length > 0 && (
+                      <div className="absolute right-full top-0 bg-gradient-to-br from-background via-muted/80 to-background rounded-lg shadow-lg py-2 min-w-[220px] dropdown-menu z-[70] border border-border/50 mr-[218px]">
+                        {cat.tags.map((tag) => (
+                          <div key={tag.uuid} className="relative">
+                            <Link
+                              href={`/${cat.slug}/${tag.slug}`}
+                              onClick={() => setIsCategoriesOpen(false)}
+                              className="block px-4 py-2.5 whitespace-nowrap bg-transparent hover:bg-muted/70 transition-all duration-200 text-foreground hover:text-primary/80 rounded-md mx-2 my-1"
+                            >
+                              {tag.name}
+                            </Link>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <Link
@@ -372,137 +367,126 @@ export default function Navbar() {
       </div>
 
       {/* Mobile Panel */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-foreground/50 z-[45] lg:hidden"
-            onClick={() => setIsOpen(false)}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-foreground/50 z-[45] lg:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            ref={menuRef}
+            className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-[50] overflow-y-auto bg-gradient-to-br from-background via-muted/80 to-background/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none transition-transform duration-200"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              ref={menuRef}
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-0 right-0 min-h-screen w-3/4 max-w-sm z-[50] overflow-y-auto bg-gradient-to-br from-background via-muted/80 to-background/95 backdrop-blur-xl border-l border-border before:absolute before:inset-0 before:bg-gradient-to-tr before:from-primary/10 before:via-accent/10 before:to-secondary/10 before:pointer-events-none after:absolute after:inset-0 after:bg-[radial-gradient(circle_at_70%_20%,rgba(139,92,246,0.10),transparent_60%)] after:pointer-events-none"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-6 overflow-y-auto min-h-screen">
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  {/** Quick links **/}
-                  <Link
-                    href="/"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <Home className="h-6 w-6 text-foreground mb-2" />
-                    <span className="text-xs text-foreground">خانه</span>
-                  </Link>
-                  <Link
-                    href="/anime"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <span className="text-xs text-foreground">
-                      لیست انمیه ها
-                    </span>
-                  </Link>
-                  <Link
-                    href="/topic"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <span className="text-xs text-foreground">اخبار انیمه</span>
-                  </Link>
-                  <div className="col-span-3 flex items-center justify-center p-3 rounded-lg bg-card">
-                    <UserMenu />
-                  </div>
-                  <Link
-                    href="/search"
-                    onClick={() => setIsOpen(false)}
-                    prefetch={false}
-                    className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
-                  >
-                    <Search className="h-6 w-6 text-foreground mb-2" />
-                    <span className="text-xs text-foreground">جستجو</span>
-                  </Link>
+            <div className="p-6 overflow-y-auto min-h-screen">
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                {/** Quick links **/}
+                <Link
+                  href="/"
+                  onClick={() => setIsOpen(false)}
+                  prefetch={false}
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                >
+                  <Home className="h-6 w-6 text-foreground mb-2" />
+                  <span className="text-xs text-foreground">خانه</span>
+                </Link>
+                <Link
+                  href="/anime"
+                  onClick={() => setIsOpen(false)}
+                  prefetch={false}
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                >
+                  <span className="text-xs text-foreground">لیست انمیه ها</span>
+                </Link>
+                <Link
+                  href="/topic"
+                  onClick={() => setIsOpen(false)}
+                  prefetch={false}
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                >
+                  <span className="text-xs text-foreground">اخبار انیمه</span>
+                </Link>
+                <div className="col-span-3 flex items-center justify-center p-3 rounded-lg bg-card">
+                  <UserMenu />
                 </div>
-
-                {/* Mobile category path */}
-                {mobileCategoryPath.length > 0 && (
-                  <div className="flex items-center mb-4">
-                    <button
-                      onClick={handleMobileBackClick}
-                      className="flex items-center text-sm text-accent transition-colors"
-                    >
-                      <ChevronRight className="h-4 w-4 ml-1 text-accent" />
-                      <span className="  text-accent">بازگشت</span>
-                    </button>
-                    <div className="flex items-center overflow-x-auto whitespace-nowrap ml-2">
-                      {mobileCategoryPath.map((cat, i) => (
-                        <div key={cat.id} className="flex items-center">
-                          {i > 0 && (
-                            <ChevronLeft className="h-3 w-3 mx-1 text-muted-foreground" />
-                          )}
-                          <Link
-                            href={`/${cat.slug}`}
-                            prefetch={false}
-                            onClick={() => setIsOpen(false)}
-                            className={cn(
-                              "text-sm transition-colors",
-                              i === mobileCategoryPath.length - 1
-                                ? "font-medium text-foreground"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {cat.name}
-                          </Link>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <h3 className="font-medium mb-3 text-foreground">
-                  {mobileCategoryPath.length > 0 ? "تگ‌ها" : "دسته‌بندی‌ها"}
-                </h3>
-                <div className="grid grid-cols-2 gap-2">
-                  {mobileCategories.map((c) => (
-                    <div key={c.id || c.uuid} className="flex items-center">
-                      <Link
-                        href={`/${c.slug}`}
-                        prefetch={false}
-                        onClick={() => setIsOpen(false)}
-                        className="block p-2 bg-card rounded-lg text-sm hover:bg-muted transition-colors flex-1 text-foreground"
-                        aria-label="جستجو در منو"
-                      >
-                        {c.name}
-                      </Link>
-                      {c.tags?.length > 0 && (
-                        <button
-                          onClick={() =>
-                            handleMobileCategoryClick(c.id, c.name, c.slug)
-                          }
-                          className="p-2 ml-1 bg-card rounded-lg hover:bg-muted transition-colors"
-                          aria-label="نمایش تگ‌ها"
-                        >
-                          <ChevronLeft className="h-4 w-4 text-foreground" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                <Link
+                  href="/search"
+                  onClick={() => setIsOpen(false)}
+                  prefetch={false}
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                >
+                  <Search className="h-6 w-6 text-foreground mb-2" />
+                  <span className="text-xs text-foreground">جستجو</span>
+                </Link>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
+              {/* Mobile category path */}
+              {mobileCategoryPath.length > 0 && (
+                <div className="flex items-center mb-4">
+                  <button
+                    onClick={handleMobileBackClick}
+                    className="flex items-center text-sm text-accent transition-colors"
+                  >
+                    <ChevronRight className="h-4 w-4 ml-1 text-accent" />
+                    <span className="  text-accent">بازگشت</span>
+                  </button>
+                  <div className="flex items-center overflow-x-auto whitespace-nowrap ml-2">
+                    {mobileCategoryPath.map((cat, i) => (
+                      <div key={cat.id} className="flex items-center">
+                        {i > 0 && (
+                          <ChevronLeft className="h-3 w-3 mx-1 text-muted-foreground" />
+                        )}
+                        <Link
+                          href={`/${cat.slug}`}
+                          prefetch={false}
+                          onClick={() => setIsOpen(false)}
+                          className={cn(
+                            "text-sm transition-colors",
+                            i === mobileCategoryPath.length - 1
+                              ? "font-medium text-foreground"
+                              : "text-muted-foreground"
+                          )}
+                        >
+                          {cat.name}
+                        </Link>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <h3 className="font-medium mb-3 text-foreground">
+                {mobileCategoryPath.length > 0 ? "تگ‌ها" : "دسته‌بندی‌ها"}
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {mobileCategories.map((c) => (
+                  <div key={c.id || c.uuid} className="flex items-center">
+                    <Link
+                      href={`/${c.slug}`}
+                      prefetch={false}
+                      onClick={() => setIsOpen(false)}
+                      className="block p-2 bg-card rounded-lg text-sm hover:bg-muted transition-colors flex-1 text-foreground"
+                      aria-label="جستجو در منو"
+                    >
+                      {c.name}
+                    </Link>
+                    {c.tags?.length > 0 && (
+                      <button
+                        onClick={() =>
+                          handleMobileCategoryClick(c.id, c.name, c.slug)
+                        }
+                        className="p-2 ml-1 bg-card rounded-lg hover:bg-muted transition-colors"
+                        aria-label="نمایش تگ‌ها"
+                      >
+                        <ChevronLeft className="h-4 w-4 text-foreground" />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

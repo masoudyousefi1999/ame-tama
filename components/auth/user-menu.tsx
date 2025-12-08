@@ -6,8 +6,12 @@ import { useState, useRef, useEffect } from "react";
 import { User, LogOut, Settings, Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
-import LoginModal from "@/components/auth/login-modal";
+import dynamic from "next/dynamic";
 import { useLoginModal } from "@/context/login-modal-context";
+const LoginModal = dynamic(
+  () => import("@/components/auth/login-modal"),
+  { ssr: false }
+);
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";

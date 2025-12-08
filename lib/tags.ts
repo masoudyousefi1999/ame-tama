@@ -1,6 +1,7 @@
 import { ICategoryType } from "./categories";
 import { IProductType } from "./products";
 import { customFetch } from "./utils";
+import { productLimit } from "./product-limit";
 
 // تعریف نوع تگ
 export interface ITagType {
@@ -47,23 +48,20 @@ export async function getAllTags(
 // دریافت تگ با شناسه
 export async function getTagBySlug(
   slug: string,
-  options: { page?: number; limit?: number } = {}
-): Promise<{ tag: ITagType; totalCount?: number } | undefined> {
+  page: number = 1,
+  limit: number = productLimit
+): Promise<{ tag: ITagType; totalCount: number } | undefined> {
   try {
     const baseUrl =
       process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
-    const searchParams = new URLSearchParams();
-    if (options.page) {
-      searchParams.set("page", String(options.page));
-    }
-    if (options.limit) {
-      searchParams.set("limit", String(options.limit));
-    }
-    const queryString = searchParams.toString();
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+    });
 
     const res = await fetch(
-      `${baseUrl}/api/tags/${slug}${queryString ? `?${queryString}` : ""}`,
+      `${baseUrl}/api/tags/${slug}?${params.toString()}`,
       {
         next: { tags: [`tag-${slug}`] },
       }

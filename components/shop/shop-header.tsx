@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { CustomImage as Image } from "@/components/ui/custom-image";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -54,12 +53,11 @@ export default function ShopHeader() {
     <div className="relative h-96 w-full overflow-hidden rounded-2xl md:h-[500px]">
       {/* slides */}
       {slides.map((slide, index) => (
-        <motion.div
+        <div
           key={index}
-          className="absolute inset-0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: currentSlide === index ? 1 : 0 }}
-          transition={{ duration: 0.8 }}
+          className={`absolute inset-0 transition-opacity duration-700 ${
+            currentSlide === index ? "opacity-100" : "opacity-0"
+          }`}
         >
           <Image
             src={slide.image || "/placeholder.svg"}
@@ -74,39 +72,20 @@ export default function ShopHeader() {
           <div className="absolute inset-0 bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-sm" />
 
           {/* slide content */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-card-foreground">
-            <motion.h1
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-card-foreground transition-all duration-700">
+            <h1
               className="mb-4 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{
-                opacity: currentSlide === index ? 1 : 0,
-                y: currentSlide === index ? 0 : 20,
-              }}
-              transition={{ duration: 0.8, delay: 0.2 }}
             >
               {slide.title}
-            </motion.h1>
+            </h1>
 
-            <motion.p
+            <p
               className="mb-8 max-w-2xl text-lg md:text-xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{
-                opacity: currentSlide === index ? 1 : 0,
-                y: currentSlide === index ? 0 : 20,
-              }}
-              transition={{ duration: 0.8, delay: 0.4 }}
             >
               {slide.description}
-            </motion.p>
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{
-                opacity: currentSlide === index ? 1 : 0,
-                y: currentSlide === index ? 0 : 20,
-              }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
+            <div>
               <Button
                 size="lg"
                 asChild
@@ -117,9 +96,9 @@ export default function ShopHeader() {
                   <ArrowRight className="ml-2 h-4 w-4 rotate-180 transition-transform group-hover:translate-x-1 rtl:rotate-0" />
                 </a>
               </Button>
-            </motion.div>
+            </div>
           </div>
-        </motion.div>
+        </div>
       ))}
 
       {/* dots */}

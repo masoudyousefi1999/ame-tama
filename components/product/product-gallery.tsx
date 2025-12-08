@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -93,29 +92,6 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
     return () => observer.disconnect();
   }, [images]);
 
-  const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 80 : -80,
-      opacity: 0,
-      scale: 0.98,
-      filter: "blur(2px)",
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      scale: 1,
-      filter: "blur(0px)",
-      transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
-    },
-    exit: (dir: number) => ({
-      x: dir < 0 ? 80 : -80,
-      opacity: 0,
-      scale: 0.98,
-      filter: "blur(2px)",
-      transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] },
-    }),
-  };
-
   const handleNext = () => {
     setDirection(1);
     setCurrentIndex((i) => (i === images.length - 1 ? 0 : i + 1));
@@ -123,15 +99,6 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
   const handlePrevious = () => {
     setDirection(-1);
     setCurrentIndex((i) => (i === 0 ? images.length - 1 : i - 1));
-  };
-
-  const handleDragEnd = (
-    _e: MouseEvent | TouchEvent | PointerEvent,
-    info: { offset: { x: number } }
-  ) => {
-    setIsDragging(false);
-    if (Math.abs(info.offset.x) > 70)
-      info.offset.x > 0 ? handlePrevious() : handleNext();
   };
 
   const handleThumbnailClick = (index: number) => {
@@ -151,41 +118,26 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
         ref={constraintsRef}
         className="relative aspect-square overflow-hidden rounded-lg bg-card ring-1 ring-border"
       >
-        <AnimatePresence initial={false} custom={direction}>
-          <motion.div
-            key={currentIndex}
-            custom={direction}
-            variants={slideVariants as any}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.2}
-            onDragStart={() => setIsDragging(true)}
-            onDragEnd={handleDragEnd}
-            className="absolute inset-0 h-full w-full"
-          >
-            <CustomImage
-              src={images[currentIndex]?.url || "/placeholder.svg"}
-              alt={`${alt} - تصویر ${currentIndex + 1}`}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              quality={currentIndex === 0 ? 90 : 75}
-              className={cn(
-                "object-contain transition-opacity duration-300",
-                imageLoaded ? "opacity-100" : "opacity-0"
-              )}
-              priority={currentIndex === 0}
-              fetchPriority={currentIndex === 0 ? "high" : "auto"}
-              loading={currentIndex === 0 ? "eager" : "lazy"}
-              enableBlur
-              placeholder="blur"
-              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-              onLoad={handleImageLoad}
-            />
-          </motion.div>
-        </AnimatePresence>
+        <div className="absolute inset-0 h-full w-full transition-opacity duration-300">
+          <CustomImage
+            src={images[currentIndex]?.url || "/placeholder.svg"}
+            alt={`${alt} - تصویر ${currentIndex + 1}`}
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            quality={currentIndex === 0 ? 90 : 75}
+            className={cn(
+              "object-contain transition-opacity duration-300",
+              imageLoaded ? "opacity-100" : "opacity-0"
+            )}
+            priority={currentIndex === 0}
+            fetchPriority={currentIndex === 0 ? "high" : "auto"}
+            loading={currentIndex === 0 ? "eager" : "lazy"}
+            enableBlur
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+            onLoad={handleImageLoad}
+          />
+        </div>
 
         {/* Prev / Next buttons */}
         <Button
