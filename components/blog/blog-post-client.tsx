@@ -42,7 +42,7 @@ export default function BlogPostClient({
       },
       {
         label: blogPost.title,
-        href: `topic/${topic.slug}/${blogPost.slug}`,
+        href: `/topic/${topic.slug}/${blogPost.slug}`,
         isCurrent: true,
       },
     ],

@@ -14,6 +14,12 @@ export async function generateMetadata({
   params,
 }: BlogTopicPageProps): Promise<Metadata> {
   const { topicSlug } = await params;
+  if (!topicSlug) {
+    return {
+      title: "تاپیک یافت نشد | AME-TAMA",
+      description: "تاپیک مورد نظر یافت نشد",
+    };
+  }
   const data = await getBlogTopicBySlug(topicSlug, 1, 1);
 
   // Get topic from response or fallback to first blog's topic
