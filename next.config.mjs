@@ -83,7 +83,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
-    path: "/_next/image",
+    unoptimized: true,
   },
   // Enable compression
   compress: true,
