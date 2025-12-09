@@ -13,7 +13,6 @@ export default function ConditionalLayout({
 }) {
   const pathname = usePathname();
 
-  // Check if we're in admin routes
   const isAdminRoute = pathname.startsWith("/admin");
   const footerHiddenRoutes = ["/checkout", "/cart", "/login", "/auth"];
   const shouldHideFooter = footerHiddenRoutes.some((route) =>
@@ -26,16 +25,25 @@ export default function ConditionalLayout({
         <>
           <MobileTopBar />
           <Navbar />
-          <main id="main-content" className="flex-1 pt-[50px]">
+          <main
+            id="main-content"
+            className="flex-1 pt-[40px] pb-[calc(64px+env(safe-area-inset-bottom,0px))]"
+          >
             {children}
             {!shouldHideFooter && <Footer />}
-            <div className="h-16 lg:hidden" aria-hidden="true" />
           </main>
           <MobileBottomNavbar />
         </>
       )}
 
-      {isAdminRoute && <main id="main-content">{children}</main>}
+      {isAdminRoute && (
+        <main
+          id="main-content"
+          className="flex-1 pt-[50px] pb-[calc(64px+env(safe-area-inset-bottom,0px))]"
+        >
+          {children}
+        </main>
+      )}
     </div>
   );
 }
