@@ -13,16 +13,13 @@ import {
   Search,
   ChevronLeft,
 } from "lucide-react";
-import dynamic from "next/dynamic";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import CartDropdown from "@/components/cart/cart-dropdown";
 import UserMenu from "@/components/auth/user-menu";
 import UnifiedSearch from "@/components/search/unified-search";
 import { type ICategoryType } from "@/lib/categories";
-import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
-import { useCart } from "@/context/cart-context";
 
 interface CategoryWithChildren extends ICategoryType {}
 

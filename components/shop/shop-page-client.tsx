@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useRef, useCallback, memo, useMemo } from "react";
 import type React from "react";
-import { Button } from "@/components/ui/button";
 import { customFetch } from "@/lib/utils";
 import { ProductCard } from "../product/product-card";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
 import GradientHero from "@/components/ui/gradient-hero";
+import { Button } from "@/components/ui/button";
+import { BackToTopButton } from "@/components/back-to-top-button";
 
 const MemoizedProductCard = memo(ProductCard);
 
@@ -185,6 +186,8 @@ export default function ShopPageClient({
           />
         )}
       </section>
+
+      <BackToTopButton threshold={2500} />
     </div>
   );
 }

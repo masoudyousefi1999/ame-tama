@@ -9,6 +9,7 @@ import { cn, customFetch } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
 import { ArrowLeft, Eye } from "lucide-react";
+import { BackToTopButton } from "../back-to-top-button";
 
 interface BlogPostClientProps {
   blogPost: IBlogPostType;

@@ -129,8 +129,9 @@ export default function UserMenu() {
             }
             alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
             fill
+            loading="lazy"
+            quality={30}
             sizes="36px"
-            priority
             className="object-cover"
           />
         </div>

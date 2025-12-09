@@ -16,6 +16,15 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === "production", // Remove console logs in production
   },
 
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
+
   // Security headers
   async headers() {
     return [
@@ -69,12 +78,12 @@ const nextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 600, 800],
     formats: ["image/webp", "image/avif"],
-    minimumCacheTTL: 30, // Shorter cache for mobile to allow faster fallback
+    // Cache optimized images for ~30 days to satisfy Lighthouse caching
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
     path: "/_next/image",
-    unoptimized: true,
   },
   // Enable compression
   compress: true,
@@ -90,14 +99,6 @@ const nextConfig = {
       "@radix-ui/react-separator",
       "@radix-ui/react-slot",
     ],
-    turbo: {
-      rules: {
-        "*.svg": {
-          loaders: ["@svgr/webpack"],
-          as: "*.js",
-        },
-      },
-    },
   },
   eslint: {
     ignoreDuringBuilds: true,

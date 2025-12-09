@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { ChevronLeft, ChevronRight, ShoppingCart, Eye } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getRelatedProducts, IProductType } from "@/lib/products";
 import { ProductCard } from "./product-card";
@@ -116,7 +116,7 @@ export default function RelatedProducts({ uuid }: RelatedProductsProps) {
       <div className="grid grid-flow-col auto-cols-[80%] sm:auto-cols-[45%] md:auto-cols-[30%] lg:auto-cols-[24%] gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-muted-foreground/30 scrollbar-track-transparent">
         {products.map((product) => (
           <div key={product.uuid} className="snap-start">
-            <ProductCard product={product} />
+            <ProductCard product={product} eagerLoad={false} />
           </div>
         ))}
       </div>

@@ -125,7 +125,7 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${vazirmatn.variable} ${langar.variable} h-full overflow-x-hidden`}
+        className={`${vazirmatn.variable} ${langar.variable} min-h-screen overflow-x-hidden`}
       >
         <LoginToastEffect />
         <ScrollToTop />

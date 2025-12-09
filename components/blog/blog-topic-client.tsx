@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
-import LoadingSpinner from "../ui/loading-spinner";
 import GradientHero from "@/components/ui/gradient-hero";
 import { Eye } from "lucide-react";
+import { BackToTopButton } from "../back-to-top-button";
 
 const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: IBlogPostType }) => {
   const isMobile = useIsMobile();
@@ -323,6 +323,7 @@ export default function BlogTopicClient({
           )}
         </div>
       </section>
+      <BackToTopButton threshold={2500} />
     </div>
   );
 }

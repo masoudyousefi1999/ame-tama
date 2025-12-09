@@ -200,6 +200,10 @@ export default function Footer() {
                 alt="نماد اعتماد الکترونیکی"
                 data-code="BvOr2VrvxRZhOtMRTyHPz1alYdx7aN4z"
                 style={{ cursor: "pointer" }}
+                width={90}
+                height={90}
+                loading="lazy"
+                decoding="async"
               />
             </a>
           </div>
