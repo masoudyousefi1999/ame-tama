@@ -123,7 +123,7 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
             src={images[currentIndex]?.url || "/placeholder.svg"}
             alt={`${alt} - تصویر ${currentIndex + 1}`}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
+            // sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
             quality={currentIndex === 0 ? 85 : 70}
             className={cn(
               "object-contain transition-opacity duration-300",

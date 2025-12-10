@@ -6,7 +6,7 @@ import { Home, Store, BookOpen, User, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
-import { CustomImage } from "./ui/custom-image";
+import Image from "next/image";
 
 interface NavItem {
   name: string;
@@ -102,16 +102,16 @@ export function MobileBottomNavbar() {
                         : "group-hover:scale-105"
                     )}
                   >
-                    {typeof item?.avatarUrl === "string" && item?.avatarUrl?.trim() !== "" ? (
-                      <CustomImage
+                    {typeof item?.avatarUrl === "string" &&
+                    item?.avatarUrl?.trim() !== "" ? (
+                      <Image
                         src={item?.avatarUrl}
                         alt="آواتار کاربر"
                         className="h-full w-full object-cover"
                         referrerPolicy="no-referrer"
                         loading="lazy"
                         quality={30}
-                        width={100}
-                        height={100}
+                        fill
                       />
                     ) : (
                       <div className="h-full w-full bg-muted flex items-center justify-center">

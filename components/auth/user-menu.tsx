@@ -131,7 +131,7 @@ export default function UserMenu() {
             fill
             loading="lazy"
             quality={30}
-            sizes="36px"
+            // sizes="36px"
             className="object-cover"
           />
         </div>
