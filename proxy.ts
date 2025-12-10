@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { customFetch } from "./lib/utils";
 
 // Helper function to extract the ACCESS_TOKEN from the cookie header
 function getAccessTokenFromCookie(cookieHeader: string): string | null {
@@ -8,7 +7,7 @@ function getAccessTokenFromCookie(cookieHeader: string): string | null {
   return match ? match[1] : null;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
 
   if (pathname.startsWith("/checkout/success/payments/zarinpal")) {
