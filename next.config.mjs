@@ -89,7 +89,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
-    // unoptimized: true,
+    unoptimized: true,
   },
   // Enable compression
   compress: true,
