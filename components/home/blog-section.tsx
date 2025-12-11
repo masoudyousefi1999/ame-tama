@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { Eye, ArrowLeft } from "lucide-react";
 import { IBlogPostType } from "@/lib/blog";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,6 @@ const BlogCard = ({ post }: { post: IBlogPostType }) => {
             src={post.image.url}
             alt={post.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
             quality={80}
@@ -83,12 +82,13 @@ export default function BlogSection({
 }: BlogSectionProps) {
   return (
     <section className={`relative py-16 md:py-24 ${bgColor}`}>
-      <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(circle,rgba(139,92,246,0.18)_1px,transparent_1px)] [background-size:20px_20px]" />
       <div className="relative container mx-auto px-6 lg:px-8 z-10">
         <div className="text-center mb-12 md:mb-20">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4 md:mb-6">
             {title}
           </h2>
+          <div className="mx-auto mb-6 h-1 w-20 rounded-full bg-gradient-to-r from-primary to-accent" />
           {description && (
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               {description}

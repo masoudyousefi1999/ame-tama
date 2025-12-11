@@ -1,17 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { useState, useRef, useEffect } from "react";
 import { User, LogOut, Settings, Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/auth-context";
 import dynamic from "next/dynamic";
 import { useLoginModal } from "@/context/login-modal-context";
-const LoginModal = dynamic(
-  () => import("@/components/auth/login-modal"),
-  { ssr: false }
-);
+const LoginModal = dynamic(() => import("@/components/auth/login-modal"), {
+  ssr: false,
+});
 import { cn } from "@/lib/utils";
 import { toast } from "@/components/ui/use-toast";
 import { useCart } from "@/context/cart-context";
@@ -131,7 +130,6 @@ export default function UserMenu() {
             fill
             loading="lazy"
             quality={30}
-            // sizes="36px"
             className="object-cover"
           />
         </div>
@@ -166,8 +164,6 @@ export default function UserMenu() {
               }
               alt={`${user.firstName || "کاربر"} ${user.lastName || ""}`}
               fill
-              sizes="48px"
-              priority
               className="object-cover"
             />
           </div>

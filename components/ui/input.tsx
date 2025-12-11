@@ -46,9 +46,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200",
             isFocused && "ring-2 ring-primary/20 border-primary/50",
             hasValue && !error && !success && "border-primary/30",
-            error &&
-              "border-destructive focus-visible:ring-destructive form-error",
-            success && "border-success focus-visible:ring-success form-success",
+            error && "border-destructive focus-visible:ring-destructive",
+            success && "border-success focus-visible:ring-success",
             className
           )}
           ref={ref}
@@ -58,7 +57,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {error && (
-          <div className="absolute -bottom-5 right-0 text-xs text-destructive animate-fade-in-up">
+          <div className="absolute -bottom-5 right-0 text-xs text-destructive transition-opacity duration-200">
             <span className="inline-flex items-center gap-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path
@@ -72,7 +71,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           </div>
         )}
         {success && (
-          <div className="absolute -bottom-5 right-0 text-xs text-success animate-fade-in-up">
+          <div className="absolute -bottom-5 right-0 text-xs text-success transition-opacity duration-200">
             <span className="inline-flex items-center gap-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                 <path

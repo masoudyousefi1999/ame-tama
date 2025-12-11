@@ -4,7 +4,7 @@ import { useEffect, useMemo } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { ITagType } from "@/lib/tags";
@@ -35,7 +35,6 @@ const AnimeCard = ({ tag }: { tag: ITagType }) => {
             src={tag.image.url}
             alt={tag.name}
             fill
-            sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
             quality={80}
@@ -89,9 +88,7 @@ export default function AnimePageClient({ tags }: AnimePageClientProps) {
         <GradientHero
           title="لیست انیمه ها"
           description="مجموعه کامل انیمه ها برای پیدا کردن محصولات مورد علاقه‌تان"
-          stats={[
-            { label: `${tagsCount} انیمه موجود` }
-          ]}
+          stats={[{ label: `${tagsCount} انیمه موجود` }]}
         />
       </div>
 

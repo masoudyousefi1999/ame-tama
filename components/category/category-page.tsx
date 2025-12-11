@@ -6,7 +6,7 @@ import { type ICategoryType } from "@/lib/categories";
 import { customFetch } from "@/lib/utils";
 import Link from "next/link";
 import { IProductType } from "@/lib/products";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import GradientHero from "@/components/ui/gradient-hero";
 import { productLimit } from "@/lib/product-limit";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -116,7 +116,6 @@ export default function CategoryPage({
                 src={tag.image?.url ?? "/placeholder.jpg"}
                 alt={tag.name}
                 fill
-                sizes="(max-width:640px) 50vw, (max-width:768px) 33vw, (max-width:1024px) 25vw, (max-width:1280px) 20vw, 16vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-110"
                 loading="lazy"
                 quality={80}
@@ -178,53 +177,53 @@ export default function CategoryPage({
           description={category.description || null}
           image={category.image || null}
           stats={[
-          { label: `${totalCount} محصول موجود` },
-          ...(category.tags && category.tags.length > 0
-            ? [{ label: `${category.tags.length} انیمه موجود` }]
-            : []),
-        ]}
-        actions={[
-          {
-            label: "مشاهده محصولات",
-            href: "#products",
-            icon: (
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            ),
-          },
-          {
-            label: "مشاهده فروشگاه",
-            href: "/shop",
-            icon: (
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
-              </svg>
-            ),
-            variant: "secondary",
-            prefetch: false,
-          },
-        ]}
+            { label: `${totalCount} محصول موجود` },
+            ...(category.tags && category.tags.length > 0
+              ? [{ label: `${category.tags.length} انیمه موجود` }]
+              : []),
+          ]}
+          actions={[
+            {
+              label: "مشاهده محصولات",
+              href: "#products",
+              icon: (
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              ),
+            },
+            {
+              label: "مشاهده فروشگاه",
+              href: "/shop",
+              icon: (
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
+                </svg>
+              ),
+              variant: "secondary",
+              prefetch: false,
+            },
+          ]}
         />
       </div>
 

@@ -1,10 +1,6 @@
-"use client";
-
-import { memo, useMemo } from "react";
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Category {
   id: string;
@@ -19,21 +15,13 @@ interface CategoryShowcaseProps {
   categories: Category[];
 }
 
-const CategoryCard = memo(({ category }: { category: Category }) => {
-  const isMobile = useIsMobile();
-
-  // Category images are loaded with lazy loading, no preloading needed
-
+function CategoryCard({ category }: { category: Category }) {
   return (
     <Link
       href={`/${category.slug}`}
       prefetch={false}
       className={cn(
-        "group relative overflow-hidden rounded-2xl border border-border bg-card bg-opacity-50 transition-all duration-300",
-        // Reduce effects on mobile for better performance
-        isMobile
-          ? "shadow-md"
-          : "shadow-card hover:shadow-2xl hover:scale-[1.02]"
+        "group relative overflow-hidden rounded-2xl border border-border bg-card bg-opacity-50 transition-all duration-300 shadow-card hover:shadow-2xl hover:scale-[1.02]"
       )}
     >
       <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -43,18 +31,11 @@ const CategoryCard = memo(({ category }: { category: Category }) => {
             src={category.image}
             alt={category.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className={cn(
-              "object-cover transition-transform duration-500",
-              !isMobile && "group-hover:scale-105"
-            )}
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             loading="lazy"
-            quality={isMobile ? 70 : 85}
+            quality={80}
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-            onError={() => {
-              console.warn(`Category image failed to load: ${category.name}`);
-            }}
           />
         ) : (
           <div className="h-full w-full bg-gradient-to-br from-muted/50 to-muted/30 flex items-center justify-center">
@@ -81,20 +62,12 @@ const CategoryCard = memo(({ category }: { category: Category }) => {
       </div>
     </Link>
   );
-});
-
-CategoryCard.displayName = "CategoryCard";
+}
 
 export default function CategoryShowcase({
   categories,
 }: CategoryShowcaseProps) {
-  const isMobile = useIsMobile();
-
-  // Memoize displayed categories to prevent unnecessary re-renders
-  const displayedCategories = useMemo(() => {
-    // Show fewer categories on mobile for better performance
-    return isMobile ? categories.slice(0, 4) : categories.slice(0, 6);
-  }, [categories, isMobile]);
+  const displayedCategories = categories.slice(0, 6);
 
   if (!categories || categories.length === 0) {
     return (

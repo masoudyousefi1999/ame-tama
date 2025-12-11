@@ -93,13 +93,12 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {ripples.map((ripple) => (
           <span
             key={ripple.id}
-            className="absolute rounded-full bg-white/30 animate-ripple pointer-events-none"
+            className="absolute rounded-full bg-white/30 animate-ping pointer-events-none"
             style={{
               left: ripple.x,
               top: ripple.y,
               width: "100px",
               height: "100px",
-              transform: "scale(0)",
             }}
           />
         ))}

@@ -23,15 +23,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/components/ui/use-toast";
 import { Edit, Trash2, Plus } from "lucide-react";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { customFetch } from "@/lib/utils";
 import { ITagType } from "@/lib/tags";
 
-export function TagsTable({
-  initialTags,
-}: {
-  initialTags: ITagType[];
-}) {
+export function TagsTable({ initialTags }: { initialTags: ITagType[] }) {
   const router = useRouter();
   const { toast } = useToast();
   const [tags, setTags] = useState<ITagType[]>(initialTags);
@@ -63,9 +59,7 @@ export function TagsTable({
       toast({
         title: "خطا",
         description:
-          error instanceof Error
-            ? error.message
-            : "حذف انیمه با خطا مواجه شد",
+          error instanceof Error ? error.message : "حذف انیمه با خطا مواجه شد",
         variant: "error",
       });
     } finally {
@@ -102,8 +96,12 @@ export function TagsTable({
                 <TableHead className="w-[80px] text-right text-foreground">
                   تصویر
                 </TableHead>
-                <TableHead className="text-right text-foreground">نام</TableHead>
-                <TableHead className="text-right text-foreground">نامک</TableHead>
+                <TableHead className="text-right text-foreground">
+                  نام
+                </TableHead>
+                <TableHead className="text-right text-foreground">
+                  نامک
+                </TableHead>
                 <TableHead className="text-right text-foreground">
                   توضیحات
                 </TableHead>
@@ -162,9 +160,7 @@ export function TagsTable({
                           variant="ghost"
                           size="icon"
                           onClick={() =>
-                            router.push(
-                              `/admin/tags/${tag.uuid}/edit`
-                            )
+                            router.push(`/admin/tags/${tag.uuid}/edit`)
                           }
                           className="hover:bg-muted text-muted-foreground hover:text-foreground"
                         >
@@ -200,8 +196,7 @@ export function TagsTable({
               تأیید حذف
             </AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground">
-              آیا از حذف این انیمه اطمینان دارید؟ این عمل غیرقابل بازگشت
-              است.
+              آیا از حذف این انیمه اطمینان دارید؟ این عمل غیرقابل بازگشت است.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex-row-reverse space-x-reverse space-x-2">
@@ -221,4 +216,3 @@ export function TagsTable({
     </div>
   );
 }
-

@@ -51,13 +51,18 @@ export async function getProductBySlug(
   init?: Parameters<typeof customFetch>[1]
 ): Promise<IProductType | null> {
   try {
-    // Use regular fetch to call Next.js API route (not customFetch to avoid NestJS backend)
+    // Call the local Next API route with cacheable settings so the HTML can be cached/bfcache-friendly.
     const baseUrl =
       process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-    const res = await fetch(`${baseUrl}/api/product/${slug}`, {
+    const apiUrl = `${baseUrl}/api/product/${slug}`;
+
+    const res = await fetch(apiUrl, {
       method: "GET",
+      cache: "force-cache",
+      next: { revalidate: 300, tags: ["products", `product-${slug}`] },
       headers: {
         "Content-Type": "application/json",
+        ...(init?.headers || {}),
       },
       ...init,
     });

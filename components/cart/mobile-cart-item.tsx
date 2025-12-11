@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import Link from "next/link";
 import { Trash2, ExternalLink } from "lucide-react";
 import { IProductType } from "@/lib/products";
@@ -38,7 +38,6 @@ export function MobileCartItem({
             src={item.product?.productMedia[0]?.url || "/placeholder.svg"}
             alt={item.product.name}
             fill
-            sizes="80px"
             className="object-cover transition-transform duration-300 hover:scale-105"
           />
         </Link>

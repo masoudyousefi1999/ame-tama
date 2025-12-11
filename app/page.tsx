@@ -78,7 +78,7 @@ export default async function Home() {
       />
       {/* Hero Section */}
       <div className="relative">
-        <div className="absolute inset-0 bg-pattern-dots opacity-20 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle,rgba(139,92,246,0.18)_1px,transparent_1px)] [background-size:20px_20px]" />
         <div className="relative z-10">
           <HeroSection />
         </div>
@@ -89,12 +89,13 @@ export default async function Home() {
 
       {/* Category Showcase */}
       <section className="relative py-16 md:py-24 bg-muted/60">
-        <div className="absolute inset-0 bg-pattern-grid opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none opacity-10 bg-[linear-gradient(rgba(139,92,246,0.12)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.12)_1px,transparent_1px)] [background-size:20px_20px]" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4 md:mb-6">
               تنوع محصول
             </h2>
+            <div className="mx-auto mb-6 h-1 w-20 rounded-full bg-gradient-to-r from-primary to-accent" />
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               مجموعه‌ای متنوع از دسته‌بندی‌های مختلف برای انتخاب بهترین محصولات
               انیمه
@@ -108,12 +109,13 @@ export default async function Home() {
 
       {/* Tags Showcase */}
       <section className="relative py-16 md:py-24 bg-background">
-        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(circle,rgba(139,92,246,0.18)_1px,transparent_1px)] [background-size:20px_20px]" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4 md:mb-6">
               انیمه مورد علاقه‌ات رو انتخاب کن
             </h2>
+            <div className="mx-auto mb-6 h-1 w-20 rounded-full bg-gradient-to-r from-primary to-accent" />
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               محصولات متنوع انیمه مورد علاقه‌ات رو ببین و بهترین محصولات رو پیدا
               کن
@@ -144,12 +146,13 @@ export default async function Home() {
 
       {/* Testimonials */}
       <section className="relative py-16 md:py-24 bg-muted/60">
-        <div className="absolute inset-0 bg-pattern-dots opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(circle,rgba(139,92,246,0.18)_1px,transparent_1px)] [background-size:20px_20px]" />
         <div className="relative container mx-auto px-6 lg:px-8 z-10">
           <div className="text-center mb-12 md:mb-20">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-6 md:mb-8 section-title">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary mb-4 md:mb-6">
               نظرات مشتریان
             </h2>
+            <div className="mx-auto mb-6 h-1 w-20 rounded-full bg-gradient-to-r from-primary to-accent" />
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               تجربیات واقعی مشتریان ما از کیفیت و خدمات AME-TAMA
             </p>

@@ -6,6 +6,8 @@ import ProductSchema from "@/components/seo/product-schema";
 import GoogleShoppingSchema from "@/components/seo/google-shopping-schema";
 import { getSiteUrl } from "@/lib/site-url";
 
+export const revalidate = 300;
+
 export async function generateMetadata({
   params,
 }: {

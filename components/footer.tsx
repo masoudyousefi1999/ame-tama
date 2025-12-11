@@ -14,11 +14,7 @@ import { BrandedIllustration } from "./ui/branded-illustration";
 
 export default function Footer() {
   return (
-    <footer className="relative bg-background border-t border-border overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-pattern-dots opacity-5" />
-      <BrandedIllustration variant="footer" />
-
+    <footer className="bg-background border-t border-border">
       <div className="relative container mx-auto px-4 md:px-6 py-12">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {/* ─────────────────── Brand / about ─────────────────── */}
@@ -208,28 +204,6 @@ export default function Footer() {
             </a>
           </div>
         </div>
-      </div>
-
-      {/* Wave Effect at Bottom */}
-      <div className="relative w-full h-16 overflow-hidden">
-        <svg
-          className="absolute bottom-0 w-full h-full"
-          viewBox="0 0 1200 120"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,0 C300,60 600,30 1200,60 L1200,120 L0,120 Z"
-            fill="url(#waveGradient)"
-            className="animate-wave"
-          />
-          <defs>
-            <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="hsl(var(--primary) / 0.12)" />
-              <stop offset="50%" stopColor="hsl(var(--secondary) / 0.18)" />
-              <stop offset="100%" stopColor="hsl(var(--accent) / 0.12)" />
-            </linearGradient>
-          </defs>
-        </svg>
       </div>
     </footer>
   );

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import type React from "react";
 
@@ -84,7 +84,7 @@ export default function GradientHero({
   };
 
   return (
-    <header
+    <div
       className={cn(
         "relative overflow-hidden rounded-3xl group transition-all duration-300 ease-in-out",
         className
@@ -94,10 +94,22 @@ export default function GradientHero({
         <div className="absolute inset-0 bg-gradient-to-br from-background via-muted to-background" />
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-accent/10 to-primary/20" />
 
-        <div className="absolute top-10 left-10 w-40 h-40 bg-primary/10 rounded-full blur-2xl md:animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute top-32 right-20 w-32 h-32 bg-accent/10 rounded-full blur-2xl md:animate-pulse" style={{ animationDuration: '4s', animationDelay: '1s' }} />
-        <div className="absolute bottom-20 left-1/4 w-36 h-36 bg-primary/10 rounded-full blur-2xl md:animate-pulse" style={{ animationDuration: '4s', animationDelay: '2s' }} />
-        <div className="absolute bottom-32 right-1/3 w-28 h-28 bg-accent/10 rounded-full blur-2xl md:animate-pulse" style={{ animationDuration: '4s', animationDelay: '0.5s' }} />
+        <div
+          className="absolute top-10 left-10 w-40 h-40 bg-primary/10 rounded-full blur-2xl md:animate-pulse"
+          style={{ animationDuration: "4s" }}
+        />
+        <div
+          className="absolute top-32 right-20 w-32 h-32 bg-accent/10 rounded-full blur-2xl md:animate-pulse"
+          style={{ animationDuration: "4s", animationDelay: "1s" }}
+        />
+        <div
+          className="absolute bottom-20 left-1/4 w-36 h-36 bg-primary/10 rounded-full blur-2xl md:animate-pulse"
+          style={{ animationDuration: "4s", animationDelay: "2s" }}
+        />
+        <div
+          className="absolute bottom-32 right-1/3 w-28 h-28 bg-accent/10 rounded-full blur-2xl md:animate-pulse"
+          style={{ animationDuration: "4s", animationDelay: "0.5s" }}
+        />
 
         {image && (
           <div className="absolute inset-0">
@@ -105,9 +117,10 @@ export default function GradientHero({
               src={image}
               alt={title}
               fill
-              sizes="100vw"
+              quality={70}
+              loading="eager"
+              fetchPriority="high"
               className="object-cover opacity-25 group-hover:opacity-35 transition-all duration-700 scale-105 md:group-hover:scale-110"
-              priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />
             <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-transparent to-accent/20" />
@@ -144,7 +157,7 @@ export default function GradientHero({
                           "w-2 h-2 rounded-full md:animate-pulse",
                           INDICATOR_COLORS[idx % INDICATOR_COLORS.length]
                         )}
-                        style={{ animationDuration: '3s' }}
+                        style={{ animationDuration: "3s" }}
                       />
                       <span className="text-white font-medium text-sm">
                         {stat.label}
@@ -165,7 +178,6 @@ export default function GradientHero({
 
         <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-background to-transparent" />
       </section>
-    </header>
+    </div>
   );
 }
-

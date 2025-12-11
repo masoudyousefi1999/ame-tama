@@ -1,10 +1,10 @@
-import { CustomImage as Image } from "@/components/ui/custom-image";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
+import Image from "@/components/ui/custom-image";
 
 export const metadata: Metadata = {
   title: "درباره ما | AME-TAMA",

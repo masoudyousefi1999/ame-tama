@@ -42,21 +42,21 @@ const toastVariants = cva(
     variants: {
       variant: {
         default:
-          "border-gray-200 bg-white text-gray-900 shadow-lg dark:border-gray-700/50 dark:bg-gray-900/95 dark:text-gray-100 animate-toast-slide-in",
+          "border-gray-200 bg-white text-gray-900 shadow-lg dark:border-gray-700/50 dark:bg-gray-900/95 dark:text-gray-100",
         success:
-          "border-emerald-200 bg-emerald-50 text-emerald-900 shadow-lg dark:border-emerald-800/50 dark:bg-emerald-950/95 dark:text-emerald-100 toast-success",
+          "border-emerald-200 bg-emerald-50 text-emerald-900 shadow-lg dark:border-emerald-800/50 dark:bg-emerald-950/95 dark:text-emerald-100",
         error:
-          "border-red-200 bg-red-50 text-red-900 shadow-lg dark:border-red-800/50 dark:bg-red-950/95 dark:text-red-100 toast-error",
+          "border-red-200 bg-red-50 text-red-900 shadow-lg dark:border-red-800/50 dark:bg-red-950/95 dark:text-red-100",
         warning:
-          "border-amber-200 bg-amber-50 text-amber-900 shadow-lg dark:border-amber-800/50 dark:bg-amber-950/95 dark:text-amber-100 toast-warning",
-        info: "border-blue-200 bg-blue-50 text-blue-900 shadow-lg dark:border-blue-800/50 dark:bg-blue-950/95 dark:text-blue-100 animate-toast-slide-in",
+          "border-amber-200 bg-amber-50 text-amber-900 shadow-lg dark:border-amber-800/50 dark:bg-amber-950/95 dark:text-amber-100",
+        info: "border-blue-200 bg-blue-50 text-blue-900 shadow-lg dark:border-blue-800/50 dark:bg-blue-950/95 dark:text-blue-100",
         login:
-          "border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50 text-purple-900 shadow-lg dark:border-purple-800/50 dark:from-purple-950/95 dark:to-indigo-950/95 dark:text-purple-100 toast-login",
-        cart: "border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 text-green-900 shadow-lg dark:border-green-800/50 dark:from-green-950/95 dark:to-emerald-950/95 dark:text-green-100 toast-cart",
+          "border-purple-200 bg-gradient-to-br from-purple-50 to-indigo-50 text-purple-900 shadow-lg dark:border-purple-800/50 dark:from-purple-950/95 dark:to-indigo-950/95 dark:text-purple-100",
+        cart: "border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 text-green-900 shadow-lg dark:border-green-800/50 dark:from-green-950/95 dark:to-emerald-950/95 dark:text-green-100",
         wishlist:
-          "border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50 text-pink-900 shadow-lg dark:border-pink-800/50 dark:from-pink-950/95 dark:to-rose-950/95 dark:text-pink-100 toast-wishlist",
+          "border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50 text-pink-900 shadow-lg dark:border-pink-800/50 dark:from-pink-950/95 dark:to-rose-950/95 dark:text-pink-100",
         anime:
-          "border-violet-200 bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-50 text-violet-900 shadow-lg dark:border-violet-800/50 dark:from-violet-950/95 dark:via-purple-950/95 dark:to-indigo-950/95 dark:text-violet-100 toast-anime",
+          "border-violet-200 bg-gradient-to-br from-violet-50 via-purple-50 to-indigo-50 text-violet-900 shadow-lg dark:border-violet-800/50 dark:from-violet-950/95 dark:via-purple-950/95 dark:to-indigo-950/95 dark:text-violet-100",
       },
     },
     defaultVariants: {
@@ -206,11 +206,10 @@ const ToastProgress = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "absolute bottom-0 left-0 h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 toast-progress shadow-sm",
+        "absolute bottom-0 left-0 h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 shadow-sm",
         className
       )}
       style={{
-        animationDuration: `${duration}ms`,
         width: "100%",
       }}
       data-duration={duration}

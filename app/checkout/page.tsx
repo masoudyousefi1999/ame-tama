@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CustomImage as Image } from "@/components/ui/custom-image";
 import {
   CreditCard,
   MapPin,
@@ -24,6 +23,7 @@ import { useAuth } from "@/context/auth-context";
 import { toast } from "@/components/ui/use-toast";
 import { formatPriceDivided } from "@/lib/format-price";
 import { useIsMobile } from "@/hooks/use-mobile";
+import Image from "@/components/ui/custom-image";
 
 // Helper function to get icon for shipping method
 const getShippingIcon = (name: string) => {
@@ -471,7 +471,6 @@ export default function CheckoutPage() {
                           alt={item?.product?.name}
                           fill
                           className="object-cover"
-                          sizes="64px"
                         />
                         <div className="absolute top-0 right-0 bg-foreground text-background text-xs rounded-bl-md px-1">
                           {item.quantity}

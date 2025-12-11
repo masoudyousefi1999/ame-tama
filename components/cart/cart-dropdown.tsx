@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { ShoppingBag, X, Plus, Minus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
@@ -158,7 +158,6 @@ export default function CartDropdown() {
                       }
                       alt={item.product.name}
                       fill
-                      sizes="64px"
                       className="object-cover"
                     />
                   </div>

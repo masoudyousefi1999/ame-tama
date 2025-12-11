@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { CustomImage as Image } from "@/components/ui/custom-image";
 import { useRouter } from "next/navigation";
 import {
   Trash2,
@@ -23,14 +22,19 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useAuth } from "@/context/auth-context";
 import { formatPriceDivided } from "@/lib/format-price";
 import Link from "next/link";
+import Image from "@/components/ui/custom-image";
 
 const MobileCartItem = dynamic(
-  () => import("@/components/cart/mobile-cart-item").then((m) => m.MobileCartItem),
+  () =>
+    import("@/components/cart/mobile-cart-item").then((m) => m.MobileCartItem),
   { ssr: false, loading: () => null }
 );
 
 const PreCheckoutModal = dynamic(
-  () => import("@/components/cart/pre-checkout-modal").then((m) => m.PreCheckoutModal),
+  () =>
+    import("@/components/cart/pre-checkout-modal").then(
+      (m) => m.PreCheckoutModal
+    ),
   { ssr: false, loading: () => null }
 );
 
@@ -312,7 +316,6 @@ export default function CartPage() {
                               alt={item.product.name}
                               fill
                               className="object-cover transition-transform duration-300 hover:scale-105"
-                              sizes="80px"
                             />
                           </Link>
 

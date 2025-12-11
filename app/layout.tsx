@@ -80,48 +80,55 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({
+async function fetchCategories() {
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+    const res = await fetch(`${baseUrl}/api/categories`, {
+      next: { revalidate: 600, tags: ["categories"] },
+    });
+    if (!res.ok) {
+      return [];
+    }
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const categories = await fetchCategories();
+
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning className="h-full">
       <head>
-        <meta 
-          name="viewport" 
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" 
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/favicon.png" />
-        {/* Resource hints for better performance */}
-        <link
-          rel="preconnect"
-          href="https://ame-tama.storage.c2.liara.space"
-          crossOrigin="anonymous"
-        />
-        {/* Additional performance hints */}
-        <link rel="preconnect" href="https://www.clarity.ms" />
-        {/* Performance optimization */}
         <meta name="format-detection" content="telephone=no" />
         <meta
           httpEquiv="Cache-Control"
           content="public, max-age=31536000, immutable"
         />
         {process.env.NODE_ENV === "production" && (
-          <>
-            <Script id="ms-clarity" strategy="afterInteractive">
-              {`(function(c,l,a,r,i,t,y){
-                  // Skip Clarity on admin pages
-                  if (window.location.pathname.startsWith('/admin')) {
-                    return;
-                  }
-                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-              })(window, document, "clarity", "script", "sy8ocvwyz3");`}
-            </Script>
-          </>
+          <Script id="ms-clarity-proxy" strategy="lazyOnload">
+            {`
+              (function() {
+                if (window.location.pathname.startsWith('/admin')) return;
+                var s = document.createElement('script');
+                s.async = true;
+                s.src = '/api/clarity';
+                document.head.appendChild(s);
+              })();
+            `}
+          </Script>
         )}
       </head>
       <body
@@ -135,7 +142,9 @@ export default function RootLayout({
               <WishlistProvider>
                 <ImageProvider>
                   <BreadcrumbProvider>
-                    <ConditionalLayout>{children}</ConditionalLayout>
+                    <ConditionalLayout categories={categories}>
+                      {children}
+                    </ConditionalLayout>
                   </BreadcrumbProvider>
                   <Toaster />
                 </ImageProvider>

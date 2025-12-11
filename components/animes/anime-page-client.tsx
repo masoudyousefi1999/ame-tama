@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import GradientHero from "@/components/ui/gradient-hero";
 import { ProductCard } from "@/components/product/product-card";
 import { Button } from "@/components/ui/button";
@@ -285,7 +285,6 @@ export default function AnimePageClient({
                         src={category.image}
                         alt={category.name}
                         fill
-                        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 20vw"
                         className="object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
                         quality={80}

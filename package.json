@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:local": "next build",
+    "start:local": "next start",
     "start": "node .next/standalone/server.js",
     "analyze": "cross-env ANALYZE=true next build"
   },
@@ -70,6 +72,7 @@
     "@types/react-window": "1.8.8",
     "@typescript-eslint/eslint-plugin": "8.35.1",
     "@typescript-eslint/parser": "8.35.1",
+    "autoprefixer": "^10.4.20",
     "cross-env": "^7.0.3",
     "eslint-config-next": "^15.3.5",
     "eslint-plugin-react": "7.37.5",

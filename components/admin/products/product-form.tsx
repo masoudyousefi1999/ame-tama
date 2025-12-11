@@ -18,7 +18,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { Upload, X, ImageIcon, Plus } from "lucide-react";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { formatPrice } from "@/lib/format-price";
 import { ITagType } from "@/lib/tags";
 import { customFetch } from "@/lib/utils";

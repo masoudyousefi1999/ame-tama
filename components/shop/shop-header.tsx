@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -63,8 +63,7 @@ export default function ShopHeader() {
             src={slide.image || "/placeholder.svg"}
             alt={slide.title}
             fill
-            priority={index === 0}
-            sizes="(max-width:768px) 100vw, 1200px"
+            loading={index === 0 ? "eager" : "lazy"}
             className="object-cover"
           />
 
@@ -73,15 +72,11 @@ export default function ShopHeader() {
 
           {/* slide content */}
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-card-foreground transition-all duration-700">
-            <h1
-              className="mb-4 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl"
-            >
+            <h1 className="mb-4 max-w-3xl text-3xl font-extrabold leading-tight md:text-5xl">
               {slide.title}
             </h1>
 
-            <p
-              className="mb-8 max-w-2xl text-lg md:text-xl"
-            >
+            <p className="mb-8 max-w-2xl text-lg md:text-xl">
               {slide.description}
             </p>
 

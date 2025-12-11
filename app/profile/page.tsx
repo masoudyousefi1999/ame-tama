@@ -12,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CustomImage as Image } from "@/components/ui/custom-image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
@@ -20,6 +19,7 @@ import { customFetch } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { OrderCard } from "@/components/order/order-card";
 import GradientHero from "@/components/ui/gradient-hero";
+import Image from "@/components/ui/custom-image";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -94,14 +94,14 @@ export default function ProfilePage() {
                 <div className="relative h-24 w-24 mx-auto mb-4">
                   <Image
                     src={
-                      typeof user?.avatar === "string" && user?.avatar?.trim() !== ""
+                      typeof user?.avatar === "string" &&
+                      user?.avatar?.trim() !== ""
                         ? user?.avatar
                         : "/placeholder.svg?height=96&width=96"
                     }
                     alt={`${user.firstName} ${user.lastName}`}
                     fill
                     className="object-cover rounded-full"
-                    sizes="96px"
                   />
                 </div>
                 <CardTitle>

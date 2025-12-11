@@ -3,7 +3,6 @@
 import type React from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CustomImage as Image } from "@/components/ui/custom-image";
 import { User, Lock, Upload, Save, X, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +20,7 @@ import { useAuth } from "@/context/auth-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { customFetch } from "@/lib/utils";
 import { uploadFile, validateFile, MediaType } from "@/lib/upload-utils";
+import Image from "@/components/ui/custom-image";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -252,7 +252,6 @@ export default function SettingsPage() {
                       alt="تصویر پروفایل"
                       fill
                       className="object-cover rounded-full border-2 border-purple-200 dark:border-purple-800"
-                      sizes="96px"
                     />
                     {uploadedAvatar && (
                       <Button

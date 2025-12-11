@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
   Table,
@@ -12,10 +11,10 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, ExternalLink, User, Phone, Mail } from "lucide-react";
-import { CustomImage } from "@/components/ui/custom-image";
+import { ExternalLink, User, Phone, Mail } from "lucide-react";
 import { formatPrice } from "@/lib/format-price";
 import type { OpenOrder } from "./open-orders-page-client";
+import Image from "@/components/ui/custom-image";
 
 interface OpenOrdersTableProps {
   data: {
@@ -51,9 +50,15 @@ export function OpenOrdersTable({ data }: OpenOrdersTableProps) {
   /**
    * Get default product image
    */
-  const getProductImage = (product: OpenOrder["items"][0]["product"]): string => {
+  const getProductImage = (
+    product: OpenOrder["items"][0]["product"]
+  ): string => {
     const defaultMedia = product.productMedia?.find((media) => media.isDefault);
-    return defaultMedia?.url || product.productMedia?.[0]?.url || "/placeholder.svg?height=60&width=60";
+    return (
+      defaultMedia?.url ||
+      product.productMedia?.[0]?.url ||
+      "/placeholder.svg?height=60&width=60"
+    );
   };
 
   return (
@@ -62,12 +67,24 @@ export function OpenOrdersTable({ data }: OpenOrdersTableProps) {
         <Table>
           <TableHeader>
             <TableRow className="border-border hover:bg-transparent">
-              <TableHead className="text-right text-foreground">کاربر</TableHead>
-              <TableHead className="text-right text-foreground">محصولات</TableHead>
-              <TableHead className="text-right text-foreground">تعداد آیتم‌ها</TableHead>
-              <TableHead className="text-right text-foreground">مجموع قیمت</TableHead>
-              <TableHead className="text-right text-foreground">تاریخ</TableHead>
-              <TableHead className="text-left text-foreground">عملیات</TableHead>
+              <TableHead className="text-right text-foreground">
+                کاربر
+              </TableHead>
+              <TableHead className="text-right text-foreground">
+                محصولات
+              </TableHead>
+              <TableHead className="text-right text-foreground">
+                تعداد آیتم‌ها
+              </TableHead>
+              <TableHead className="text-right text-foreground">
+                مجموع قیمت
+              </TableHead>
+              <TableHead className="text-right text-foreground">
+                تاریخ
+              </TableHead>
+              <TableHead className="text-left text-foreground">
+                عملیات
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -128,7 +145,7 @@ export function OpenOrdersTable({ data }: OpenOrdersTableProps) {
                             className="flex items-center gap-3"
                           >
                             <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muted flex-shrink-0">
-                              <CustomImage
+                              <Image
                                 src={getProductImage(item.product)}
                                 alt={item.product.name}
                                 fill
@@ -162,7 +179,10 @@ export function OpenOrdersTable({ data }: OpenOrdersTableProps) {
 
                     {/* Items Count */}
                     <TableCell>
-                      <Badge variant="secondary" className="bg-muted text-muted-foreground">
+                      <Badge
+                        variant="secondary"
+                        className="bg-muted text-muted-foreground"
+                      >
                         {itemsCount} آیتم
                       </Badge>
                     </TableCell>
@@ -209,5 +229,3 @@ export function OpenOrdersTable({ data }: OpenOrdersTableProps) {
     </div>
   );
 }
-
-

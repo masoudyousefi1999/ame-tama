@@ -10,7 +10,6 @@ import { CheckCircle, Send, Loader2 } from "lucide-react";
 import { submitContactForm } from "@/app/actions/contact";
 import { cn } from "@/lib/utils";
 
-
 export function ContactForm() {
   const [state, setState] = useState<{
     errors?: {
@@ -72,7 +71,7 @@ export function ContactForm() {
       <form action={handleSubmit} className="space-y-6">
         {/* Success Message */}
         {state.success && (
-          <Alert className="border-success bg-success/10 text-success animate-bounce-in">
+          <Alert className="border-success bg-success/10 text-success">
             <CheckCircle className="h-4 w-4" />
             <AlertDescription>{state.message}</AlertDescription>
           </Alert>
@@ -80,7 +79,7 @@ export function ContactForm() {
 
         {/* Form Error */}
         {state.errors?._form && (
-          <Alert variant="destructive" className="animate-shake">
+          <Alert variant="destructive">
             <AlertDescription>{state.errors._form.join(", ")}</AlertDescription>
           </Alert>
         )}
@@ -102,7 +101,7 @@ export function ContactForm() {
             required
           />
           {state.errors?.name && (
-            <p className="text-sm text-destructive animate-fade-in-up">
+            <p className="text-sm text-destructive transition-opacity duration-200">
               {state.errors.name.join(", ")}
             </p>
           )}
@@ -125,7 +124,7 @@ export function ContactForm() {
             required
           />
           {state.errors?.email && (
-            <p className="text-sm text-destructive animate-fade-in-up">
+            <p className="text-sm text-destructive transition-opacity duration-200">
               {state.errors.email.join(", ")}
             </p>
           )}
@@ -148,7 +147,7 @@ export function ContactForm() {
             required
           />
           {state.errors?.subject && (
-            <p className="text-sm text-destructive animate-fade-in-up">
+            <p className="text-sm text-destructive transition-opacity duration-200">
               {state.errors.subject.join(", ")}
             </p>
           )}
@@ -167,13 +166,13 @@ export function ContactForm() {
             className={cn(
               "min-h-[120px] resize-none transition-all duration-200",
               state.errors?.message &&
-                "border-destructive focus-visible:ring-destructive form-error"
+                "border-destructive focus-visible:ring-destructive"
             )}
             placeholder="پیام خود را اینجا بنویسید..."
             required
           />
           {state.errors?.message && (
-            <p className="text-sm text-destructive animate-fade-in-up">
+            <p className="text-sm text-destructive transition-opacity duration-200">
               {state.errors.message.join(", ")}
             </p>
           )}

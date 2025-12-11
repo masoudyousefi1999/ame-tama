@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, useCallback } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useInfiniteScroll } from "@/hooks/use-infinite-scroll";
@@ -13,7 +13,13 @@ import GradientHero from "@/components/ui/gradient-hero";
 import { Eye } from "lucide-react";
 import { BackToTopButton } from "../back-to-top-button";
 
-const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: IBlogPostType }) => {
+const BlogCard = ({
+  topic,
+  post,
+}: {
+  topic: IBlogTopicType;
+  post: IBlogPostType;
+}) => {
   const isMobile = useIsMobile();
 
   return (
@@ -34,7 +40,6 @@ const BlogCard = ({ topic, post }: { topic: IBlogTopicType; post: IBlogPostType 
             src={post.image.url}
             alt={post.title}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             loading="lazy"
             quality={80}
@@ -212,9 +217,7 @@ export default function BlogTopicClient({
           title={topic.name}
           description={topic.description || null}
           image={topic.image?.url || null}
-          stats={[
-            { label: `${initialTotalCount} مقاله` }
-          ]}
+          stats={[{ label: `${initialTotalCount} مقاله` }]}
           actions={[
             {
               label: "مشاهده مقالات",
@@ -225,7 +228,7 @@ export default function BlogTopicClient({
               label: "مشاهده همه تاپیک‌ها",
               href: "/topic",
               variant: "secondary",
-            }
+            },
           ]}
         />
       </div>

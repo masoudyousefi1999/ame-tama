@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
-import { CustomImage } from "@/components/ui/custom-image";
-import { ShoppingCart, Heart, Star } from "lucide-react";
+import { ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -18,6 +17,7 @@ import {
   formatPriceDivided,
   calculateDiscountPercentage,
 } from "@/lib/format-price";
+import Image from "@/components/ui/custom-image";
 
 export interface ProductCardProps {
   product: IProductType;
@@ -200,7 +200,7 @@ export function ProductCard({
         >
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
-            <CustomImage
+            <Image
               src={product.productMedia?.[0]?.url || "/placeholder.svg"}
               alt={product.name}
               quality={isMobile ? 50 : 70}
@@ -208,18 +208,11 @@ export function ProductCard({
               loading={eagerLoad ? "eager" : "lazy"}
               priority={eagerLoad}
               fetchPriority={eagerLoad ? "high" : "auto"}
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className={cn(
                 "object-cover w-full h-full transition-opacity duration-300",
                 // Subtle hover without extra scale/brightness to avoid repaints
                 !isMobile && hovered && "opacity-95"
               )}
-              onLoad={() => setImageLoaded(true)}
-              onError={() => setImageError(true)}
-              enableBlur
-              fallbackSrc="/placeholder.svg"
-              maxRetries={isMobile ? 1 : 2}
-              retryDelayMs={isMobile ? 1000 : 500}
             />
 
             {/* Badge تخفیف */}

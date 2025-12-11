@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { cn, customFetch } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogPostType, IBlogTopicType } from "@/lib/blog";
@@ -121,10 +121,9 @@ export default function BlogPostClient({
                         alt={blogPost.title}
                         width={1200}
                         height={800}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                         className="w-full h-auto object-contain max-h-[600px]"
-                        priority
-                        quality={95}
+                        loading="eager"
+                        quality={75}
                         onError={() => {
                           console.error(
                             `Blog image failed to load: ${blogPost.title}`

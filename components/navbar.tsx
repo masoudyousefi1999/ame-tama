@@ -19,11 +19,14 @@ import CartDropdown from "@/components/cart/cart-dropdown";
 import UserMenu from "@/components/auth/user-menu";
 import UnifiedSearch from "@/components/search/unified-search";
 import { type ICategoryType } from "@/lib/categories";
-import { toast } from "@/components/ui/use-toast";
 
 interface CategoryWithChildren extends ICategoryType {}
 
-export default function Navbar() {
+type NavbarProps = {
+  categories: ICategoryType[];
+};
+
+export default function Navbar({ categories }: NavbarProps) {
   const pathname = usePathname();
 
   const [isOpen, setIsOpen] = useState(false);
@@ -50,41 +53,11 @@ export default function Navbar() {
 
   const parentRef = useRef<HTMLDivElement>(null);
 
-  // Fetch categories once
+  // Seed categories from server-provided data
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const baseUrl =
-          process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-        const response = await fetch(`${baseUrl}/api/categories`, {
-          credentials: "include", // Include cookies in the request
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch categories");
-        }
-
-        const categories = await response.json();
-        // Directly use categories instead of extracting children
-        setCategoryTree(categories);
-        setMobileCategories(categories);
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-        toast({
-          title: "خطا در بارگذاری دسته‌بندی‌ها",
-          description: "مشکلی در بارگذاری دسته‌بندی‌ها رخ داد.",
-          variant: "error",
-        });
-        setCategoryTree([]);
-        setMobileCategories([]);
-      }
-    };
-    if (!shouldRenderNavbar) {
-      return; // This avoids rendering Navbar content
-    }
-
-    fetchCategories();
-  }, []);
+    setCategoryTree(categories || []);
+    setMobileCategories(categories || []);
+  }, [categories]);
 
   // Handle scroll & outside clicks
   useEffect(() => {
@@ -133,58 +106,41 @@ export default function Navbar() {
     categoryName: string,
     categorySlug: string
   ) => {
-    try {
-      const category = categoryTree.find(
-        (cat) => cat.id.toString() === categoryId
-      );
-      if (category && category.tags.length > 0) {
-        setMobileCategories(category.tags);
-        setCurrentMobileLevel(categoryId);
-        setMobileCategoryPath((p) => [
-          ...p,
-          { id: categoryId, name: categoryName, slug: categorySlug },
-        ]);
-      } else {
-        // leaf, just close
-        setIsOpen(false);
-      }
-    } catch {
-      toast({
-        title: "خطا در دسته‌بندی",
-        description: "مشکلی در بارگذاری تگ‌ها رخ داد.",
-        variant: "error",
-      });
+    const category = categoryTree.find(
+      (cat) => cat.id.toString() === categoryId
+    );
+    if (category && category.tags.length > 0) {
+      setMobileCategories(category.tags);
+      setCurrentMobileLevel(categoryId);
+      setMobileCategoryPath((p) => [
+        ...p,
+        { id: categoryId, name: categoryName, slug: categorySlug },
+      ]);
+    } else {
+      setIsOpen(false);
     }
   };
 
   // Go back up one level
   const handleMobileBackClick = () => {
-    try {
-      if (mobileCategoryPath.length <= 1) {
-        setMobileCategories(categoryTree);
-        setCurrentMobileLevel(null);
-        setMobileCategoryPath([]);
-      } else {
-        const newPath = [...mobileCategoryPath];
-        newPath.pop();
-        const parentId = newPath[newPath.length - 1]?.id;
-        if (parentId) {
-          const category = categoryTree.find(
-            (cat) => cat.id.toString() === parentId
-          );
-          if (category && category.tags.length > 0) {
-            setMobileCategories(category.tags);
-            setCurrentMobileLevel(parentId);
-            setMobileCategoryPath(newPath);
-          }
+    if (mobileCategoryPath.length <= 1) {
+      setMobileCategories(categoryTree);
+      setCurrentMobileLevel(null);
+      setMobileCategoryPath([]);
+    } else {
+      const newPath = [...mobileCategoryPath];
+      newPath.pop();
+      const parentId = newPath[newPath.length - 1]?.id;
+      if (parentId) {
+        const category = categoryTree.find(
+          (cat) => cat.id.toString() === parentId
+        );
+        if (category && category.tags.length > 0) {
+          setMobileCategories(category.tags);
+          setCurrentMobileLevel(parentId);
+          setMobileCategoryPath(newPath);
         }
       }
-    } catch {
-      toast({
-        title: "خطا در ناوبری",
-        description: "مشکلی در بازگشت به سطح قبلی رخ داد.",
-        variant: "error",
-      });
     }
   };
 

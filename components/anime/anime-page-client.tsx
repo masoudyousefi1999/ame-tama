@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -76,7 +76,6 @@ export default function AnimePageClient({
                   src={tag.image.url}
                   alt={tag.name}
                   fill
-                  sizes="100vw"
                   className="object-cover opacity-30 group-hover:opacity-40 transition-opacity duration-500"
                   priority
                 />
@@ -150,7 +149,6 @@ export default function AnimePageClient({
                       src={category.image}
                       alt={category.name}
                       fill
-                      sizes="(max-width:640px) 100vw, (max-width:768px) 50vw, 33vw"
                       className="transition-transform duration-500 group-hover:scale-105"
                       loading="lazy"
                       quality={75}

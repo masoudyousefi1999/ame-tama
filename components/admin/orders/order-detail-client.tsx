@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/components/ui/custom-image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -196,7 +196,8 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                     استان و شهر
                   </p>
                   <p className="font-medium">
-                    {order.user.addresses[0].province} - {order.user.addresses[0].city}
+                    {order.user.addresses[0].province} -{" "}
+                    {order.user.addresses[0].city}
                   </p>
                 </div>
                 <Separator />
@@ -214,13 +215,17 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                       پلاک
                     </p>
-                    <p className="font-medium">{order.user.addresses[0].houseNumber}</p>
+                    <p className="font-medium">
+                      {order.user.addresses[0].houseNumber}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
                       طبقه
                     </p>
-                    <p className="font-medium">{order.user.addresses[0].floorNumber}</p>
+                    <p className="font-medium">
+                      {order.user.addresses[0].floorNumber}
+                    </p>
                   </div>
                 </div>
                 <Separator />
@@ -353,9 +358,7 @@ export function OrderDetailClient({ order }: OrderDetailClientProps) {
             {discount > 0 && (
               <div className="flex justify-between items-center text-red-600 dark:text-red-400">
                 <span>تخفیف:</span>
-                <span className="font-medium">
-                  -{formatPrice(discount)}
-                </span>
+                <span className="font-medium">-{formatPrice(discount)}</span>
               </div>
             )}
             <Separator />

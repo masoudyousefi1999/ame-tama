@@ -4,7 +4,7 @@ import React, { useEffect, useMemo } from "react";
 import { useBreadcrumb } from "@/context/breadcrumb-context";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import Link from "next/link";
-import { CustomImage as Image } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { IBlogTopicType } from "@/lib/blog";
@@ -50,13 +50,9 @@ const TopicCard = ({ topic }: { topic: IBlogTopicType }) => {
               src={topic.image.url}
               alt={topic.name}
               fill
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
               className="object-cover transition-transform duration-500 group-hover:scale-105 z-0"
               loading="lazy"
               quality={80}
-              enableBlur
-              fallbackSrc="/placeholder.svg"
-              maxRetries={2}
               onError={() => {
                 console.error(
                   `Topic image failed to load: ${topic.name}`,
@@ -135,9 +131,7 @@ export default function BlogPageClient({ topics }: BlogPageClientProps) {
         <GradientHero
           title="موضوعات"
           description="آخرین موضوعات انیمه ای"
-          stats={[
-            { label: `${topicsCount} موضوع موجود` }
-          ]}
+          stats={[{ label: `${topicsCount} موضوع موجود` }]}
         />
       </div>
 

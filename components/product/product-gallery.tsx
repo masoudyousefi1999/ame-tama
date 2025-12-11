@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { CustomImage } from "@/components/ui/custom-image";
+import Image from "@/components/ui/custom-image";
 
 interface ProductGalleryProps {
   images: { url: string }[];
@@ -119,20 +119,13 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
         className="relative aspect-square overflow-hidden rounded-lg bg-card ring-1 ring-border"
       >
         <div className="absolute inset-0 h-full w-full transition-opacity duration-300">
-          <CustomImage
+          <Image
             src={images[currentIndex]?.url || "/placeholder.svg"}
             alt={`${alt} - تصویر ${currentIndex + 1}`}
             fill
-            // sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
-            quality={currentIndex === 0 ? 85 : 70}
-            className={cn(
-              "object-contain transition-opacity duration-300",
-              imageLoaded ? "opacity-100" : "opacity-0"
-            )}
-            priority={currentIndex === 0}
+            quality={currentIndex === 0 ? 80 : 70}
             fetchPriority={currentIndex === 0 ? "high" : "auto"}
             loading={currentIndex === 0 ? "eager" : "lazy"}
-            enableBlur
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             onLoad={handleImageLoad}
@@ -205,16 +198,14 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                   : "ring-1 ring-border hover:scale-[1.03]"
               )}
             >
-              <CustomImage
+              <Image
                 src={image.url || "/placeholder.svg"}
                 alt={`${alt} - تصویر کوچک ${i + 1}`}
                 fill
-                sizes="64px"
                 quality={i < 3 ? 85 : 60}
                 className="object-cover"
                 loading={i < 3 ? "eager" : "lazy"}
                 priority={i === 0}
-                enableBlur
               />
               {i === currentIndex && (
                 <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />

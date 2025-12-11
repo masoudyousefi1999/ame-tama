@@ -6,7 +6,7 @@ import { Home, Store, BookOpen, User, Layers } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/auth-context";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
+import Image from "@/components/ui/custom-image";
 
 interface NavItem {
   name: string;
@@ -84,7 +84,7 @@ export function MobileBottomNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className="tactile-button relative flex flex-col items-center justify-center rounded-lg group px-2 py-0.5 min-w-0 flex-1"
+              className="relative flex flex-col items-center justify-center rounded-lg group px-2 py-0.5 min-w-0 flex-1 transition-all duration-150 active:translate-y-[1px] active:scale-[0.98] select-none"
             >
               {/* Active indicator background */}
               {isActive && (
@@ -107,7 +107,7 @@ export function MobileBottomNavbar() {
                       <Image
                         src={item?.avatarUrl}
                         alt="آواتار کاربر"
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover rounded-full"
                         referrerPolicy="no-referrer"
                         loading="lazy"
                         quality={30}
