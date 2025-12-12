@@ -42,7 +42,7 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
     // Enable Next image optimization (adds strong cache headers on /_next/image)
-    unoptimized: false,
+    unoptimized: process.env.IMAGE_UNOPTIMIZED === "true",
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
