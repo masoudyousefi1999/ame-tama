@@ -41,7 +41,6 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
-    // Enable Next image optimization (adds strong cache headers on /_next/image)
     unoptimized: true,
   },
   compiler: {

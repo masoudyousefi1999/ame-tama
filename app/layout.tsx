@@ -117,19 +117,21 @@ export default async function RootLayout({
           httpEquiv="Cache-Control"
           content="public, max-age=31536000, immutable"
         />
-        {process.env.NODE_ENV === "production" && (
-          <Script id="ms-clarity-proxy" strategy="lazyOnload">
-            {`
-              (function() {
-                if (window.location.pathname.startsWith('/admin')) return;
-                var s = document.createElement('script');
-                s.async = true;
-                s.src = '/api/clarity';
-                document.head.appendChild(s);
-              })();
-            `}
-          </Script>
-        )}
+        {/* {process.env.NODE_ENV === "production" && ( */}
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){
+                             if (!window.location.pathname.startsWith('/admin')) {
+                                 c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                                 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                                 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+                             }
+                         })(window, document, "clarity", "script", "sy8ocvwyz3");`,
+            }}
+            defer
+          ></script>
+        {/* )} */}
       </head>
       <body
         className={`${vazirmatn.variable} ${langar.variable} min-h-screen overflow-x-hidden`}
