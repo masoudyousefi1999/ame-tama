@@ -7,28 +7,60 @@ import { Metadata } from "next";
 const baseUrl = "https://ame-tama.com";
 
 export const generateMetadata = (): Metadata => {
+  const title =
+    "فروشگاه آمه‌تاما (AME-TAMA) | خرید فیگور و اکشن فیگور انیمه‌ای + لباس و اکسسوری";
+  const description =
+    "خرید فیگور انیمه‌ای و اکشن فیگور از فروشگاه آمه‌تاما (AME-TAMA) با تنوع بالا و قیمت مناسب. همچنین خرید لباس انیمه‌ای و اکسسوری انیمه‌ای با ارسال سریع.";
+
   return {
     metadataBase: new URL(baseUrl),
-    title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
-    description:
-      "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما. مجموعه کامل فیگورهای انیمه‌ای از برترین برندها",
-    keywords:
-      "فروشگاه فیگور انیمه, اکشن فیگور, خرید فیگور انیمه, AME-TAMA, مجسمه انیمه",
+    title,
+    description,
+    keywords: [
+      // برند (فارسی و انگلیسی)
+      "آمه تاما",
+      "آمه‌تاما",
+      "AME-TAMA",
+      "AMETAMA",
+
+      // سرچ‌های رایج کاربرها
+      "خرید فیگور انیمه ای",
+      "خرید اکشن فیگور انیمه ای",
+      "فروشگاه فیگور انیمه",
+      "اکشن فیگور انیمه",
+      "فیگور انیمه",
+
+      // لباس و اکسسوری
+      "خرید لباس انیمه ای",
+      "لباس انیمه ای",
+      "خرید اکسسوری انیمه ای",
+      "اکسسوری انیمه ای",
+
+      // ترکیبی با برند
+      "خرید فیگور از آمه تاما",
+      "خرید اکشن فیگور از آمه تاما",
+      "خرید لباس انیمه ای از آمه تاما",
+      "خرید اکسسوری انیمه ای از آمه تاما",
+    ],
+    alternates: {
+      canonical: `${baseUrl}/shop`,
+    },
     openGraph: {
-      title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
-      description:
-        "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت از فروشگاه آمه‌تاما",
+      title,
+      description,
       type: "website",
       url: `${baseUrl}/shop`,
-      siteName: "AME-TAMA",
+      siteName: "آمه‌تاما | AME-TAMA",
+      locale: "fa_IR",
     },
     twitter: {
       card: "summary_large_image",
-      title: "فروشگاه | خرید اکشن فیگور انیمه‌ای | AME-TAMA",
-      description: "خرید اکشن فیگور انیمه ای با بهترین قیمت و کیفیت",
+      title,
+      description,
     },
   };
 };
+
 
 export default async function ShopPage({
   searchParams,
