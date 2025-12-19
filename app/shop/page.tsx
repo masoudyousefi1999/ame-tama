@@ -50,7 +50,7 @@ export const generateMetadata = (): Metadata => {
       description,
       type: "website",
       url: `${baseUrl}/shop`,
-      siteName: "آمه‌تاما | AME-TAMA",
+      siteName: "آمه‌ تاما | AME-TAMA",
       locale: "fa_IR",
     },
     twitter: {

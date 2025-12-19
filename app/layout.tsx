@@ -28,16 +28,44 @@ const langar = localFont({
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
-  title: "AME-TAMA | آمه تاما",
-  description: "خرید اکشن فیگور های انیمه ای با بهترین قیمت و کیفیت",
-  keywords: "فیگور انیمه, اکشن فیگور, مجسمه انیمه, AME-TAMA, خرید فیگور",
-  authors: [{ name: "AME-TAMA" }],
-  creator: "AME-TAMA",
-  publisher: "AME-TAMA",
+  title: "آمه تاما | AME-TAMA | خرید فیگور و اکشن فیگور انیمه‌ای، لباس و اکسسوری",
+  description:
+    "آمه تاما (AME-TAMA) فروشگاه خرید فیگور انیمه‌ای و اکشن فیگور با تنوع بالا و قیمت مناسب. خرید لباس انیمه‌ای و اکسسوری انیمه‌ای با ارسال سریع و موجودی به‌روز.",
+  keywords: [
+    // برند
+    "آمه تاما",
+    "AME-TAMA",
+    "AMETAMA",
+
+    // سرچ‌های اصلی
+    "خرید فیگور انیمه ای",
+    "خرید اکشن فیگور انیمه ای",
+    "فروشگاه فیگور انیمه",
+    "اکشن فیگور انیمه",
+    "فیگور انیمه",
+
+    // لباس و اکسسوری
+    "خرید لباس انیمه ای",
+    "لباس انیمه ای",
+    "خرید اکسسوری انیمه ای",
+    "اکسسوری انیمه ای",
+
+    // ترکیبی با برند
+    "خرید فیگور از آمه تاما",
+    "خرید اکشن فیگور از آمه تاما",
+    "خرید لباس انیمه ای از آمه تاما",
+    "خرید اکسسوری انیمه ای از آمه تاما",
+  ],
+  authors: [{ name: "آمه تاما | AME-TAMA" }],
+  creator: "آمه تاما | AME-TAMA",
+  publisher: "آمه تاما | AME-TAMA",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
+  },
+  alternates: {
+    canonical: baseUrl,
   },
   icons: {
     icon: "/favicon.ico",
@@ -45,10 +73,11 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
   openGraph: {
-    title: "AME-TAMA | آمه تاما",
-    description: "خرید اکشن فیگور های انیمه ای با کیفیت و قیمت مناسب",
-    url: "https://ame-tama.com",
-    siteName: "AME-TAMA",
+    title: "آمه تاما | AME-TAMA",
+    description:
+      "خرید فیگور انیمه‌ای و اکشن فیگور از آمه تاما (AME-TAMA) با تنوع بالا و قیمت مناسب. لباس انیمه‌ای و اکسسوری انیمه‌ای با ارسال سریع.",
+    url: baseUrl,
+    siteName: "آمه تاما | AME-TAMA",
     locale: "fa_IR",
     type: "website",
     images: [
@@ -56,14 +85,15 @@ export const metadata = {
         url: "/favicon.jpg",
         width: 1200,
         height: 630,
-        alt: "AME-TAMA فروشگاه فیگور انیمه‌ای",
+        alt: "آمه تاما | AME-TAMA - خرید فیگور و اکشن فیگور انیمه‌ای",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AME-TAMA | آمه تاما",
-    description: "خرید اکشن فیگور های انیمه ای با بهترین قیمت",
+    title: "آمه تاما | AME-TAMA",
+    description:
+      "خرید فیگور انیمه‌ای و اکشن فیگور از آمه تاما (AME-TAMA) + لباس انیمه‌ای و اکسسوری انیمه‌ای با ارسال سریع.",
     images: ["/favicon.jpg"],
     creator: "@masoudyousefi99",
   },
