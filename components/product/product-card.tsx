@@ -51,6 +51,14 @@ export function ProductCard({
 
   const tagSlug = product?.tags[0]?.slug;
   const categorySlug = product?.category?.slug;
+  let productUrl = product.productMedia?.[0]?.url;
+
+  if(productUrl){
+    const slicedUrl =  productUrl.split('/');
+    const thumbnail = "thumbnail";
+    slicedUrl.splice(3,0,thumbnail);
+    productUrl = slicedUrl.join('/');
+  }
 
   useEffect(() => {
     if (isMobile) setHovered(true);
@@ -201,7 +209,7 @@ export function ProductCard({
           {/* تصویر */}
           <div className="relative aspect-[1] w-full overflow-hidden rounded-t-2xl">
             <Image
-              src={product.productMedia?.[0]?.url || "/placeholder.svg"}
+              src={ productUrl || "/placeholder.svg"}
               alt={product.name}
               quality={isMobile ? 50 : 70}
               fill

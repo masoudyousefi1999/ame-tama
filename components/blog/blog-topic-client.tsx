@@ -22,6 +22,15 @@ const BlogCard = ({
 }) => {
   const isMobile = useIsMobile();
 
+  let imageUrl = post?.image?.url;
+
+  if(imageUrl){
+    const slicedUrl =  imageUrl.split('/');
+    const thumbnail = "thumbnail";
+    slicedUrl.splice(3,0,thumbnail);
+    imageUrl = slicedUrl.join('/');
+  }
+
   return (
     <Link
       href={`/topic/${topic.slug}/${post.slug}`}
@@ -35,9 +44,9 @@ const BlogCard = ({
     >
       <div className="relative aspect-video w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10" />
-        {post.image && post.image.url ? (
+        {post.image && imageUrl ? (
           <Image
-            src={post.image.url}
+            src={imageUrl}
             alt={post.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
