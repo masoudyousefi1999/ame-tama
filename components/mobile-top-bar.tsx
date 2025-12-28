@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, ShoppingBag, User, Home, Store, BookOpen } from "lucide-react";
+import { Menu, ShoppingBag, User, Home, Store, BookOpen, Palette } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -29,6 +29,7 @@ const MAIN_LINKS = [
   { label: "فروشگاه", href: "/shop", icon: Store },
   { label: "انیمه‌ها", href: "/anime", icon: BookOpen },
   { label: "اخبار انیمه", href: "/topic", icon: BookOpen },
+  { label: "آثار هنری", href: "/art-work", icon: Palette },
   { label: "تماس با ما", href: "/contact", icon: BookOpen },
   { label: "سوالات متداول", href: "/faq", icon: BookOpen },
 ];
@@ -84,7 +85,7 @@ export function MobileTopBar() {
             >
               <ShoppingBag className="h-5 w-5" />
               {itemCount ? (
-                <Badge className="absolute -top-2 -right-2 h-5 min-w-[20px] rounded-full bg-primary px-1 text-[11px] font-bold text-primary-foreground">
+                <Badge className="absolute -top-1 -right-1 h-4 min-w-[16px] rounded-full bg-primary px-1 text-[11px] font-bold text-primary-foreground">
                   {itemCount > 99 ? "99+" : itemCount}
                 </Badge>
               ) : null}

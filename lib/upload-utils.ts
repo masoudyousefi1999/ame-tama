@@ -17,6 +17,7 @@ export enum MediaType {
   CATEGORY = 'category',
   TAG = 'tag',
   USER = 'user',
+  ART_WORK = 'artwork',
 }
 
 

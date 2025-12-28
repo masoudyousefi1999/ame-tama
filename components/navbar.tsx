@@ -12,6 +12,7 @@ import {
   Store,
   Search,
   ChevronLeft,
+  Palette,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -275,6 +276,13 @@ export default function Navbar({ categories }: NavbarProps) {
           >
             اخبار انیمه
           </Link>
+          <Link
+            href="/art-work"
+            className="whitespace-nowrap p-2 text-foreground hover:text-primary/80 transition-colors duration-200 nav-link"
+            prefetch={false}
+          >
+            آثار هنری
+          </Link>
         </nav>
 
         {/* Actions & Hamburger */}
@@ -357,6 +365,15 @@ export default function Navbar({ categories }: NavbarProps) {
                   className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
                 >
                   <span className="text-xs text-foreground">اخبار انیمه</span>
+                </Link>
+                <Link
+                  href="/art-work"
+                  onClick={() => setIsOpen(false)}
+                  prefetch={false}
+                  className="flex flex-col items-center justify-center p-3 rounded-lg bg-card hover:bg-muted transition-colors"
+                >
+                  <Palette className="h-6 w-6 text-foreground mb-2" />
+                  <span className="text-xs text-foreground">آثار هنری</span>
                 </Link>
                 <div className="col-span-3 flex items-center justify-center p-3 rounded-lg bg-card">
                   <UserMenu />
