@@ -271,7 +271,7 @@ export function ArtWorkDetailPageClient({
                   {artWork.user.avatar ? (
                     <Image
                       src={artWork.user.avatar}
-                      alt={`${artWork.user.firstName} ${artWork.user.lastName}`}
+                      alt={`${artWork.user.firstName}`}
                       fill
                       className="object-cover"
                       sizes="64px"
@@ -284,7 +284,7 @@ export function ArtWorkDetailPageClient({
                 </div>
                 <div>
                   <p className="text-lg font-semibold text-foreground">
-                    {artWork.user.firstName} {artWork.user.lastName}
+                    {artWork.user.firstName}
                   </p>
                   {artWork.user.role && (
                     <p className="text-sm text-muted-foreground">

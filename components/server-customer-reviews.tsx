@@ -61,6 +61,11 @@ export default async function ServerCustomerReviews() {
             itemListElement: reviews.map((review, index) => ({
               "@type": "Review",
               position: index + 1,
+              itemReviewed: {
+                "@type": "Organization",
+                name: "AME-TAMA",
+                url: "https://ame-tama.com",
+              },
               author: {
                 "@type": "Person",
                 name: review.name,

@@ -33,7 +33,7 @@ export async function generateMetadata({
   const metaTitle = `${artWork.title} | آثار هنری | AME-TAMA`;
   const metaDescription =
     artWork.description ||
-    `اثر هنری ${artWork.title} از ${artWork.user.firstName} ${artWork.user.lastName}`;
+    `اثر هنری ${artWork.title} از ${artWork.user.firstName}`;
 
   const ogImage = artWork.image?.url
     ? artWork.image.url.startsWith("http")

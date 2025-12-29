@@ -67,6 +67,10 @@ export default function SchemaOrg({ type, data }: SchemaOrgProps) {
                 "@type": "Person",
                 name: review.user,
               },
+              itemReviewed: {
+                "@type": "Product",
+                name: data.name,
+              },
               reviewRating: {
                 "@type": "Rating",
                 ratingValue: review.rating,

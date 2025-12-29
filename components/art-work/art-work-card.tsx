@@ -68,7 +68,7 @@ function ArtWorkCardComponent({
             {artWork.user.avatar ? (
               <Image
                 src={artWork.user.avatar}
-                alt={`${artWork.user.firstName} ${artWork.user.lastName}`}
+                alt={`${artWork.user.firstName}`}
                 fill
                 className="object-cover"
                 sizes="32px"
@@ -81,7 +81,7 @@ function ArtWorkCardComponent({
           </div>
           <div className="flex-1">
             <p className="text-sm font-medium text-foreground">
-              {artWork.user.firstName} {artWork.user.lastName}
+              {artWork.user.firstName}
             </p>
           </div>
         </div>

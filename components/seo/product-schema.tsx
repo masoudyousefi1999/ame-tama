@@ -174,9 +174,16 @@ export default function ProductSchema({ product }: ProductSchemaProps) {
       Array.isArray(product.reviews) && product.reviews.length > 0
         ? product.reviews.map((review: any) => ({
             "@type": "Review",
-            author: review.user,
+            author: {
+              "@type": "Person",
+              name: review.user,
+            },
             datePublished: review.date,
             reviewBody: review.text,
+            itemReviewed: {
+              "@type": "Product",
+              name: product.name,
+            },
             reviewRating: {
               "@type": "Rating",
               ratingValue: review.rating,
