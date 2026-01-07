@@ -475,7 +475,10 @@ export default function ProductGrid({
                     }}
                     className="product-grid-item"
                   >
-                    <ProductCard product={product} />
+                    <ProductCard
+                      product={product}
+                      eagerLoad={index < 4} // چند محصول اول سریع‌تر لود شوند
+                    />
                   </motion.div>
                 ))}
           </AnimatePresence>

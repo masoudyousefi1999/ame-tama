@@ -117,9 +117,10 @@ export default function GradientHero({
               src={image}
               alt={title}
               fill
-              quality={70}
+              quality={60}
               loading="eager"
               fetchPriority="high"
+              sizes="100vw"
               className="object-cover opacity-25 group-hover:opacity-35 transition-all duration-700 scale-105 md:group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-background/20 to-transparent" />

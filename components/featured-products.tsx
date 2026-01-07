@@ -36,13 +36,14 @@ export default function FeaturedProducts({
     <section id="featured-products" className="py-10">
       <div className="container mx-auto px-2 md:px-4">
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product) => (
+          {products.map((product, index) => (
             <div key={product.uuid} className="h-full">
               <ProductCard
                 product={product}
                 showAddToCart
                 showAddToWishlist
                 className="h-full"
+                eagerLoad={index < 3} // چند محصول اول سریع‌تر لود شوند
               />
             </div>
           ))}

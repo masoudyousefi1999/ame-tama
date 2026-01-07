@@ -53,13 +53,6 @@ export function ProductCard({
   const categorySlug = product?.category?.slug;
   let productUrl = product.productMedia?.[0]?.url;
 
-  if(productUrl){
-    const slicedUrl =  productUrl.split('/');
-    const thumbnail = "thumbnail";
-    slicedUrl.splice(3,0,thumbnail);
-    productUrl = slicedUrl.join('/');
-  }
-
   useEffect(() => {
     if (isMobile) setHovered(true);
   }, [isMobile]);
@@ -211,14 +204,14 @@ export function ProductCard({
             <Image
               src={ productUrl || "/placeholder.svg"}
               alt={product.name}
-              quality={isMobile ? 50 : 70}
+              quality={isMobile ? 60 : 70}
               fill
               loading={eagerLoad ? "eager" : "lazy"}
               priority={eagerLoad}
               fetchPriority={eagerLoad ? "high" : "auto"}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               className={cn(
                 "object-cover w-full h-full transition-opacity duration-300",
-                // Subtle hover without extra scale/brightness to avoid repaints
                 !isMobile && hovered && "opacity-95"
               )}
             />

@@ -16,20 +16,16 @@ import { BackToTopButton } from "../back-to-top-button";
 const BlogCard = ({
   topic,
   post,
+  index,
 }: {
   topic: IBlogTopicType;
   post: IBlogPostType;
+  index: number;
 }) => {
   const isMobile = useIsMobile();
+  const isAboveFold = index < 3; // سه کارت اول سریع‌تر لود شوند
 
   let imageUrl = post?.image?.url;
-
-  if(imageUrl){
-    const slicedUrl =  imageUrl.split('/');
-    const thumbnail = "thumbnail";
-    slicedUrl.splice(3,0,thumbnail);
-    imageUrl = slicedUrl.join('/');
-  }
 
   return (
     <Link
@@ -50,8 +46,11 @@ const BlogCard = ({
             alt={post.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
-            loading="lazy"
-            quality={80}
+            loading={isAboveFold ? "eager" : "lazy"}
+            fetchPriority={isAboveFold ? "high" : "auto"}
+            priority={isAboveFold}
+            quality={60}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             onError={() => {
               console.error(`Blog image failed to load: ${post.title}`);
             }}
@@ -262,8 +261,13 @@ export default function BlogTopicClient({
           {blogs && blogs.length > 0 ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-                {blogs.map((blog: IBlogPostType) => (
-                  <BlogCard key={blog.uuid} topic={topic} post={blog} />
+                {blogs.map((blog: IBlogPostType, index: number) => (
+                  <BlogCard
+                    key={blog.uuid}
+                    topic={topic}
+                    post={blog}
+                    index={index}
+                  />
                 ))}
               </div>
 

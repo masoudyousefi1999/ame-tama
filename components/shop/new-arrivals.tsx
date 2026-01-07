@@ -67,9 +67,14 @@ export default function NewArrivals({ products }: NewArrivalsProps) {
 
       {/* ————— Product Grid ————— */}
       <div dir="rtl" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {products.map((p) => (
+        {products.map((p, index) => (
           <div key={p?.id ?? p?.uuid ?? p?.slug}>
-            <ProductCard product={p} showAddToCart showAddToWishlist />
+            <ProductCard
+              product={p}
+              showAddToCart
+              showAddToWishlist
+              eagerLoad={index < 3} // چند محصول اول سریع‌تر لود شوند
+            />
           </div>
         ))}
       </div>

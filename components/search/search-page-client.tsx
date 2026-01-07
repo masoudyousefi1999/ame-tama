@@ -190,8 +190,12 @@ export default function SearchPageClient({
         {/* Adjust the grid layout with smaller gap on mobile */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-3">
           {results && results.length > 0 ? (
-            results.map((product) => (
-              <ProductCard product={product} key={product.uuid} />
+            results.map((product, index) => (
+              <ProductCard
+                product={product}
+                key={product.uuid}
+                eagerLoad={index < 3} // چند نتیجه اول سریع‌تر لود شوند
+              />
             ))
           ) : (
             <div className="col-span-full py-24 text-center flex flex-col items-center">

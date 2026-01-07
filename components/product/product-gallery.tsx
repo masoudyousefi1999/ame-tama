@@ -123,9 +123,10 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
             src={images[currentIndex]?.url || "/placeholder.svg"}
             alt={`${alt} - تصویر ${currentIndex + 1}`}
             fill
-            quality={currentIndex === 0 ? 80 : 70}
+            quality={currentIndex === 0 ? 75 : 70}
             fetchPriority={currentIndex === 0 ? "high" : "auto"}
             loading={currentIndex === 0 ? "eager" : "lazy"}
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 600px"
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQABAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
             onLoad={handleImageLoad}
@@ -202,10 +203,11 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
                 src={image.url || "/placeholder.svg"}
                 alt={`${alt} - تصویر کوچک ${i + 1}`}
                 fill
-                quality={i < 3 ? 85 : 60}
+                quality={60}
                 className="object-cover"
-                loading={i < 3 ? "eager" : "lazy"}
-                priority={i === 0}
+                loading="lazy"
+                priority={false}
+                sizes="(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 96px"
               />
               {i === currentIndex && (
                 <div className="absolute inset-0 bg-primary/10 backdrop-blur-[1px]" />
