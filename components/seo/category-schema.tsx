@@ -62,35 +62,51 @@ export default function CategorySchema({
       name: `فیگورهای انیمه ${category.name}`,
       description: `مجموعه کامل فیگورهای انیمه ${category.name}`,
       numberOfItems: products.length,
-      itemListElement: products.map((product, index) => ({
-        "@type": "ListItem",
-        position: index + 1,
-        item: {
-          "@type": "Product",
-          name: product.name,
-          url: `${baseUrl}/product/${product.slug}`,
-          image: product.productMedia?.[0]?.url || "/placeholder.svg",
-          description: product.detail?.description || `فیگور ${product.name}`,
-          offers: {
-            "@type": "Offer",
-            price: product.price,
-            priceCurrency: "IRR",
-            availability:
-              product.quantity > 0
-                ? "https://schema.org/InStock"
-                : "https://schema.org/OutOfStock",
-            seller: {
-              "@type": "Organization",
-              name: "AME-TAMA",
-              url: baseUrl,
+      itemListElement: products.map((product, index) => {
+        const categorySlug =
+          product.category?.slug || category.slug || "product";
+        const tagSlug =
+          product.tags?.[0]?.slug ||
+          breadcrumbPath[breadcrumbPath.length - 1]?.path
+            ?.split("/")
+            .filter(Boolean)
+            .pop() ||
+          categorySlug;
+        const productPath = [categorySlug, tagSlug, product.slug]
+          .filter(Boolean)
+          .join("/");
+        const productUrl = getSiteUrl(productPath);
+
+        return {
+          "@type": "ListItem",
+          position: index + 1,
+          item: {
+            "@type": "Product",
+            name: product.name,
+            url: productUrl,
+            image: product.productMedia?.[0]?.url || "/placeholder.svg",
+            description: product.detail?.description || `فیگور ${product.name}`,
+            offers: {
+              "@type": "Offer",
+              price: product.price,
+              priceCurrency: "IRR",
+              availability:
+                product.quantity > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+              seller: {
+                "@type": "Organization",
+                name: "AME-TAMA",
+                url: baseUrl,
+              },
+            },
+            brand: {
+              "@type": "Brand",
+              name: category.name,
             },
           },
-          brand: {
-            "@type": "Brand",
-            name: category.name,
-          },
-        },
-      })),
+        };
+      }),
     },
     breadcrumb: {
       "@type": "BreadcrumbList",
