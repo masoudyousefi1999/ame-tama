@@ -14,6 +14,42 @@ export default function CategorySchema({
 }: CategorySchemaProps) {
   const baseUrl = getSiteUrl();
 
+  // Build breadcrumb items with safe fallbacks and no duplicates (by path)
+  const normalizePath = (path?: string) => {
+    if (!path) return "/";
+    if (path === "/") return "/";
+    const trimmed = path.endsWith("/") ? path.slice(0, -1) : path;
+    return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
+  };
+
+  const rawItems = [{ name: "خانه", path: "/" }, ...breadcrumbPath];
+  const seen = new Set<string>();
+
+  const breadcrumbItems = rawItems
+    .filter((item) => item && (item.name || item.path))
+    .map((item) => {
+      const normalized = normalizePath(item.path);
+      return {
+        name:
+          item.name ||
+          decodeURIComponent(
+            normalized.split("/").filter(Boolean).pop() || "مسیر"
+          ),
+        path: normalized,
+      };
+    })
+    .filter(({ path }) => {
+      if (seen.has(path)) return false;
+      seen.add(path);
+      return true;
+    })
+    .map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: getSiteUrl(item.path),
+    }));
+
   // ساخت schema برای دسته‌بندی
   const categorySchema = {
     "@context": "https://schema.org",
@@ -58,20 +94,7 @@ export default function CategorySchema({
     },
     breadcrumb: {
       "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "خانه",
-          item: baseUrl,
-        },
-        ...breadcrumbPath.map((item, index) => ({
-          "@type": "ListItem",
-          position: index + 2,
-          name: item.name,
-          item: `${baseUrl}${item.path}`,
-        })),
-      ],
+      itemListElement: breadcrumbItems,
     },
     // اطلاعات اضافی برای SEO
     isPartOf: {
