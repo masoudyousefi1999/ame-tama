@@ -112,7 +112,7 @@ export function AdminSidebar() {
       <div
         className={cn(
           "fixed inset-0 z-50 lg:hidden",
-          sidebarOpen ? "block" : "hidden"
+          sidebarOpen ? "block" : "hidden",
         )}
         onClick={() => setSidebarOpen(false)}
       >
@@ -162,7 +162,7 @@ export function AdminSidebar() {
                       "group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                       isActive
                         ? "bg-primary text-primary-foreground"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
                     )}
                     onClick={() => setSidebarOpen(false)}
                   >
@@ -172,7 +172,7 @@ export function AdminSidebar() {
                           "ml-3 h-5 w-5",
                           isActive
                             ? "text-primary-foreground"
-                            : "text-muted-foreground group-hover:text-foreground"
+                            : "text-muted-foreground group-hover:text-foreground",
                         )}
                       />
                       <span>{item.name}</span>
@@ -185,8 +185,8 @@ export function AdminSidebar() {
                           item.highlight
                             ? "bg-destructive text-destructive-foreground"
                             : isActive
-                            ? "bg-primary-foreground/20 text-primary-foreground"
-                            : "bg-muted text-muted-foreground"
+                              ? "bg-primary-foreground/20 text-primary-foreground"
+                              : "bg-muted text-muted-foreground",
                         )}
                       >
                         {item.count}
@@ -234,7 +234,7 @@ export function AdminSidebar() {
                             "group flex items-center justify-between px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                             isActive
                               ? "bg-primary text-primary-foreground"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
                           )}
                         >
                           <div className="flex items-center">
@@ -243,7 +243,7 @@ export function AdminSidebar() {
                                 "ml-3 h-5 w-5",
                                 isActive
                                   ? "text-primary-foreground"
-                                  : "text-muted-foreground group-hover:text-foreground"
+                                  : "text-muted-foreground group-hover:text-foreground",
                               )}
                             />
                             <span>{item.name}</span>
@@ -258,8 +258,8 @@ export function AdminSidebar() {
                                 item.highlight
                                   ? "bg-destructive text-destructive-foreground"
                                   : isActive
-                                  ? "bg-primary-foreground/20 text-primary-foreground"
-                                  : "bg-muted text-muted-foreground"
+                                    ? "bg-primary-foreground/20 text-primary-foreground"
+                                    : "bg-muted text-muted-foreground",
                               )}
                             >
                               {item.count}

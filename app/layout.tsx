@@ -13,7 +13,6 @@ import LoginToastEffect from "@/components/LoginToastEffect";
 import SchemaOrg from "@/components/seo/schema-org";
 import ConditionalLayout from "@/components/conditional-layout";
 import ScrollToTop from "@/components/scroll-to-top";
-
 const baseUrl = "https://ame-tama.com";
 
 const vazirmatn = localFont({
@@ -28,7 +27,8 @@ const langar = localFont({
 
 export const metadata = {
   metadataBase: new URL(baseUrl),
-  title: "آمه تاما | AME-TAMA | خرید فیگور و اکشن فیگور انیمه‌ای، لباس و اکسسوری",
+  title:
+    "آمه تاما | AME-TAMA | خرید فیگور و اکشن فیگور انیمه‌ای، لباس و اکسسوری",
   description:
     "آمه تاما (AME-TAMA) فروشگاه خرید فیگور انیمه‌ای و اکشن فیگور با تنوع بالا و قیمت مناسب. خرید لباس انیمه‌ای و اکسسوری انیمه‌ای با ارسال سریع و موجودی به‌روز.",
   keywords: [
@@ -148,23 +148,24 @@ export default async function RootLayout({
           content="public, max-age=31536000, immutable"
         />
         {/* {process.env.NODE_ENV === "production" && ( */}
-          <script
-            type="text/javascript"
-            dangerouslySetInnerHTML={{
-              __html: `(function(c,l,a,r,i,t,y){
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `(function(c,l,a,r,i,t,y){
                              if (!window.location.pathname.startsWith('/admin')) {
                                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
                              }
                          })(window, document, "clarity", "script", "sy8ocvwyz3");`,
-            }}
-            defer
-          ></script>
+          }}
+          defer
+        ></script>
         {/* )} */}
       </head>
       <body
         className={`${vazirmatn.variable} ${langar.variable} min-h-screen overflow-x-hidden`}
+        style={{ overscrollBehavior: "auto" }}
       >
         <LoginToastEffect />
         <ScrollToTop />

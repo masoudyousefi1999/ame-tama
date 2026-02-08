@@ -35,7 +35,7 @@ export default function Navbar({ categories }: NavbarProps) {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<number | null>(null);
   const [activeSubcategory, setActiveSubcategory] = useState<number | null>(
-    null
+    null,
   );
   const categoriesRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -44,7 +44,7 @@ export default function Navbar({ categories }: NavbarProps) {
   const [categoryTree, setCategoryTree] = useState<CategoryWithChildren[]>([]);
   const [mobileCategories, setMobileCategories] = useState<any[]>([]);
   const [currentMobileLevel, setCurrentMobileLevel] = useState<string | null>(
-    null
+    null,
   );
   const [mobileCategoryPath, setMobileCategoryPath] = useState<
     { id: string; name: string; slug: string }[]
@@ -105,10 +105,10 @@ export default function Navbar({ categories }: NavbarProps) {
   const handleMobileCategoryClick = (
     categoryId: string,
     categoryName: string,
-    categorySlug: string
+    categorySlug: string,
   ) => {
     const category = categoryTree.find(
-      (cat) => cat.id.toString() === categoryId
+      (cat) => cat.id.toString() === categoryId,
     );
     if (category && category.tags.length > 0) {
       setMobileCategories(category.tags);
@@ -134,7 +134,7 @@ export default function Navbar({ categories }: NavbarProps) {
       const parentId = newPath[newPath.length - 1]?.id;
       if (parentId) {
         const category = categoryTree.find(
-          (cat) => cat.id.toString() === parentId
+          (cat) => cat.id.toString() === parentId,
         );
         if (category && category.tags.length > 0) {
           setMobileCategories(category.tags);
@@ -160,7 +160,7 @@ export default function Navbar({ categories }: NavbarProps) {
         "border-b border-border",
         isScrolled ? "shadow-2xl shadow-black/20" : "shadow-lg shadow-black/10",
         // Hide on mobile, show only on desktop
-        "hidden lg:block"
+        "hidden lg:block",
       )}
       style={{
         top: "calc(env(safe-area-inset-top, 0px) + 0)",
@@ -203,7 +203,7 @@ export default function Navbar({ categories }: NavbarProps) {
               <ChevronDown
                 className={cn(
                   "ml-1 h-4 w-4 transition-transform text-foreground",
-                  isCategoriesOpen && "rotate-180"
+                  isCategoriesOpen && "rotate-180",
                 )}
               />
             </button>
@@ -413,7 +413,7 @@ export default function Navbar({ categories }: NavbarProps) {
                             "text-sm transition-colors",
                             i === mobileCategoryPath.length - 1
                               ? "font-medium text-foreground"
-                              : "text-muted-foreground"
+                              : "text-muted-foreground",
                           )}
                         >
                           {cat.name}

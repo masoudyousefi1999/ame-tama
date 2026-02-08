@@ -74,7 +74,7 @@ export function BackToTopButton({
       size="icon"
       className={cn(
         "fixed bottom-24 right-4 z-60 h-12 w-12 rounded-full shadow-lg bg-primary hover:bg-primary/90 text-primary-foreground md:bottom-12",
-        className
+        className,
       )}
       aria-label={ariaLabel}
     >

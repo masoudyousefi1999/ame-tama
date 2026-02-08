@@ -99,7 +99,7 @@ export function MobileBottomNavbar() {
                       "h-5 w-5 overflow-hidden rounded-full border border-border/50 transition-transform",
                       isActive
                         ? "scale-105 border-primary/50"
-                        : "group-hover:scale-105"
+                        : "group-hover:scale-105",
                     )}
                   >
                     {typeof item?.avatarUrl === "string" &&
@@ -126,7 +126,7 @@ export function MobileBottomNavbar() {
                         "h-5 w-5 transition-colors",
                         isActive
                           ? "text-primary"
-                          : "text-muted-foreground group-hover:text-foreground"
+                          : "text-muted-foreground group-hover:text-foreground",
                       )}
                     />
                   )
@@ -151,7 +151,7 @@ export function MobileBottomNavbar() {
                   "text-[10px] leading-tight font-medium truncate w-full text-center px-0.5",
                   isActive
                     ? "text-primary"
-                    : "text-muted-foreground group-hover:text-foreground"
+                    : "text-muted-foreground group-hover:text-foreground",
                 )}
               >
                 {item.name}

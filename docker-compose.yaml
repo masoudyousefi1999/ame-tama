@@ -1,0 +1,13 @@
+version: '309'
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    restart: always
+    env_file:
+      - .env

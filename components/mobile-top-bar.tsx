@@ -3,7 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, ShoppingBag, User, Home, Store, BookOpen, Palette } from "lucide-react";
+import {
+  Menu,
+  ShoppingBag,
+  User,
+  Home,
+  Store,
+  BookOpen,
+  Palette,
+} from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -19,10 +27,9 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import UnifiedSearch from "@/components/search/unified-search";
 
-const LoginModal = dynamic(
-  () => import("@/components/auth/login-modal"),
-  { ssr: false }
-);
+const LoginModal = dynamic(() => import("@/components/auth/login-modal"), {
+  ssr: false,
+});
 
 const MAIN_LINKS = [
   { label: "خانه", href: "/", icon: Home },
@@ -111,7 +118,8 @@ export function MobileTopBar() {
         <div className="max-h-[600px] overflow-y-auto px-6 pb-10 pt-4">
           <div className="mb-6 flex items-center gap-3 rounded-2xl border border-border/30 bg-card p-4">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-primary/80 to-accent/80 text-primary-foreground shadow-lg">
-              {typeof user?.avatar === "string" && user?.avatar?.trim() !== "" ? (
+              {typeof user?.avatar === "string" &&
+              user?.avatar?.trim() !== "" ? (
                 <img
                   src={user.avatar}
                   alt={user.firstName || "Avatar"}
@@ -151,7 +159,7 @@ export function MobileTopBar() {
                           "flex items-center justify-between gap-3 rounded-xl border border-border/30 px-3 py-3 text-sm font-medium transition-all",
                           isActive
                             ? "border-primary/40 bg-primary/10 text-primary"
-                            : "border-border/30 bg-card hover:border-primary/20 hover:bg-primary/3 transition-all duration-200"
+                            : "border-border/30 bg-card hover:border-primary/20 hover:bg-primary/3 transition-all duration-200",
                         )}
                       >
                         <span>{link.label}</span>
@@ -177,7 +185,7 @@ export function MobileTopBar() {
                         "block rounded-xl border border-border/30 bg-card px-3 py-3 text-sm font-medium transition-all",
                         pathname.startsWith(link.href)
                           ? "border-primary/40 bg-primary/10 text-primary"
-                          : "hover:border-primary/20 hover:bg-primary/3 transition-all duration-200"
+                          : "hover:border-primary/20 hover:bg-primary/3 transition-all duration-200",
                       )}
                     >
                       {link.label}

@@ -27,7 +27,7 @@ const ToastViewport = React.forwardRef<
     ref={ref}
     className={cn(
       "fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]",
-      className
+      className,
     )}
     aria-live="polite"
     aria-atomic="false"
@@ -62,7 +62,7 @@ const toastVariants = cva(
     defaultVariants: {
       variant: "default",
     },
-  }
+  },
 );
 
 const Toast = React.forwardRef<
@@ -90,7 +90,7 @@ const ToastAction = React.forwardRef<
     ref={ref}
     className={cn(
       "inline-flex h-8 shrink-0 items-center justify-center rounded-lg border bg-transparent px-3 text-sm font-medium ring-offset-background transition-all duration-200 hover:bg-secondary hover:scale-105 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 group-[.destructive]:border-muted/40 group-[.destructive]:hover:border-destructive/30 group-[.destructive]:hover:bg-destructive group-[.destructive]:hover:text-destructive-foreground group-[.destructive]:focus:ring-destructive",
-      className
+      className,
     )}
     {...props}
   />
@@ -105,7 +105,7 @@ const ToastClose = React.forwardRef<
     ref={ref}
     className={cn(
       "absolute right-2 top-2 rounded-lg p-1.5 text-foreground/50 opacity-0 transition-all duration-200 hover:text-foreground hover:bg-black/5 hover:scale-110 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring/50 group-hover:opacity-100 group-[.destructive]:text-red-300 group-[.destructive]:hover:text-red-50 group-[.destructive]:hover:bg-red-500/20 group-[.destructive]:focus:ring-red-400 group-[.destructive]:focus:ring-offset-red-600",
-      className
+      className,
     )}
     toast-close=""
     aria-label="بستن اعلان"
@@ -187,7 +187,7 @@ const ToastIcon = React.forwardRef<
       ref={ref}
       className={cn(
         "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white shadow-md ring-1 ring-gray-200 dark:bg-black/20 dark:ring-white/10",
-        className
+        className,
       )}
       {...props}
     >
@@ -207,7 +207,7 @@ const ToastProgress = React.forwardRef<
       ref={ref}
       className={cn(
         "absolute bottom-0 left-0 h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 shadow-sm",
-        className
+        className,
       )}
       style={{
         width: "100%",

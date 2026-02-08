@@ -44,7 +44,7 @@ export function AdminHeader() {
     <header
       className={cn(
         "fixed top-0 inset-x-0 z-50 transition-all duration-200 bg-background border-b",
-        isScrolled ? "border-border shadow-lg" : "border-border/50"
+        isScrolled ? "border-border shadow-lg" : "border-border/50",
       )}
     >
       <div className="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
@@ -71,7 +71,9 @@ export function AdminHeader() {
               </svg>
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base font-bold text-foreground">پنل مدیریت</h1>
+              <h1 className="text-base font-bold text-foreground">
+                پنل مدیریت
+              </h1>
               <p className="text-xs text-muted-foreground">AME-TAMA</p>
             </div>
           </Link>
