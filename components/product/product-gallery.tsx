@@ -116,7 +116,10 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
       {/* Main image */}
       <div
         ref={constraintsRef}
-        className="relative aspect-square overflow-hidden rounded-lg bg-card ring-1 ring-border"
+        className="relative  overflow-hidden rounded-lg bg-card ring-1 ring-border"
+        style={{
+          aspectRatio: "0.7",
+        }}
       >
         <div className="absolute inset-0 h-full w-full transition-opacity duration-300">
           <Image

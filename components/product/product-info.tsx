@@ -183,7 +183,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
             <span className="text-3xl font-bold text-foreground">
               {formatPriceDivided(product.discountPrice)}
             </span>
-            <span className="text-lg text-muted-foreground">تومان</span>
           </div>
         </div>
       ) : (
@@ -191,7 +190,6 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <span className="text-3xl font-bold text-foreground">
             {formatPriceDivided(product.price)}
           </span>
-          <span className="text-lg text-muted-foreground">تومان</span>
         </div>
       )}
 
@@ -237,7 +235,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           }
         />
         <Fact label="مقیاس" value={product.detail?.specifications?.scale} />
-        <Fact label="ارتفاع" value={product.detail?.specifications?.height} />
+        <Fact label="ارتفاع" value={product.detail?.specifications?.['ارتفاع']} />
       </div>
 
       <div className="my-6 border-t border-border" />
