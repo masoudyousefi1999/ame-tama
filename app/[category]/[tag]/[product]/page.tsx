@@ -6,7 +6,9 @@ import ProductSchema from "@/components/seo/product-schema";
 import GoogleShoppingSchema from "@/components/seo/google-shopping-schema";
 import { getSiteUrl } from "@/lib/site-url";
 
+/** Fully dynamic: no static generation, fresh data on every request */
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function generateMetadata({
   params,
@@ -26,7 +28,7 @@ export async function generateMetadata({
   }
 
   const productData = await getProductBySlug(product, {
-    next: { tags: ["products", `product-${product}`] },
+    cache: "no-store",
   });
 
   if (!productData) {
@@ -141,7 +143,7 @@ export default async function ProductPage({
 }) {
   const { category, tag, product } = await params;
   const productData = await getProductBySlug(product, {
-    next: { tags: ["products", `product-${product}`] },
+    cache: "no-store",
   });
 
   if (!productData) {

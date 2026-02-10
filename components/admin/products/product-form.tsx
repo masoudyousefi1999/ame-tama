@@ -199,7 +199,7 @@ export function ProductForm({ product, categories }: ProductFormProps) {
     const { validateFile } = await import("@/lib/upload-utils");
     for (const file of files) {
       const validation = validateFile(file, {
-        maxSize: 5 * 1024 * 1024, // 5MB
+        maxSize: 10 * 1024 * 1024, // 5MB
         allowedTypes: [
           "image/jpeg",
           "image/jpg",
