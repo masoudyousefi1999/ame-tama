@@ -28,7 +28,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 COPY --from=builder /app/.next/standalone ./standalone
-COPY --from=builder /app/.next/static ./static
+COPY --from=builder /app/public ./standalone/public
+COPY --from=builder /app/.next/static ./standalone/.next/static
 
 EXPOSE 3000
 

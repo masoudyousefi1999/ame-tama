@@ -13,7 +13,7 @@ type Props = {
   };
 };
 
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
   const categoryData = await getCategoryBySlug(category);

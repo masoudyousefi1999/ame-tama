@@ -13,7 +13,7 @@ import LoginToastEffect from "@/components/LoginToastEffect";
 import SchemaOrg from "@/components/seo/schema-org";
 import ConditionalLayout from "@/components/conditional-layout";
 import ScrollToTop from "@/components/scroll-to-top";
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL ||  "https://ame-tama.com";
 
 const vazirmatn = localFont({
   src: "./fonts/vazir.ttf",

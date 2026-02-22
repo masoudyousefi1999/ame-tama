@@ -14,7 +14,7 @@ interface SchemaOrgProps {
 
 export default function SchemaOrg({ type, data }: SchemaOrgProps) {
   // const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ame-tama.com";
-  const baseUrl = "https://ame-tama.com";
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
   let schema: WithContext<any> = {
     "@context": "https://schema.org",

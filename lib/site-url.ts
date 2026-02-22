@@ -8,7 +8,7 @@ export function getSiteUrl(path = ""): string {
   const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
 
   // استفاده از متغیر محیطی یا مقدار پیش‌فرض برای محیط توسعه
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ame-tama.com";
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
   // حذف اسلش اضافی از انتهای آدرس پایه اگر وجود داشته باشد
   const normalizedBaseUrl = baseUrl.endsWith("/")

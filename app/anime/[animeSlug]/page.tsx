@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { productLimit } from "@/lib/product-limit";
 import AnimePageClient from "@/components/animes/anime-page-client";
 
+export const dynamic = "force-dynamic";
+
 type Props = {
   params: Promise<{
     animeSlug: string;
@@ -13,7 +15,8 @@ type Props = {
   }>;
 };
 
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
+console.log("base url is => ",baseUrl)
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { animeSlug } = await params;
 

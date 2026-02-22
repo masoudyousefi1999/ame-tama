@@ -88,7 +88,7 @@ export function generateCategoryKeywords(category: any): string[] {
 // تولید URL کانونیکال
 export function generateCanonicalUrl(path: string): string {
   // const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ametama.com"
-  const baseUrl = "https://ametama.com"
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ametama.com"
   // اطمینان از اینکه path با / شروع می‌شود
   const formattedPath = path.startsWith("/") ? path : `/${path}`
   return `${baseUrl}${formattedPath}`

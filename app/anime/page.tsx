@@ -2,7 +2,7 @@ import AnimeListPageClient from "@/components/animes/anime-list-page-client";
 import { getAllTags, ITagType } from "@/lib/tags";
 import type { Metadata } from "next";
 
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

@@ -4,7 +4,7 @@ import { productLimit } from "@/lib/product-limit";
 import { Metadata } from "next";
 
 
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
 export const generateMetadata = (): Metadata => {
   const title =

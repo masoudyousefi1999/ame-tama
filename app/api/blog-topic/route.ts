@@ -1,7 +1,7 @@
 import { customFetch } from "@/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
 
-const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
 export async function GET(request: NextRequest) {
   try {

@@ -2,7 +2,7 @@ import BlogPostClient from "@/components/blog/blog-post-client";
 import { getBlogPostBySlugs, IBlogPostType } from "@/lib/blog";
 import type { Metadata } from "next";
 
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
 interface BlogPostPageProps {
   params: Promise<{ topicSlug: string; blogSlug: string }>;

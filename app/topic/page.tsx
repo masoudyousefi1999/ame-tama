@@ -2,7 +2,7 @@ import BlogPageClient from "@/components/blog/blog-page-client";
 import { getAllBlogTopics } from "@/lib/blog";
 import type { Metadata } from "next";
 
-const baseUrl = "https://ame-tama.com";
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
 // Force dynamic rendering - no caching
 export const dynamic = 'force-dynamic';

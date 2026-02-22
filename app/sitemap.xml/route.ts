@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const backendBase =
-      process.env.NEXT_PUBLIC_BACKEND_BASE_URL_SERVER ||
+      process.env.BACKEND_INTERNAL_URL ||
       "https://api.ame-tama.com";
 
     const targetUrl = `${backendBase}/sitemap`;

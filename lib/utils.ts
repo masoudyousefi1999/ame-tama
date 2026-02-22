@@ -42,7 +42,7 @@ export async function customFetch(
   const isServer = typeof window === "undefined";
 
   const baseUrl = isServer
-    ? process.env.NEXT_PUBLIC_BACKEND_BASE_URL_SERVER!
+    ? process.env.BACKEND_INTERNAL_URL!
     : process.env.NEXT_PUBLIC_BACKEND_BASE_URL_CLIENT!;
   const url = typeof input === "string" ? `${baseUrl}${input}` : input;
 
