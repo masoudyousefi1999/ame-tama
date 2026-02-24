@@ -41,7 +41,7 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "default",
-    unoptimized: false,
+    unoptimized: true,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
