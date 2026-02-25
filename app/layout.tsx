@@ -8,7 +8,6 @@ import { ImageProvider } from "@/context/image-context";
 import { BreadcrumbProvider } from "@/context/breadcrumb-context";
 import { LoginModalProvider } from "@/context/login-modal-context";
 import localFont from "next/font/local";
-import Script from "next/script";
 import LoginToastEffect from "@/components/LoginToastEffect";
 import SchemaOrg from "@/components/seo/schema-org";
 import ConditionalLayout from "@/components/conditional-layout";

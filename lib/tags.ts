@@ -60,7 +60,6 @@ export async function getTagBySlug(
       limit: String(limit),
     });
 
-    console.log("fetching: ",`${baseUrl}/api/tags/${slug}?${params.toString()}`)
     const res = await fetch(
       `${baseUrl}/api/tags/${slug}?${params.toString()}`,
       {

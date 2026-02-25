@@ -126,7 +126,7 @@ export default function ProductGallery({ images, alt }: ProductGalleryProps) {
             src={images[currentIndex]?.url || "/placeholder.svg"}
             alt={`${alt} - تصویر ${currentIndex + 1}`}
             fill
-            quality={currentIndex === 0 ? 75 : 70}
+            quality={currentIndex === 0 ? 85 : 80}
             fetchPriority={currentIndex === 0 ? "high" : "auto"}
             loading={currentIndex === 0 ? "eager" : "lazy"}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 60vw, 600px"

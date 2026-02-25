@@ -7,6 +7,7 @@ const withBundleAnalyzer = bundleAnalyzer({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  swcMinify: true,
   reactStrictMode: false,
   compress: true,
   poweredByHeader: false,
@@ -40,8 +41,7 @@ const nextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30,
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    loader: "default",
-    unoptimized: true,
+    unoptimized: false,
   },
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",

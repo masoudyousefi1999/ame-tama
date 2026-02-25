@@ -17,6 +17,12 @@ services:
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
       - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+    deploy:
+      resources:
+        limits:
+          cpus: "2.5"
+          memory: 4096M
+
 
 networks:
   public-network:

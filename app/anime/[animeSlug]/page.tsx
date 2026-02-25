@@ -16,7 +16,7 @@ type Props = {
 };
 
 const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
-console.log("base url is => ",baseUrl)
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { animeSlug } = await params;
 

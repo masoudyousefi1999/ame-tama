@@ -1,16 +1,8 @@
 import Link from "next/link";
-import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-  Mail,
-  Phone,
-  MapPin,
-} from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { FaTelegramPlane, FaWhatsapp } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { BrandedIllustration } from "./ui/branded-illustration";
 
 export default function Footer() {
   return (
@@ -33,10 +25,16 @@ export default function Footer() {
             <div className="flex gap-x-4">
               {/* socials */}
               {[
-                { Icon: Facebook, label: "فیسبوک", href: "#" },
-                { Icon: Instagram, label: "اینستاگرام", href: "#" },
-                { Icon: Twitter, label: "توییتر", href: "#" },
-                { Icon: Youtube, label: "یوتیوب", href: "#" },
+                {
+                  Icon: FaTelegramPlane,
+                  label: "تلگرام",
+                  href: "https://t.me/ame_tama",
+                },
+                {
+                  Icon: FaWhatsapp,
+                  label: "واتساپ",
+                  href: "https://wa.me/09375116262",
+                },
               ].map(({ Icon, label, href }) => (
                 <a key={label} href={href} className="group">
                   <Button
@@ -129,16 +127,16 @@ export default function Footer() {
                 <p className="font-medium">تماس با ما</p>
                 <div className="flex flex-col items-start mt-2">
                   <a
-                    href="tel:+989174120968"
-                    className="text-sm text-muted-foreground hover:text-primary"
-                  >
-                    09932607390
-                  </a>
-                  <a
                     href="tel:+989375116262"
                     className="text-sm text-muted-foreground hover:text-primary"
                   >
                     09375116262
+                  </a>
+                  <a
+                    href="tel:+989174120968"
+                    className="text-sm text-muted-foreground hover:text-primary"
+                  >
+                    09932607390
                   </a>
                 </div>
               </div>
