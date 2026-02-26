@@ -249,6 +249,11 @@
   resolved "https://registry.npmjs.org/@img/sharp-win32-x64/-/sharp-win32-x64-0.34.5.tgz#a81ffb00e69267cd0a1d626eaedb8a8430b2b2f8"
   integrity sha512-+29YMsqY2/9eFEiW93eqWnuLcWcufowXewwSNIT6UwZdUUCrM3oFjMWH/Z6/TMmb4hlFenmfAVbpWeup2jryCw==
 
+"@imgproxy/imgproxy-js-core@^1.7.0":
+  version "1.7.0"
+  resolved "https://registry.npmjs.org/@imgproxy/imgproxy-js-core/-/imgproxy-js-core-1.7.0.tgz#444fe9d9e5fb7caa4171fa31a064276bbf13f301"
+  integrity sha512-NOitHDWUnlF/Co0bwotnFqAaUUXinrSB+pCLLXxpHVMpureWU5NgApeghoV/mRei1eBLnHRSdL7ZcjvlLWA06w==
+
 "@jridgewell/gen-mapping@^0.3.2":
   version "0.3.13"
   resolved "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz#6342a19f44347518c93e43b1ac69deb3c4656a1f"

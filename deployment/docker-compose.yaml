@@ -1,0 +1,59 @@
+networks:
+  public-network:
+    external: true
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    ports:
+      - 3000:3000
+    networks:
+      - public-network
+    labels:
+      - "traefik.enable=true"
+
+      # =========================
+      # main router (non-www)
+      # =========================
+      - "traefik.http.routers.frontend.rule=Host(`ame-tama.com`)"
+      - "traefik.http.routers.frontend.entrypoints=websecure"
+      - "traefik.http.routers.frontend.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.frontend.service=frontend"
+      - "traefik.http.routers.frontend.middlewares=compress"
+      - "traefik.http.services.frontend.loadbalancer.server.port=3000"
+
+      # compression middleware
+      - "traefik.http.middlewares.compress.compress=true"
+
+      # =========================
+      # redirect www -> non-www
+      # =========================
+      - "traefik.http.routers.frontend-www.rule=Host(`www.ame-tama.com`)"
+      - "traefik.http.routers.frontend-www.entrypoints=websecure"
+      - "traefik.http.routers.frontend-www.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.frontend-www.middlewares=redirect-to-nonwww"
+
+      - "traefik.http.middlewares.redirect-to-nonwww.redirectregex.regex=^/(.*)"
+      - "traefik.http.middlewares.redirect-to-nonwww.redirectregex.replacement=https://ame-tama.com/$$1"
+      - "traefik.http.middlewares.redirect-to-nonwww.redirectregex.permanent=true"
+
+    cpus: "2.5"
+    mem_limit: 3g
+
+  imgproxy:
+    image: ghcr.io/imgproxy/imgproxy:latest
+    container_name: image-proxy
+    ports:
+      - "8080:8080"
+    environment:
+      IMGPROXY_AUTO_WEBP: "true"
+      IMGPROXY_AUTO_AVIF: "true"
+    restart: unless-stopped
+    cpus: "2.5"
+    mem_limit: 3g
