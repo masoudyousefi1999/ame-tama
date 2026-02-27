@@ -10,17 +10,21 @@ import { LoginModalProvider } from "@/context/login-modal-context";
 import localFont from "next/font/local";
 import LoginToastEffect from "@/components/LoginToastEffect";
 import SchemaOrg from "@/components/seo/schema-org";
-import ConditionalLayout from "@/components/conditional-layout";
 import ScrollToTop from "@/components/scroll-to-top";
-const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL ||  "https://ame-tama.com";
+import { MobileTopBar } from "@/components/mobile-top-bar";
+import Navbar from "@/components/navbar";
+import { MobileBottomNavbar } from "@/components/mobile-bottom-navbar";
+import FooterWrapper from "@/components/footer-wrapper";
+
+const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
 
 const vazirmatn = localFont({
-  src: "./fonts/vazir.ttf",
+  src: "../fonts/vazir.ttf",
   variable: "--font-vazirmatn",
 });
 
 const langar = localFont({
-  src: "./fonts/Langar-Regular.ttf",
+  src: "../fonts/Langar-Regular.ttf",
   variable: "--font-langar",
 });
 
@@ -125,13 +129,12 @@ async function fetchCategories() {
   }
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await fetchCategories();
-
+  const categories =  [] as any;
   return (
     <html lang="fa-IR" dir="rtl" suppressHydrationWarning className="h-full">
       <head>
@@ -146,21 +149,19 @@ export default async function RootLayout({
           httpEquiv="Cache-Control"
           content="public, max-age=31536000, immutable"
         />
-        {/* {process.env.NODE_ENV === "production" && ( */}
-        <script
-          type="text/javascript"
-          dangerouslySetInnerHTML={{
-            __html: `(function(c,l,a,r,i,t,y){
-                             if (!window.location.pathname.startsWith('/admin')) {
+        {process.env.NODE_ENV === "production" && (
+          <script
+            type="text/javascript"
+            dangerouslySetInnerHTML={{
+              __html: `(function(c,l,a,r,i,t,y){
                                  c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
                                  t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
                                  y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-                             }
                          })(window, document, "clarity", "script", "sy8ocvwyz3");`,
-          }}
-          defer
-        ></script>
-        {/* )} */}
+            }}
+            defer
+          ></script>
+        )}
       </head>
       <body
         className={`${vazirmatn.variable} ${langar.variable} min-h-screen overflow-x-hidden`}
@@ -174,9 +175,18 @@ export default async function RootLayout({
               <WishlistProvider>
                 <ImageProvider>
                   <BreadcrumbProvider>
-                    <ConditionalLayout categories={categories}>
-                      {children}
-                    </ConditionalLayout>
+                    <div className="min-h-screen flex flex-col">
+                      <MobileTopBar />
+                      <Navbar categories={categories} />
+                      <main
+                        id="main-content"
+                        className="flex-1 pt-[40px] pb-[calc(64px+env(safe-area-inset-bottom,0px))]"
+                      >
+                        {children}
+                        <FooterWrapper />
+                      </main>
+                      <MobileBottomNavbar />
+                    </div>
                   </BreadcrumbProvider>
                   <Toaster />
                 </ImageProvider>

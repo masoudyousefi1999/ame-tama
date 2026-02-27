@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle, Send, Loader2 } from "lucide-react";
-import { submitContactForm } from "@/app/actions/contact";
+import { submitContactForm } from "@/app/(main)/actions/contact";
 import { cn } from "@/lib/utils";
 
 export function ContactForm() {
@@ -166,7 +166,7 @@ export function ContactForm() {
             className={cn(
               "min-h-[120px] resize-none transition-all duration-200",
               state.errors?.message &&
-                "border-destructive focus-visible:ring-destructive"
+                "border-destructive focus-visible:ring-destructive",
             )}
             placeholder="پیام خود را اینجا بنویسید..."
             required
