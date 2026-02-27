@@ -56,8 +56,6 @@ services:
       - imgcache:/var/cache/nginx
     networks:
       - public-network
-    ports:
-      - "1212:80"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.imgproxy.rule=Host(`img.ame-tama.com`)"
