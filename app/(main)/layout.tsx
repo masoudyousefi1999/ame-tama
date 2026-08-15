@@ -142,6 +142,8 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
         />
+        <meta name="enamad" content="24920360" />
+        <meta name="enamad" content="۲۴۹۲۰۳۶۰" />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" href="/favicon.png" />
         <meta name="format-detection" content="telephone=no" />

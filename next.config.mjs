@@ -43,7 +43,7 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     loader: "custom",
     loaderFile: "./image-loader.js",
-    unoptimized: false
+    unoptimized: process.env.NODE_ENV === "production" ? false : true,
   },
 
   turbopack: {
