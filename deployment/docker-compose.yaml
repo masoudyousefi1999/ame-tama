@@ -44,9 +44,6 @@ services:
       - "traefik.http.middlewares.redirect-to-nonwww.redirectregex.replacement=https://ame-tama.com/$$1"
       - "traefik.http.middlewares.redirect-to-nonwww.redirectregex.permanent=true"
 
-    cpus: "2.5"
-    mem_limit: 3g
-
   nginx-imgcache:
     image: nginx:alpine
     container_name: nginx-imgcache
@@ -63,9 +60,6 @@ services:
       - "traefik.http.routers.imgproxy.tls.certresolver=letsencrypt"
       - "traefik.http.services.imgproxy.loadbalancer.server.port=80"
 
-    cpus: "2"
-    mem_limit: 2g
-
   # imgproxy now internal only
   imgproxy:
     image: ghcr.io/imgproxy/imgproxy:latest
@@ -76,5 +70,3 @@ services:
       IMGPROXY_AUTO_AVIF: "true"
     networks:
       - public-network
-    cpus: "2.5"
-    mem_limit: 3g
