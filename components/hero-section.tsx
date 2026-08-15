@@ -10,7 +10,7 @@ export default function HeroSection() {
         {/* Main background image */}
         <div className="absolute inset-0">
           <Image
-            src="/luffy-naruto.webp"
+            src="https://ame-tama.s3.ir-thr-at1.arvanstorage.ir/hero-section%2Fluffy-naruto.webp"
             alt="مجسمه‌های لوکس انیمه"
             fill
             loading="eager"
