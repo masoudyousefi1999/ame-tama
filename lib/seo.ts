@@ -41,7 +41,7 @@ export function mergeSEO(customSEO?: Partial<SEOProps>): SEOProps {
     keywords: customSEO?.keywords || ["مجسمه انیمه", "فیگور انیمه", "خرید مجسمه", "فروشگاه انیمه"],
     ogType: customSEO?.ogType || "website",
     // ogImage: customSEO?.ogImage || `${process.env.NEXT_PUBLIC_SITE_URL}/images/og-image.jpg`,
-    ogImage: customSEO?.ogImage || `https://ametama.com/images/og-image.jpg`,
+    ogImage: customSEO?.ogImage || `https://ame-tama.com/images/og-image.jpg`,
     twitterCard: customSEO?.twitterCard || "summary_large_image",
     canonicalUrl: customSEO?.canonicalUrl || "",
     noIndex: customSEO?.noIndex || false,
@@ -87,8 +87,7 @@ export function generateCategoryKeywords(category: any): string[] {
 
 // تولید URL کانونیکال
 export function generateCanonicalUrl(path: string): string {
-  // const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ametama.com"
-  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ametama.com"
+  const baseUrl = process.env.NEXT_PUBLIC_FRONTEND_URL || "https://ame-tama.com";
   // اطمینان از اینکه path با / شروع می‌شود
   const formattedPath = path.startsWith("/") ? path : `/${path}`
   return `${baseUrl}${formattedPath}`

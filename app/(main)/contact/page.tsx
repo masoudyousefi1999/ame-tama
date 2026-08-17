@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   title: "تماس با ما | AME-TAMA",
   description:
     "با تیم پشتیبانی AME-TAMA در تماس باشید. ما آماده پاسخگویی به سوالات، پیشنهادات و درخواست‌های شما هستیم.",
-  alternates: { canonical: "https://ametama.com/contact" },
+  alternates: { canonical: "https://ame-tama.com/contact" },
   openGraph: {
     title: "تماس با ما | AME-TAMA",
     description:
       "با تیم پشتیبانی AME-TAMA در تماس باشید. ما آماده پاسخگویی به سوالات شما هستیم.",
-    url: "https://ametama.com/contact",
+    url: "https://ame-tama.com/contact",
     siteName: "AME-TAMA",
     locale: "fa_IR",
     type: "website",

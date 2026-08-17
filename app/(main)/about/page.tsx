@@ -11,13 +11,13 @@ export const metadata: Metadata = {
   description:
     "با AME-TAMA، برند پیشرو در زمینه مجسمه‌های انیمه لوکس آشنا شوید. داستان ما، ارزش‌های ما و تعهد ما به کیفیت برتر.",
   alternates: {
-    canonical: "https://ametama.com/about",
+    canonical: "https://ame-tama.com/about",
   },
   openGraph: {
     title: "درباره ما | AME-TAMA",
     description:
       "با AME-TAMA، برند پیشرو در زمینه مجسمه‌های انیمه لوکس آشنا شوید.",
-    url: "https://ametama.com/about",
+    url: "https://ame-tama.com/about",
     siteName: "AME-TAMA",
     locale: "fa_IR",
     type: "website",

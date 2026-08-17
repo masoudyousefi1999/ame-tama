@@ -15,5 +15,7 @@ export function getSiteUrl(path = ""): string {
     ? baseUrl.slice(0, -1)
     : baseUrl;
 
+  if (!normalizedPath) return normalizedBaseUrl;
+
   return `${normalizedBaseUrl}/${normalizedPath}`;
 }

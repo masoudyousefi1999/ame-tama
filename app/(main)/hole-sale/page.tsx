@@ -9,13 +9,13 @@ export const metadata: Metadata = {
   description:
     "خرید عمده فیگور و مجسمه‌های انیمه‌ای با شرایط ویژه همکاری برای فروشگاه‌ها، همکاران و پخش‌کنندگان از AME-TAMA.",
   alternates: {
-    canonical: "https://ametama.com/hole-sale",
+    canonical: "https://ame-tama.com/hole-sale",
   },
   openGraph: {
     title: "خرید فیگور انیمه ای به صورت عمده | AME-TAMA",
     description:
       "شرایط ویژه خرید عمده فیگورهای انیمه برای همکاران، فروشگاه‌ها و پخش‌کنندگان در سراسر ایران.",
-    url: "https://ametama.com/hole-sale",
+    url: "https://ame-tama.com/hole-sale",
     siteName: "AME-TAMA",
     locale: "fa_IR",
     type: "website",

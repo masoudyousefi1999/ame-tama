@@ -39,10 +39,15 @@ export async function GET() {
       : [{ slug: "", updatedAt: new Date().toISOString(), productMedia: [] }]
   )
     .map((product: any) => {
-      const productPath = product.slug
-        ? `/product/${encodeURIComponent(product.slug)}`
-        : "";
-      const productUrl = `${baseUrl}${productPath}`;
+      const categorySlug = product.category?.slug;
+      const tagSlug = product.tags?.[0]?.slug;
+      const productSlug = product.slug;
+      if (!categorySlug || !tagSlug || !productSlug) return "";
+
+      const productPath = [categorySlug, tagSlug, productSlug]
+        .map((part: string) => encodeURIComponent(part))
+        .join("/");
+      const productUrl = getSiteUrl(productPath);
       const images = Array.isArray(product?.productMedia)
         ? product.productMedia
         : [];

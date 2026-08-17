@@ -61,8 +61,12 @@ const nextConfig = {
         source: "/(.*)",
         headers: [
           {
-            key: "X-Frame-Options",
-            value: "DENY",
+            // Allow Enamad's trust-seal page to iframe the homepage preview.
+            // X-Frame-Options: DENY blocks that iframe (and CSP frame-ancestors
+            // is ignored while DENY is present), so we use CSP instead.
+            key: "Content-Security-Policy",
+            value:
+              "frame-ancestors 'self' https://trustseal.enamad.ir https://enamad.ir https://www.enamad.ir https://reg.enamad.ir https://reg2.enamad.ir",
           },
           {
             key: "X-Content-Type-Options",
